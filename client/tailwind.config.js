@@ -6,7 +6,17 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["pastel"],
+    themes: [
+      {
+        pastel: {
+          ...require("daisyui/src/colors/themes")["[data-theme=pastel]"],
+          primary: "#A6B1E1",
+          secondary: "#FCD8D4",
+          accent: "#424874",
+          neutral: "#F6F1F1",
+        },
+      },
+    ],
     styled: true,
     base: true,
     utils: true,
