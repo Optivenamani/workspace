@@ -19,77 +19,101 @@ const Sidebar = ({ children }) => {
               <div className="collapse-title font-bold">Bookings</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
-                  href="/create-project"
-                  className="font-medium mt-1 hover:bg-base-300 rounded-3xl p-2"
+                  href="/create-booking"
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                 >
-                  Create Project
+                  Make Booking
                 </a>
                 <a
-                  className="font-medium mt-3 hover:bg-base-300 rounded-3xl p-2"
-                  href="/projects"
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/my-bookings"
                 >
-                  View Projects
+                  My Bookings
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/assigned-bookings"
+                >
+                  Assigned Bookings
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/approved-bookings"
+                >
+                  Approved Bookings
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/bookings"
+                >
+                  All Bookings
                 </a>
               </div>
             </div>
             <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Suppliers</div>
+              <div className="collapse-title font-bold">Sites</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
-                  className="font-medium mt-1 hover:bg-base-300 rounded-3xl p-2"
-                  href="/add-supplier"
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  href="/create-site"
                 >
-                  Add Supplier
+                  Create Site
                 </a>
                 <a
-                  className="font-medium mt-3 hover:bg-base-300 rounded-3xl p-2"
-                  href="/suppliers"
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/sites"
                 >
-                  View Suppliers
+                  View Sites
                 </a>
               </div>
             </div>
             <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Labour</div>
+              <div className="collapse-title font-bold">Vehicles</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
-                  <input type="checkbox" className="peer" />
-                  <div className="collapse-title font-bold">Job Groups</div>
-                  <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                    <a
-                      className="font-medium mt-1 hover:bg-base-300 rounded-3xl p-2"
-                      href="/add-job-group"
-                    >
-                      Add Job Group
-                    </a>
-                    <a
-                      className="font-medium mt-3 hover:bg-base-300 rounded-3xl p-2"
-                      href="/view-job-groups"
-                    >
-                      View Job Groups
-                    </a>
-                  </div>
-                </div>
-                <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
-                  <input type="checkbox" className="peer" />
-                  <div className="collapse-title font-bold">Staff</div>
-                  <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                    <a
-                      className="font-medium mt-1 hover:bg-base-300 rounded-3xl p-2"
-                      href="/add-staff"
-                    >
-                      Add Staff
-                    </a>
-                    <a
-                      className="font-medium mt-3 hover:bg-base-300 rounded-3xl p-2"
-                      href="/view-staff"
-                    >
-                      View Staff
-                    </a>
-                  </div>
-                </div>
+                <a
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  href="/create-vehicle"
+                >
+                  Add Vehicle
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/view-vehicles"
+                >
+                  View Vehicles
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/view-vehicle"
+                >
+                  Request Vehicle
+                </a>
+              </div>
+            </div>
+            <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
+              <input type="checkbox" className="peer" />
+              <div className="collapse-title font-bold">Clients</div>
+              <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
+              <a
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  href="/clients-contacts"
+                >
+                  Add Client
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/clients-feedback"
+                >
+                  Clients Contacts
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/clients-feedback"
+                >
+                  Clients Feedback
+                </a>
               </div>
             </div>
             {/* for other links, li>Link */}
