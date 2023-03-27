@@ -86,7 +86,7 @@ const Sidebar = ({ children }) => {
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                  href="/view-vehicle"
+                  href="/request-vehicle"
                 >
                   Request Vehicle
                 </a>
@@ -98,13 +98,13 @@ const Sidebar = ({ children }) => {
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
               <a
                   className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                  href="/clients-contacts"
+                  href="/create-client"
                 >
                   Add Client
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                  href="/clients-feedback"
+                  href="/clients-contacts"
                 >
                   Clients Contacts
                 </a>

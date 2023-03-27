@@ -44,7 +44,7 @@ const Navbar = () => {
             </div>
             <label
               tabIndex={0}
-              className="mr-5 mt-1 btn btn-ghost btn-circle avatar indicator"
+              className="mr-2 mt-1 btn btn-ghost btn-circle avatar indicator"
             >
               <div className="w-10 rounded-full">
                 <img alt="user" src={userAvatar} />
@@ -59,10 +59,10 @@ const Navbar = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <div className="justify-between">
+              <a className="justify-between">
                 Notifications
                 {(1+1===2) && <span className="badge badge-sm badge-primary h-5 w-5 rounded-3xl">3</span>}
-              </div>
+              </a>
             </li>
             <li>
               <a>Change Password</a>
