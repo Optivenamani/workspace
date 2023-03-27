@@ -3,9 +3,9 @@ import Sidebar from "../components/Sidebar";
 
 const CreateBooking = () => {
   return (
-    <Sidebar>
-
-    </Sidebar>
+    <>
+      <Sidebar>Create Booking</Sidebar>
+    </>
   );
 };
 

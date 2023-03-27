@@ -44,7 +44,7 @@ const Sidebar = ({ children }) => {
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                  href="/bookings"
+                  href="/all-bookings"
                 >
                   All Bookings
                 </a>
@@ -62,7 +62,7 @@ const Sidebar = ({ children }) => {
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                  href="/sites"
+                  href="/view-sites"
                 >
                   View Sites
                 </a>
@@ -96,14 +96,8 @@ const Sidebar = ({ children }) => {
               <input type="checkbox" className="peer" />
               <div className="collapse-title font-bold">Clients</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-              <a
-                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                  href="/create-client"
-                >
-                  Add Client
-                </a>
                 <a
-                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                   href="/clients-contacts"
                 >
                   Clients Contacts

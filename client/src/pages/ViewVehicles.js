@@ -1,12 +1,12 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 
-const Dashboard = () => {
+const ViewVehicles = () => {
   return (
     <>
-      <Sidebar>Dashboard</Sidebar>
+      <Sidebar>View Vehicles</Sidebar>
     </>
   );
 };
 
-export default Dashboard;
+export default ViewVehicles;

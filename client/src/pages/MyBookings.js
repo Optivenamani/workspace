@@ -1,12 +1,12 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 
-const Dashboard = () => {
+const MyBookings = () => {
   return (
     <>
-      <Sidebar>Dashboard</Sidebar>
+      <Sidebar>My Bookings</Sidebar>
     </>
   );
 };
 
-export default Dashboard;
+export default MyBookings;

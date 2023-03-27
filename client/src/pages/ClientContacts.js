@@ -1,12 +1,12 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 
-const Dashboard = () => {
+const ClientContacts = () => {
   return (
     <>
-      <Sidebar>Dashboard</Sidebar>
+      <Sidebar>Client Contacts</Sidebar>
     </>
   );
 };
 
-export default Dashboard;
+export default ClientContacts;
