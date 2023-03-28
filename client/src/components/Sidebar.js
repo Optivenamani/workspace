@@ -16,7 +16,7 @@ const Sidebar = ({ children }) => {
             </li>
             <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Bookings</div>
+              <div className="collapse-title font-bold">Site Visit Bookings</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
                   href="/create-booking"
@@ -111,6 +111,11 @@ const Sidebar = ({ children }) => {
               </div>
             </div>
             {/* for other links, li>Link */}
+            <li>
+              <a href="/users" className="font-bold my-1">
+                Users
+              </a>
+            </li>
           </ul>
         </div>
       </div>
