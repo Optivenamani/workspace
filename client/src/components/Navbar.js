@@ -5,7 +5,7 @@ import "./styles/Navbar.css";
 
 const Navbar = () => {
   return (
-    <div className="navbar bg-blue-400">
+    <div className="navbar bg-blue-300">
       <div className="flex-1">
         <div
           className="tooltip tooltip-right"

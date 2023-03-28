@@ -52,7 +52,7 @@ const Form = () => {
         </div> */}
         <div className="flex justify-center">{pageDisplay()}</div>
         <div className="footer"></div>
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-5">
           {page === 0 ? null : (
             <button
               disabled={page === 0}

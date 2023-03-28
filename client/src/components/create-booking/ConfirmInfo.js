@@ -5,7 +5,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
 
   return (
     <>
-      <div className="flex flex-col w-96">
+      <div className="flex flex-col">
         <div className="card rounded bg-base-100 shadow-xl p-10 my-4">
           <h1>
             <span className="font-bold">Site: </span>
