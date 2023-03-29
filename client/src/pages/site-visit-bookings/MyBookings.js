@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Table from "../components/Table";
+import Sidebar from "../../components/Sidebar";
+import Table from "../../components/Table";
 
 const data = [
   {
@@ -127,7 +127,7 @@ const MyBookings = () => {
         <div className="px-4 mt-8 flex justify-center">
           <Table
             columns={[
-              "",
+              "ID",
               "Site",
               "Pickup Location",
               "Date",

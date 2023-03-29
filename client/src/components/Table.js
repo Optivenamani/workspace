@@ -25,13 +25,13 @@ const Table = ({ columns, data, onEdit, onDelete }) => {
     return (
       <tbody>
         {currentItems.map((row) => (
-          <tr key={row.id}>
+          <tr key={row.id} className="text-center">
             {Object.values(row).map((val) => (
               <td key={val}>{val}</td>
             ))}
             {onEdit && onDelete && (
               <td>
-                <div className="flex">
+                <div className="flex justify-center">
                   <button
                     className="btn btn-outline btn-warning mr-2 btn-sm"
                     onClick={() => onEdit(row)}
@@ -82,13 +82,11 @@ const Table = ({ columns, data, onEdit, onDelete }) => {
     }
 
     return (
-      <div className="btn-group fixed">
+      <div className="btn-group mt-2">
         {pageNumbers.map((number) => (
           <button
             key={number}
-            className={`btn btn-outline  ${
-              currentPage === number ? "btn-active" : ""
-            }`}
+            className={`btn ${currentPage === number ? "btn-active" : ""}`}
             onClick={() => setCurrentPage(number)}
           >
             {number}
@@ -99,8 +97,8 @@ const Table = ({ columns, data, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table table-compact w-full">
+    <div className="overflow-x-auto w-screen">
+      <table className="table table-zebra w-full">
         {renderHeader()}
         {renderRows()}
       </table>

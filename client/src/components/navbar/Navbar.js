@@ -1,6 +1,6 @@
 import React from "react";
-import logo from "../assets/optiven-logo-full.png";
-import userAvatar from "../assets/gifs/user.gif";
+import logo from "../../assets/optiven-logo-full.png";
+import userAvatar from "../../assets/gifs/user.gif";
 import "./styles/Navbar.css";
 
 const Navbar = () => {
@@ -13,7 +13,7 @@ const Navbar = () => {
         >
           <label
             htmlFor="my-drawer"
-            className="drawer-button cursor-pointer btn btn-square btn-ghost hover:bg-blue-300"
+            className="drawer-button cursor-pointer btn btn-square btn-ghost hover:bg-blue-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,9 +48,11 @@ const Navbar = () => {
             >
               <div className="w-10 rounded-full">
                 <img alt="user" src={userAvatar} />
-                {(1+1===2) && <span className="h-5 w-5 rounded-3xl badge badge-xs badge-primary indicator-item">
-                  3
-                </span>}
+                {1 + 1 === 2 && (
+                  <span className="h-5 w-5 rounded-3xl badge badge-xs badge-primary indicator-item">
+                    3
+                  </span>
+                )}
               </div>
             </label>
           </div>
@@ -61,7 +63,11 @@ const Navbar = () => {
             <li>
               <a className="justify-between">
                 Notifications
-                {(1+1===2) && <span className="badge badge-sm badge-primary h-5 w-5 rounded-3xl">3</span>}
+                {1 + 1 === 2 && (
+                  <span className="badge badge-sm badge-primary h-5 w-5 rounded-3xl">
+                    3
+                  </span>
+                )}
               </a>
             </li>
             <li>

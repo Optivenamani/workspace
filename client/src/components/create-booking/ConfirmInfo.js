@@ -39,7 +39,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
               <span className="italic">Not Provided</span>
             )}
           </h1>
-          <h1>
+          {/* <h1>
             <span className="font-bold">Client Name: </span>
             {formData.clientName ? (
               formData.clientName
@@ -62,6 +62,14 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             ) : (
               <span className="italic">Not Provided</span>
             )}
+          </h1> */}
+          <h1>
+            <span className="font-bold">Clients: </span>
+            {formData.clientName ? (
+              formData.clientName
+            ) : (
+              <span className="italic">Not Provided</span>
+            )}
           </h1>
         </div>
         <div className="flex items-center">
@@ -75,7 +83,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
           <p>The info provided above is correct</p>
         </div>
         <button
-          className="btn btn-secondary btn-outline mt-4"
+          className="btn btn-primary btn-outline mt-4"
           onClick={onSubmitForm}
           disabled={isChecked === false}
         >

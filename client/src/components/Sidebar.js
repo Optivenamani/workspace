@@ -16,7 +16,9 @@ const Sidebar = ({ children }) => {
             </li>
             <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Site Visit Bookings</div>
+              <div className="collapse-title font-bold">
+                Site Visit Bookings
+              </div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
                   href="/create-booking"
@@ -110,12 +112,31 @@ const Sidebar = ({ children }) => {
                 </a>
               </div>
             </div>
+            <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
+              <input type="checkbox" className="peer" />
+              <div className="collapse-title font-bold">Drivers</div>
+              <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
+                <a
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  href="/create-driver"
+                >
+                  Add Driver
+                </a>
+                <a
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  href="/view-drivers"
+                >
+                  View Drivers
+                </a>
+              </div>
+            </div>
             {/* for other links, li>Link */}
             <li>
               <a href="/users" className="font-bold my-1">
                 Users
               </a>
             </li>
+
           </ul>
         </div>
       </div>

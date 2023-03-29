@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ClientInfo = ({ formData, setFormData }) => {
   return (
@@ -40,6 +41,12 @@ const ClientInfo = ({ formData, setFormData }) => {
             setFormData({ ...formData, clientPhoneNumber: e.target.value })
           }
         />
+        <Link
+          to="#"
+          className="text-primary text-center italic mt-4 hover:underline"
+        >
+          Got more than one client?
+        </Link>
       </div>
     </>
   );
