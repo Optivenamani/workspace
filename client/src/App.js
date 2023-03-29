@@ -13,11 +13,12 @@ import CreateSite from "./pages/sites/CreateSite";
 import ViewSites from "./pages/sites/ViewSites";
 import CreateVehicle from "./pages/vehicles/CreateVehicle";
 import ViewVehicles from "./pages/vehicles/ViewVehicles";
-import RequestVehicle from "./pages/vehicles/RequestVehicle";
+import RequestVehicle from "./pages/RequestVehicle";
 import ClientContacts from "./pages/clients/ClientContacts";
 import ClientsFeedback from "./pages/clients/ClientsFeedback";
 import AddDriver from "./pages/drivers/AddDriver";
 import ViewDrivers from "./pages/drivers/ViewDrivers";
+import Users from "./pages/Users";
 
 const App = () => {
   return (
@@ -46,6 +47,8 @@ const App = () => {
           {/* Drivers */}
           <Route path="/create-driver" element={<AddDriver />} />
           <Route path="/view-drivers" element={<ViewDrivers />} />
+          {/* Users */}
+          <Route path="/users" element={<Users />} />
         </Routes>
       </Router>
     </>

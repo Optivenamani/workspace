@@ -17,7 +17,7 @@ const Sidebar = ({ children }) => {
             <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
               <div className="collapse-title font-bold">
-                Site Visit Bookings
+                Site Visit Booking
               </div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
@@ -86,12 +86,6 @@ const Sidebar = ({ children }) => {
                 >
                   View Vehicles
                 </a>
-                <a
-                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                  href="/request-vehicle"
-                >
-                  Request Vehicle
-                </a>
               </div>
             </div>
             <div className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box my-1">
@@ -132,11 +126,15 @@ const Sidebar = ({ children }) => {
             </div>
             {/* for other links, li>Link */}
             <li>
+              <a href="/request-vehicle" className="font-bold my-1">
+                Request Vehicle
+              </a>
+            </li>
+            <li>
               <a href="/users" className="font-bold my-1">
                 Users
               </a>
             </li>
-
           </ul>
         </div>
       </div>

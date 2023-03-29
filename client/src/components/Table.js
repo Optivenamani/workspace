@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const Table = ({ columns, data, onEdit, onDelete }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
   const totalItems = data.length;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
