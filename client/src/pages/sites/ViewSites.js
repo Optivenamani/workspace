@@ -84,7 +84,7 @@ const ViewSites = () => {
           return site;
         }
       }),
-    [query, data]
+    [query]
   );
   return (
     <>

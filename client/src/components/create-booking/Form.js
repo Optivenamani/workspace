@@ -10,9 +10,7 @@ const Form = () => {
     pickupLocation: "",
     date: "",
     time: "",
-    clientName: "",
-    clientPhoneNumber: "",
-    clientEmail: "",
+    clients: [],
   });
 
   const formTitles = [

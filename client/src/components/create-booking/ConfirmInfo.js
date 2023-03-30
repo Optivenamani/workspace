@@ -5,7 +5,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col mx-4">
         <div className="card rounded bg-base-100 shadow-xl p-10 my-4">
           <h1>
             <span className="font-bold">Site: </span>
@@ -39,34 +39,16 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
               <span className="italic">Not Provided</span>
             )}
           </h1>
-          {/* <h1>
-            <span className="font-bold">Client Name: </span>
-            {formData.clientName ? (
-              formData.clientName
-            ) : (
-              <span className="italic">Not Provided</span>
-            )}
-          </h1>
           <h1>
-            <span className="font-bold">Client Email: </span>
-            {formData.clientEmail ? (
-              formData.clientEmail
-            ) : (
-              <span className="italic">Not Provided</span>
-            )}
-          </h1>
-          <h1>
-            <span className="font-bold">Client Phone Number: </span>
-            {formData.clientPhoneNumber ? (
-              formData.clientPhoneNumber
-            ) : (
-              <span className="italic">Not Provided</span>
-            )}
-          </h1> */}
-          <h1>
-            <span className="font-bold">Clients: </span>
-            {formData.clientName ? (
-              formData.clientName
+            <span className="font-bold">Clients:</span>
+            {formData.clients ? (
+              <ol>
+                {formData.clients.map((client, index) => (
+                  <li key={index} className="italic font-serif">
+                    {`${client.clientFirstName || "First name not provided"} ${client.clientLastName || "Last name not provided"}, ${client.clientPhoneNumber || "Phone not provided"}, ${client.clientEmail || "Email not provided" }`}
+                  </li>
+                ))}
+              </ol>
             ) : (
               <span className="italic">Not Provided</span>
             )}
