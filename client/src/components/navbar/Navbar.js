@@ -5,7 +5,7 @@ import "./styles/Navbar.css";
 
 const Navbar = () => {
   return (
-    <div className="navbar bg-blue-300">
+    <div className="navbar bg-primary">
       <div className="flex-1">
         <div
           className="tooltip tooltip-right"
@@ -13,7 +13,7 @@ const Navbar = () => {
         >
           <label
             htmlFor="my-drawer"
-            className="drawer-button cursor-pointer btn btn-square btn-ghost hover:bg-blue-400"
+            className="drawer-button cursor-pointer btn btn-square btn-ghost hover:bg-green-600"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@ const Navbar = () => {
               <div className="w-10 rounded-full">
                 <img alt="user" src={userAvatar} />
                 {1 + 1 === 2 && (
-                  <span className="h-5 w-5 rounded-3xl badge badge-xs badge-primary indicator-item">
+                  <span className="h-5 w-5 rounded-3xl badge badge-xs badge-neutral indicator-item">
                     3
                   </span>
                 )}
@@ -64,7 +64,7 @@ const Navbar = () => {
               <a className="justify-between">
                 Notifications
                 {1 + 1 === 2 && (
-                  <span className="badge badge-sm badge-primary h-5 w-5 rounded-3xl">
+                  <span className="badge badge-sm badge-neutral h-5 w-5 rounded-3xl font-bold">
                     3
                   </span>
                 )}

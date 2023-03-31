@@ -5,7 +5,9 @@ const AssignedBookings = () => {
   return (
     <>
       <Sidebar>
-        Assigned Bookings
+        <div className="container px-4 py-6 mx-auto">
+          
+        </div>
       </Sidebar>
     </>
   );

@@ -19,6 +19,7 @@ import ClientsFeedback from "./pages/clients/ClientsFeedback";
 import AddDriver from "./pages/drivers/AddDriver";
 import ViewDrivers from "./pages/drivers/ViewDrivers";
 import Users from "./pages/Users";
+import SiteVisitRequests from "./pages/site-visit-bookings/SiteVisitRequests";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/assigned-bookings" element={<AssignedBookings />} />
           <Route path="/approved-bookings" element={<ApprovedBookings />} />
           <Route path="/all-bookings" element={<AllBookings />} />
+          <Route path="/bookings-requests" element={<SiteVisitRequests />} />
           {/* Sites */}
           <Route path="/create-site" element={<CreateSite />} />
           <Route path="/view-sites" element={<ViewSites />} />
