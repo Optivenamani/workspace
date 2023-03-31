@@ -33,7 +33,7 @@ const CreateSite = () => {
               type="text"
               id="siteName"
               value={siteName}
-              placeholder="Valley Springs"
+              placeholder="Dunder Mifflin"
               onChange={(event) => setSiteName(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
@@ -43,7 +43,7 @@ const CreateSite = () => {
             <input
               type="text"
               id="siteLocation"
-              placeholder="Kajiado"
+              placeholder="Scranton, PA"
               value={siteLocation}
               onChange={(event) => setSiteLocation(event.target.value)}
               className="input input-bordered w-full max-w-xs"
