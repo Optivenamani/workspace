@@ -45,7 +45,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
               <ol>
                 {formData.clients.map((client, index) => (
                   <li key={index} className="italic font-serif">
-                    {`${client.clientFirstName || "First name not provided"} ${client.clientLastName || "Last name not provided"}, ${client.clientPhoneNumber || "Phone not provided"}, ${client.clientEmail || "Email not provided" }`}
+                    {`${client.clientFirstName || "First name not provided /"} ${client.clientLastName || "Last name not provided"}, ${client.clientPhoneNumber || "Phone not provided"}, ${client.clientEmail || "Email not provided" }`}
                   </li>
                 ))}
               </ol>

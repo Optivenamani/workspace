@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import SiteVisitInfo from "./SiteVisitInfo";
 import ClientInfo from "./ClientInfo";
 import ConfirmInfo from "./ConfirmInfo";
@@ -19,6 +20,11 @@ const Form = () => {
     "Confirm Details",
   ];
 
+  const handleFormSubmit = (event, data) => {
+    event.preventDefault();
+    console.log(data)
+  };
+
   const pageDisplay = () => {
     if (page === 0) {
       return <SiteVisitInfo formData={formData} setFormData={setFormData} />;
@@ -29,7 +35,7 @@ const Form = () => {
         <ConfirmInfo
           formData={formData}
           setFormData={setFormData}
-          onSubmitForm={() => console.log(formData)}
+          onSubmitForm={handleFormSubmit}
         />
       );
     }
