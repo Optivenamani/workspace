@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import SiteVisitInfo from "./SiteVisitInfo";
 import ClientInfo from "./ClientInfo";
 import ConfirmInfo from "./ConfirmInfo";
