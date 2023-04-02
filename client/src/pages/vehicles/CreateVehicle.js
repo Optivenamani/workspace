@@ -6,6 +6,7 @@ const CreateVehicle = () => {
   const [vehicleModel, setVehicleModel] = useState("");
   const [vehicleRegistration, setVehicleRegistration] = useState("");
   const [vehicleBodyType, setVehicleBodyType] = useState("");
+  const [vehicleSeats, setVehicleSeats] = useState("");
   const [vehicleEngineCapacity, setVehicleEngineCapacity] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -17,6 +18,7 @@ const CreateVehicle = () => {
       vehicleModel,
       vehicleRegistration,
       vehicleBodyType,
+      vehicleSeats,
       vehicleEngineCapacity,
     };
     console.log(driver);
@@ -27,7 +29,7 @@ const CreateVehicle = () => {
   return (
     <>
       <Sidebar>
-        <div className="hero mt-20">
+        <div className="hero mt-10">
           <form
             onSubmit={handleSubmit}
             className="form-control w-full max-w-xs"
@@ -73,6 +75,19 @@ const CreateVehicle = () => {
               <option value="Sedan">Sedan</option>
               <option value="SUV">SUV</option>
             </select>
+            <label htmlFor="vehicleSeats" className="label">
+              <span className="label-text font-bold">
+                Seats
+              </span>
+            </label>
+            <input
+              type="text"
+              id="vehicleSeats"
+              placeholder="30"
+              value={vehicleSeats}
+              onChange={(event) => setVehicleSeats(event.target.value)}
+              className="input input-bordered w-full max-w-xs"
+            />
             <label htmlFor="vehicleEngineCapacity" className="label">
               <span className="label-text font-bold">
                 Engine Capacity (CCs)

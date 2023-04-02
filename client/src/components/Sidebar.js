@@ -16,45 +16,43 @@ const Sidebar = ({ children }) => {
             </li>
             <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">
-                Site Visit Booking
-              </div>
+              <div className="collapse-title font-bold">Site Visits</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
                   href="/create-booking"
                   className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                 >
-                  Make Booking
+                  Book a Site Visit
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                   href="/my-bookings"
                 >
-                  My Bookings
+                  My Site Visits
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                   href="/assigned-bookings"
                 >
-                  Assigned Bookings
+                  Assigned Site Visits
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                   href="/approved-bookings"
                 >
-                  Approved Bookings
+                  Approved Site Visits
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                   href="/bookings-requests"
                 >
-                  Requests
+                  Site Visit Requests
                 </a>
                 <a
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                   href="/all-bookings"
                 >
-                  All Bookings
+                  All Site Visit Bookings
                 </a>
               </div>
             </div>
@@ -91,6 +89,12 @@ const Sidebar = ({ children }) => {
                   href="/view-vehicles"
                 >
                   View Vehicles
+                </a>
+                <a
+                  href="/request-vehicle"
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                >
+                  Request Vehicle
                 </a>
               </div>
             </div>
@@ -130,12 +134,7 @@ const Sidebar = ({ children }) => {
                 </a>
               </div>
             </div>
-            {/* for other links, li>Link */}
-            <li>
-              <a href="/request-vehicle" className="font-bold my-1">
-                Request Vehicle
-              </a>
-            </li>
+
             <li>
               <a href="/users" className="font-bold my-1">
                 Users

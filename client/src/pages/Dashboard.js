@@ -13,24 +13,32 @@ import {
 import Sidebar from "../components/Sidebar";
 
 const clientData = [
-  { quarter: 1, earnings: 13000 },
-  { quarter: 2, earnings: 16500 },
-  { quarter: 3, earnings: 14250 },
-  { quarter: 4, earnings: 19000 },
+  { quarter: 1, visits: 1300 },
+  { quarter: 2, visits: 1650 },
+  { quarter: 3, visits: 1425 },
+  { quarter: 4, visits: 1900 },
 ];
 
 const siteData = [
-  { month: "Jan", visits: 1200 },
-  { month: "Feb", visits: 1000 },
-  { month: "Mar", visits: 1400 },
-  { month: "Apr", visits: 1800 },
+  { month: "Jan", visits: 250 },
+  { month: "Feb", visits: 260 },
+  { month: "Mar", visits: 240 },
+  { month: "Apr", visits: 280 },
+  { month: "May", visits: 300 },
+  { month: "Jun", visits: 270 },
+  { month: "Jul", visits: 260 },
+  { month: "Aug", visits: 280 },
+  { month: "Sep", visits: 260 },
+  { month: "Oct", visits: 265 },
+  { month: "Nov", visits: 280 },
+  { month: "Dec", visits: 270 },
 ];
 
 const pieData = [
-  { x: "Residential", y: 40 },
-  { x: "Commercial", y: 30 },
-  { x: "Industrial", y: 20 },
-  { x: "Agricultural", y: 10 },
+  { x: "Acme Acres", y: 40 },
+  { x: "South Park", y: 30 },
+  { x: "Bedrock", y: 20 },
+  { x: "Duckburg", y: 10 },
 ];
 
 const propertyData = [
@@ -70,7 +78,7 @@ const Dashboard = () => {
                     data={pieData}
                     x="x"
                     y="y"
-                    colorScale={["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]}
+                    colorScale={["navy", "skyBlue", "darkGreen", "lightGreen"]}
                     innerRadius={80}
                     labelRadius={({ innerRadius }) => innerRadius + 30}
                     labels={({ datum }) => `${datum.x}: ${datum.y}%`}
@@ -101,15 +109,12 @@ const Dashboard = () => {
                       tickValues={[1, 2, 3, 4]}
                       tickFormat={["Q1", "Q2", "Q3", "Q4"]}
                     />
-                    <VictoryAxis
-                      dependentAxis
-                      tickFormat={(x) => `$${x / 1000}k`}
-                    />
+                    <VictoryAxis dependentAxis tickFormat={(x) => `${x}`} />
                     <VictoryBar
                       data={clientData}
                       x="quarter"
-                      y="earnings"
-                      labels={({ datum }) => `$${datum.earnings}`}
+                      y="visits"
+                      labels={({ datum }) => `${datum.visits}`}
                       labelComponent={<VictoryTooltip />}
                     />
                   </VictoryChart>
@@ -134,10 +139,7 @@ const Dashboard = () => {
                       tickValues={[1, 2, 3, 4]}
                       tickFormat={["Q1", "Q2", "Q3", "Q4"]}
                     />
-                    <VictoryAxis
-                      dependentAxis
-                      tickFormat={(x) => `$${x / 1000}k`}
-                    />
+                    <VictoryAxis dependentAxis tickFormat={(x) => x} />
                     <VictoryStack colorScale={"qualitative"}>
                       {propertyData.map((data, index) => (
                         <VictoryBar
@@ -145,7 +147,7 @@ const Dashboard = () => {
                           data={data}
                           x="quarter"
                           y="sales"
-                          labels={({ datum }) => `$${datum.sales}`}
+                          labels={({ datum }) => `${datum.sales}`}
                           labelComponent={<VictoryTooltip />}
                           animate={{ onLoad: { duration: 1000 } }}
                         />
@@ -154,7 +156,7 @@ const Dashboard = () => {
                   </VictoryChart>
                 </div>
               </div>
-              <div className="xl:w-1/3  md:w-1/2 p-4">
+              <div className="lg:w-2/3 xl:w-2/3 md:w-1/2 p-4">
                 <div className="card w-full bg-base-100 shadow-xl">
                   <div className="m-4">
                     <VictoryLabel
@@ -165,23 +167,27 @@ const Dashboard = () => {
                       style={{ fontSize: 20 }}
                     />
                   </div>
-                  <VictoryChart
-                    theme={VictoryTheme.material}
-                    domainPadding={20}
-                    animate={{ duration: 1000 }}
-                  >
-                    <VictoryAxis
-                      tickValues={siteData.map((data) => data.month)}
-                    />
-                    <VictoryAxis dependentAxis tickFormat={(x) => `${x}`} />
-                    <VictoryLine
-                      data={siteData}
-                      x="month"
-                      y="visits"
-                      labels={({ datum }) => `${datum.visits}`}
-                      labelComponent={<VictoryTooltip />}
-                    />
-                  </VictoryChart>
+                  <div style={{ position: "relative" }}>
+                    <VictoryChart
+                      theme={VictoryTheme.material}
+                      domainPadding={20}
+                      animate={{ duration: 1000 }}
+                      width={600} // Add a width property for the chart
+                    >
+                      <VictoryAxis
+                        tickValues={siteData.map((data) => data.month)}
+                        style={{ tickLabels: { angle: -90 } }}
+                      />
+                      <VictoryAxis dependentAxis tickFormat={(x) => `${x}`} />
+                      <VictoryLine
+                        data={siteData}
+                        x="month"
+                        y="visits"
+                        labels={({ datum }) => `${datum.visits}`}
+                        labelComponent={<VictoryTooltip />}
+                      />
+                    </VictoryChart>
+                  </div>
                 </div>
               </div>
             </div>
