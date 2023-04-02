@@ -19,8 +19,7 @@ const Form = () => {
     "Confirm Details",
   ];
 
-  const handleFormSubmit = (event, data) => {
-    event.preventDefault();
+  const handleFormSubmit = (data) => {
     console.log(data)
   };
 
@@ -34,7 +33,7 @@ const Form = () => {
         <ConfirmInfo
           formData={formData}
           setFormData={setFormData}
-          onSubmitForm={handleFormSubmit}
+          onSubmitForm={(data) => handleFormSubmit(data)}
         />
       );
     }

@@ -2,18 +2,134 @@ import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 
 const ApprovedBookings = () => {
-  const [query, setQuery] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [data, setData] = useState([
+    {
+      id: 1,
+      site: "Tatooine",
+      location: "Mombasa",
+      date: "2023-03-12",
+      time: "12:00",
+      clients: 2,
+    },
+    {
+      id: 2,
+      site: "Hogwarts",
+      location: "Eldoret",
+      date: "2023-03-14",
+      time: "10:00",
+      clients: 3,
+    },
+    {
+      id: 3,
+      site: "Jurassic Park",
+      location: "Nakuru",
+      date: "2023-03-15",
+      time: "14:00",
+      clients: 4,
+    },
+    {
+      id: 4,
+      site: "Neverland",
+      location: "Malindi",
+      date: "2023-03-17",
+      time: "16:00",
+      clients: 2,
+    },
+    {
+      id: 5,
+      site: "Hobbiton",
+      location: "Naivasha",
+      date: "2023-03-18",
+      time: "11:00",
+      clients: 5,
+    },
+    {
+      id: 6,
+      site: "Gotham City",
+      location: "Kisumu",
+      date: "2023-03-19",
+      time: "13:00",
+      clients: 1,
+    },
+    {
+      id: 7,
+      site: "Asgard",
+      location: "Machakos",
+      date: "2023-03-20",
+      time: "15:00",
+      clients: 3,
+    },
+    {
+      id: 8,
+      site: "Narnia",
+      location: "Kitale",
+      date: "2023-03-22",
+      time: "12:00",
+      clients: 2,
+    },
+    {
+      id: 9,
+      site: "Hogwarts",
+      location: "Thika",
+      date: "2023-03-23",
+      time: "10:00",
+      clients: 4,
+    },
+    {
+      id: 10,
+      site: "Gotham City",
+      location: "Kericho",
+      date: "2023-03-25",
+      time: "13:00",
+      clients: 2,
+    },
+  ]);
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
+
+  const filteredData = data.filter((item) => {
+    const itemDate = new Date(item.date);
+    const startDateObj = startDate && new Date(startDate);
+    const endDateObj = endDate && new Date(endDate);
+
+    if (startDateObj && endDateObj) {
+      return itemDate >= startDateObj && itemDate <= endDateObj;
+    } else if (startDate) {
+      return itemDate >= startDateObj;
+    } else if (endDateObj) {
+      return itemDate <= endDateObj;
+    } else {
+      return true;
+    }
+  });
 
   return (
     <>
       <Sidebar>
         <div className="flex justify-center items-center mt-2 mb-2">
-          <input
-            placeholder="Search Booking by Date"
-            className="input input-bordered w-full max-w-xs mt-2"
-            type="text"
-            onChange={(e) => setQuery(e.target.value)}
-          />
+          <div className="flex space-x-2 items-center">
+            <input
+              type="date"
+              className="input input-bordered max-w-xs mt-2"
+              value={startDate}
+              onChange={handleStartDateChange}
+            />
+            <span className="text-lg font-bold">to</span>
+            <input
+              type="date"
+              className="input input-bordered max-w-xs mt-2"
+              value={endDate}
+              onChange={handleEndDateChange}
+            />
+          </div>
         </div>
         <div className="px-4 mt-4 flex justify-center">
           <div className="overflow-x-auto w-screen">
@@ -30,33 +146,16 @@ const ApprovedBookings = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* row 1 */}
-                <tr>
-                  <th>1</th>
-                  <td>Plenty Gardens</td>
-                  <td>Machakos</td>
-                  <td>2023-03-12</td>
-                  <td>12:00</td>
-                  <td>1</td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>2</th>
-                  <td>Oasis Greens</td>
-                  <td>Kajiado</td>
-                  <td>2023-03-12</td>
-                  <td>12:00</td>
-                  <td>2</td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>3</th>
-                  <td>Spring Valley</td>
-                  <td>Ngong'</td>
-                  <td>2023-03-12</td>
-                  <td>12:00</td>
-                  <td>1</td>
-                </tr>
+                {filteredData.map((item) => (
+                  <tr key={item.id}>
+                    <th>{item.id}</th>
+                    <td>{item.site}</td>
+                    <td>{item.location}</td>
+                    <td>{item.date}</td>
+                    <td>{item.time}</td>
+                    <td>{item.clients}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

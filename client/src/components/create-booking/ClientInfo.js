@@ -2,7 +2,16 @@ import React, { useState } from "react";
 
 function ClientInfo({ formData, setFormData }) {
   const [clients, setClients] = useState(
-    formData.clients || [{ clientFirstName: "", clientLastName: "", clientEmail: "", clientPhoneNumber: "" }]
+    formData.clients.length > 0
+      ? formData.clients
+      : [
+          {
+            clientFirstName: "",
+            clientLastName: "",
+            clientEmail: "",
+            clientPhoneNumber: "",
+          },
+        ]
   );
 
   function handleInputChange(event, index) {
@@ -32,9 +41,9 @@ function ClientInfo({ formData, setFormData }) {
       {clients.map((client, index) => (
         <div
           key={index}
-          className="flex flex-col items-center md:flex-row lg:flex-row"
+          className="flex flex-wrap justify-center md:grid md:grid-cols-2 lg:flex lg:flex-nowrap lg:items-center gap-4"
         >
-          <div className="mx-2">
+          <div className="mx-2 w-full">
             <label className="label">
               <span className="label-text font-bold">First Name</span>
             </label>
@@ -44,10 +53,10 @@ function ClientInfo({ formData, setFormData }) {
               value={client.clientFirstName || ""}
               onChange={(event) => handleInputChange(event, index)}
               placeholder="Jim"
-              className="input input-bordered"
+              className="input input-bordered w-full"
             />
           </div>
-          <div className="mx-2">
+          <div className="mx-2 w-full">
             <label className="label">
               <span className="label-text font-bold">Last Name</span>
             </label>
@@ -57,10 +66,10 @@ function ClientInfo({ formData, setFormData }) {
               value={client.clientLastName || ""}
               onChange={(event) => handleInputChange(event, index)}
               placeholder="Halpert"
-              className="input input-bordered"
+              className="input input-bordered w-full"
             />
           </div>
-          <div className="mx-2">
+          <div className="mx-2 w-full">
             <label className="label">
               <span className="label-text font-bold">Email</span>
             </label>
@@ -70,10 +79,10 @@ function ClientInfo({ formData, setFormData }) {
               value={client.clientEmail || ""}
               onChange={(event) => handleInputChange(event, index)}
               placeholder="jim@mail.com"
-              className="input input-bordered"
+              className="input input-bordered w-full"
             />
           </div>
-          <div className="mx-2">
+          <div className="mx-2 w-full">
             <label className="label">
               <span className="label-text font-bold">Phone Number</span>
             </label>
@@ -83,11 +92,11 @@ function ClientInfo({ formData, setFormData }) {
               value={client.clientPhoneNumber || ""}
               onChange={(event) => handleInputChange(event, index)}
               placeholder="+2547XXXXXXXX"
-              className="input input-bordered"
+              className="input input-bordered w-full"
             />
           </div>
           {clients.length > 1 && (
-            <div className="mx-2 mt-2 lg:mx-2 lg:mt-8">
+            <div className="mx-2 mt-2 md:mt-0 lg:mt-8">
               <button
                 onClick={() => handleRemoveClient(index)}
                 className="btn text-white btn-error"
@@ -100,9 +109,9 @@ function ClientInfo({ formData, setFormData }) {
       ))}
       <button
         onClick={handleAddClient}
-        className=" btn btn-primary btn-outline mx-2 my-4"
+        className="btn btn-primary btn-outline mx-2 my-4"
       >
-        Add Client
+        Add Another Client
       </button>
     </div>
   );
