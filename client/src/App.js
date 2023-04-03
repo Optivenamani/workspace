@@ -13,13 +13,14 @@ import CreateSite from "./pages/sites/CreateSite";
 import ViewSites from "./pages/sites/ViewSites";
 import CreateVehicle from "./pages/vehicles/CreateVehicle";
 import ViewVehicles from "./pages/vehicles/ViewVehicles";
-import RequestVehicle from "./pages/RequestVehicle";
+import RequestVehicle from "./pages/vehicles/RequestVehicle";
 import ClientContacts from "./pages/clients/ClientContacts";
 import ClientsFeedback from "./pages/clients/ClientsFeedback";
 import AddDriver from "./pages/drivers/AddDriver";
 import ViewDrivers from "./pages/drivers/ViewDrivers";
 import Users from "./pages/Users";
 import SiteVisitRequests from "./pages/site-visit-bookings/SiteVisitRequests";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
@@ -27,8 +28,10 @@ const App = () => {
       <Navbar />
       <Router>
         <Routes>
+          {/* Home */}
+          <Route path="/" element={<Home />} />
           {/* Dashboard */}
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* Site Visit Bookings */}
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/create-booking" element={<CreateBooking />} />

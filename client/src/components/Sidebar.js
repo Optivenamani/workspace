@@ -11,6 +11,11 @@ const Sidebar = ({ children }) => {
           <ul className="menu p-4 w-80 bg-base-100 text-base-content">
             <li>
               <a href="/" className="font-bold my-1">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard" className="font-bold my-1">
                 Dashboard
               </a>
             </li>

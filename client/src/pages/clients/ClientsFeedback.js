@@ -109,7 +109,7 @@ const ClientsFeedback = () => {
                   <th>Marketer</th>
                   <th>Site Visited</th>
                   <th>Date of Visit</th>
-                  <th>Liked Site?</th>
+                  <th>Purchased?</th>
                 </tr>
               </thead>
               <tbody>

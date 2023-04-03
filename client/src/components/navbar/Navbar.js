@@ -40,7 +40,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <div className="text-end mr-2 content-center hide-on-mobile text-white">
               <h1 className="font-bold text-sm">John Smith</h1>
-              <p className="text-xs italic">Convertor</p>
+              <p className="text-xs italic">Marketer</p>
             </div>
             <label
               tabIndex={0}
