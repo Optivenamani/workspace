@@ -22,11 +22,15 @@ connection.connect((err) => {
 
 // auth routes
 const login = require("./routes/auth/login.routes");
+const logout = require("./routes/auth/logout.routes");
+const me = require("./routes/auth/user.routes");
 
 // Enable CORS for only http://localhost:3000
 const corsOptions = {
   origin: "http://localhost:3000",
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
+
 app.use(cors(corsOptions));
 
 // middlewares
@@ -35,6 +39,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // route middlewares
 app.use("/api/login", login(connection));
+app.use("/api/logout", logout);
+app.use("/api/me", me(connection));
 
 app.get("/", (req, res) => {
   connection.query("SELECT * FROM users", (err, results) => {

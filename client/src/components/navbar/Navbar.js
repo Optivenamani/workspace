@@ -1,9 +1,30 @@
 import React from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+// assets
 import logo from "../../assets/optiven-logo-full.png";
 import userAvatar from "../../assets/gifs/user.gif";
+// css
 import "./styles/Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ fullName, department }) => {
+  const navigate = useNavigate();
+
+  const logout = (e) => {
+    axios
+      .post("http://localhost:8080/api/logout")
+      .then(() => {
+        // Clear authentication token from local storage
+        localStorage.removeItem("token");
+        console.log("Token cleared. User successfully logged out");
+        // Redirect user to login page or wherever you want
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">
@@ -31,16 +52,16 @@ const Navbar = () => {
             </svg>
           </label>
         </div>
-        <a className="btn btn-ghost normal-case text-xl" href="/">
+        <Link className="btn btn-ghost normal-case text-xl" to="/">
           <img src={logo} alt="logo" className="w-40" />
-        </a>
+        </Link>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
           <div className="flex items-center">
             <div className="text-end mr-2 content-center hide-on-mobile text-white">
-              <h1 className="font-bold text-sm">John Smith</h1>
-              <p className="text-xs italic">Marketer</p>
+              <h1 className="font-bold text-sm">{fullName}</h1>
+              <p className="text-xs italic">{department}</p>
             </div>
             <label
               tabIndex={0}
@@ -61,20 +82,20 @@ const Navbar = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <a className="justify-between" href="/notifications">
+              <Link className="justify-between" to="/notifications">
                 Notifications
                 {1 + 1 === 2 && (
                   <span className="badge badge-sm badge-neutral h-5 w-5 rounded-3xl font-bold">
                     3
                   </span>
                 )}
-              </a>
+              </Link>
             </li>
             <li>
-              <a>Change Password</a>
+              <Link>Change Password</Link>
             </li>
             <li>
-              <a>Logout</a>
+              <Link onClick={logout}>Logout</Link>
             </li>
           </ul>
         </div>

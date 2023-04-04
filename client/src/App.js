@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// components
-import Navbar from "./components/navbar/Navbar";
+// utils
+import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
 import Dashboard from "./pages/Dashboard";
 import MyBookings from "./pages/site-visit-bookings/MyBookings";
@@ -22,41 +22,45 @@ import Users from "./pages/Users";
 import SiteVisitRequests from "./pages/site-visit-bookings/SiteVisitRequests";
 import Home from "./pages/Home";
 import Notifications from "./pages/Notification";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
     <>
-      <Navbar />
       <Router>
         <Routes>
-          {/* Home */}
-          <Route path="/" element={<Home />} />
-          {/* Dashboard */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          {/* Site Visit Bookings */}
-          <Route path="/my-bookings" element={<MyBookings />} />
-          <Route path="/create-booking" element={<CreateBooking />} />
-          <Route path="/assigned-bookings" element={<AssignedBookings />} />
-          <Route path="/approved-bookings" element={<ApprovedBookings />} />
-          <Route path="/all-bookings" element={<AllBookings />} />
-          <Route path="/bookings-requests" element={<SiteVisitRequests />} />
-          {/* Sites */}
-          <Route path="/create-site" element={<CreateSite />} />
-          <Route path="/view-sites" element={<ViewSites />} />
-          {/* Vehicles */}
-          <Route path="/create-vehicle" element={<CreateVehicle />} />
-          <Route path="/view-vehicles" element={<ViewVehicles />} />
-          <Route path="/request-vehicle" element={<RequestVehicle />} />
-          {/* Clients */}
-          <Route path="/clients-contacts" element={<ClientContacts />} />
-          <Route path="/clients-feedback" element={<ClientsFeedback />} />
-          {/* Drivers */}
-          <Route path="/create-driver" element={<AddDriver />} />
-          <Route path="/view-drivers" element={<ViewDrivers />} />
-          {/* Users */}
-          <Route path="/users" element={<Users />} />
-          {/* Notifications */}
-          <Route path="/notifications" element={<Notifications />} />
+          {/* Login */}
+          <Route path="/login" element={<Login />} />
+          <Route element={<PrivateRoutes />}>
+            {/* Home */}
+            <Route path="/" element={<Home />} />
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Site Visit Bookings */}
+            <Route path="/my-bookings" element={<MyBookings />} />
+            <Route path="/create-booking" element={<CreateBooking />} />
+            <Route path="/assigned-bookings" element={<AssignedBookings />} />
+            <Route path="/approved-bookings" element={<ApprovedBookings />} />
+            <Route path="/all-bookings" element={<AllBookings />} />
+            <Route path="/bookings-requests" element={<SiteVisitRequests />} />
+            {/* Sites */}
+            <Route path="/create-site" element={<CreateSite />} />
+            <Route path="/view-sites" element={<ViewSites />} />
+            {/* Vehicles */}
+            <Route path="/create-vehicle" element={<CreateVehicle />} />
+            <Route path="/view-vehicles" element={<ViewVehicles />} />
+            <Route path="/request-vehicle" element={<RequestVehicle />} />
+            {/* Clients */}
+            <Route path="/clients-contacts" element={<ClientContacts />} />
+            <Route path="/clients-feedback" element={<ClientsFeedback />} />
+            {/* Drivers */}
+            <Route path="/create-driver" element={<AddDriver />} />
+            <Route path="/view-drivers" element={<ViewDrivers />} />
+            {/* Users */}
+            <Route path="/users" element={<Users />} />
+            {/* Notifications */}
+            <Route path="/notifications" element={<Notifications />} />
+          </Route>
         </Routes>
       </Router>
     </>

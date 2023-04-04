@@ -1,6 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const md5 = require("md5");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 module.exports = (connection) => {
@@ -31,9 +32,14 @@ module.exports = (connection) => {
         if (rows.length > 0) {
           // User found, authentication successful
           const user = rows[0];
-          // You can remove the password field from the user object before sending it back, for security reasons
           delete user.password;
-          res.status(200).json({ user });
+
+          // Sign and set the token
+          const token = jwt.sign({ id: user.user_id }, "secret", {
+            expiresIn: "1d",
+          });
+
+          res.status(200).json({ user, token });
         } else {
           // User not found, authentication failed
           res.status(401).json({ message: "Invalid email or password" });
@@ -46,4 +52,3 @@ module.exports = (connection) => {
   );
   return router;
 };
-
