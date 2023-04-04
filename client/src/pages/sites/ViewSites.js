@@ -1,109 +1,80 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import Table from "../../components/Table";
-
-const data = [
-  {
-    id: 1,
-    siteName: "Plains of Peace",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 2,
-    siteName: "Fields of Hope",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 3,
-    siteName: "Sweet Valley",
-    driverEmail: "Libertyville",
-  },
-  {
-    id: 4,
-    siteName: "Ipswich Boulevard",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 5,
-    siteName: "Wyth-Upon-Tyre",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 6,
-    siteName: "Haute Savoie",
-    driverEmail: "Libertyville",
-  },
-  {
-    id: 7,
-    siteName: "Annecy Le Vieux",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 8,
-    siteName: "Magharib Haven",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 9,
-    siteName: "Shaitan Oasis",
-    driverEmail: "Libertyville",
-  },
-  {
-    id: 10,
-    siteName: "Moneyville",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 11,
-    siteName: "Plains of Plenty",
-    siteLocation: "FreeTown",
-  },
-  {
-    id: 12,
-    siteName: "Entschuldigung",
-    driverEmail: "Libertyville",
-  },
-];
 
 const ViewSites = () => {
-  const [query, setQuery] = useState("");
-  const handleEdit = (e) => {
-    console.log("edit button clicked");
-  };
-  const handleDelete = (e) => {
-    console.log("delete button clicked");
-  };
+  const [searchText, setSearchText] = useState("");
+  const sites = [
+    {
+      name: "Harlem",
+      location: "New York City, NY",
+    },
+    {
+      name: "Bronzeville",
+      location: "Chicago, IL",
+    },
+    {
+      name: "Watts",
+      location: "Los Angeles, CA",
+    },
+    {
+      name: "Bedford-Stuyvesant",
+      location: "Brooklyn, NY",
+    },
+    {
+      name: "Oakland",
+      location: "Oakland, CA",
+    },
+    {
+      name: "The Hill District",
+      location: "Pittsburgh, PA",
+    },
+  ];
 
-  const filteredSites = useMemo(
-    () =>
-      // eslint-disable-next-line array-callback-return
-      data.filter((site) => {
-        if (query === "") {
-          return site;
-        } else if (site.siteName.toLowerCase().includes(query.toLowerCase())) {
-          return site;
-        }
-      }),
-    [query]
+  const filteredSites = sites.filter((site) =>
+    site.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
   return (
     <>
       <Sidebar>
-        <div className="flex justify-center items-center mt-2 mb-2">
-          <input
-            placeholder="Search Site by Name"
-            className="input input-bordered w-full max-w-xs"
-            type="text"
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <div className="px-4 flex justify-center">
-          <Table
-            columns={["ID", "Site Name", "Site Location"]}
-            data={filteredSites}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+        <div className="container px-4 py-6 mx-auto">
+          <div className="flex justify-center items-center my-4">
+            <input
+              placeholder="Search Site by Name"
+              className="input input-bordered w-full max-w-xs"
+              type="text"
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+          <div className="overflow-x-auto card bg-base-100 shadow-xl">
+            <table className="table table-zebra w-full">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Site Name</th>
+                  <th>Site Location</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSites.map((site, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{site.name}</td>
+                    <td>{site.location}</td>
+                    <td>
+                      <button className="btn btn-sm btn-warning mr-2 text-white">
+                        Edit
+                      </button>
+                      <button className="btn btn-sm btn-error text-white">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </Sidebar>
     </>

@@ -31,10 +31,10 @@ const Users = () => {
                   <td>Kamau Njoroge</td>
                   <td>Marketer</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -45,10 +45,10 @@ const Users = () => {
                   <td>Nekesa Wamalwa</td>
                   <td>Data Analyst</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -59,10 +59,10 @@ const Users = () => {
                   <td>Mutua Kaluki</td>
                   <td>Head of Logistics</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -73,10 +73,10 @@ const Users = () => {
                   <td>Nyambura Kimani</td>
                   <td>Marketer</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -87,10 +87,10 @@ const Users = () => {
                   <td>Kerubo Nyakundi</td>
                   <td>GM</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -101,10 +101,10 @@ const Users = () => {
                   <td>Kinyanjui Wainaina</td>
                   <td>Marketer</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -115,10 +115,10 @@ const Users = () => {
                   <td>Adhiambo Ochieng</td>
                   <td>Director</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -129,10 +129,10 @@ const Users = () => {
                   <td>Njoki Gichuru</td>
                   <td>Marketer</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>
@@ -143,10 +143,10 @@ const Users = () => {
                   <td>Onyango Omondi</td>
                   <td>HOS</td>
                   <td>
-                    <button className="btn btn-outline btn-warning btn">
+                    <button className="btn btn-outline btn-warning">
                       Edit
                     </button>
-                    <button className="btn btn-error text-white btn ml-1">
+                    <button className="btn btn-error text-white ml-1">
                       Delete
                     </button>
                   </td>

@@ -14,8 +14,8 @@ const ViewVehicles = () => {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <div className="m-4 flex justify-center">
-          <div className="overflow-x-auto w-screen">
+        <div className="px-4 mt-4 flex justify-center">
+          <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
             <table className="table table-zebra w-full">
               {/* head */}
               <thead>

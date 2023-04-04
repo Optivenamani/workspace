@@ -21,6 +21,7 @@ import ViewDrivers from "./pages/drivers/ViewDrivers";
 import Users from "./pages/Users";
 import SiteVisitRequests from "./pages/site-visit-bookings/SiteVisitRequests";
 import Home from "./pages/Home";
+import Notifications from "./pages/Notification";
 
 const App = () => {
   return (
@@ -54,6 +55,8 @@ const App = () => {
           <Route path="/view-drivers" element={<ViewDrivers />} />
           {/* Users */}
           <Route path="/users" element={<Users />} />
+          {/* Notifications */}
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </Router>
     </>

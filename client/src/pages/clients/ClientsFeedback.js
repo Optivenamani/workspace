@@ -91,7 +91,7 @@ const feedbackData = [
     siteVisited: "BCD Site",
     dateVisited: "2022-02-20",
     likedSite: "No",
-  }
+  },
 ];
 
 const ClientsFeedback = () => {
@@ -100,10 +100,11 @@ const ClientsFeedback = () => {
       <Sidebar>
         <div className="container px-4 py-6 mx-auto">
           <h1 className="text-xl font-bold mb-4">Client Feedback</h1>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto card bg-base-100 shadow-xl">
             <table className="table table-zebra w-full">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>Name</th>
                   <th>Phone Number</th>
                   <th>Marketer</th>
@@ -113,8 +114,9 @@ const ClientsFeedback = () => {
                 </tr>
               </thead>
               <tbody>
-                {feedbackData.map((feedback) => (
+                {feedbackData.map((feedback,i) => (
                   <tr key={feedback.id}>
+                    <td>{i +1}</td>
                     <td>{feedback.name}</td>
                     <td>{feedback.phoneNumber}</td>
                     <td>{feedback.marketer}</td>

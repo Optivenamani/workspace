@@ -19,17 +19,16 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         <label className="label">
           <span className="label-text font-bold">Pickup Location</span>
         </label>
-        <select
-          className="select select-bordered w-full max-w-xs"
+        <input
+          type="text"
+          name="pickupLocation"
           value={formData.pickupLocation}
           onChange={(e) =>
             setFormData({ ...formData, pickupLocation: e.target.value })
           }
-        >
-          <option>Pickup Location</option>
-          <option>ABSA Towers</option>
-          <option>Karen Global Office</option>
-        </select>
+          placeholder="ABSA Towers"
+          className="input input-bordered w-full"
+        />
         <label className="label">
           <span className="label-text font-bold">Date</span>
         </label>

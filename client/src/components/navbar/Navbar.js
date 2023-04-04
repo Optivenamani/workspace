@@ -61,7 +61,7 @@ const Navbar = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <a className="justify-between">
+              <a className="justify-between" href="/notifications">
                 Notifications
                 {1 + 1 === 2 && (
                   <span className="badge badge-sm badge-neutral h-5 w-5 rounded-3xl font-bold">

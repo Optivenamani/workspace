@@ -19,8 +19,9 @@ const Form = () => {
     "Confirm Details",
   ];
 
-  const handleFormSubmit = (data) => {
-    console.log(data)
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
   };
 
   const pageDisplay = () => {
@@ -33,7 +34,7 @@ const Form = () => {
         <ConfirmInfo
           formData={formData}
           setFormData={setFormData}
-          onSubmitForm={(data) => handleFormSubmit(data)}
+          onSubmitForm={handleFormSubmit}
         />
       );
     }

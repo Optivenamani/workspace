@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 
 const AllBookings = () => {
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const siteVisits = [
     {
       marketer: "John Smith",
@@ -85,14 +88,53 @@ const AllBookings = () => {
     },
     // add more site visits as needed
   ];
-  
-  
+
+  const filteredSiteVisits = siteVisits.filter((visit) => {
+    const visitDate = new Date(visit.date);
+    const startDateObj = startDate && new Date(startDate);
+    const endDateObj = endDate && new Date(endDate);
+
+    if (startDateObj && endDateObj) {
+      return visitDate >= startDateObj && visitDate <= endDateObj;
+    } else if (startDate) {
+      return visitDate >= startDateObj;
+    } else if (endDateObj) {
+      return visitDate <= endDateObj;
+    } else {
+      return true;
+    }
+  });
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
 
   return (
     <>
       <Sidebar>
-        <div className="container px-4 py-6 mx-auto">
-          <div className="overflow-x-auto">
+        <div className="flex justify-center items-center mt-2 mb-2">
+          <div className="flex space-x-2 items-center">
+            <input
+              type="date"
+              className="input input-bordered max-w-xs mt-2"
+              value={startDate}
+              onChange={handleStartDateChange}
+            />
+            <span className="text-lg font-bold">to</span>
+            <input
+              type="date"
+              className="input input-bordered max-w-xs mt-2"
+              value={endDate}
+              onChange={handleEndDateChange}
+            />
+          </div>
+        </div>
+        <div className="px-4 mt-4 flex justify-center">
+          <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
             <table className="table table-zebra w-full">
               {/* head */}
               <thead>
@@ -108,7 +150,7 @@ const AllBookings = () => {
               </thead>
               <tbody>
                 {/* rows */}
-                {siteVisits.map((siteVisit, index) => (
+                {filteredSiteVisits.map((siteVisit, index) => (
                   <tr key={index}>
                     <th>{index + 1}</th>
                     <td>{siteVisit.marketer}</td>
