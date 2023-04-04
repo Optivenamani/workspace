@@ -6,22 +6,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 
-// auth routes
-const login = require("./routes/auth/login.routes");
-
-// Enable CORS for only http://localhost:3000
-const corsOptions = {
-  origin: "http://localhost:3000",
-};
-app.use(cors(corsOptions));
-
-// middlewares
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-// route middlewares
-app.use("/api/login", login);
-
 const connection = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -36,13 +20,28 @@ connection.connect((err) => {
   console.log("Connected to database!");
 });
 
+// auth routes
+const login = require("./routes/auth/login.routes");
+
+// Enable CORS for only http://localhost:3000
+const corsOptions = {
+  origin: "http://localhost:3000",
+};
+app.use(cors(corsOptions));
+
+// middlewares
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+// route middlewares
+app.use("/api/login", login(connection));
+
 app.get("/", (req, res) => {
   connection.query("SELECT * FROM users", (err, results) => {
     if (err) throw err;
     res.send(results);
   });
 });
-
 
 app.listen(8080, () => {
   console.log("Server started on port 8080");
