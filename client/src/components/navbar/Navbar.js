@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // assets
 import logo from "../../assets/optiven-logo-full.png";
 import userAvatar from "../../assets/gifs/user.gif";
@@ -11,11 +11,13 @@ import { logout } from "../../redux/features/user/userSlice";
 
 const Navbar = ({ fullName, department }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     dispatch(logout());
+    navigate("/login");
   };
 
   return (
@@ -88,7 +90,12 @@ const Navbar = ({ fullName, department }) => {
               <Link>Change Password</Link>
             </li>
             <li>
-              <Link onClick={handleLogout}>Logout</Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left py-2 hover:bg-gray-200"
+              >
+                Logout
+              </button>
             </li>
           </ul>
         </div>

@@ -5,7 +5,11 @@ import logo from "../assets/optiven-logo-full.png";
 import { ToastContainer, toast } from "react-toastify";
 // redux
 import { useDispatch } from "react-redux";
-import { setUser, setToken } from "../redux/features/user/userSlice";
+import {
+  setUser,
+  setToken,
+  setAccessRole,
+} from "../redux/features/user/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,6 +33,7 @@ const Login = () => {
 
       dispatch(setUser(response.data.user));
       dispatch(setToken(response.data.token));
+      dispatch(setAccessRole(response.data.user["Accessrole"]));
       // redirect to home page
       navigate("/");
     } catch (error) {

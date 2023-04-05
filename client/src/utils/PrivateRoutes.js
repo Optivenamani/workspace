@@ -1,18 +1,17 @@
-import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Navigate, Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 // components
-import Navbar from '../components/navbar/Navbar';
+import Navbar from "../components/navbar/Navbar";
 
 const PrivateRoutes = () => {
-  const token = useSelector((state) => state.user.token);
-  const user = useSelector((state) => state.user.user);
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
   return token ? (
     <>
       <Navbar
-        fullName={user.fullnames || 'Undefined'}
-        department={user.department || 'Undefined'}
+        fullName={user.fullnames || "Undefined"}
+        department={user.department || "Undefined"}
       />
       <ToastContainer />
       <Outlet />
