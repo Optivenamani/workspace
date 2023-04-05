@@ -3,9 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/optiven-logo-full.png";
 import { ToastContainer, toast } from "react-toastify";
+// redux
+import { useDispatch } from "react-redux";
+import { setUser, setToken } from "../redux/features/user/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -13,7 +17,7 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-  
+
     try {
       const response = await axios.post("http://localhost:8080/api/login", {
         email,
@@ -22,6 +26,9 @@ const Login = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       console.log("User successfully logged in", response.data);
+
+      dispatch(setUser(response.data.user));
+      dispatch(setToken(response.data.token));
       // redirect to home page
       navigate("/");
     } catch (error) {

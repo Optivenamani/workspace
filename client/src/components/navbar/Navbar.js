@@ -1,28 +1,21 @@
 import React from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 // assets
 import logo from "../../assets/optiven-logo-full.png";
 import userAvatar from "../../assets/gifs/user.gif";
 // css
 import "./styles/Navbar.css";
+// redux
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/features/user/userSlice";
 
 const Navbar = ({ fullName, department }) => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const logout = (e) => {
-    axios
-      .post("http://localhost:8080/api/logout")
-      .then(() => {
-        // Clear authentication token from local storage
-        localStorage.removeItem("token");
-        console.log("Token cleared. User successfully logged out");
-        // Redirect user to login page or wherever you want
-        navigate("/login");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    dispatch(logout());
   };
 
   return (
@@ -95,7 +88,7 @@ const Navbar = ({ fullName, department }) => {
               <Link>Change Password</Link>
             </li>
             <li>
-              <Link onClick={logout}>Logout</Link>
+              <Link onClick={handleLogout}>Logout</Link>
             </li>
           </ul>
         </div>
