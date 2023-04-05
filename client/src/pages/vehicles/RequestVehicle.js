@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 
 const RequestVehicle = () => {
-  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
   const [purpose, setPurpose] = useState("");
   const [passengers, setPassengers] = useState("");
   const [date, setDate] = useState("");
@@ -13,7 +13,7 @@ const RequestVehicle = () => {
     e.preventDefault();
     setLoading(true);
     const request = {
-      name,
+      location,
       purpose,
       passengers,
       date,
@@ -32,15 +32,15 @@ const RequestVehicle = () => {
             onSubmit={handleSubmit}
             className="form-control w-full max-w-xs"
           >
-            <label htmlFor="name" className="label">
-              <span className="label-text font-bold">Name</span>
+            <label htmlFor="location" className="label">
+              <span className="label-text font-bold">Location</span>
             </label>
             <input
               type="text"
-              id="name"
-              value={name}
-              placeholder="Jim Halpert"
-              onChange={(event) => setName(event.target.value)}
+              id="location"
+              value={location}
+              placeholder="Nakuru"
+              onChange={(event) => setLocation(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
             <label htmlFor="purpose" className="label">
@@ -50,7 +50,7 @@ const RequestVehicle = () => {
               type="text"
               id="purpose"
               value={purpose}
-              placeholder="Business Meeting"
+              placeholder="Colleague's burial"
               onChange={(event) => setPurpose(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
