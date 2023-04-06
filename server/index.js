@@ -46,6 +46,7 @@ app.get("/", (req, res) => {
   connection.query("SELECT * FROM users", (err, results) => {
     if (err) throw err;
     res.send(results);
+    connection.end(); // Close the connection
   });
 });
 
