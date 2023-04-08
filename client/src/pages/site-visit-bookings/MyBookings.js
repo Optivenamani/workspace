@@ -118,6 +118,7 @@ const MyBookings = () => {
                   <td>{siteVisit.time}</td>
                   <td
                     style={{
+                      fontStyle: "italic",
                       textTransform: "uppercase",
                       fontWeight: "bold",
                       color:
@@ -133,7 +134,7 @@ const MyBookings = () => {
                   <td>{siteVisit.clientName}</td>
                   <td>
                     {siteVisit.status === "Pending" ? (
-                      <button className="btn btn-sm btn-warning text-white">
+                      <button className="btn btn-sm btn-outline btn-warning">
                         Edit
                       </button>
                     ) : null}

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const md5 = require("md5");
@@ -9,9 +10,6 @@ module.exports = (connection) => {
     "/",
     // Validate email and password
     body("email").isEmail().withMessage("Invalid email address"),
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters long"),
     async (req, res) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -35,9 +33,13 @@ module.exports = (connection) => {
           delete user.password;
 
           // Sign and set the token
-          const token = jwt.sign({ id: user.user_id }, "secret", {
-            expiresIn: "1d",
-          });
+          const token = jwt.sign(
+            { id: user.user_id, Accessrole: user.Accessrole },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "1d",
+            }
+          );
 
           res.status(200).json({ user, token });
         } else {
