@@ -9,32 +9,32 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
         <div className="card rounded bg-base-100 shadow-xl p-10 my-4">
           <h1>
             <span className="font-bold">Site: </span>
-            {formData.site ? (
-              formData.site
+            {formData.site_name ? (
+              formData.site_name
             ) : (
               <span className="italic">Not Provided</span>
             )}
           </h1>
           <h1>
             <span className="font-bold">Pickup Location: </span>
-            {formData.pickupLocation ? (
-              formData.pickupLocation
+            {formData.pickup_location ? (
+              formData.pickup_location
             ) : (
               <span className="italic">Not Provided</span>
             )}
           </h1>
           <h1>
             <span className="font-bold">Date (YYYY-MM-DD): </span>
-            {formData.date ? (
-              formData.date
+            {formData.pickup_date ? (
+              formData.pickup_date
             ) : (
               <span className="italic">Not Provided</span>
             )}
           </h1>
           <h1>
             <span className="font-bold">Time (24H): </span>
-            {formData.time ? (
-              formData.time
+            {formData.pickup_time ? (
+              formData.pickup_time
             ) : (
               <span className="italic">Not Provided</span>
             )}
@@ -45,7 +45,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
               <ol>
                 {formData.clients.map((client, index) => (
                   <li key={index} className="italic font-serif">
-                    {`${index+1}. ${client.clientFirstName || "First name not provided /"} ${client.clientLastName || "Last name not provided"}, ${client.clientPhoneNumber || "Phone not provided"}, ${client.clientEmail || "Email not provided" }`}
+                    {`${index+1}. ${client.name || "Name not provided"}, ${client.phone_number || "Phone not provided"}, ${client.email || "Email not provided" }`}
                   </li>
                 ))}
               </ol>

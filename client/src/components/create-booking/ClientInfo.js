@@ -3,13 +3,17 @@ import React, { useState } from "react";
 function ClientInfo({ formData, setFormData }) {
   const [clients, setClients] = useState(
     formData.clients.length > 0
-      ? formData.clients
+      ? formData.clients.map((client) => ({
+          ...client,
+          clientFirstName: client.name.split(" ")[0] || "",
+          clientLastName: client.name.split(" ")[1] || "",
+        }))
       : [
           {
             clientFirstName: "",
             clientLastName: "",
-            clientEmail: "",
-            clientPhoneNumber: "",
+            email: "",
+            phone_number: "",
           },
         ]
   );
@@ -18,14 +22,29 @@ function ClientInfo({ formData, setFormData }) {
     const { name, value } = event.target;
     const list = [...clients];
     list[index][name] = value;
+
+    if (name === "clientFirstName" || name === "clientLastName") {
+      const firstName = list[index].clientFirstName || "";
+      const lastName = list[index].clientLastName || "";
+      list[index].name = `${firstName} ${lastName}`.trim();
+    }
+
     setClients(list);
-    setFormData({ ...formData, clients: list });
+    setFormData({
+      ...formData,
+      clients: list.map(({ clientFirstName, clientLastName, ...client }) => client),
+    });
   }
 
   function handleAddClient() {
     setClients([
       ...clients,
-      { clientFirstName: "", clientLastName: "", clientEmail: "", clientPhoneNumber: "" },
+      {
+        clientFirstName: "",
+        clientLastName: "",
+        email: "",
+        phone_number: "",
+      },
     ]);
   }
 
@@ -33,7 +52,10 @@ function ClientInfo({ formData, setFormData }) {
     const list = [...clients];
     list.splice(index, 1);
     setClients(list);
-    setFormData({ ...formData, clients: list });
+    setFormData({
+      ...formData,
+      clients: list.map(({ clientFirstName, clientLastName, ...client }) => client),
+    });
   }
 
   return (
@@ -74,9 +96,9 @@ function ClientInfo({ formData, setFormData }) {
               <span className="label-text font-bold">Email</span>
             </label>
             <input
-              type="clientEmail"
-              name="clientEmail"
-              value={client.clientEmail || ""}
+              type="email"
+              name="email"
+              value={client.email || ""}
               onChange={(event) => handleInputChange(event, index)}
               placeholder="jim@mail.com"
               className="input input-bordered w-full"
@@ -88,8 +110,8 @@ function ClientInfo({ formData, setFormData }) {
             </label>
             <input
               type="tel"
-              name="clientPhoneNumber"
-              value={client.clientPhoneNumber || ""}
+              name="phone_number"
+              value={client.phone_number || ""}
               onChange={(event) => handleInputChange(event, index)}
               placeholder="+2547XXXXXXXX"
               className="input input-bordered w-full"

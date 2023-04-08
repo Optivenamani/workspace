@@ -9,8 +9,8 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         </label>
         <select
           className="select select-bordered w-full max-w-xs"
-          value={formData.site}
-          onChange={(e) => setFormData({ ...formData, site: e.target.value })}
+          value={formData.site_name}
+          onChange={(e) => setFormData({ ...formData, site_name: e.target.value })}
         >
           <option>Site</option>
           <option>Ngong'</option>
@@ -22,9 +22,9 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         <input
           type="text"
           name="pickupLocation"
-          value={formData.pickupLocation}
+          value={formData.pickup_location}
           onChange={(e) =>
-            setFormData({ ...formData, pickupLocation: e.target.value })
+            setFormData({ ...formData, pickup_location: e.target.value })
           }
           placeholder="ABSA Towers"
           className="input input-bordered w-full"
@@ -35,8 +35,8 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         <input
           type="date"
           className="input input-bordered w-full max-w-xs"
-          value={formData.date}
-          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+          value={formData.pickup_date}
+          onChange={(e) => setFormData({ ...formData, pickup_date: e.target.value })}
         />
         <label className="label">
           <span className="label-text font-bold">Time</span>
@@ -44,8 +44,8 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         <input
           type="time"
           className="input input-bordered w-full max-w-xs"
-          value={formData.time}
-          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+          value={formData.pickup_time}
+          onChange={(e) => setFormData({ ...formData, pickup_time: e.target.value })}
         />
       </div>
     </>

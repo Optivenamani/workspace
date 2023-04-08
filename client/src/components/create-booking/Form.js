@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import SiteVisitInfo from "./SiteVisitInfo";
 import ClientInfo from "./ClientInfo";
 import ConfirmInfo from "./ConfirmInfo";
+import { createSiteVisitRequest } from "./api/api";
+import { useNavigate } from "react-router-dom";
 
 const Form = () => {
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState({
-    site: "",
-    pickupLocation: "",
-    date: "",
-    time: "",
+    site_name: "",
+    pickup_location: "",
+    pickup_date: "",
+    pickup_time: "",
     clients: [],
   });
+
+  const navigate = useNavigate();
 
   const formTitles = [
     "Site Visit Request Info",
@@ -19,9 +23,33 @@ const Form = () => {
     "Confirm Details",
   ];
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    // Get the token from the storage (e.g., localStorage or sessionStorage)
+    const token = localStorage.getItem("token");
+
+    try {
+      // Send the form data to the server
+      await createSiteVisitRequest(formData, token);
+
+      // Clear the form data and reset the form
+      setFormData({
+        site_name: "",
+        pickup_location: "",
+        pickup_date: "",
+        pickup_time: "",
+        clients: [],
+      });
+      setPage(0);
+
+      // Display a success message or redirect the user to another page
+      alert("Site visit request created successfully!");
+      navigate("/");
+    } catch (error) {
+      // Display an error message
+      alert("Error creating site visit request. Please try again.");
+    }
   };
 
   const pageDisplay = () => {
