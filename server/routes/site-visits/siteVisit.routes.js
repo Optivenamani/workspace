@@ -62,10 +62,46 @@ module.exports = (connection) => {
 
   router.get("/", authenticateJWT, async (req, res) => {
     try {
-      connection.query("SELECT * FROM site_visits", (err, results) => {
-        if (err) throw err;
-        res.json(results);
-      });
+      connection.query(
+        `SELECT site_visits.*, 
+                clients.id as client_id, clients.name, clients.email, clients.phone_number
+         FROM site_visits
+         LEFT JOIN clients ON site_visits.id = clients.site_visit_id`,
+        (err, results) => {
+          if (err) throw err;
+
+          // Process the results here, then send the response
+          const siteVisitsMap = {};
+
+          results.forEach((row) => {
+            if (!siteVisitsMap[row.id]) {
+              siteVisitsMap[row.id] = {
+                id: row.id,
+                site_name: row.site_name,
+                pickup_location: row.pickup_location,
+                pickup_time: row.pickup_time,
+                pickup_date: row.pickup_date,
+                status: row.status,
+                created_by: row.created_by,
+                clients: [],
+              };
+            }
+
+            if (row.client_id) {
+              siteVisitsMap[row.id].clients.push({
+                id: row.client_id,
+                name: row.name,
+                email: row.email,
+                phone_number: row.phone_number,
+              });
+            }
+          });
+
+          const siteVisitsArray = Object.values(siteVisitsMap);
+
+          res.json(siteVisitsArray);
+        }
+      );
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching site visit requests.",

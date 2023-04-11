@@ -1,52 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Sidebar from "../../components/Sidebar";
+import format12HourTime from "../../utils/formatTime";
 
 const MyBookings = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [siteVisits, setSiteVisits] = useState([]);
+  const token = useSelector((state) => state.user.token);
+  const userId = useSelector((state) => state.user.user.user_id);
 
-  const siteVisits = [
-    {
-      siteName: "Site A",
-      pickupLocation: "Location A",
-      date: "2023-04-05",
-      time: "10:00 AM",
-      status: "Pending",
-      clientName: "Jean-Luc Picard",
-    },
-    {
-      siteName: "Site B",
-      pickupLocation: "Location B",
-      date: "2023-04-06",
-      time: "2:00 PM",
-      status: "Complete",
-      clientName: "Gabrielle Dupont",
-    },
-    {
-      siteName: "Site C",
-      pickupLocation: "Location C",
-      date: "2023-04-07",
-      time: "11:00 AM",
-      status: "Complete",
-      clientName: "Lucie Chevalier",
-    },
-    {
-      siteName: "Site D",
-      pickupLocation: "Location D",
-      date: "2023-04-08",
-      time: "9:00 AM",
-      status: "Rejected",
-      clientName: "Pierre Leblanc",
-    },
-    {
-      siteName: "Site E",
-      pickupLocation: "Location E",
-      date: "2023-04-09",
-      time: "3:00 PM",
-      status: "Complete",
-      clientName: "Sophie Martin",
-    },
-  ];
+  useEffect(() => {
+    const fetchSiteVisits = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/site-visits", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSiteVisits(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchSiteVisits();
+  }, [token]);
+
+  const userSiteVisits = siteVisits.filter(
+    (siteVisit) => siteVisit.created_by === userId
+  );
+
+  console.log(userSiteVisits);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -56,8 +42,8 @@ const MyBookings = () => {
     setEndDate(e.target.value);
   };
 
-  const filteredSiteVisits = siteVisits.filter((item) => {
-    const itemDate = new Date(item.date);
+  const filteredSiteVisits = userSiteVisits.filter((item) => {
+    const itemDate = new Date(item.pickup_date);
     const startDateObj = startDate && new Date(startDate);
     const endDateObj = endDate && new Date(endDate);
 
@@ -94,7 +80,6 @@ const MyBookings = () => {
         </div>
         <div className="overflow-x-auto card bg-base-100 shadow-xl">
           <table className="table table-zebra w-full">
-            {/* head */}
             <thead>
               <tr>
                 <th></th>
@@ -103,7 +88,7 @@ const MyBookings = () => {
                 <th>Date</th>
                 <th>Time</th>
                 <th>Status</th>
-                <th>Client Name</th>
+                <th>Number of clients</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -112,10 +97,16 @@ const MyBookings = () => {
               {filteredSiteVisits.map((siteVisit, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{siteVisit.siteName}</td>
-                  <td>{siteVisit.pickupLocation}</td>
-                  <td>{siteVisit.date}</td>
-                  <td>{siteVisit.time}</td>
+                  <td>{siteVisit.site_name}</td>
+                  <td>{siteVisit.pickup_location}</td>
+                  <td>
+                    {new Date(siteVisit.pickup_date).toLocaleDateString(
+                      "en-GB"
+                    )}
+                  </td>
+
+                  <td>{format12HourTime(siteVisit.pickup_time)}</td>
+
                   <td
                     style={{
                       fontStyle: "italic",
@@ -131,9 +122,9 @@ const MyBookings = () => {
                   >
                     {siteVisit.status}
                   </td>
-                  <td>{siteVisit.clientName}</td>
+                  <td>{siteVisit.clients.length}</td>
                   <td>
-                    {siteVisit.status === "Pending" ? (
+                    {siteVisit.status === "PENDING" ? (
                       <button className="btn btn-sm btn-outline btn-warning">
                         Edit
                       </button>
