@@ -41,7 +41,10 @@ module.exports = (connection) => {
             }
           );
 
-          res.status(200).json({ user, token });
+          res
+            .status(200)
+            .header("Authorization", `Bearer ${token}`)
+            .json({ user, token });
         } else {
           // User not found, authentication failed
           res.status(401).json({ message: "Invalid email or password" });

@@ -36,60 +36,62 @@ const Sidebar = ({ children }) => {
               </li>
             )}
             {/* Site Visit */}
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
-              <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Site Visits</div>
-              <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                {(isMarketer || isHOSorGM || isAdmin) && (
-                  <a
-                    href="/create-booking"
-                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                  >
-                    Book a Site Visit
-                  </a>
-                )}
-                {(isMarketer || isHOSorGM || isAdmin) && (
-                  <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/my-bookings"
-                  >
-                    My Site Visits
-                  </a>
-                )}
-                {isAdmin && (
-                  <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/assigned-bookings"
-                  >
-                    Assigned Site Visits
-                  </a>
-                )}
-                {(isHOSorGM || isAdmin || isOperations) && (
-                  <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/approved-bookings"
-                  >
-                    Approved Site Visits
-                  </a>
-                )}
-                {isAdmin && (
-                  <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/bookings-requests"
-                  >
-                    Site Visit Requests
-                  </a>
-                )}
-                {(isHOSorGM || isAdmin || isOperations) && (
-                  <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/all-bookings"
-                  >
-                    All Site Visit Bookings
-                  </a>
-                )}
+            {(isMarketer || isHOSorGM || isAdmin) && (
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+                <input type="checkbox" className="peer" />
+                <div className="collapse-title font-bold">Site Visits</div>
+                <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
+                  {(isMarketer || isHOSorGM || isAdmin) && (
+                    <a
+                      href="/create-booking"
+                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                    >
+                      Book a Site Visit
+                    </a>
+                  )}
+                  {(isMarketer || isHOSorGM || isAdmin) && (
+                    <a
+                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                      href="/my-bookings"
+                    >
+                      My Site Visits
+                    </a>
+                  )}
+                  {isAdmin && (
+                    <a
+                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                      href="/assigned-bookings"
+                    >
+                      Assigned Site Visits
+                    </a>
+                  )}
+                  {(isHOSorGM || isAdmin || isOperations) && (
+                    <a
+                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                      href="/approved-bookings"
+                    >
+                      Approved Site Visits
+                    </a>
+                  )}
+                  {isAdmin && (
+                    <a
+                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                      href="/bookings-requests"
+                    >
+                      Site Visit Requests
+                    </a>
+                  )}
+                  {(isHOSorGM || isAdmin || isOperations) && (
+                    <a
+                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                      href="/all-bookings"
+                    >
+                      All Site Visit Bookings
+                    </a>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
             {/* Sites */}
             {(isAdmin || isOperations) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
@@ -124,6 +126,12 @@ const Sidebar = ({ children }) => {
                 >
                   Request Vehicle
                 </a>
+                <a
+                  href="/past-vehicle-requests"
+                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                >
+                  Past Requests
+                </a>
                 {(isAdmin || isOperations) && (
                   <>
                     {isAdmin && (
@@ -145,26 +153,28 @@ const Sidebar = ({ children }) => {
               </div>
             </div>
             {/* Clients */}
-            <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
-              <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Clients</div>
-              <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                <a
-                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                  href="/clients-contacts"
-                >
-                  Clients Contacts
-                </a>
-                {(isHOSorGM || isAdmin) && (
+            {(isMarketer || isHOSorGM || isAdmin) && (
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+                <input type="checkbox" className="peer" />
+                <div className="collapse-title font-bold">Clients</div>
+                <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/clients-feedback"
+                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                    href="/clients-contacts"
                   >
-                    Clients Feedback
+                    Clients Contacts
                   </a>
-                )}
+                  {(isHOSorGM || isAdmin) && (
+                    <a
+                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                      href="/clients-feedback"
+                    >
+                      Clients Feedback
+                    </a>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
             {/* Drivers */}
             {isAdmin && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
