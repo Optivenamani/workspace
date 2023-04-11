@@ -113,11 +113,11 @@ const MyBookings = () => {
                       textTransform: "uppercase",
                       fontWeight: "bold",
                       color:
-                        siteVisit.status === "Rejected"
+                        siteVisit.status === "REJECTED"
                           ? "red"
-                          : siteVisit.status === "Complete"
+                          : siteVisit.status === "IN_PROGRESS"
                           ? "green"
-                          : "black",
+                          : "blue",
                     }}
                   >
                     {siteVisit.status}

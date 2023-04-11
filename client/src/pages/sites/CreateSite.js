@@ -3,7 +3,6 @@ import Sidebar from "../../components/Sidebar";
 
 const CreateSite = () => {
   const [siteName, setSiteName] = useState("");
-  const [siteLocation, setSiteLocation] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
@@ -11,7 +10,6 @@ const CreateSite = () => {
     setLoading(true);
     const site = {
       siteName,
-      siteLocation,
     };
     console.log(site);
     setLoading(false);
@@ -33,19 +31,8 @@ const CreateSite = () => {
               type="text"
               id="siteName"
               value={siteName}
-              placeholder="Dunder Mifflin"
+              placeholder="Furaha Gardens"
               onChange={(event) => setSiteName(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-            <label htmlFor="siteLocation" className="label">
-              <span className="label-text font-bold">Site Location</span>
-            </label>
-            <input
-              type="text"
-              id="siteLocation"
-              placeholder="Scranton, PA"
-              value={siteLocation}
-              onChange={(event) => setSiteLocation(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
             <button

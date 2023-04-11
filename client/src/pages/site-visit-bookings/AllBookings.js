@@ -1,96 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useSelector } from "react-redux";
+import format12HourTime from "../../utils/formatTime";
 
 const AllBookings = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [siteVisits, setSiteVisits] = useState([]);
+  const token = useSelector((state) => state.user.token);
 
-  const siteVisits = [
-    {
-      marketer: "John Smith",
-      site: "Dragon's Lair",
-      location: "Nairobi",
-      date: "2022-01-01",
-      time: "10:00am",
-      clients: 2,
-    },
-    {
-      marketer: "Jane Doe",
-      site: "Phoenix's Nest",
-      location: "Mombasa",
-      date: "2022-01-02",
-      time: "11:00am",
-      clients: 3,
-    },
-    {
-      marketer: "Bob Johnson",
-      site: "Unicorn's Grove",
-      location: "Kisumu",
-      date: "2022-01-03",
-      time: "2:00pm",
-      clients: 1,
-    },
-    {
-      marketer: "Sara Lee",
-      site: "Pegasus's Peak",
-      location: "Eldoret",
-      date: "2022-01-04",
-      time: "9:00am",
-      clients: 2,
-    },
-    {
-      marketer: "Mark Davis",
-      site: "Kraken's Reef",
-      location: "Nakuru",
-      date: "2022-01-05",
-      time: "12:00pm",
-      clients: 4,
-    },
-    {
-      marketer: "Anna Nguyen",
-      site: "Chimera's Den",
-      location: "Kisii",
-      date: "2022-01-06",
-      time: "3:00pm",
-      clients: 2,
-    },
-    {
-      marketer: "Mike Patel",
-      site: "Sphinx's Tomb",
-      location: "Machakos",
-      date: "2022-01-07",
-      time: "10:00am",
-      clients: 1,
-    },
-    {
-      marketer: "Grace Wangari",
-      site: "Cerberus's Lair",
-      location: "Kakamega",
-      date: "2022-01-08",
-      time: "11:00am",
-      clients: 3,
-    },
-    {
-      marketer: "Peter Mbogo",
-      site: "Hydra's Den",
-      location: "Thika",
-      date: "2022-01-09",
-      time: "2:00pm",
-      clients: 1,
-    },
-    {
-      marketer: "Lucy Nyawira",
-      site: "Minotaur's Maze",
-      location: "Naivasha",
-      date: "2022-01-10",
-      time: "9:00am",
-      clients: 2,
-    },
-    // add more site visits as needed
-  ];
+  useEffect(() => {
+    const fetchSiteVisits = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/site-visits", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSiteVisits(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchSiteVisits();
+  }, [token]);
 
   const filteredSiteVisits = siteVisits.filter((visit) => {
-    const visitDate = new Date(visit.date);
+    const visitDate = new Date(visit.pickup_date);
     const startDateObj = startDate && new Date(startDate);
     const endDateObj = endDate && new Date(endDate);
 
@@ -140,7 +78,7 @@ const AllBookings = () => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Marketer Name</th>
+                  <th>Marketer ID</th>
                   <th>Site Visited</th>
                   <th>Location</th>
                   <th>Date</th>
@@ -153,12 +91,17 @@ const AllBookings = () => {
                 {filteredSiteVisits.map((siteVisit, index) => (
                   <tr key={index}>
                     <th>{index + 1}</th>
-                    <td>{siteVisit.marketer}</td>
-                    <td>{siteVisit.site}</td>
-                    <td>{siteVisit.location}</td>
-                    <td>{siteVisit.date}</td>
-                    <td>{siteVisit.time}</td>
-                    <td>{siteVisit.clients}</td>
+                    <td>{siteVisit.created_by}</td>
+                    <td>{siteVisit.site_name}</td>
+                    <td>{siteVisit.pickup_location}</td>
+                    <td>
+                      {new Date(siteVisit.pickup_date).toLocaleDateString(
+                        "en-GB"
+                      )}
+                    </td>
+
+                    <td>{format12HourTime(siteVisit.pickup_time)}</td>
+                    <td>{siteVisit.clients.length}</td>
                   </tr>
                 ))}
               </tbody>

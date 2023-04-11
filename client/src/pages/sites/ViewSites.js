@@ -1,34 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useSelector } from "react-redux";
 
 const ViewSites = () => {
-  const [searchText, setSearchText] = useState("");
-  const sites = [
-    {
-      name: "Harlem",
-      location: "New York City, NY",
-    },
-    {
-      name: "Bronzeville",
-      location: "Chicago, IL",
-    },
-    {
-      name: "Watts",
-      location: "Los Angeles, CA",
-    },
-    {
-      name: "Bedford-Stuyvesant",
-      location: "Brooklyn, NY",
-    },
-    {
-      name: "Oakland",
-      location: "Oakland, CA",
-    },
-    {
-      name: "The Hill District",
-      location: "Pittsburgh, PA",
-    },
-  ];
+  const [searchText, setSearchText] = useState("")
+  const [sites, setSites] = useState([]);
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/sites", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSites(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchSites();
+  }, [token]);
 
   const filteredSites = sites.filter((site) =>
     site.name.toLowerCase().includes(searchText.toLowerCase())
@@ -37,7 +32,7 @@ const ViewSites = () => {
   return (
     <>
       <Sidebar>
-        <div className="container px-4 py-6 mx-auto">
+        <div className="container px-4 pb-6 mx-auto">
           <div className="flex justify-center items-center my-4">
             <input
               placeholder="Search Site by Name"
@@ -52,7 +47,6 @@ const ViewSites = () => {
                 <tr>
                   <th></th>
                   <th>Site Name</th>
-                  <th>Site Location</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -61,7 +55,6 @@ const ViewSites = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{site.name}</td>
-                    <td>{site.location}</td>
                     <td>
                       <button className="btn btn-sm btn-warning mr-2 text-white">
                         Edit

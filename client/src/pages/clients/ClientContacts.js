@@ -81,37 +81,40 @@ const ClientContacts = () => {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <div className="px-4 my-4 flex justify-center">
-          <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
-            <table className="table table-zebra w-full">
-              {/* head */}
-              <thead>
-                <tr>
-                  <th>INDEX</th>
-                  <th>Client Name</th>
-                  <th>Client Phone Number</th>
-                  <th>Client Email</th>
-                  <th>Marketer attached to</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredClients.map((client, index) => (
-                  <tr key={index}>
-                    <th>{index + 1}</th>
-                    <td>{client.name}</td>
-                    <td>{client.phone}</td>
-                    <td>{client.email}</td>
-                    <td>{client.marketer}</td>
-                    <td>
-                      <button className="btn btn-warning btn-outline btn-sm">
-                        Edit
-                      </button>
-                    </td>
+        <div className="container px-4 mx-auto">
+          <h1 className="text-xl font-bold mb-4">Client Contacts</h1>
+          <div className=" my-4 flex justify-center">
+            <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
+              <table className="table table-zebra w-full">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th>INDEX</th>
+                    <th>Client Name</th>
+                    <th>Client Phone Number</th>
+                    <th>Client Email</th>
+                    <th>Marketer attached to</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredClients.map((client, index) => (
+                    <tr key={index}>
+                      <th>{index + 1}</th>
+                      <td>{client.name}</td>
+                      <td>{client.phone}</td>
+                      <td>{client.email}</td>
+                      <td>{client.marketer}</td>
+                      <td>
+                        <button className="btn btn-warning btn-outline btn-sm">
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </Sidebar>

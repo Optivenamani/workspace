@@ -8,7 +8,7 @@ const ApprovedBookings = () => {
     {
       id: 1,
       site: "Tatooine",
-      location: "Mombasa",
+      location: "Koinange Street",
       date: "2023-03-12",
       time: "12:00",
       clients: 2,
@@ -16,7 +16,7 @@ const ApprovedBookings = () => {
     {
       id: 2,
       site: "Hogwarts",
-      location: "Eldoret",
+      location: "Tom Mboya Street",
       date: "2023-03-14",
       time: "10:00",
       clients: 3,
@@ -24,7 +24,7 @@ const ApprovedBookings = () => {
     {
       id: 3,
       site: "Jurassic Park",
-      location: "Nakuru",
+      location: "Moi Avenue",
       date: "2023-03-15",
       time: "14:00",
       clients: 4,
@@ -32,7 +32,7 @@ const ApprovedBookings = () => {
     {
       id: 4,
       site: "Neverland",
-      location: "Malindi",
+      location: "Kimathi Street",
       date: "2023-03-17",
       time: "16:00",
       clients: 2,
@@ -40,7 +40,7 @@ const ApprovedBookings = () => {
     {
       id: 5,
       site: "Hobbiton",
-      location: "Naivasha",
+      location: "Biashara Street",
       date: "2023-03-18",
       time: "11:00",
       clients: 5,
@@ -48,7 +48,7 @@ const ApprovedBookings = () => {
     {
       id: 6,
       site: "Gotham City",
-      location: "Kisumu",
+      location: "River Road",
       date: "2023-03-19",
       time: "13:00",
       clients: 1,
@@ -56,7 +56,7 @@ const ApprovedBookings = () => {
     {
       id: 7,
       site: "Asgard",
-      location: "Machakos",
+      location: "Luthuli Avenue",
       date: "2023-03-20",
       time: "15:00",
       clients: 3,
@@ -64,7 +64,7 @@ const ApprovedBookings = () => {
     {
       id: 8,
       site: "Narnia",
-      location: "Kitale",
+      location: "Mama Ngina Street",
       date: "2023-03-22",
       time: "12:00",
       clients: 2,
@@ -72,7 +72,7 @@ const ApprovedBookings = () => {
     {
       id: 9,
       site: "Hogwarts",
-      location: "Thika",
+      location: "Haile Selassie Avenue",
       date: "2023-03-23",
       time: "10:00",
       clients: 4,
@@ -80,12 +80,13 @@ const ApprovedBookings = () => {
     {
       id: 10,
       site: "Gotham City",
-      location: "Kericho",
+      location: "Kirinyaga Road",
       date: "2023-03-25",
       time: "13:00",
       clients: 2,
     },
   ]);
+  
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -139,7 +140,7 @@ const ApprovedBookings = () => {
                 <tr>
                   <th></th>
                   <th>Site</th>
-                  <th>Location</th>
+                  <th>Pickup Location</th>
                   <th>Date</th>
                   <th>Time</th>
                   <th>Clients</th>
