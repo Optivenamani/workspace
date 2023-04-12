@@ -78,9 +78,9 @@ const Form = () => {
         ></progress>
       </div>
       <div className="form-container">
-        {/* <div className="text-center p-4 text-2xl font-bold uppercase">
+        <div className="text-center p-4 text-2xl font-bold uppercase">
           {formTitles[page]}
-        </div> */}
+        </div>
         <div className="flex justify-center">{pageDisplay()}</div>
         <div className="footer"></div>
         <div className="flex justify-center mt-5">

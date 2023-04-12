@@ -20,7 +20,7 @@ const ViewDrivers = () => {
         const data = await response.json();
         setDrivers(data);
       } catch (error) {
-        console.error("Error fetching site visits:", error);
+        console.error("Error fetching drivers:", error);
       }
     };
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const CreateVehicle = () => {
   const [vehicleMake, setVehicleMake] = useState("");
@@ -10,20 +11,37 @@ const CreateVehicle = () => {
   const [vehicleEngineCapacity, setVehicleEngineCapacity] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const driver = {
-      vehicleMake,
-      vehicleModel,
-      vehicleRegistration,
-      vehicleBodyType,
-      vehicleSeats,
-      vehicleEngineCapacity,
+    const vehicleData = {
+      make: vehicleMake,
+      model: vehicleModel,
+      vehicle_registration: vehicleRegistration,
+      body_type: vehicleBodyType,
+      number_of_seats: vehicleSeats,
+      engine_capacity: vehicleEngineCapacity,
     };
-    console.log(driver);
-    setLoading(false);
-    // todo: submit to db
+    try {
+      const response = await fetch("http://localhost:8080/api/vehicles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(vehicleData),
+      });
+
+      const data = await response.json();
+      console.log(data);
+      setLoading(false);
+      navigate("/view-vehicles");
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,9 +94,7 @@ const CreateVehicle = () => {
               <option value="SUV">SUV</option>
             </select>
             <label htmlFor="vehicleSeats" className="label">
-              <span className="label-text font-bold">
-                Seats
-              </span>
+              <span className="label-text font-bold">Seats</span>
             </label>
             <input
               type="text"

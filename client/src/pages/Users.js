@@ -1,64 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { useSelector } from "react-redux";
 
 const Users = () => {
   const [searchText, setSearchText] = useState("");
-  
-  const users = [
-    {
-      id: 1,
-      name: "Kamau Njoroge",
-      role: "Marketer",
-    },
-    {
-      id: 2,
-      name: "Nekesa Wamalwa",
-      role: "Data Analyst",
-    },
-    {
-      id: 3,
-      name: "Mutua Kaluki",
-      role: "Head of Logistics",
-    },
-    {
-      id: 4,
-      name: "Nyambura Kimani",
-      role: "Marketer",
-    },
-    {
-      id: 5,
-      name: "Kerubo Nyakundi",
-      role: "GM",
-    },
-    {
-      id: 6,
-      name: "Kinyanjui Wainaina",
-      role: "Marketer",
-    },
-    {
-      id: 7,
-      name: "Adhiambo Ochieng",
-      role: "Director",
-    },
-    {
-      id: 8,
-      name: "Njoki Gichuru",
-      role: "Marketer",
-    },
-    {
-      id: 9,
-      name: "Onyango Omondi",
-      role: "HOS",
-    },
-    {
-      id: 10,
-      name: "Sara Müller",
-      role: "Marketing Manager",
-    },
-  ];
+  const [users, setUsers] = useState([]);
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [token]);
 
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchText.toLowerCase())
+    user.fullnames.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
@@ -77,24 +45,17 @@ const Users = () => {
           <table className="table table-zebra w-full">
             <thead>
               <tr>
-                <th></th>
+                <th>User ID</th>
                 <th>Name</th>
-                <th>Role</th>
-                <th>Action</th>
+                <th>Department</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.name}</td>
-                  <td>{user.role}</td>
-                  <td>
-                    <button className="btn btn-sm btn-outline btn-warning">Edit</button>
-                    <button className="btn btn-sm btn-error text-white ml-1">
-                      Delete
-                    </button>
-                  </td>
+                <tr key={user.user_id}>
+                  <td>{user.user_id}</td>
+                  <td>{user.fullnames.toUpperCase()}</td>
+                  <td>{user.department}</td>
                 </tr>
               ))}
             </tbody>

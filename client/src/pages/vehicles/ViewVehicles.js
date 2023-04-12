@@ -1,8 +1,63 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ViewVehicles = () => {
   const [query, setQuery] = useState("");
+  const [vehicles, setVehicles] = useState([]);
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    const fetchVehicle = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/vehicles", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setVehicles(data);
+      } catch (error) {
+        console.error("Error fetching vehicle:", error);
+      }
+    };
+
+    fetchVehicle();
+  }, [token]);
+
+  const filteredVehicles = vehicles.filter((vehicle) =>
+    vehicle.vehicle_registration.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const editVehicle = (vehicleId) => {
+    // Navigate to the edit vehicle page with the vehicle ID as a parameter
+    navigate(`/vehicles/edit/${vehicleId}`);
+  };
+
+  const deleteVehicle = (vehicleId) => {
+    const token = localStorage.getItem("token");
+    // Send a DELETE request to the server to delete the vehicle with the specified ID
+    fetch(`http://localhost:8080/api/vehicles/${vehicleId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Remove the vehicle from the vehicles state
+        setVehicles((prevvehicles) =>
+          prevvehicles.filter((vehicle) => vehicle.id !== vehicleId)
+        );
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  };
   return (
     <>
       <Sidebar>
@@ -21,73 +76,42 @@ const ViewVehicles = () => {
               <thead>
                 <tr>
                   <th></th>
-                  <th>Vehicle Registration</th>
                   <th>Make</th>
                   <th>Model</th>
                   <th>Body Type</th>
-                  <th>Engine Capacity (CC)</th>
                   <th>Number of Seats</th>
+                  <th>Engine Capacity</th>
+                  <th>Vehicle Registration</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {/* row 1 */}
-                <tr>
-                  <th>1</th>
-                  <td>KCY 999R</td>
-                  <td>Toyota</td>
-                  <td>Coaster</td>
-                  <td>Minibus</td>
-                  <td>3500</td>
-                  <td>30</td> {/* add relevant number of seats */}
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>2</th>
-                  <td>KDK 455U</td>
-                  <td>Toyota</td>
-                  <td>Hiace</td>
-                  <td>Van</td>
-                  <td>3000</td>
-                  <td>10</td> {/* add relevant number of seats */}
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>3</th>
-                  <td>KBY 222P</td>
-                  <td>Nissan</td>
-                  <td>Caravan</td>
-                  <td>Van</td>
-                  <td>3000</td>
-                  <td>7</td> {/* add relevant number of seats */}
-                </tr>
-                {/* add more rows for additional vehicles */}
-                <tr>
-                  <th>4</th>
-                  <td>KAZ 888X</td>
-                  <td>Mercedes-Benz</td>
-                  <td>MB 100</td>
-                  <td>Minivan</td>
-                  <td>2300</td>
-                  <td>9</td>
-                </tr>
-                <tr>
-                  <th>5</th>
-                  <td>KBA 555P</td>
-                  <td>Toyota</td>
-                  <td>Liteace</td>
-                  <td>Van</td>
-                  <td>1800</td>
-                  <td>8</td>
-                </tr>
-                <tr>
-                  <th>6</th>
-                  <td>KCA 444M</td>
-                  <td>Isuzu</td>
-                  <td>FRR</td>
-                  <td>Bus</td>
-                  <td>5193</td>
-                  <td>50</td>
-                </tr>
+                {/* rows */}
+                {filteredVehicles.map((vehicle, index) => (
+                  <tr key={index}>
+                    <th>{index + 1}</th>
+                    <td>{vehicle.make}</td>
+                    <td>{vehicle.model}</td>
+                    <td>{vehicle.body_type}</td>
+                    <td>{vehicle.number_of_seats}</td>
+                    <td>{vehicle.engine_capacity}</td>
+                    <td>{vehicle.vehicle_registration}</td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-warning mr-2 text-white"
+                        onClick={() => editVehicle(vehicle.id)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-error text-white"
+                        onClick={() => deleteVehicle(vehicle.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

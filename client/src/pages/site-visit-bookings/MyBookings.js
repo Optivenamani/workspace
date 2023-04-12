@@ -60,7 +60,7 @@ const MyBookings = () => {
 
   return (
     <Sidebar>
-      <div className="container px-4 py-6 mx-auto">
+      <div className="container px-4 pb-6 mx-auto">
         <div className="flex justify-center items-center my-4">
           <div className="flex space-x-2 items-center">
             <input
