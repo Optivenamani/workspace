@@ -26,8 +26,10 @@ connection.connect((err) => {
 const loginRoutes = require("./routes/auth/login.routes");
 const logoutRoutes = require("./routes/auth/logout.routes");
 const userRoutes = require("./routes/auth/user.routes");
+// Import other routes
 const siteVisitRoutes = require("./routes/site-visits/siteVisit.routes");
 const siteRoutes = require("./routes/sites/sites.routes");
+const driverRoutes = require("./routes/drivers/drivers.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -47,6 +49,7 @@ app.use("/api/logout", logoutRoutes);
 app.use("/api/me", userRoutes(connection));
 app.use("/api/site-visits", siteVisitRoutes(connection));
 app.use("/api/sites", siteRoutes(connection));
+app.use("/api/drivers", driverRoutes(connection));
 
 // Define a sample route to fetch all users
 app.get("/", (req, res) => {

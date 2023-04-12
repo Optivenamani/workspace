@@ -60,13 +60,18 @@ module.exports = (connection) => {
     }
   });
 
+  // Retrieve all site visit requests
   router.get("/", authenticateJWT, async (req, res) => {
     try {
       connection.query(
         `SELECT site_visits.*, 
-                clients.id as client_id, clients.name, clients.email, clients.phone_number
+          clients.id as client_id, 
+          clients.name, 
+          clients.email, 
+          clients.phone_number
          FROM site_visits
-         LEFT JOIN clients ON site_visits.id = clients.site_visit_id`,
+         LEFT JOIN clients 
+         ON site_visits.id = clients.site_visit_id`,
         (err, results) => {
           if (err) throw err;
 

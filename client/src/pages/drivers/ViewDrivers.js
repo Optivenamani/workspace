@@ -1,74 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ViewDrivers = () => {
-  const [searchText, setSearchText] = useState("");
-  const drivers = [
-    {
-      name: "Oliver Schmidt",
-      email: "oliver.schmidt@example.com",
-      phone: "123-456-7890",
-      address: "123 Main St, Berlin, Germany",
-    },
-    {
-      name: "Emma Braun",
-      email: "emma.braun@example.com",
-      phone: "234-567-8901",
-      address: "456 Second St, Munich, Germany",
-    },
-    {
-      name: "Noah Wagner",
-      email: "noah.wagner@example.com",
-      phone: "345-678-9012",
-      address: "789 Third St, Hamburg, Germany",
-    },
-    {
-      name: "Sophia Schäfer",
-      email: "sophia.schäfer@example.com",
-      phone: "456-789-0123",
-      address: "987 Fourth St, Frankfurt, Germany",
-    },
-    {
-      name: "Lukas Müller",
-      email: "lukas.müller@example.com",
-      phone: "567-890-1234",
-      address: "654 Fifth St, Stuttgart, Germany",
-    },
-    {
-      name: "Lea Meyer",
-      email: "lea.meyer@example.com",
-      phone: "678-901-2345",
-      address: "321 Sixth St, Düsseldorf, Germany",
-    },
-    {
-      name: "Maximilian Weber",
-      email: "maximilian.weber@example.com",
-      phone: "789-012-3456",
-      address: "789 Seventh St, Cologne, Germany",
-    },
-    {
-      name: "Mia Wagner",
-      email: "mia.wagner@example.com",
-      phone: "890-123-4567",
-      address: "654 Eighth St, Dortmund, Germany",
-    },
-    {
-      name: "Elias Becker",
-      email: "elias.becker@example.com",
-      phone: "901-234-5678",
-      address: "321 Ninth St, Essen, Germany",
-    },
-    {
-      name: "Anna Schulz",
-      email: "anna.schulz@example.com",
-      phone: "012-345-6789",
-      address: "987 Tenth St, Bremen, Germany",
-    },
-  ];
+  const [query, setQuery] = useState("");
+  const [drivers, setDrivers] = useState([]);
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/drivers", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setDrivers(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchDrivers();
+  }, [token]);
 
   const filteredDrivers = drivers.filter((driver) =>
-    driver.name.toLowerCase().includes(searchText.toLowerCase())
+    driver.driver_name.toLowerCase().includes(query.toLowerCase())
   );
+
+  const editDriver = (driverId) => {
+    // Navigate to the edit driver page with the driver ID as a parameter
+    navigate(`/drivers/edit/${driverId}`);
+  };
+
+  const deleteDriver = (driverId) => {
+    const token = localStorage.getItem("token");
+    // Send a DELETE request to the server to delete the driver with the specified ID
+    fetch(`http://localhost:8080/api/drivers/${driverId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Remove the driver from the drivers state
+        setDrivers((prevDrivers) =>
+          prevDrivers.filter((driver) => driver.driver_id !== driverId)
+        );
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  };
 
   return (
     <>
@@ -79,7 +68,7 @@ const ViewDrivers = () => {
               placeholder="Search Driver by Name"
               className="input input-bordered w-full max-w-xs"
               type="text"
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
             />
           </div>
           <div className="overflow-x-auto card bg-base-100 shadow-xl">
@@ -100,15 +89,21 @@ const ViewDrivers = () => {
                 {filteredDrivers.map((driver, index) => (
                   <tr key={index}>
                     <th>{index + 1}</th>
-                    <td>{driver.name}</td>
-                    <td>{driver.email}</td>
-                    <td>{driver.phone}</td>
-                    <td>{driver.address}</td>
+                    <td>{driver.driver_name}</td>
+                    <td>{driver.driver_email}</td>
+                    <td>{driver.driver_phone_number}</td>
+                    <td>{driver.driver_address}</td>
                     <td>
-                      <button className="btn btn-sm btn-warning mr-2 text-white">
+                      <button
+                        className="btn btn-sm btn-warning mr-2 text-white"
+                        onClick={() => editDriver(driver.driver_id)}
+                      >
                         Edit
                       </button>
-                      <button className="btn btn-sm btn-error text-white">
+                      <button
+                        className="btn btn-sm btn-error text-white"
+                        onClick={() => deleteDriver(driver.driver_id)}
+                      >
                         Delete
                       </button>
                     </td>

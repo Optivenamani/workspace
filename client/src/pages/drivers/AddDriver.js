@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const AddDriver = () => {
   const [driverName, setDriverName] = useState("");
@@ -8,18 +9,36 @@ const AddDriver = () => {
   const [driverAddress, setDriverAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     const driver = {
-      driverName,
-      driverEmail,
-      driverPhoneNumber,
-      driverAddress,
+      driver_name: driverName,
+      driver_email: driverEmail,
+      driver_phone_number: driverPhoneNumber,
+      driver_address: driverAddress,
     };
-    console.log(driver);
-    setLoading(false);
-    // todo: submit to db
+
+    try {
+      const response = await fetch("http://localhost:8080/api/drivers/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(driver),
+      });
+
+      const data = await response.json();
+      console.log(data);
+      setLoading(false);
+      navigate("/view-drivers");
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   return (
