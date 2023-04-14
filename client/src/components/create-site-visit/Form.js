@@ -4,10 +4,16 @@ import ClientInfo from "./ClientInfo";
 import ConfirmInfo from "./ConfirmInfo";
 import { createSiteVisitRequest } from "./api/api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Form = () => {
+  const user = useSelector((state) => state.user.user);
+  const marketer_id = user.user_id;
+
   const [page, setPage] = useState(0);
   const [formData, setFormData] = useState({
+    marketer_id: marketer_id,
+    project_id: "",
     site_name: "",
     pickup_location: "",
     pickup_date: "",
@@ -18,7 +24,7 @@ const Form = () => {
   const navigate = useNavigate();
 
   const formTitles = [
-    "Site Visit Request Info",
+    "Site Visit Info",
     "Client Info",
     "Confirm Details",
   ];
@@ -29,9 +35,16 @@ const Form = () => {
     // Get the token from the storage (e.g., localStorage or sessionStorage)
     const token = localStorage.getItem("token");
 
+    // Add the marketer_id to formData before sending it to the server
+    const completeFormData = {
+      ...formData,
+      marketer_id,
+    };
+
+    console.log(completeFormData);
     try {
       // Send the form data to the server
-      await createSiteVisitRequest(formData, token);
+      await createSiteVisitRequest(completeFormData, token);
 
       // Clear the form data and reset the form
       setFormData({

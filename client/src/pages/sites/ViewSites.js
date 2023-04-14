@@ -3,7 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 
 const ViewSites = () => {
-  const [searchText, setSearchText] = useState("")
+  const [searchText, setSearchText] = useState("");
   const [sites, setSites] = useState([]);
   const token = useSelector((state) => state.user.token);
 
@@ -47,7 +47,7 @@ const ViewSites = () => {
                 <tr>
                   <th></th>
                   <th>Site Name</th>
-                  <th>Action</th>
+                  <th>Link</th>
                 </tr>
               </thead>
               <tbody>
@@ -56,12 +56,11 @@ const ViewSites = () => {
                     <td>{index + 1}</td>
                     <td>{site.name}</td>
                     <td>
-                      <button className="btn btn-sm btn-warning mr-2 text-white">
-                        Edit
-                      </button>
-                      <button className="btn btn-sm btn-error text-white">
-                        Delete
-                      </button>
+                      {site.link ? (
+                        <a href={site.link} className="hover:underline">{site.link}</a>
+                      ) : (
+                        "Unavailable"
+                      )}
                     </td>
                   </tr>
                 ))}

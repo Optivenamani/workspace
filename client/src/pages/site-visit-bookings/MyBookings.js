@@ -28,11 +28,13 @@ const MyBookings = () => {
     fetchSiteVisits();
   }, [token]);
 
+  console.log("Site Visits:", siteVisits)
+
   const userSiteVisits = siteVisits.filter(
-    (siteVisit) => siteVisit.created_by === userId
+    (siteVisit) => siteVisit.marketer_id === userId
   );
 
-  console.log(userSiteVisits);
+  console.log("My site visits: ",userSiteVisits);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -84,29 +86,27 @@ const MyBookings = () => {
               <tr>
                 <th></th>
                 <th>Site Name</th>
+                <th>Clients</th>
                 <th>Pickup Location</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Status</th>
-                <th>Number of clients</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {/* rows */}
-              {filteredSiteVisits.map((siteVisit, index) => (
+              {siteVisits.map((siteVisit, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{siteVisit.site_name}</td>
+                  <td>{siteVisit.project_name}</td> {/* changed from site_name */}
+                  <td>{siteVisit.clients.length}</td>
                   <td>{siteVisit.pickup_location}</td>
                   <td>
                     {new Date(siteVisit.pickup_date).toLocaleDateString(
                       "en-GB"
                     )}
                   </td>
-
                   <td>{format12HourTime(siteVisit.pickup_time)}</td>
-
                   <td
                     style={{
                       fontStyle: "italic",
@@ -122,9 +122,8 @@ const MyBookings = () => {
                   >
                     {siteVisit.status}
                   </td>
-                  <td>{siteVisit.clients.length}</td>
                   <td>
-                    {siteVisit.status === "PENDING" ? (
+                    {siteVisit.status === "pending" ? (
                       <button className="btn btn-sm btn-outline btn-warning">
                         Edit
                       </button>

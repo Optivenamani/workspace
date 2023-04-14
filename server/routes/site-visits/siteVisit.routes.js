@@ -21,30 +21,31 @@ const checkPermissions = (allowedRoles) => {
 module.exports = (connection) => {
   // Create a new site visit request
   router.post("/", authenticateJWT, async (req, res) => {
-    const { site_name, pickup_location, pickup_time, pickup_date, clients } =
+    const { project_id, pickup_location, pickup_time, pickup_date, clients } =
       req.body;
-    const created_by = req.user.id; // Get the authenticated user ID from the JWT payload
+    const marketer_id = req.body.marketer_id; // Get the authenticated user ID from the JWT payload
 
     try {
       // Insert the site visit request into the `site_visits` table
       connection.query(
-        "INSERT INTO site_visits (site_name, pickup_location, pickup_time, pickup_date, status, created_by) VALUES (?, ?, ?, ?, 'PENDING', ?)",
-        [site_name, pickup_location, pickup_time, pickup_date, created_by],
+        "INSERT INTO site_visits (marketer_id, project_id, pickup_location, pickup_time, pickup_date, status) VALUES (?, ?, ?, ?, ?, 'pending')",
+        [marketer_id, project_id, pickup_location, pickup_time, pickup_date],
         (err, result) => {
           if (err) throw err;
 
+          const siteVisitId = result.insertId; // Get the site_visit_id of the created site visit request
+
           // Insert clients associated with this site visit request into the `clients` table
-          const site_visit_id = result.insertId;
           const clientValues = clients.map((client) => [
-            site_visit_id,
             client.name,
             client.email,
             client.phone_number,
+            siteVisitId, // Add the siteVisitId here
           ]);
           connection.query(
-            "INSERT INTO clients (site_visit_id, name, email, phone_number) VALUES ?",
+            "INSERT INTO clients (name, email, phone_number, site_visit_id) VALUES ?",
             [clientValues],
-            (err) => {
+            (err, result) => {
               if (err) throw err;
               res
                 .status(201)

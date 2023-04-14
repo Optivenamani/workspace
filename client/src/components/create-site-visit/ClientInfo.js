@@ -3,11 +3,16 @@ import React, { useState } from "react";
 function ClientInfo({ formData, setFormData }) {
   const [clients, setClients] = useState(
     formData.clients.length > 0
-      ? formData.clients.map((client) => ({
-          ...client,
-          clientFirstName: client.name.split(" ")[0] || "",
-          clientLastName: client.name.split(" ")[1] || "",
-        }))
+      ? formData.clients.map((client) => {
+          const clientFirstName = client.name ? client.name.split(" ")[0] : "";
+          const clientLastName = client.name ? client.name.split(" ")[1] : "";
+
+          return {
+            ...client,
+            clientFirstName,
+            clientLastName,
+          };
+        })
       : [
           {
             clientFirstName: "",
@@ -32,7 +37,9 @@ function ClientInfo({ formData, setFormData }) {
     setClients(list);
     setFormData({
       ...formData,
-      clients: list.map(({ clientFirstName, clientLastName, ...client }) => client),
+      clients: list.map(
+        ({ clientFirstName, clientLastName, ...client }) => client
+      ),
     });
   }
 
@@ -54,12 +61,14 @@ function ClientInfo({ formData, setFormData }) {
     setClients(list);
     setFormData({
       ...formData,
-      clients: list.map(({ clientFirstName, clientLastName, ...client }) => client),
+      clients: list.map(
+        ({ clientFirstName, clientLastName, ...client }) => client
+      ),
     });
   }
 
   return (
-    <div>
+    <div className="form-control w-full max-w-xs lg:max-w-full lg:mx-20">
       {clients.map((client, index) => (
         <div
           key={index}
@@ -131,7 +140,7 @@ function ClientInfo({ formData, setFormData }) {
       ))}
       <button
         onClick={handleAddClient}
-        className="btn btn-primary btn-outline mx-2 my-4"
+        className="btn btn-primary btn-outline mx-2 my-4 lg:max-w-xs"
       >
         Add Another Client
       </button>

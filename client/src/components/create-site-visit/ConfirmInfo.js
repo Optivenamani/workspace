@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import format12HourTime from "../../utils/formatTime";
 
 const ConfirmInfo = ({ onSubmitForm, formData }) => {
   const [isChecked, setIsChecked] = useState(false);
+  console.log("formData:", formData);
+
+  console.log(format12HourTime(formData.pickup_time));
 
   return (
     <>
@@ -32,7 +36,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             )}
           </h1>
           <h1>
-            <span className="font-bold">Time (24H): </span>
+            <span className="font-bold">Time: </span>
             {formData.pickup_time ? (
               formData.pickup_time
             ) : (
@@ -43,11 +47,18 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             <span className="font-bold">Clients:</span>
             {formData.clients ? (
               <ol>
-                {formData.clients.map((client, index) => (
-                  <li key={index} className="italic font-serif">
-                    {`${index+1}. ${client.name || "Name not provided"}, ${client.phone_number || "Phone not provided"}, ${client.email || "Email not provided" }`}
-                  </li>
-                ))}
+                {formData.clients
+                  .filter(
+                    (client) =>
+                      client.name || client.phone_number || client.email
+                  )
+                  .map((client, index) => (
+                    <li key={index} className="italic font-serif">
+                      {`${index + 1}. ${client.name || "Name not provided"}, ${
+                        client.phone_number || "Phone not provided"
+                      }, ${client.email || "Email not provided"}`}
+                    </li>
+                  ))}
               </ol>
             ) : (
               <span className="italic">Not Provided</span>

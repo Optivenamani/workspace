@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
-import Form from "../../components/create-booking/Form";
+import Form from "../../components/create-site-visit/Form";
 
 const CreateBooking = () => {
   return (

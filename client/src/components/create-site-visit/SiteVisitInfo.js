@@ -31,17 +31,31 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         </label>
         <select
           className="select select-bordered w-full max-w-xs"
-          value={formData.site_name}
-          onChange={(e) =>
-            setFormData({ ...formData, site_name: e.target.value })
-          }
+          value={formData.project_id}
+          onChange={(e) => {
+            console.log("Selected value:", e.target.value);
+
+            const selectedSite = sites.find(
+              (site) => site.project_id == e.target.value
+            );
+
+            console.log("Selected site:", selectedSite);
+
+            setFormData({
+              ...formData,
+              project_id: e.target.value,
+              site_name: selectedSite ? selectedSite.name : "",
+            });
+          }}
         >
+          <option value="">Select a site</option>
           {sites.map((site) => (
-            <option key={site.project_id} value={site.name}>
+            <option key={site.project_id} value={site.project_id}>
               {site.name}
             </option>
           ))}
         </select>
+
         <label className="label">
           <span className="label-text font-bold">Pickup Location</span>
         </label>
@@ -56,7 +70,7 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
           className="input input-bordered w-full"
         />
         <label className="label">
-          <span className="label-text font-bold">Date</span>
+          <span className="label-text font-bold">Pickup Date</span>
         </label>
         <input
           type="date"
@@ -67,7 +81,7 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
           }
         />
         <label className="label">
-          <span className="label-text font-bold">Time</span>
+          <span className="label-text font-bold">Pickup Time</span>
         </label>
         <input
           type="time"

@@ -43,7 +43,7 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isHOSorGM || isAdmin) && (
                     <a
-                      href="/create-booking"
+                      href="/book-site-visit"
                       className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                     >
                       Book a Site Visit
@@ -52,7 +52,7 @@ const Sidebar = ({ children }) => {
                   {(isMarketer || isHOSorGM || isAdmin) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/my-bookings"
+                      href="/my-site-visits"
                     >
                       My Site Visits
                     </a>
@@ -60,7 +60,7 @@ const Sidebar = ({ children }) => {
                   {isAdmin && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/assigned-bookings"
+                      href="/assigned-site-visits"
                     >
                       Assigned Site Visits
                     </a>
@@ -68,7 +68,7 @@ const Sidebar = ({ children }) => {
                   {(isHOSorGM || isAdmin || isOperations) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/approved-bookings"
+                      href="/approved-site-visits"
                     >
                       Approved Site Visits
                     </a>
@@ -76,7 +76,7 @@ const Sidebar = ({ children }) => {
                   {isAdmin && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/bookings-requests"
+                      href="/site-visit-requests"
                     >
                       Site Visit Requests
                     </a>
@@ -84,7 +84,7 @@ const Sidebar = ({ children }) => {
                   {(isHOSorGM || isAdmin || isOperations) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/all-bookings"
+                      href="/all-site-visits"
                     >
                       All Site Visit Bookings
                     </a>
@@ -144,7 +144,7 @@ const Sidebar = ({ children }) => {
                     )}
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/view-vehicles"
+                      href="/vehicles"
                     >
                       View Vehicles
                     </a>
@@ -189,7 +189,7 @@ const Sidebar = ({ children }) => {
                   </a>
                   <a
                     className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/view-drivers"
+                    href="/drivers"
                   >
                     View Drivers
                   </a>

@@ -22,7 +22,7 @@ const AddDriver = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/drivers/", {
+      const response = await fetch("http://localhost:8080/api/drivers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ const AddDriver = () => {
       const data = await response.json();
       console.log(data);
       setLoading(false);
-      navigate("/view-drivers");
+      navigate("/drivers");
     } catch (error) {
       console.error(error);
       setLoading(false);

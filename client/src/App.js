@@ -23,6 +23,8 @@ import SiteVisitRequests from "./pages/site-visit-bookings/SiteVisitRequests";
 import Home from "./pages/Home";
 import Notifications from "./pages/Notification";
 import Login from "./pages/Login";
+import SiteVisitDetails from "./pages/site-visit-bookings/SiteVisitDetails";
+import EditVehicle from "./pages/vehicles/EditVehicle";
 
 const App = () => {
   return (
@@ -37,25 +39,39 @@ const App = () => {
             {/* Dashboard */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* Site Visit Bookings */}
-            <Route path="/my-bookings" element={<MyBookings />} />
-            <Route path="/create-booking" element={<CreateBooking />} />
-            <Route path="/assigned-bookings" element={<AssignedBookings />} />
-            <Route path="/approved-bookings" element={<ApprovedBookings />} />
-            <Route path="/all-bookings" element={<AllBookings />} />
-            <Route path="/bookings-requests" element={<SiteVisitRequests />} />
+            <Route path="/my-site-visits" element={<MyBookings />} />
+            <Route path="/book-site-visit" element={<CreateBooking />} />
+            <Route
+              path="/assigned-site-visits"
+              element={<AssignedBookings />}
+            />
+            <Route
+              path="/approved-site-visits"
+              element={<ApprovedBookings />}
+            />
+            <Route path="/all-site-visits" element={<AllBookings />} />
+            <Route
+              path="/site-visit-requests"
+              element={<SiteVisitRequests />}
+            />
+            <Route
+              path="/site-visit-requests/:id"
+              element={<SiteVisitDetails />}
+            />
             {/* Sites */}
             <Route path="/create-site" element={<CreateSite />} />
             <Route path="/view-sites" element={<ViewSites />} />
             {/* Vehicles */}
             <Route path="/create-vehicle" element={<CreateVehicle />} />
-            <Route path="/view-vehicles" element={<ViewVehicles />} />
+            <Route path="/vehicles" element={<ViewVehicles />} />
             <Route path="/request-vehicle" element={<RequestVehicle />} />
+            <Route path="/vehicles/:id" element={<EditVehicle />} />
             {/* Clients */}
             <Route path="/clients-contacts" element={<ClientContacts />} />
             <Route path="/clients-feedback" element={<ClientsFeedback />} />
             {/* Drivers */}
             <Route path="/create-driver" element={<AddDriver />} />
-            <Route path="/view-drivers" element={<ViewDrivers />} />
+            <Route path="/drivers" element={<ViewDrivers />} />
             {/* Users */}
             <Route path="/users" element={<Users />} />
             {/* Notifications */}

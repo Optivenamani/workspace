@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const CreateVehicle = () => {
+const EditVehicle = () => {
+  const { id } = useParams();
+  const [vehicleId, setVehicleId] = useState(id);
   const [vehicleMake, setVehicleMake] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
   const [vehicleRegistration, setVehicleRegistration] = useState("");
@@ -12,6 +14,35 @@ const CreateVehicle = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchVehicle();
+  }, []);
+
+  const fetchVehicle = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/vehicles/${vehicleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setVehicleMake(data.make);
+      setVehicleModel(data.model);
+      setVehicleRegistration(data.vehicle_registration);
+      setVehicleBodyType(data.body_type);
+      setVehicleSeats(data.number_of_seats);
+      setVehicleEngineCapacity(data.engine_capacity);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,14 +56,17 @@ const CreateVehicle = () => {
       engine_capacity: vehicleEngineCapacity,
     };
     try {
-      const response = await fetch("http://localhost:8080/api/vehicles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(vehicleData),
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/vehicles/${vehicleId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(vehicleData),
+        }
+      );
 
       const data = await response.json();
       console.log(data);
@@ -134,7 +168,7 @@ const CreateVehicle = () => {
               id="submit"
               className="btn btn-primary w-full max-w-xs mt-4 text-white"
             >
-              {loading ? "Saving..." : "Add Vehicle"}
+              {loading ? "Saving..." : "Edit Vehicle"}
             </button>
           </form>
         </div>
@@ -143,4 +177,4 @@ const CreateVehicle = () => {
   );
 };
 
-export default CreateVehicle;
+export default EditVehicle;

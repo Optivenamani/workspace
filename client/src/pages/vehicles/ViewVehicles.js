@@ -27,13 +27,15 @@ const ViewVehicles = () => {
     fetchVehicle();
   }, [token]);
 
+  console.log(vehicles)
+
   const filteredVehicles = vehicles.filter((vehicle) =>
     vehicle.vehicle_registration.toLowerCase().includes(query.toLowerCase())
   );
 
   const editVehicle = (vehicleId) => {
     // Navigate to the edit vehicle page with the vehicle ID as a parameter
-    navigate(`/vehicles/edit/${vehicleId}`);
+    navigate(`/vehicles/${vehicleId}`);
   };
 
   const deleteVehicle = (vehicleId) => {
@@ -75,7 +77,7 @@ const ViewVehicles = () => {
               {/* head */}
               <thead>
                 <tr>
-                  <th></th>
+                  <th>Index</th>
                   <th>Make</th>
                   <th>Model</th>
                   <th>Body Type</th>
