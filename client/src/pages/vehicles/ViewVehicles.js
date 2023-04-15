@@ -82,7 +82,7 @@ const ViewVehicles = () => {
                   <th>Model</th>
                   <th>Body Type</th>
                   <th>Number of Seats</th>
-                  <th>Engine Capacity</th>
+                  <th>Engine Capacity(CC)</th>
                   <th>Vehicle Registration</th>
                   <th>Action</th>
                 </tr>

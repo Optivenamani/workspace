@@ -16,9 +16,9 @@ const Home = () => {
   let greeting;
 
   if (hour < 12) {
-    greeting = "G'morning,";
+    greeting = "Good morning,";
   } else if (hour >= 12 && hour < 17) {
-    greeting = "Ahoy,";
+    greeting = "Good afternoon,";
   } else if (hour >= 17 && hour < 22) {
     greeting = "Good Evening,";
   } else {

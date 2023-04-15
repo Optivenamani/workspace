@@ -40,8 +40,6 @@ const SiteVisitRequests = () => {
     setSiteVisitRequests(pendingSiteVisitRequests);
   }, [token]);
 
-  console.log(siteVisitRequests);
-
   const handleView = (id) => {
     navigate(`/site-visit-requests/${id}`);
   };
@@ -53,15 +51,33 @@ const SiteVisitRequests = () => {
     }));
   };
 
-  const deleteRequest = (id) => {
-    setActionStates((prevStates) => ({
-      ...prevStates,
-      [id]: { showVehicleMenu: false, showRejectReason: true },
-    }));
+  const handleRejectReason = async (id, rejectionReason) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/site-visit-requests/reject-site-visit/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ rejection_reason: rejectionReason }),
+        }
+      );
 
-    setSiteVisitRequests((prevRequests) =>
-      prevRequests.filter((request) => request.id !== id)
-    );
+      if (response.ok) {
+        setSiteVisitRequests((prevRequests) =>
+          prevRequests.filter((request) => request.id !== id)
+        );
+      } else {
+        console.error(
+          "Error rejecting site visit request:",
+          await response.json()
+        );
+      }
+    } catch (error) {
+      console.error("Error rejecting site visit request:", error);
+    }
   };
 
   return (
@@ -90,7 +106,7 @@ const SiteVisitRequests = () => {
                         <p className="text-gray-800 font-bold w-full">
                           Site Visit Booking Request Sent From{" "}
                           <span className="text-primary font-bold">
-                          {svr.marketer_name}
+                            {svr.marketer_name}
                           </span>
                         </p>
                         <div className="">
@@ -102,7 +118,9 @@ const SiteVisitRequests = () => {
                           </p>
                           <p className="font-bold">
                             Number of Clients:{" "}
-                            <span className="text-primary font-bold">{svr.num_clients}</span>
+                            <span className="text-primary font-bold">
+                              {svr.num_clients}
+                            </span>
                           </p>
                           <p className="font-bold">
                             Pickup Location:{" "}
@@ -146,18 +164,26 @@ const SiteVisitRequests = () => {
                         </div>
                         {showRejectReason && (
                           <div className="mt-2">
-                            <label className="label" htmlFor="rejectionReason">
+                            <label
+                              className="label"
+                              htmlFor={`rejectionReason-${svr.id}`}
+                            >
                               <span className="label-text font-bold">
                                 Reason
                               </span>
                             </label>
                             <textarea
-                              name="rejectionReason"
-                              id="rejectionReason"
+                              name={`rejectionReason-${svr.id}`}
+                              id={`rejectionReason-${svr.id}`}
                               className="textarea textarea-bordered h-24 w-full border"
                             ></textarea>
                             <button
-                              onClick={() => deleteRequest(svr.id)}
+                              onClick={() => {
+                                const rejectionReason = document.getElementById(
+                                  `rejectionReason-${svr.id}`
+                                ).value;
+                                handleRejectReason(svr.id, rejectionReason);
+                              }}
                               className="btn btn-error text-white"
                             >
                               Reject and Send Reason

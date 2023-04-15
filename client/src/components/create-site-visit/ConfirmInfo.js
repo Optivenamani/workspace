@@ -28,9 +28,9 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             )}
           </h1>
           <h1>
-            <span className="font-bold">Date (YYYY-MM-DD): </span>
+            <span className="font-bold">Date (DD/MM/YYYY): </span>
             {formData.pickup_date ? (
-              formData.pickup_date
+              new Date(formData.pickup_date).toLocaleDateString("en-GB")
             ) : (
               <span className="italic">Not Provided</span>
             )}
@@ -38,7 +38,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
           <h1>
             <span className="font-bold">Time: </span>
             {formData.pickup_time ? (
-              formData.pickup_time
+              format12HourTime(formData.pickup_time)
             ) : (
               <span className="italic">Not Provided</span>
             )}

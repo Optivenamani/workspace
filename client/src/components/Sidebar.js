@@ -162,15 +162,23 @@ const Sidebar = ({ children }) => {
                     className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                     href="/clients-contacts"
                   >
-                    Clients Contacts
+                    My Clients' Contacts
                   </a>
                   {(isHOSorGM || isAdmin) && (
+                    <>
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/clients-feedback"
+                      href="/all-clients-contacts"
                     >
-                      Clients Feedback
+                      All Clients' Contacts
                     </a>
+                    <a
+                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                    href="/clients-feedback"
+                  >
+                    Clients Feedback
+                  </a>
+                    </>
                   )}
                 </div>
               </div>
@@ -192,6 +200,12 @@ const Sidebar = ({ children }) => {
                     href="/drivers"
                   >
                     View Drivers
+                  </a>
+                  <a
+                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                    href="/assign-drivers"
+                  >
+                    Assign Drivers to Vehicles
                   </a>
                 </div>
               </div>
