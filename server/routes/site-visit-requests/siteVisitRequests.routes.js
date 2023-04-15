@@ -61,6 +61,49 @@ module.exports = (connection) => {
     }
   );
 
+  router.get(
+    "/pending-site-visits/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAdmin1,
+      AccessRoles.isAdmin2,
+      AccessRoles.isAdmin3,
+    ]),
+    async (req, res) => {
+      const id = req.params.id;
+      const query = `
+  SELECT 
+    site_visits.id, 
+    site_visits.status, 
+    site_visits.pickup_location,
+    site_visits.pickup_time,
+    site_visits.pickup_date,
+    site_visits.created_at,
+    Projects.name AS site_name,
+    COUNT(site_visit_clients.id) as num_clients,
+    users.fullnames as marketer_name
+  FROM site_visits 
+  LEFT JOIN Projects 
+    ON site_visits.project_id = Projects.project_id 
+  LEFT JOIN site_visit_clients 
+    ON site_visits.id = site_visit_clients.site_visit_id
+  LEFT JOIN users 
+    ON site_visits.marketer_id = users.user_id
+  WHERE site_visits.id = ?
+  GROUP BY site_visits.id
+  ORDER BY site_visits.created_at ASC;
+`;
+      connection.query(query, [id], (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+          res.status(200).json(results[0]);
+        } else {
+          res.status(404).json({ message: "Site visit request not found." });
+        }
+      });
+    }
+  );
+
   // Approve site visit request
   router.post(
     "/approve-site-visit/:id",

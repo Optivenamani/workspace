@@ -8,18 +8,21 @@ const Home = () => {
   const firstName = user.fullnames
     ? user.fullnames.trim().split(" ")[0]
     : "user";
+
+  console.log(firstName)
+  
   const now = new Date();
   const hour = now.getHours();
   let greeting;
 
-  if (hour > 2 && hour < 12) {
-    greeting = "Good morning";
-  } else if (hour < 17) {
-    greeting = "Good afternoon";
-  } else if (hour > 22 && hour < 2) {
-    greeting = "👀You're up late";
+  if (hour < 12) {
+    greeting = "G'morning,";
+  } else if (hour >= 12 && hour < 17) {
+    greeting = "Ahoy,";
+  } else if (hour >= 17 && hour < 22) {
+    greeting = "Good Evening,";
   } else {
-    greeting = "Good evening";
+    greeting = "Working late,";
   }
 
   const navigate = useNavigate();
@@ -48,7 +51,7 @@ const Home = () => {
               <div className="flex flex-col justify-center p-4 text-start sm:p-6 md:col-span-2 lg:p-8">
                 <h2 className="mt-6 font-black">
                   <span className="text-4xl sm:text-5xl lg:text-7xl">
-                    {greeting}, {firstName}.
+                    {greeting} {firstName}
                   </span>
                 </h2>
                 {(isMarketer || isHOSorGM || isAdmin) && (
