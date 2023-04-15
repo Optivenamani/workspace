@@ -12,7 +12,7 @@ const ViewDrivers = () => {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/drivers", {
+        const response = await fetch("http://localhost:8080/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -23,15 +23,12 @@ connection.connect((err) => {
 });
 
 // Import auth routes
-const loginRoutes = require("./routes/auth/login.routes");
-const logoutRoutes = require("./routes/auth/logout.routes");
-const userRoutes = require("./routes/auth/user.routes");
+const login = require("./routes/auth/login.routes");
+const logout = require("./routes/auth/logout.routes");
+const users = require("./routes/auth/user.routes");
 // Import other routes
-const siteVisitRoutes = require("./routes/site-visits/siteVisit.routes");
-const siteRoutes = require("./routes/sites/sites.routes");
-const driverRoutes = require("./routes/drivers/drivers.routes");
-const vehicleRoutes = require("./routes/vehicles/vehicles.routes");
-const clientRoutes = require("./routes/clients/clients.routes");
+const sites = require("./routes/sites/sites.routes");
+const vehicles = require("./routes/vehicles/vehicles.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -46,14 +43,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Apply route middlewares
-app.use("/api/login", loginRoutes(connection));
-app.use("/api/logout", logoutRoutes);
-app.use("/api/me", userRoutes(connection));
-app.use("/api/site-visits", siteVisitRoutes(connection));
-app.use("/api/sites", siteRoutes(connection));
-app.use("/api/drivers", driverRoutes(connection));
-app.use("/api/vehicles", vehicleRoutes(connection));
-app.use("/api/clients", clientRoutes(connection));
+app.use("/api/login", login(connection));
+app.use("/api/logout", logout);
+app.use("/api/me", users(connection));
+app.use("/api/sites", sites(connection));
+app.use("/api/vehicles", vehicles(connection));
 
 // Define a sample route to fetch all users
 app.get("/", (req, res) => {
