@@ -1,92 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useSelector } from "react-redux";
+import format12HourTime from "../../utils/formatTime";
 
 const ApprovedBookings = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [data, setData] = useState([
-    {
-      id: 1,
-      site: "Tatooine",
-      location: "Koinange Street",
-      date: "2023-03-12",
-      time: "12:00",
-      clients: 2,
-    },
-    {
-      id: 2,
-      site: "Hogwarts",
-      location: "Tom Mboya Street",
-      date: "2023-03-14",
-      time: "10:00",
-      clients: 3,
-    },
-    {
-      id: 3,
-      site: "Jurassic Park",
-      location: "Moi Avenue",
-      date: "2023-03-15",
-      time: "14:00",
-      clients: 4,
-    },
-    {
-      id: 4,
-      site: "Neverland",
-      location: "Kimathi Street",
-      date: "2023-03-17",
-      time: "16:00",
-      clients: 2,
-    },
-    {
-      id: 5,
-      site: "Hobbiton",
-      location: "Biashara Street",
-      date: "2023-03-18",
-      time: "11:00",
-      clients: 5,
-    },
-    {
-      id: 6,
-      site: "Gotham City",
-      location: "River Road",
-      date: "2023-03-19",
-      time: "13:00",
-      clients: 1,
-    },
-    {
-      id: 7,
-      site: "Asgard",
-      location: "Luthuli Avenue",
-      date: "2023-03-20",
-      time: "15:00",
-      clients: 3,
-    },
-    {
-      id: 8,
-      site: "Narnia",
-      location: "Mama Ngina Street",
-      date: "2023-03-22",
-      time: "12:00",
-      clients: 2,
-    },
-    {
-      id: 9,
-      site: "Hogwarts",
-      location: "Haile Selassie Avenue",
-      date: "2023-03-23",
-      time: "10:00",
-      clients: 4,
-    },
-    {
-      id: 10,
-      site: "Gotham City",
-      location: "Kirinyaga Road",
-      date: "2023-03-25",
-      time: "13:00",
-      clients: 2,
-    },
-  ]);
-  
+  const [siteVisits, setSiteVisits] = useState([]);
+
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    const fetchSiteVisits = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/site-visits", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSiteVisits(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchSiteVisits();
+  }, [token]);
+
+  const approvedSiteBookings = siteVisits.filter(
+    (siteVisit) => siteVisit.status === "approved"
+  );
+
+  console.log(approvedSiteBookings);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -96,7 +42,7 @@ const ApprovedBookings = () => {
     setEndDate(e.target.value);
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredBookings = approvedSiteBookings.filter((item) => {
     const itemDate = new Date(item.date);
     const startDateObj = startDate && new Date(startDate);
     const endDateObj = endDate && new Date(endDate);
@@ -138,7 +84,7 @@ const ApprovedBookings = () => {
               {/* head */}
               <thead>
                 <tr>
-                  <th></th>
+                  <th>Index</th>
                   <th>Site</th>
                   <th>Pickup Location</th>
                   <th>Date</th>
@@ -147,14 +93,16 @@ const ApprovedBookings = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item) => (
+                {filteredBookings.map((item, i) => (
                   <tr key={item.id}>
-                    <th>{item.id}</th>
-                    <td>{item.site}</td>
-                    <td>{item.location}</td>
-                    <td>{item.date}</td>
-                    <td>{item.time}</td>
-                    <td>{item.clients}</td>
+                    <th>{i + 1}</th>
+                    <td>{item.site_name}</td>
+                    <td>{item.pickup_location}</td>
+                    <td>{new Date(item.pickup_date).toLocaleDateString(
+                      "en-GB"
+                    )}</td>
+                    <td>{format12HourTime(item.pickup_time)}</td>
+                    <td>{item.clients.length}</td>
                   </tr>
                 ))}
               </tbody>

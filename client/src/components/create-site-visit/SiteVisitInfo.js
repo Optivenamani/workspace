@@ -36,6 +36,7 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
             console.log("Selected value:", e.target.value);
 
             const selectedSite = sites.find(
+              // eslint-disable-next-line eqeqeq
               (site) => site.project_id == e.target.value
             );
 

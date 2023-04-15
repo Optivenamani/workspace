@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
 import Dashboard from "./pages/Dashboard";
-import MyBookings from "./pages/site-visit-bookings/MyBookings";
+import MySiteVisits from "./pages/site-visit-bookings/MySiteVisits";
 import CreateBooking from "./pages/site-visit-bookings/CreateBooking";
 import AssignedBookings from "./pages/site-visit-bookings/AssignedBookings";
 import ApprovedBookings from "./pages/site-visit-bookings/ApprovedBookings";
@@ -39,7 +39,7 @@ const App = () => {
             {/* Dashboard */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* Site Visit Bookings */}
-            <Route path="/my-site-visits" element={<MyBookings />} />
+            <Route path="/my-site-visits" element={<MySiteVisits />} />
             <Route path="/book-site-visit" element={<CreateBooking />} />
             <Route
               path="/assigned-site-visits"

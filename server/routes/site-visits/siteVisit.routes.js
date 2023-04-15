@@ -23,7 +23,7 @@ module.exports = (connection) => {
   router.post("/", authenticateJWT, async (req, res) => {
     const { project_id, pickup_location, pickup_time, pickup_date, clients } =
       req.body;
-    const marketer_id = req.body.marketer_id; // Get the authenticated user ID from the JWT payload
+    const marketer_id = req.body.marketer_id; // Get the authenticated user ID from the JWT
 
     try {
       // Insert the site visit request into the `site_visits` table
@@ -35,15 +35,15 @@ module.exports = (connection) => {
 
           const siteVisitId = result.insertId; // Get the site_visit_id of the created site visit request
 
-          // Insert clients associated with this site visit request into the `clients` table
+          // Insert clients associated with this site visit request into the `site_visit_clients` table
           const clientValues = clients.map((client) => [
+            siteVisitId, // Add the siteVisitId here
             client.name,
             client.email,
             client.phone_number,
-            siteVisitId, // Add the siteVisitId here
           ]);
           connection.query(
-            "INSERT INTO clients (name, email, phone_number, site_visit_id) VALUES ?",
+            "INSERT INTO site_visit_clients (site_visit_id, name, email, phone_number) VALUES ?",
             [clientValues],
             (err, result) => {
               if (err) throw err;
@@ -66,13 +66,17 @@ module.exports = (connection) => {
     try {
       connection.query(
         `SELECT site_visits.*, 
-          clients.id as client_id, 
-          clients.name, 
-          clients.email, 
-          clients.phone_number
-         FROM site_visits
-         LEFT JOIN clients 
-         ON site_visits.id = clients.site_visit_id`,
+        site_visit_clients.id as client_id, 
+        site_visit_clients.name, 
+        site_visit_clients.email, 
+        site_visit_clients.phone_number,
+        Projects.name as site_name
+       FROM site_visits
+       LEFT JOIN site_visit_clients 
+       ON site_visits.id = site_visit_clients.site_visit_id
+       LEFT JOIN Projects
+       ON site_visits.project_id = Projects.project_id
+      `,
         (err, results) => {
           if (err) throw err;
 
@@ -90,6 +94,7 @@ module.exports = (connection) => {
                 status: row.status,
                 created_by: row.created_by,
                 clients: [],
+                marketer_id: row.marketer_id,
               };
             }
 
@@ -168,20 +173,51 @@ module.exports = (connection) => {
       const { id } = req.params;
 
       try {
-        connection.query(
-          "DELETE FROM site_visits WHERE id = ?",
-          [id],
-          (err, result) => {
-            if (err) throw err;
-            if (result.affectedRows === 0) {
-              res
-                .status(404)
-                .json({ message: "Site visit request not found." });
-            } else {
-              res.json({ message: "Site visit request deleted successfully." });
+        connection.beginTransaction((err) => {
+          if (err) throw err;
+
+          connection.query(
+            "DELETE FROM site_visit_clients WHERE site_visit_id = ?",
+            [id],
+            (err, result) => {
+              if (err) {
+                connection.rollback(() => {
+                  throw err;
+                });
+              }
+
+              connection.query(
+                "DELETE FROM site_visits WHERE id = ?",
+                [id],
+                (err, result) => {
+                  if (err) {
+                    connection.rollback(() => {
+                      throw err;
+                    });
+                  }
+
+                  connection.commit((err) => {
+                    if (err) {
+                      connection.rollback(() => {
+                        throw err;
+                      });
+                    }
+
+                    if (result.affectedRows === 0) {
+                      res
+                        .status(404)
+                        .json({ message: "Site visit request not found." });
+                    } else {
+                      res.json({
+                        message: "Site visit request deleted successfully.",
+                      });
+                    }
+                  });
+                }
+              );
             }
-          }
-        );
+          );
+        });
       } catch (error) {
         res.status(500).json({
           message: "An error occurred while deleting the site visit request.",

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Sidebar from "../../components/Sidebar";
 import format12HourTime from "../../utils/formatTime";
 
-const MyBookings = () => {
+const MySiteVisits = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteVisits, setSiteVisits] = useState([]);
@@ -28,13 +28,9 @@ const MyBookings = () => {
     fetchSiteVisits();
   }, [token]);
 
-  console.log("Site Visits:", siteVisits)
-
   const userSiteVisits = siteVisits.filter(
     (siteVisit) => siteVisit.marketer_id === userId
   );
-
-  console.log("My site visits: ",userSiteVisits);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -60,6 +56,8 @@ const MyBookings = () => {
     }
   });
 
+  console.log(filteredSiteVisits)
+
   return (
     <Sidebar>
       <div className="container px-4 pb-6 mx-auto">
@@ -84,7 +82,7 @@ const MyBookings = () => {
           <table className="table table-zebra w-full">
             <thead>
               <tr>
-                <th></th>
+                <th>Index</th>
                 <th>Site Name</th>
                 <th>Clients</th>
                 <th>Pickup Location</th>
@@ -95,10 +93,10 @@ const MyBookings = () => {
               </tr>
             </thead>
             <tbody>
-              {siteVisits.map((siteVisit, index) => (
+              {filteredSiteVisits.map((siteVisit, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{siteVisit.project_name}</td> {/* changed from site_name */}
+                  <td>{siteVisit.site_name}</td>
                   <td>{siteVisit.clients.length}</td>
                   <td>{siteVisit.pickup_location}</td>
                   <td>
@@ -109,15 +107,14 @@ const MyBookings = () => {
                   <td>{format12HourTime(siteVisit.pickup_time)}</td>
                   <td
                     style={{
-                      fontStyle: "italic",
                       textTransform: "uppercase",
                       fontWeight: "bold",
                       color:
-                        siteVisit.status === "REJECTED"
+                        siteVisit.status === "rejected"
                           ? "red"
-                          : siteVisit.status === "IN_PROGRESS"
+                          : siteVisit.status === "complete"
                           ? "green"
-                          : "blue",
+                          : "black",
                     }}
                   >
                     {siteVisit.status}
@@ -139,4 +136,4 @@ const MyBookings = () => {
   );
 };
 
-export default MyBookings;
+export default MySiteVisits;

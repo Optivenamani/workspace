@@ -27,6 +27,8 @@ const AllBookings = () => {
     fetchSiteVisits();
   }, [token]);
 
+  console.log(siteVisits)
+
   const filteredSiteVisits = siteVisits.filter((visit) => {
     const visitDate = new Date(visit.pickup_date);
     const startDateObj = startDate && new Date(startDate);
@@ -77,7 +79,7 @@ const AllBookings = () => {
               {/* head */}
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>Index</th>
                   <th>Marketer ID</th>
                   <th>Site Visited</th>
                   <th>Location</th>
@@ -91,7 +93,7 @@ const AllBookings = () => {
                 {filteredSiteVisits.map((siteVisit, index) => (
                   <tr key={index}>
                     <th>{index + 1}</th>
-                    <td>{siteVisit.created_by}</td>
+                    <td>{siteVisit.marketer_id}</td>
                     <td>{siteVisit.site_name}</td>
                     <td>{siteVisit.pickup_location}</td>
                     <td>

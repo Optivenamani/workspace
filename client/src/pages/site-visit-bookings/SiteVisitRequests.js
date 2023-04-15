@@ -4,30 +4,6 @@ import { useSelector } from "react-redux";
 import format12HourTime from "../../utils/formatTime";
 import { useNavigate } from "react-router-dom";
 
-const dummyData = [
-  {
-    id: 1,
-    site_name: "Site 1",
-    status: "PENDING",
-    pickup_date: "2023-04-20T00:00:00.000Z",
-    pickup_time: "16:30:00",
-  },
-  {
-    id: 2,
-    site_name: "Site 2",
-    status: "PENDING",
-    pickup_date: "2023-04-21T00:00:00.000Z",
-    pickup_time: "10:00:00",
-  },
-  {
-    id: 3,
-    site_name: "Site 3",
-    status: "PENDING",
-    pickup_date: "2023-04-22T00:00:00.000Z",
-    pickup_time: "13:45:00",
-  },
-];
-
 const SiteVisitRequests = () => {
   const [actionStates, setActionStates] = useState({});
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
@@ -36,30 +12,35 @@ const SiteVisitRequests = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // const fetchSiteVisitRequests = async () => {
-    //   try {
-    //     const response = await fetch("http://localhost:8080/api/site-visits", {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     });
-    //     const data = await response.json();
-    //     const pendingSiteVisitRequests = data.filter(
-    //       (item) => item.status === "PENDING"
-    //     );
-    //     setSiteVisitRequests(pendingSiteVisitRequests);
-    //   } catch (error) {
-    //     console.error("Error fetching site visits:", error);
-    //   }
-    // };
+    const fetchSiteVisitRequests = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/site-visit-requests/pending-site-visits",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        const pendingSiteVisitRequests = data.filter(
+          (item) => item.status === "pending"
+        );
+        setSiteVisitRequests(pendingSiteVisitRequests);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
 
-    // fetchSiteVisitRequests();
+    fetchSiteVisitRequests();
 
-    const pendingSiteVisitRequests = dummyData.filter(
-      (item) => item.status === "PENDING"
+    const pendingSiteVisitRequests = siteVisitRequests.filter(
+      (item) => item.status === "pending"
     );
     setSiteVisitRequests(pendingSiteVisitRequests);
   }, [token]);
+
+  console.log(siteVisitRequests);
 
   const handleView = (id) => {
     navigate(`/site-visit-requests/${id}`);
@@ -109,7 +90,7 @@ const SiteVisitRequests = () => {
                         <p className="text-gray-800 font-bold w-full">
                           Site Visit Booking Request Sent From{" "}
                           <span className="text-primary font-bold">
-                            John Smith
+                          {svr.marketer_name}
                           </span>
                         </p>
                         <div className="">
@@ -121,7 +102,13 @@ const SiteVisitRequests = () => {
                           </p>
                           <p className="font-bold">
                             Number of Clients:{" "}
-                            <span className="text-primary font-bold">2</span>
+                            <span className="text-primary font-bold">{svr.num_clients}</span>
+                          </p>
+                          <p className="font-bold">
+                            Pickup Location:{" "}
+                            <span className="text-primary font-bold">
+                              {svr.pickup_location}
+                            </span>
                           </p>
                           <p className="font-bold">
                             Pickup Date:{" "}
