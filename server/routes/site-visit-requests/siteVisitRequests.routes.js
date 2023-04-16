@@ -61,6 +61,7 @@ module.exports = (connection) => {
     }
   );
 
+  // Get a single pending site visit request
   router.get(
     "/pending-site-visits/:id",
     authenticateJWT,
@@ -288,6 +289,35 @@ module.exports = (connection) => {
             }
           }
         );
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+
+  // Get vehicles with passengers
+  router.get(
+    "/vehicles-with-passengers",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAdmin1,
+      AccessRoles.isAdmin2,
+      AccessRoles.isAdmin3,
+    ]),
+    async (req, res) => {
+      try {
+        const query = `
+            SELECT vehicles.*
+            FROM vehicles
+            INNER JOIN site_visits
+            ON vehicles.id = site_visits.vehicle_id
+            WHERE site_visits.status = 'approved'
+            GROUP BY vehicles.id
+          `;
+        connection.query(query, (err, results) => {
+          if (err) throw err;
+          res.status(200).json(results);
+        });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }

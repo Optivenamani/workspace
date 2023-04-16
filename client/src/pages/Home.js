@@ -9,14 +9,12 @@ const Home = () => {
     ? user.fullnames.trim().split(" ")[0]
     : "user";
 
-  console.log(firstName)
-  
   const now = new Date();
   const hour = now.getHours();
   let greeting;
 
   if (hour < 12) {
-    greeting = "Good morning,";
+    greeting = "Top of the morning,";
   } else if (hour >= 12 && hour < 17) {
     greeting = "Good afternoon,";
   } else if (hour >= 17 && hour < 22) {

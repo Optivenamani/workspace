@@ -38,6 +38,7 @@ const SiteVisitRequests = () => {
       (item) => item.status === "pending"
     );
     setSiteVisitRequests(pendingSiteVisitRequests);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handleView = (id) => {

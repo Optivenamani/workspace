@@ -25,6 +25,7 @@ import Notifications from "./pages/Notification";
 import Login from "./pages/Login";
 import SiteVisitDetails from "./pages/site-visit-bookings/SiteVisitDetails";
 import EditVehicle from "./pages/vehicles/EditVehicle";
+import AssignDriver from "./pages/drivers/AssignDriver";
 
 const App = () => {
   return (
@@ -72,6 +73,7 @@ const App = () => {
             {/* Drivers */}
             <Route path="/create-driver" element={<AddDriver />} />
             <Route path="/drivers" element={<ViewDrivers />} />
+            <Route path="/assign-drivers" element={<AssignDriver />} />
             {/* Users */}
             <Route path="/users" element={<Users />} />
             {/* Notifications */}

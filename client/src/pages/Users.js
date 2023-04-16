@@ -10,7 +10,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/me", {
+        const response = await fetch("http://localhost:8080/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

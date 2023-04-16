@@ -14,6 +14,7 @@ const Sidebar = ({ children }) => {
     accessRole === `     112#116#303#305` ||
     accessRole === `   112#304` ||
     accessRole === `   112#305`;
+  const isDriver = `driver69`
 
   return (
     <>
@@ -36,7 +37,7 @@ const Sidebar = ({ children }) => {
               </li>
             )}
             {/* Site Visit */}
-            {(isMarketer || isHOSorGM || isAdmin) && (
+            {(isMarketer || isHOSorGM || isAdmin || isDriver) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Site Visits</div>
@@ -57,7 +58,7 @@ const Sidebar = ({ children }) => {
                       My Site Visits
                     </a>
                   )}
-                  {isAdmin && (
+                  {(isAdmin || isDriver) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/assigned-site-visits"
