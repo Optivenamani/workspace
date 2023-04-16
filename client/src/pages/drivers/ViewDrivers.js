@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 const ViewDrivers = () => {
   const [query, setQuery] = useState("");
-  const [drivers, setDrivers] = useState([]);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
-    const fetchDrivers = async () => {
+    const fetchUsers = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/users", {
           headers: {
@@ -18,17 +18,21 @@ const ViewDrivers = () => {
           },
         });
         const data = await response.json();
-        setDrivers(data);
+        setUsers(data);
       } catch (error) {
-        console.error("Error fetching drivers:", error);
+        console.error("Error fetching users:", error);
       }
     };
 
-    fetchDrivers();
+    fetchUsers();
   }, [token]);
 
+  const drivers = users.filter((user) => user.Accessrole === "driver69");
+
+  console.log(drivers);
+
   const filteredDrivers = drivers.filter((driver) =>
-    driver.driver_name.toLowerCase().includes(query.toLowerCase())
+    driver.fullnames.toLowerCase().includes(query.toLowerCase())
   );
 
   const editDriver = (driverId) => {
@@ -39,7 +43,7 @@ const ViewDrivers = () => {
   const deleteDriver = (driverId) => {
     const token = localStorage.getItem("token");
     // Send a DELETE request to the server to delete the driver with the specified ID
-    fetch(`http://localhost:8080/api/drivers/${driverId}`, {
+    fetch(`http://localhost:8080/api/users/${driverId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -50,8 +54,8 @@ const ViewDrivers = () => {
           throw new Error("Network response was not ok");
         }
         // Remove the driver from the drivers state
-        setDrivers((prevDrivers) =>
-          prevDrivers.filter((driver) => driver.driver_id !== driverId)
+        setUsers((prevUsers) =>
+          prevUsers.filter((driver) => driver.user_id !== driverId)
         );
       })
       .catch((error) => {
@@ -76,11 +80,9 @@ const ViewDrivers = () => {
               {/* head */}
               <thead>
                 <tr>
-                  <th></th>
+                  <th>Index</th>
                   <th>Name</th>
                   <th>Email</th>
-                  <th>Phone Number</th>
-                  <th>Address</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -89,20 +91,18 @@ const ViewDrivers = () => {
                 {filteredDrivers.map((driver, index) => (
                   <tr key={index}>
                     <th>{index + 1}</th>
-                    <td>{driver.driver_name}</td>
-                    <td>{driver.driver_email}</td>
-                    <td>{driver.driver_phone_number}</td>
-                    <td>{driver.driver_address}</td>
+                    <td>{driver.fullnames}</td>
+                    <td>{driver.email}</td>
                     <td>
                       <button
                         className="btn btn-sm btn-warning mr-2 text-white"
-                        onClick={() => editDriver(driver.driver_id)}
+                        onClick={() => editDriver(driver.user_id)}
                       >
                         Edit
                       </button>
                       <button
                         className="btn btn-sm btn-error text-white"
-                        onClick={() => deleteDriver(driver.driver_id)}
+                        onClick={() => deleteDriver(driver.user_id)}
                       >
                         Delete
                       </button>

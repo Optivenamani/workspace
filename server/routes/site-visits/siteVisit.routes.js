@@ -160,6 +160,86 @@ module.exports = (connection) => {
     }
   );
 
+  // Set site_visit status to "in_progress" when starting a trip
+  router.patch(
+    "/start-trip/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAdmin1,
+      AccessRoles.isAdmin2,
+      AccessRoles.isAdmin3,
+      AccessRoles.isMarketer,
+    ]),
+    async (req, res) => {
+      const { id } = req.params;
+
+      try {
+        connection.query(
+          "UPDATE site_visits SET status = 'in_progress' WHERE id = ?",
+          [id],
+          (err, result) => {
+            if (err) throw err;
+            if (result.affectedRows === 0) {
+              res
+                .status(404)
+                .json({ message: "Site visit request not found." });
+            } else {
+              res.json({
+                message:
+                  "Site visit request status updated to 'in_progress' successfully.",
+              });
+            }
+          }
+        );
+      } catch (error) {
+        res.status(500).json({
+          message:
+            "An error occurred while updating the site visit request status.",
+        });
+      }
+    }
+  );
+
+  // Set site_visit status to "complete" when ending a trip
+  router.patch(
+    "/end-trip/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAdmin1,
+      AccessRoles.isAdmin2,
+      AccessRoles.isAdmin3,
+      AccessRoles.isMarketer,
+    ]),
+    async (req, res) => {
+      const { id } = req.params;
+
+      try {
+        connection.query(
+          "UPDATE site_visits SET status = 'complete' WHERE id = ?",
+          [id],
+          (err, result) => {
+            if (err) throw err;
+            if (result.affectedRows === 0) {
+              res
+                .status(404)
+                .json({ message: "Site visit request not found." });
+            } else {
+              res.json({
+                message:
+                  "Site visit request status updated to 'complete' successfully.",
+              });
+            }
+          }
+        );
+      } catch (error) {
+        res.status(500).json({
+          message:
+            "An error occurred while updating the site visit request status.",
+        });
+      }
+    }
+  );
+
   // Delete a site visit request
   router.delete(
     "/:id",

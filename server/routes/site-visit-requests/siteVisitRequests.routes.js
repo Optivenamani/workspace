@@ -266,7 +266,7 @@ module.exports = (connection) => {
         connection.query(
           checkSiteVisitQuery,
           [site_visit_id],
-          (err, siteVisitResults) => {
+          async (err, siteVisitResults) => {
             if (err) throw err;
             if (siteVisitResults.length > 0) {
               // Update driver_id in the site_visits table
@@ -275,11 +275,22 @@ module.exports = (connection) => {
               connection.query(
                 updateSiteVisitQuery,
                 [user_id, site_visit_id],
-                (err, result) => {
+                async (err, result) => {
                   if (err) throw err;
-                  res.status(200).json({
-                    message: "Driver assigned to vehicle successfully.",
-                  });
+
+                  // Update the driver's availability in the users table
+                  const updateDriverAvailabilityQuery =
+                    "UPDATE users SET is_available = 0 WHERE user_id = ?";
+                  connection.query(
+                    updateDriverAvailabilityQuery,
+                    [user_id],
+                    (err, result) => {
+                      if (err) throw err;
+                      res.status(200).json({
+                        message: "Driver assigned to vehicle successfully.",
+                      });
+                    }
+                  );
                 }
               );
             } else {
@@ -295,7 +306,7 @@ module.exports = (connection) => {
     }
   );
 
-  // Get vehicles with passengers
+  // Get vehicles with passengers and without assigned drivers
   router.get(
     "/vehicles-with-passengers",
     authenticateJWT,
@@ -307,13 +318,13 @@ module.exports = (connection) => {
     async (req, res) => {
       try {
         const query = `
-            SELECT vehicles.*
-            FROM vehicles
-            INNER JOIN site_visits
-            ON vehicles.id = site_visits.vehicle_id
-            WHERE site_visits.status = 'approved'
-            GROUP BY vehicles.id
-          `;
+          SELECT vehicles.*
+          FROM vehicles
+          INNER JOIN site_visits
+          ON vehicles.id = site_visits.vehicle_id
+          WHERE site_visits.status = 'approved' AND site_visits.driver_id IS NOT NULL
+          GROUP BY vehicles.id
+        `;
         connection.query(query, (err, results) => {
           if (err) throw err;
           res.status(200).json(results);

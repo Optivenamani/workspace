@@ -14,7 +14,7 @@ const Sidebar = ({ children }) => {
     accessRole === `     112#116#303#305` ||
     accessRole === `   112#304` ||
     accessRole === `   112#305`;
-  const isDriver = `driver69`
+  const isDriver = `driver69`;
 
   return (
     <>
@@ -167,18 +167,18 @@ const Sidebar = ({ children }) => {
                   </a>
                   {(isHOSorGM || isAdmin) && (
                     <>
-                    <a
-                      className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                      href="/all-clients-contacts"
-                    >
-                      All Clients' Contacts
-                    </a>
-                    <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/clients-feedback"
-                  >
-                    Clients Feedback
-                  </a>
+                      <a
+                        className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                        href="/all-clients-contacts"
+                      >
+                        All Clients' Contacts
+                      </a>
+                      <a
+                        className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                        href="/clients-feedback"
+                      >
+                        Clients Feedback
+                      </a>
                     </>
                   )}
                 </div>
@@ -192,12 +192,6 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   <a
                     className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                    href="/create-driver"
-                  >
-                    Add Driver
-                  </a>
-                  <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                     href="/drivers"
                   >
                     View Drivers
