@@ -1,22 +1,8 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const AccessRoles = require("../../constants/accessRoles");
+const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
-
-// Middleware for checking user permissions
-const checkPermissions = (allowedRoles) => {
-  return (req, res, next) => {
-    const userAccessRole = req.user.Accessrole;
-
-    if (allowedRoles.some((role) => userAccessRole.includes(role))) {
-      next();
-    } else {
-      res.status(403).json({
-        message: "Forbidden: You don't have permission to perform this action.",
-      });
-    }
-  };
-};
 
 module.exports = (connection) => {
   // Create a new site visit request
@@ -125,10 +111,11 @@ module.exports = (connection) => {
     "/:id",
     authenticateJWT,
     checkPermissions([
-      AccessRoles.isAdmin1,
-      AccessRoles.isAdmin2,
-      AccessRoles.isAdmin3,
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
       AccessRoles.isMarketer,
+      AccessRoles.isDriver,
     ]),
     async (req, res) => {
       const { status } = req.body;
@@ -165,10 +152,11 @@ module.exports = (connection) => {
     "/start-trip/:id",
     authenticateJWT,
     checkPermissions([
-      AccessRoles.isAdmin1,
-      AccessRoles.isAdmin2,
-      AccessRoles.isAdmin3,
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
       AccessRoles.isMarketer,
+      AccessRoles.isDriver,
     ]),
     async (req, res) => {
       const { id } = req.params;
@@ -205,36 +193,68 @@ module.exports = (connection) => {
     "/end-trip/:id",
     authenticateJWT,
     checkPermissions([
-      AccessRoles.isAdmin1,
-      AccessRoles.isAdmin2,
-      AccessRoles.isAdmin3,
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
       AccessRoles.isMarketer,
+      AccessRoles.isDriver,
     ]),
     async (req, res) => {
       const { id } = req.params;
+      const driverId = req.user.id;
 
       try {
-        connection.query(
-          "UPDATE site_visits SET status = 'complete' WHERE id = ?",
-          [id],
-          (err, result) => {
-            if (err) throw err;
-            if (result.affectedRows === 0) {
-              res
-                .status(404)
-                .json({ message: "Site visit request not found." });
-            } else {
-              res.json({
-                message:
-                  "Site visit request status updated to 'complete' successfully.",
-              });
+        connection.beginTransaction((err) => {
+          if (err) throw err;
+
+          // Update site visit status
+          connection.query(
+            "UPDATE site_visits SET status = 'complete' WHERE id = ?",
+            [id],
+            (err, result) => {
+              if (err) {
+                connection.rollback(() => {
+                  throw err;
+                });
+              }
+
+              if (result.affectedRows === 0) {
+                res
+                  .status(404)
+                  .json({ message: "Site visit request not found." });
+              } else {
+                // Update driver's availability status
+                connection.query(
+                  "UPDATE users SET is_available = 1 WHERE id = ?",
+                  [driverId],
+                  (err, result) => {
+                    if (err) {
+                      connection.rollback(() => {
+                        throw err;
+                      });
+                    }
+
+                    connection.commit((err) => {
+                      if (err) {
+                        connection.rollback(() => {
+                          throw err;
+                        });
+                      }
+                      res.json({
+                        message:
+                          "Site visit request status updated to 'complete' and driver set to 'available' successfully.",
+                      });
+                    });
+                  }
+                );
+              }
             }
-          }
-        );
+          );
+        });
       } catch (error) {
         res.status(500).json({
           message:
-            "An error occurred while updating the site visit request status.",
+            "An error occurred while updating the site visit request status and driver availability.",
         });
       }
     }
@@ -245,9 +265,9 @@ module.exports = (connection) => {
     "/:id",
     authenticateJWT,
     checkPermissions([
-      AccessRoles.isAdmin1,
-      AccessRoles.isAdmin2,
-      AccessRoles.isAdmin3,
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
     ]),
     async (req, res) => {
       const { id } = req.params;

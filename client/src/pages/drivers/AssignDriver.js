@@ -1,90 +1,96 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Sidebar from "../../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const AssignDriver = () => {
+  const [drivers, setDrivers] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [vehicle, setVehicle] = useState("");
   const [driver, setDriver] = useState("");
-  const [users, setUsers] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const token = useSelector((state) => state.user.token);
+  const navigate = useNavigate();
 
-  const fetchUsers = useCallback(async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      const availableUsers = data.filter((user) => user.is_available !== 0);
-      setUsers(availableUsers);
-    } catch (error) {
-      console.error("Error fetching site visits:", error);
-    }
-  }, [token]);
-
-  const fetchVehicles = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/api/site-visit-requests/vehicles-with-passengers",
-        {
+  useEffect(() => {
+    const fetchDrivers = async (id) => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
-      const data = await response.json();
-      setVehicles(data);
-    } catch (error) {
-      console.error("Error fetching vehicles:", error);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
-  useEffect(() => {
-    fetchVehicles();
-  }, [fetchVehicles]);
-
-  console.log("vehicles: ", vehicles);
-
-  const drivers = users.filter((user) => user.Accessrole === "driver69");
-
-  console.log("drivers: ", drivers);
-
-  const assignDriverToVehicle = async (vehicleId, driverId) => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `http://localhost:8080/api/site-visit-requests/assign-vehicle-driver/${vehicleId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ user_id: driverId }),
-        }
-      );
-
-      const data = await response.json();
-      if (response.ok) {
-        alert(data.message);
-        // Refresh the vehicles and drivers list after successful assignment
-        fetchVehicles();
-        fetchUsers();
-      } else {
-        console.error(data.error);
+        });
+        const users = await response.json();
+        const madere = users.filter(
+          (user) =>
+            user.Accessrole === "driver69" ||
+            user.Accessrole === "     112#114#700"
+        );
+        console.log("madere: ", madere);
+        setDrivers(madere);
+      } catch (error) {
+        console.error("Error fetching madere:", error);
       }
-    } catch (error) {
-      console.error("Error assigning driver to vehicle:", error);
-    } finally {
-      setIsLoading(false);
+    };
+
+    fetchDrivers();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchVehicles = async (id) => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/site-visit-requests/vehicles-with-passengers`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        console.log("vehicles: ", data);
+        setVehicles(data);
+      } catch (error) {
+        console.error("Error fetching drivers:", error);
+      }
+    };
+
+    fetchVehicles();
+  }, [token]);
+
+  const assignDriverToVehicle = async (siteVisitId) => {
+    if (vehicle && driver) {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          `http://localhost:8080/api/site-visit-requests/assign-vehicle-driver/${siteVisitId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ driver_id: driver }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setIsLoading(false);
+          navigate("/");
+        } else {
+          const error = await response.json();
+          console.error("Error assigning driver:", error.message);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Error assigning driver:", error);
+        setIsLoading(false);
+      }
+    } else {
+      alert("Please select a vehicle and a driver before assigning.");
     }
   };
 
@@ -99,13 +105,27 @@ const AssignDriver = () => {
             <select
               id="vehicle"
               as="select"
-              value={vehicle}
-              onChange={(event) => setVehicle(event.target.value)}
+              value={vehicle ? vehicle.id : ""}
+              onChange={(event) => {
+                const selectedIndex = event.target.options.selectedIndex;
+                const siteVisitId =
+                  event.target.options[selectedIndex].getAttribute(
+                    "data-site-visit-id"
+                  );
+                setVehicle({
+                  id: event.target.value,
+                  site_visit_id: siteVisitId,
+                });
+              }}
               className="select select-bordered w-full max-w-xs"
             >
               <option value="">Select a vehicle</option>
               {vehicles.map((vehicle) => (
-                <option key={vehicle.id} value={vehicle.id}>
+                <option
+                  key={vehicle.id}
+                  value={vehicle.id}
+                  data-site-visit-id={vehicle.site_visit_id}
+                >
                   {vehicle.make} {vehicle.model} {vehicle.vehicle_registration}
                 </option>
               ))}
@@ -130,7 +150,11 @@ const AssignDriver = () => {
             <label className="label"></label>
             <button
               className="btn btn-primary btn-outline max-w-full"
-              onClick={() => assignDriverToVehicle(vehicle, driver)}
+              onClick={() => {
+                if (vehicle) {
+                  assignDriverToVehicle(vehicle.site_visit_id);
+                }
+              }}
               disabled={isLoading}
             >
               {isLoading ? <span className="spinner"></span> : "Assign"}

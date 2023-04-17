@@ -19,6 +19,7 @@ const AssignedBookings = () => {
           }
         );
         const data = await response.json();
+        console.log(data);
         setSiteVisits(data);
       } catch (error) {
         console.error("Error fetching site visits:", error);
@@ -108,7 +109,7 @@ const AssignedBookings = () => {
                   <div className="mt-4">
                     <p className="max-w-[40ch] text-sm">
                       <span className="font-bold">Passengers: </span>
-                      {sv.num_passengers}
+                      {sv.total_passengers}
                     </p>
                   </div>
 

@@ -24,9 +24,9 @@ module.exports = (connection) => {
     "/",
     authenticateJWT,
     checkPermissions([
-      AccessRoles.isAdmin1,
-      AccessRoles.isAdmin2,
-      AccessRoles.isAdmin3,
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
     ]),
     async (req, res) => {
       try {
