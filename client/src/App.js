@@ -26,6 +26,7 @@ import Login from "./pages/Login";
 import SiteVisitDetails from "./pages/site-visit-bookings/SiteVisitDetails";
 import EditVehicle from "./pages/vehicles/EditVehicle";
 import AssignDriver from "./pages/drivers/AssignDriver";
+import VehicleRequests from "./pages/vehicles/VehicleRequests";
 
 const App = () => {
   return (
@@ -67,6 +68,7 @@ const App = () => {
             <Route path="/vehicles" element={<ViewVehicles />} />
             <Route path="/request-vehicle" element={<RequestVehicle />} />
             <Route path="/vehicles/:id" element={<EditVehicle />} />
+            <Route path="/vehicle-requests" element={<VehicleRequests />} />
             {/* Clients */}
             <Route path="/clients-contacts" element={<ClientContacts />} />
             <Route path="/clients-feedback" element={<ClientsFeedback />} />

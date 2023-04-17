@@ -13,10 +13,11 @@ module.exports = (connection) => {
         pickup_location,
         destination_location,
         pickup_time,
+        pickup_date,
         number_of_passengers,
       } = req.body;
       const query =
-        "INSERT INTO vehicle_requests (requester_id, pickup_location, destination_location, pickup_time, number_of_passengers) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO vehicle_requests (requester_id, pickup_location, destination_location, pickup_time, pickup_date, number_of_passengers) VALUES (?, ?, ?, ?, ?, ?)";
       connection.query(
         query,
         [
@@ -24,6 +25,7 @@ module.exports = (connection) => {
           pickup_location,
           destination_location,
           pickup_time,
+          pickup_date,
           number_of_passengers,
         ],
         (err, result) => {
