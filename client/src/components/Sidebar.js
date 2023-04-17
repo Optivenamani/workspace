@@ -127,12 +127,14 @@ const Sidebar = ({ children }) => {
                 >
                   Request Vehicle
                 </a>
-                <a
-                  href="/vehicle-requests"
-                  className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                >
-                  Vehicle Requests
-                </a>
+                {isAdmin && (
+                  <a
+                    href="/vehicle-requests"
+                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                  >
+                    Vehicle Requests
+                  </a>
+                )}
                 <a
                   href="/past-vehicle-requests"
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"

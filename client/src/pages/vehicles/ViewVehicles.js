@@ -41,7 +41,7 @@ const ViewVehicles = () => {
   const deleteVehicle = (vehicleId) => {
     const token = localStorage.getItem("token");
     // Send a DELETE request to the server to delete the vehicle with the specified ID
-    fetch(`http://localhost:8080/api/vehicles/${vehicleId}`, {
+    fetch(`http://localhost:8080/api/vehicles/vehicle/${vehicleId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

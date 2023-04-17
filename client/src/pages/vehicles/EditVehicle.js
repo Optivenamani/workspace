@@ -23,7 +23,7 @@ const EditVehicle = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/vehicles/${vehicleId}`,
+        `http://localhost:8080/api/vehicles/vehicle/${vehicleId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

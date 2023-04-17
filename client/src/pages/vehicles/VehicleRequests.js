@@ -41,10 +41,10 @@ const VehicleRequests = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  console.log(vehicleRequests)
+  console.log(vehicleRequests);
 
   const handleView = (id) => {
-    navigate(`/vehicle-requests/${id}`);
+    navigate(`/vehicle-request-details/${id}`);
   };
 
   const handleReject = (id) => {

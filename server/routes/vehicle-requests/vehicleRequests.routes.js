@@ -72,6 +72,45 @@ module.exports = (connection) => {
     }
   );
 
+  // Get a single vehicle request
+  router.get(
+    "/pending-vehicle-requests/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
+    async (req, res) => {
+      const id = req.params.id;
+      const query = `
+      SELECT
+        vehicle_requests.*,
+        users.fullnames AS requester_name,
+        vehicles.make AS vehicle_make,
+        vehicles.model AS vehicle_model,
+        driver.fullnames AS driver_name
+      FROM vehicle_requests
+      LEFT JOIN users
+        ON vehicle_requests.requester_id = users.user_id
+      LEFT JOIN vehicles
+        ON vehicle_requests.vehicle_id = vehicles.id
+      LEFT JOIN users AS driver
+        ON vehicle_requests.driver_id = driver.user_id
+      WHERE vehicle_requests.id = ?;
+    `;
+      connection.query(query, [id], (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+          res.status(200).json(results[0]);
+        } else {
+          res.status(404).json({ message: "Vehicle request not found." });
+        }
+      });
+    }
+  );
+
   // Approve vehicle request
   router.post(
     "/approve-vehicle-request/:id",
