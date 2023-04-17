@@ -225,7 +225,7 @@ module.exports = (connection) => {
               } else {
                 // Update driver's availability status
                 connection.query(
-                  "UPDATE users SET is_available = 1 WHERE id = ?",
+                  "UPDATE users SET is_available = 1 WHERE user_id = ?",
                   [driverId],
                   (err, result) => {
                     if (err) {

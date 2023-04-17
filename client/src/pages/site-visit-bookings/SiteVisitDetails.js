@@ -106,44 +106,74 @@ const SiteVisitDetails = () => {
   return (
     <>
       <Sidebar>
-        <div>
+        <div className="flex flex-col justify-center items-center">
           {siteVisitData ? (
             <>
-              <h1>Site Name: {siteVisitData.site_name}</h1>
-              <h2>Pickup Location: {siteVisitData.pickup_location}</h2>
-              <h3>Pickup Date: {new Date(siteVisitData.pickup_date).toLocaleDateString(
+              <div className="flex flex-col mx-4">
+                <div className="card rounded bg-base-100 shadow-xl p-10 my-4">
+                  <h1>
+                    <span className="font-bold">
+                      Site: {siteVisitData.site_name}
+                    </span>
+                  </h1>
+                  <h1>
+                    <span className="font-bold">
+                      Pickup Location: {siteVisitData.pickup_location}
+                    </span>
+                  </h1>
+                  <h1>
+                    <span className="font-bold">
+                      Date (DD/MM/YYYY):{" "}
+                      {new Date(siteVisitData.pickup_date).toLocaleDateString(
                         "en-GB"
-                      )}</h3>
-              <h3>Pickup Time: {format12HourTime(siteVisitData.pickup_time)}</h3>
-              <h4>Number of Clients: {siteVisitData.num_clients}</h4>
-              <button className="btn btn-outline" onClick={approveSiteVisit}>
-                Accept Site Visit Request
-              </button>
-              <label>Assign vehicle:</label>
-              <select
-                id="vehicle"
-                as="select"
-                value={vehicle}
-                onChange={(event) => setVehicle(event.target.value)}
-                className="select select-bordered"
-                disabled={!isApproved}
-              >
-                <option value="">Select a Vehicle</option>
-                {vehicles.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.make} {v.model} - {v.number_of_seats} seats -{" "}
-                    {v.vehicle_registration}
-                  </option>
-                ))}
-              </select>
-              {isApproved && (
-                <button
-                  className="btn btn-outline"
-                  onClick={assignVehicleToSiteVisit}
+                      )}
+                    </span>
+                  </h1>
+                  <h1>
+                    <span className="font-bold">
+                      Time: {format12HourTime(siteVisitData.pickup_time)}
+                    </span>
+                  </h1>
+                  <h1>
+                    <span className="font-bold">
+                      Number of clients: {siteVisitData.num_clients}
+                    </span>
+                  </h1>
+                  <button
+                    className="btn btn-outline btn-primary mt-4"
+                    onClick={approveSiteVisit}
+                  >
+                    Accept Site Visit Request
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <label className="label">Assign vehicle:</label>
+                <select
+                  id="vehicle"
+                  as="select"
+                  value={vehicle}
+                  onChange={(event) => setVehicle(event.target.value)}
+                  className="select select-bordered"
+                  disabled={!isApproved}
                 >
-                  Assign Vehicle
-                </button>
-              )}
+                  <option value="">Select a Vehicle</option>
+                  {vehicles.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.make} {v.model} - {v.number_of_seats} seats -{" "}
+                      {v.vehicle_registration}
+                    </option>
+                  ))}
+                </select>
+                {isApproved && (
+                  <button
+                    className="btn btn-outline btn-primary mt-2"
+                    onClick={assignVehicleToSiteVisit}
+                  >
+                    Assign Vehicle
+                  </button>
+                )}
+              </div>
             </>
           ) : (
             <p>Loading site visit data...</p>
