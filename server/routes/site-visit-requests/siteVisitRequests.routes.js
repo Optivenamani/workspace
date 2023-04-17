@@ -171,11 +171,11 @@ module.exports = (connection) => {
           (err, siteVisitResults) => {
             if (err) throw err;
             if (siteVisitResults.length > 0) {
-              // Check if the vehicle has enough seats
-              const checkVehicleSeatsQuery =
-                "SELECT number_of_seats FROM vehicles WHERE id = ?";
+              // Check if the vehicle is available and has enough seats
+              const checkVehicleQuery =
+                "SELECT number_of_seats FROM vehicles WHERE id = ? AND status = 'available'";
               connection.query(
-                checkVehicleSeatsQuery,
+                checkVehicleQuery,
                 [vehicle_id],
                 (err, vehicleResults) => {
                   if (err) throw err;
@@ -199,23 +199,36 @@ module.exports = (connection) => {
                             [vehicle_id, site_visit_id],
                             (err, result) => {
                               if (err) throw err;
-                              res.status(200).json({
-                                message:
-                                  "Vehicle assigned to site visit successfully.",
-                              });
+
+                              // Set the vehicle status to unavailable
+                              const updateVehicleStatusQuery =
+                                "UPDATE vehicles SET status = 'unavailable' WHERE id = ?";
+                              connection.query(
+                                updateVehicleStatusQuery,
+                                [vehicle_id],
+                                (err, result) => {
+                                  if (err) throw err;
+                                  res.status(200).json({
+                                    message:
+                                      "Vehicle assigned to site visit successfully.",
+                                  });
+                                }
+                              );
                             }
                           );
                         } else {
+                          const seatsExceeded = clientCount + 1 - numberOfSeats;
                           res.status(400).json({
                             message:
                               "The selected vehicle does not have enough seats.",
+                            exceeded_by: seatsExceeded,
                           });
                         }
                       }
                     );
                   } else {
                     res.status(404).json({
-                      message: "Vehicle not found.",
+                      message: "Available vehicle not found.",
                     });
                   }
                 }
@@ -234,71 +247,84 @@ module.exports = (connection) => {
   );
 
   // Assign driver to a vehicle
-  router.post("/assign-vehicle-driver/:id", async (req, res) => {
-    try {
-      const site_visit_id = req.params.id;
-      const { driver_id } = req.body;
+  router.post(
+    "/assign-vehicle-driver/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
+    async (req, res) => {
+      try {
+        const site_visit_id = req.params.id;
+        const { driver_id } = req.body;
 
-      const checkSiteVisitQuery =
-        "SELECT * FROM site_visits WHERE id = ? AND status = 'approved'";
-      connection.query(
-        checkSiteVisitQuery,
-        [site_visit_id],
-        async (err, siteVisitResults) => {
-          if (err) throw err;
+        const checkSiteVisitQuery =
+          "SELECT * FROM site_visits WHERE id = ? AND status = 'approved'";
+        connection.query(
+          checkSiteVisitQuery,
+          [site_visit_id],
+          async (err, siteVisitResults) => {
+            if (err) throw err;
 
-          console.log("Site Visit Results:", siteVisitResults);
+            console.log("Site Visit Results:", siteVisitResults);
 
-          if (siteVisitResults.length > 0) {
-            const checkDriverAvailabilityQuery =
-              "SELECT * FROM users WHERE user_id = ? AND is_available = 1";
-            connection.query(
-              checkDriverAvailabilityQuery,
-              [driver_id],
-              async (err, driverResults) => {
-                if (err) throw err;
+            if (siteVisitResults.length > 0) {
+              const checkDriverAvailabilityQuery =
+                "SELECT * FROM users WHERE user_id = ? AND is_available = 1";
+              connection.query(
+                checkDriverAvailabilityQuery,
+                [driver_id],
+                async (err, driverResults) => {
+                  if (err) throw err;
 
-                console.log("Driver Results:", driverResults);
+                  console.log("Driver Results:", driverResults);
 
-                if (driverResults.length > 0) {
-                  const updateSiteVisitQuery =
-                    "UPDATE site_visits SET driver_id = ? WHERE id = ?";
-                  connection.query(
-                    updateSiteVisitQuery,
-                    [driver_id, site_visit_id],
-                    async (err, result) => {
-                      if (err) throw err;
+                  if (driverResults.length > 0) {
+                    const updateSiteVisitQuery =
+                      "UPDATE site_visits SET driver_id = ? WHERE id = ?";
+                    connection.query(
+                      updateSiteVisitQuery,
+                      [driver_id, site_visit_id],
+                      async (err, result) => {
+                        if (err) throw err;
 
-                      const updateDriverAvailabilityQuery =
-                        "UPDATE users SET is_available = 0 WHERE user_id = ?";
-                      connection.query(
-                        updateDriverAvailabilityQuery,
-                        [driver_id],
-                        (err, result) => {
-                          if (err) throw err;
-                          res.status(200).json({
-                            message: "Driver assigned to vehicle successfully.",
-                          });
-                        }
-                      );
-                    }
-                  );
-                } else {
-                  res.status(400).json({ message: "Driver is not available." });
+                        const updateDriverAvailabilityQuery =
+                          "UPDATE users SET is_available = 0 WHERE user_id = ?";
+                        connection.query(
+                          updateDriverAvailabilityQuery,
+                          [driver_id],
+                          (err, result) => {
+                            if (err) throw err;
+                            res.status(200).json({
+                              message:
+                                "Driver assigned to vehicle successfully.",
+                            });
+                          }
+                        );
+                      }
+                    );
+                  } else {
+                    res
+                      .status(400)
+                      .json({ message: "Driver is not available." });
+                  }
                 }
-              }
-            );
-          } else {
-            res
-              .status(404)
-              .json({ message: "Approved site visit request not found." });
+              );
+            } else {
+              res
+                .status(404)
+                .json({ message: "Approved site visit request not found." });
+            }
           }
-        }
-      );
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+        );
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     }
-  });
+  );
 
   // Get vehicles with passengers and without assigned drivers
   router.get(

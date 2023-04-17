@@ -41,8 +41,13 @@ module.exports = (connection) => {
   // Get all pending vehicle requests
   router.get(
     "/pending-vehicle-requests",
-    // authenticateJWT,
-    // checkPermissions([AccessRoles.isKasili]),
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
     async (req, res) => {
       try {
         const query = `
@@ -69,7 +74,12 @@ module.exports = (connection) => {
   router.post(
     "/approve-vehicle-request/:id",
     authenticateJWT,
-    checkPermissions([AccessRoles.isKasili]),
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
     async (req, res) => {
       try {
         const id = req.params.id;
@@ -93,7 +103,12 @@ module.exports = (connection) => {
   router.post(
     "/reject-vehicle-request/:id",
     authenticateJWT,
-    checkPermissions([AccessRoles.isKasili]),
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
     async (req, res) => {
       try {
         const id = req.params.id;
@@ -117,8 +132,13 @@ module.exports = (connection) => {
   // Assign vehicle to a request
   router.post(
     "/assign-vehicle-to-request/:id",
-    // authenticateJWT,
-    // checkPermissions([AccessRoles.isKasili]),
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
     async (req, res) => {
       try {
         const request_id = req.params.id;
@@ -133,11 +153,11 @@ module.exports = (connection) => {
           (err, requestResults) => {
             if (err) throw err;
             if (requestResults.length > 0) {
-              // Check if the vehicle has enough seats
-              const checkVehicleSeatsQuery =
-                "SELECT number_of_seats FROM vehicles WHERE id = ?";
+              // Check if the vehicle is available and has enough seats
+              const checkVehicleQuery =
+                "SELECT number_of_seats FROM vehicles WHERE id = ? AND status = 'available'";
               connection.query(
-                checkVehicleSeatsQuery,
+                checkVehicleQuery,
                 [vehicle_id],
                 (err, vehicleResults) => {
                   if (err) throw err;
@@ -153,21 +173,34 @@ module.exports = (connection) => {
                         [vehicle_id, request_id],
                         (err, result) => {
                           if (err) throw err;
-                          res.status(200).json({
-                            message:
-                              "Vehicle assigned to request successfully.",
-                          });
+
+                          // Set the vehicle status to unavailable
+                          const updateVehicleStatusQuery =
+                            "UPDATE vehicles SET status = 'unavailable' WHERE id = ?";
+                          connection.query(
+                            updateVehicleStatusQuery,
+                            [vehicle_id],
+                            (err, result) => {
+                              if (err) throw err;
+                              res.status(200).json({
+                                message:
+                                  "Vehicle assigned to request successfully.",
+                              });
+                            }
+                          );
                         }
                       );
                     } else {
+                      const seatsExceeded = passengers - numberOfSeats;
                       res.status(400).json({
                         message:
                           "The selected vehicle does not have enough seats.",
+                        exceeded_by: seatsExceeded,
                       });
                     }
                   } else {
                     res.status(404).json({
-                      message: "Vehicle not found.",
+                      message: "Available vehicle not found.",
                     });
                   }
                 }
@@ -188,8 +221,13 @@ module.exports = (connection) => {
   // Assign driver to a vehicle request
   router.post(
     "/assign-driver-to-vehicle-request/:id",
-    // authenticateJWT,
-    // checkPermissions([AccessRoles.isKasili]),
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
     async (req, res) => {
       try {
         const request_id = req.params.id;
@@ -251,6 +289,41 @@ module.exports = (connection) => {
             }
           }
         );
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+
+  // Get vehicles with passengers from vehicle requests and without assigned drivers
+  router.get(
+    "/vehicles-with-passengers-from-requests",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
+    async (req, res) => {
+      try {
+        const query = `
+      SELECT 
+      vehicles.*,
+      GROUP_CONCAT(vehicle_requests.id) as request_id,
+      GROUP_CONCAT(vehicle_requests.pickup_location) as pickup_location,
+      GROUP_CONCAT(vehicle_requests.pickup_time) as pickup_time,
+      GROUP_CONCAT(vehicle_requests.pickup_date) as pickup_date
+    FROM vehicles
+    INNER JOIN vehicle_requests
+      ON vehicles.id = vehicle_requests.vehicle_id
+    WHERE vehicle_requests.status = 'approved' AND vehicle_requests.vehicle_id IS NOT NULL
+    GROUP BY vehicles.id
+  `;
+        connection.query(query, (err, results) => {
+          if (err) throw err;
+          res.status(200).json(results);
+        });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
