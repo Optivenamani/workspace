@@ -25,9 +25,11 @@ import Notifications from "./pages/Notification";
 import Login from "./pages/Login";
 import SiteVisitDetails from "./pages/site-visit-bookings/SiteVisitDetails";
 import EditVehicle from "./pages/vehicles/EditVehicle";
-import AssignDriver from "./pages/drivers/AssignDriver";
+import AssignSiteVisitDriver from "./pages/drivers/AssignSiteVisitDriver";
 import VehicleRequests from "./pages/vehicles/VehicleRequests";
 import VehicleRequestDetails from "./pages/vehicles/VehicleRequestDetails";
+import AssignVehicleRequestDriver from "./pages/drivers/AssignVehicleRequestDriver";
+import AssignedVehicleRequests from "./pages/vehicles/AssignedVehicleRequests";
 
 const App = () => {
   return (
@@ -70,14 +72,28 @@ const App = () => {
             <Route path="/request-vehicle" element={<RequestVehicle />} />
             <Route path="/vehicles/:id" element={<EditVehicle />} />
             <Route path="/vehicle-requests" element={<VehicleRequests />} />
-            <Route path="/vehicle-request-details/:id" element={<VehicleRequestDetails />} />
+            <Route
+              path="/vehicle-request-details/:id"
+              element={<VehicleRequestDetails />}
+            />
             {/* Clients */}
             <Route path="/clients-contacts" element={<ClientContacts />} />
             <Route path="/clients-feedback" element={<ClientsFeedback />} />
             {/* Drivers */}
             <Route path="/create-driver" element={<AddDriver />} />
             <Route path="/drivers" element={<ViewDrivers />} />
-            <Route path="/assign-drivers" element={<AssignDriver />} />
+            <Route
+              path="/assign-driver-to-svr"
+              element={<AssignSiteVisitDriver />}
+            />
+            <Route
+              path="/assign-driver-to-vr"
+              element={<AssignVehicleRequestDriver />}
+            />
+            <Route
+              path="/assigned-vehicle-requests"
+              element={<AssignedVehicleRequests />}
+            />
             {/* Users */}
             <Route path="/users" element={<Users />} />
             {/* Notifications */}

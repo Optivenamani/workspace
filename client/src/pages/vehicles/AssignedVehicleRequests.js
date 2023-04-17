@@ -3,15 +3,15 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 import format12HourTime from "../../utils/formatTime";
 
-const AssignedBookings = () => {
-  const [siteVisits, setSiteVisits] = useState([]);
+const AssignedVehicleRequests = () => {
+  const [vehicleRequests, setVehicleRequests] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/drivers/assigned-site-visits",
+          "http://localhost:8080/api/drivers/assigned-vehicle-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -20,9 +20,9 @@ const AssignedBookings = () => {
         );
         const data = await response.json();
         console.log(data);
-        setSiteVisits(data);
+        setVehicleRequests(data);
       } catch (error) {
-        console.error("Error fetching site visits:", error);
+        console.error("Error fetching vehicle requests:", error);
       }
     };
 
@@ -32,7 +32,7 @@ const AssignedBookings = () => {
   const startTrip = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/site-visits/start-trip/${id}`,
+        `http://localhost:8080/api/vehicle-requests/start-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -42,11 +42,11 @@ const AssignedBookings = () => {
       );
 
       if (response.ok) {
-        const updatedSiteVisits = siteVisits.map((sv) =>
-          sv.id === id ? { ...sv, status: "in_progress" } : sv
+        const updatedVehicleRequests = vehicleRequests.map((vr) =>
+          vr.id === id ? { ...vr, status: "in_progress" } : vr
         );
-        setSiteVisits(updatedSiteVisits);
-        alert("site visit set to in progress");
+        setVehicleRequests(updatedVehicleRequests);
+        alert("vehicle request set to in progress");
       } else {
         const data = await response.json();
         console.error("Error starting trip:", data.message);
@@ -59,7 +59,7 @@ const AssignedBookings = () => {
   const endTrip = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/site-visits/end-trip/${id}`,
+        `http://localhost:8080/api/vehicle-requests/end-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -69,9 +69,11 @@ const AssignedBookings = () => {
       );
 
       if (response.ok) {
-        const updatedSiteVisits = siteVisits.filter((sv) => sv.id !== id);
-        setSiteVisits(updatedSiteVisits);
-        alert("site visit set to complete");
+        const updatedVehicleRequests = vehicleRequests.filter(
+          (vr) => vr.id !== id
+        );
+        setVehicleRequests(updatedVehicleRequests);
+        alert("vehicle request set to complete");
       } else {
         const data = await response.json();
         console.error("Error ending trip:", data.message);
@@ -87,9 +89,9 @@ const AssignedBookings = () => {
         <div className="flex justify-center">
           <div className="container px-4 py-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {siteVisits.map((sv, i) => (
+              {vehicleRequests.map((vr, i) => (
                 <div
-                  key={sv.id}
+                  key={vr.id}
                   className="relative block overflow-hidden rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8"
                 >
                   <span className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"></span>
@@ -97,51 +99,43 @@ const AssignedBookings = () => {
                   <div className="sm:flex sm:justify-between sm:gap-4">
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
-                        {sv.pickup_location}
+                        {vr.pickup_location}
                       </h3>
                       <p className="mt-1 text-xs font-medium text-gray-600">
-                        <span className="font-bold">Site Name: </span>{" "}
-                        {sv.site_name}
+                        <span className="font-bold">Destination: </span>{" "}
+                        {vr.destination_location}
                       </p>
                     </div>
-                  </div>
-
-                  <div className="mt-4">
-                    <p className="max-w-[40ch] text-sm">
-                      <span className="font-bold">Passengers: </span>
-                      {sv.total_passengers}
-                    </p>
                   </div>
 
                   <dl className="mt-6 flex gap-4 sm:gap-6">
                     <div className="flex flex-col-reverse">
                       <dt className="text-sm font-medium text-gray-600">
-                        {new Date(sv.pickup_date).toLocaleDateString("en-GB")}
+                        {new Date(vr.pickup_date).toLocaleDateString("en-GB")}
                       </dt>
                       <dd className="text-xs font-bold">Pickup Date</dd>
                     </div>
 
                     <div className="flex flex-col-reverse">
                       <dt className="text-sm font-medium text-gray-600">
-                        {format12HourTime(sv.pickup_time)}
+                        {format12HourTime(vr.pickup_time)}
                       </dt>
                       <dd className="text-xs font-bold">Pickup Time</dd>
                     </div>
-
                     <div className="flex flex-col-reverse">
                       <button
                         className={`btn ${
-                          sv.status === "in_progress"
+                          vr.status === "in_progress"
                             ? "btn-error"
                             : "btn-primary"
                         } text-white`}
                         onClick={() =>
-                          sv.status === "in_progress"
-                            ? endTrip(sv.id)
-                            : startTrip(sv.id)
+                          vr.status === "in_progress"
+                            ? endTrip(vr.id)
+                            : startTrip(vr.id)
                         }
                       >
-                        {sv.status === "in_progress"
+                        {vr.status === "in_progress"
                           ? "End Trip"
                           : "Start Trip"}
                       </button>
@@ -157,5 +151,4 @@ const AssignedBookings = () => {
     </>
   );
 };
-
-export default AssignedBookings;
+export default AssignedVehicleRequests;

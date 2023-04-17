@@ -371,5 +371,53 @@ module.exports = (connection) => {
     }
   );
 
+  // Start a trip
+  router.patch(
+    "/start-trip/:id",
+    authenticateJWT,
+    checkPermissions([AccessRoles.isDriver]),
+    async (req, res) => {
+      try {
+        const requestId = req.params.id;
+        const query =
+          "UPDATE vehicle_requests SET status = 'in_progress' WHERE id = ?";
+
+        connection.query(query, [requestId], (err, results) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+          res.status(200).json({ message: "Trip started." });
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+
+  // End a trip
+  router.patch(
+    "/end-trip/:id",
+    authenticateJWT,
+    checkPermissions([AccessRoles.isDriver]),
+    async (req, res) => {
+      try {
+        const requestId = req.params.id;
+        const query =
+          "UPDATE vehicle_requests SET status = 'completed' WHERE id = ?";
+
+        connection.query(query, [requestId], (err, results) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+          res.status(200).json({ message: "Trip ended." });
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+
   return router;
 };

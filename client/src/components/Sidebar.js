@@ -206,9 +206,15 @@ const Sidebar = ({ children }) => {
                   </a>
                   <a
                     className="font-medium mt-3 hover:bg-base-200 rounded p-2"
-                    href="/assign-drivers"
+                    href="/assign-driver-to-svr"
                   >
-                    Assign Drivers to Vehicles
+                    Assign Driver to Site Visit
+                  </a>
+                  <a
+                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                    href="/assign-driver-to-vr"
+                  >
+                    Assign Driver to Vehicle Request
                   </a>
                 </div>
               </div>

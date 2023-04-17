@@ -70,5 +70,34 @@ module.exports = (connection) => {
     }
   );
 
+  // Get assigned vehicle requests
+  router.get(
+    "/assigned-vehicle-requests",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isDriver,
+    ]),
+    async (req, res) => {
+      try {
+        const driverId = req.user.id;
+        const query = `SELECT * FROM vehicle_requests
+                      WHERE (status = 'approved' OR status = 'in_progress') AND driver_id = ?`;
+
+        connection.query(query, [driverId], (err, results) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+          res.status(200).json(results);
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+
   return router;
 };
