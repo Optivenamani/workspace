@@ -1,27 +1,53 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const RequestVehicle = () => {
   const [location, setLocation] = useState("");
+  const [destination, setDestination] = useState("");
   const [purpose, setPurpose] = useState("");
   const [passengers, setPassengers] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const userId = useSelector((state) => state.user.user).user_id;
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const request = {
-      location,
-      purpose,
-      passengers,
-      date,
-      time,
+    const vehicleRequestData = {
+      requester_id: userId,
+      pickup_location: location,
+      destination_location: destination,
+      pickup_time: time,
+      pickup_date: date,
+      number_of_passengers: passengers,
     };
-    console.log(request);
-    setLoading(false);
-    // todo: submit to db
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/vehicle-requests/create-vehicle-request",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(vehicleRequestData),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      setLoading(false);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,7 +59,7 @@ const RequestVehicle = () => {
             className="form-control w-full max-w-xs"
           >
             <label htmlFor="location" className="label">
-              <span className="label-text font-bold">Location</span>
+              <span className="label-text font-bold">Pickup Location</span>
             </label>
             <input
               type="text"
@@ -41,6 +67,17 @@ const RequestVehicle = () => {
               value={location}
               placeholder="Location"
               onChange={(event) => setLocation(event.target.value)}
+              className="input input-bordered w-full max-w-xs"
+            />
+            <label htmlFor="destination" className="label">
+              <span className="label-text font-bold">Destination</span>
+            </label>
+            <input
+              type="text"
+              id="destination"
+              value={destination}
+              placeholder="Destination"
+              onChange={(event) => setDestination(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
             <label htmlFor="purpose" className="label">
@@ -55,7 +92,9 @@ const RequestVehicle = () => {
               className="input input-bordered w-full max-w-xs"
             />
             <label htmlFor="passengers" className="label">
-              <span className="label-text font-bold">Number of Passengers</span>
+              <span className="label-text font-bold">
+                Number of Passengers (Including yourself)
+              </span>
             </label>
             <input
               type="number"
