@@ -26,6 +26,7 @@ const RequestVehicle = () => {
       pickup_time: time,
       pickup_date: date,
       number_of_passengers: passengers,
+      purpose: purpose,
     };
     try {
       const response = await fetch(

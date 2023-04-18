@@ -58,7 +58,7 @@ const Sidebar = ({ children }) => {
                       My Site Visits
                     </a>
                   )}
-                  {(isAdmin || isDriver) && (
+                  {isAdmin && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/assigned-site-visits"
@@ -158,6 +158,14 @@ const Sidebar = ({ children }) => {
                       View Vehicles
                     </a>
                   </>
+                )}
+                {isAdmin && (
+                  <a
+                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                    href="/assigned-vehicle-requests"
+                  >
+                    Assigned Vehicle Requests
+                  </a>
                 )}
               </div>
             </div>

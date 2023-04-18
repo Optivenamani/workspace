@@ -15,9 +15,10 @@ module.exports = (connection) => {
         pickup_time,
         pickup_date,
         number_of_passengers,
+        purpose,
       } = req.body;
       const query =
-        "INSERT INTO vehicle_requests (requester_id, pickup_location, destination_location, pickup_time, pickup_date, number_of_passengers) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO vehicle_requests (requester_id, pickup_location, destination_location, pickup_time, pickup_date, number_of_passengers, purpose) VALUES (?, ?, ?, ?, ?, ?, ?)";
       connection.query(
         query,
         [
@@ -27,6 +28,7 @@ module.exports = (connection) => {
           pickup_time,
           pickup_date,
           number_of_passengers,
+          purpose,
         ],
         (err, result) => {
           if (err) throw err;
@@ -108,6 +110,33 @@ module.exports = (connection) => {
           res.status(404).json({ message: "Vehicle request not found." });
         }
       });
+    }
+  );
+
+  // Get all vehicle requests of a user by user_id
+  router.get(
+    "/user-vehicle-requests/:id",
+    authenticateJWT,
+    async (req, res) => {
+      try {
+        const user_id = req.params.id;
+        const query = `
+      SELECT 
+        vehicle_requests.*,
+        users.fullnames AS requester_name
+      FROM vehicle_requests
+      LEFT JOIN users
+        ON vehicle_requests.requester_id = users.user_id
+      WHERE vehicle_requests.requester_id = ?
+      ORDER BY vehicle_requests.created_at DESC
+    `;
+        connection.query(query, [user_id], (err, results) => {
+          if (err) throw err;
+          res.status(200).json(results);
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     }
   );
 
@@ -375,7 +404,12 @@ module.exports = (connection) => {
   router.patch(
     "/start-trip/:id",
     authenticateJWT,
-    checkPermissions([AccessRoles.isDriver]),
+    checkPermissions([
+      AccessRoles.isDriver,
+      AccessRoles.isAchola,
+      AccessRoles.isKasili,
+      AccessRoles.isNancy,
+    ]),
     async (req, res) => {
       try {
         const requestId = req.params.id;
@@ -399,19 +433,45 @@ module.exports = (connection) => {
   router.patch(
     "/end-trip/:id",
     authenticateJWT,
-    checkPermissions([AccessRoles.isDriver]),
+    checkPermissions([
+      AccessRoles.isDriver,
+      AccessRoles.isAchola,
+      AccessRoles.isKasili,
+      AccessRoles.isNancy,
+    ]),
     async (req, res) => {
       try {
         const requestId = req.params.id;
-        const query =
+        const updateRequestQuery =
           "UPDATE vehicle_requests SET status = 'completed' WHERE id = ?";
+        const getDriverIdQuery =
+          "SELECT driver_id FROM vehicle_requests WHERE id = ?";
 
-        connection.query(query, [requestId], (err, results) => {
+        connection.query(getDriverIdQuery, [requestId], (err, results) => {
           if (err) {
             res.status(500).json({ error: err.message });
             return;
           }
-          res.status(200).json({ message: "Trip ended." });
+          const driverId = results[0].driver_id;
+
+          connection.query(updateRequestQuery, [requestId], (err) => {
+            if (err) {
+              res.status(500).json({ error: err.message });
+              return;
+            }
+
+            const makeDriverAvailableQuery =
+              "UPDATE users SET is_available = 1 WHERE user_id = ?";
+            connection.query(makeDriverAvailableQuery, [driverId], (err) => {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+              res
+                .status(200)
+                .json({ message: "Trip ended and driver made available." });
+            });
+          });
         });
       } catch (error) {
         res.status(500).json({ error: error.message });

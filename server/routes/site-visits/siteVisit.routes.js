@@ -155,7 +155,6 @@ module.exports = (connection) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isMarketer,
       AccessRoles.isDriver,
     ]),
     async (req, res) => {

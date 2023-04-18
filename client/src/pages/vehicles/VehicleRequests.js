@@ -119,6 +119,12 @@ const VehicleRequests = () => {
                             </span>
                           </p>
                           <p className="font-bold">
+                            Purpose:{" "}
+                            <span className="text-primary font-bold">
+                              {vr.purpose}
+                            </span>
+                          </p>
+                          <p className="font-bold">
                             Number of Passengers:{" "}
                             <span className="text-primary font-bold">
                               {vr.number_of_passengers}

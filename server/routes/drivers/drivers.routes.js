@@ -83,8 +83,11 @@ module.exports = (connection) => {
     async (req, res) => {
       try {
         const driverId = req.user.id;
-        const query = `SELECT * FROM vehicle_requests
-                      WHERE (status = 'approved' OR status = 'in_progress') AND driver_id = ?`;
+        const query = `
+          SELECT * FROM vehicle_requests
+          WHERE (status = 'approved' OR status = 'in_progress') 
+          AND driver_id = ?
+          `;
 
         connection.query(query, [driverId], (err, results) => {
           if (err) {

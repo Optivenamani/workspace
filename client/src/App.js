@@ -4,11 +4,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
 import Dashboard from "./pages/Dashboard";
-import MySiteVisits from "./pages/site-visit-bookings/MySiteVisits";
-import CreateBooking from "./pages/site-visit-bookings/CreateBooking";
-import AssignedBookings from "./pages/site-visit-bookings/AssignedBookings";
-import ApprovedBookings from "./pages/site-visit-bookings/ApprovedBookings";
-import AllBookings from "./pages/site-visit-bookings/AllBookings";
+import MySiteVisits from "./pages/site-visit-requests/MySiteVisits";
+import CreateBooking from "./pages/site-visit-requests/CreateBooking";
+import AssignedBookings from "./pages/site-visit-requests/AssignedBookings";
+import ApprovedBookings from "./pages/site-visit-requests/ApprovedBookings";
+import AllBookings from "./pages/site-visit-requests/AllBookings";
 import CreateSite from "./pages/sites/CreateSite";
 import ViewSites from "./pages/sites/ViewSites";
 import CreateVehicle from "./pages/vehicles/CreateVehicle";
@@ -19,17 +19,18 @@ import ClientsFeedback from "./pages/clients/ClientsFeedback";
 import AddDriver from "./pages/drivers/AddDriver";
 import ViewDrivers from "./pages/drivers/ViewDrivers";
 import Users from "./pages/Users";
-import SiteVisitRequests from "./pages/site-visit-bookings/SiteVisitRequests";
+import SiteVisitRequests from "./pages/site-visit-requests/SiteVisitRequests";
 import Home from "./pages/Home";
 import Notifications from "./pages/Notification";
 import Login from "./pages/Login";
-import SiteVisitDetails from "./pages/site-visit-bookings/SiteVisitDetails";
+import SiteVisitDetails from "./pages/site-visit-requests/SiteVisitDetails";
 import EditVehicle from "./pages/vehicles/EditVehicle";
 import AssignSiteVisitDriver from "./pages/drivers/AssignSiteVisitDriver";
 import VehicleRequests from "./pages/vehicles/VehicleRequests";
 import VehicleRequestDetails from "./pages/vehicles/VehicleRequestDetails";
 import AssignVehicleRequestDriver from "./pages/drivers/AssignVehicleRequestDriver";
 import AssignedVehicleRequests from "./pages/vehicles/AssignedVehicleRequests";
+import PastRequests from "./pages/vehicles/PastRequests";
 
 const App = () => {
   return (
@@ -72,6 +73,7 @@ const App = () => {
             <Route path="/request-vehicle" element={<RequestVehicle />} />
             <Route path="/vehicles/:id" element={<EditVehicle />} />
             <Route path="/vehicle-requests" element={<VehicleRequests />} />
+            <Route path="/past-vehicle-requests" element={<PastRequests />} />
             <Route
               path="/vehicle-request-details/:id"
               element={<VehicleRequestDetails />}

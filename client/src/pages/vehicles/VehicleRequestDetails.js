@@ -117,37 +117,47 @@ const VehicleRequestDetails = () => {
             <>
               <div className="flex flex-col mx-4">
                 <div className="card rounded bg-base-100 shadow-xl p-10 my-4">
-                  <h1>
-                    <span className="font-bold">
-                      Requester: {vehicleRequestData.requester_name}
+                  <h1 className="text-black font-bold">
+                    Requester:{" "}
+                    <span className="font-bold text-primary">
+                      {vehicleRequestData.requester_name}
                     </span>
                   </h1>
-                  <h1>
-                    <span className="font-bold">
-                      Destination: {vehicleRequestData.destination_location}
+                  <h1 className="text-black font-bold">
+                    Destination:{" "}
+                    <span className="font-bold text-primary">
+                      {vehicleRequestData.destination_location}
                     </span>
                   </h1>
-                  <h1>
-                    <span className="font-bold">
-                      Pickup Location: {vehicleRequestData.pickup_location}
+                  <h1 className="text-black font-bold">
+                    Pickup Location:{" "}
+                    <span className="font-bold text-primary">
+                      {vehicleRequestData.pickup_location}
                     </span>
                   </h1>
-                  <h1>
-                    <span className="font-bold">
-                      Date (DD/MM/YYYY):{" "}
+                  <h1 className="text-black font-bold">
+                    Purpose:{" "}
+                    <span className="font-bold text-primary">
+                      {vehicleRequestData.purpose}
+                    </span>
+                  </h1>
+                  <h1 className="text-black font-bold">
+                    Date (DD/MM/YYYY):{" "}
+                    <span className="font-bold text-primary">
                       {new Date(
                         vehicleRequestData.pickup_date
                       ).toLocaleDateString("en-GB")}
                     </span>
                   </h1>
-                  <h1>
-                    <span className="font-bold">
-                      Time: {format12HourTime(vehicleRequestData.pickup_time)}
+                  <h1 className="text-black font-bold">
+                    Time:{" "}
+                    <span className="font-bold text-primary">
+                      {format12HourTime(vehicleRequestData.pickup_time)}
                     </span>
                   </h1>
-                  <h1>
-                    <span className="font-bold">
-                      Number of passengers:{" "}
+                  <h1 className="text-black font-bold">
+                    Number of passengers:{" "}
+                    <span className="font-bold text-primary">
                       {vehicleRequestData.number_of_passengers}
                     </span>
                   </h1>
