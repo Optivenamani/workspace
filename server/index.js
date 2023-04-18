@@ -33,6 +33,7 @@ const siteVisitRequests = require("./routes/site-visit-requests/siteVisitRequest
 const siteVisits = require("./routes/site-visits/siteVisit.routes");
 const drivers = require("./routes/drivers/drivers.routes");
 const vehicleRequests = require("./routes/vehicle-requests/vehicleRequests.routes");
+const clients = require("./routes/clients/clients.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -56,6 +57,7 @@ app.use("/api/site-visit-requests", siteVisitRequests(connection));
 app.use("/api/site-visits", siteVisits(connection));
 app.use("/api/drivers", drivers(connection));
 app.use("/api/vehicle-requests", vehicleRequests(connection));
+app.use("/api/clients", clients(connection));
 
 // Define a sample route to fetch all users
 app.get("/", (req, res) => {

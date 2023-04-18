@@ -11,7 +11,7 @@ const PrivateRoutes = () => {
     <>
       <Navbar
         fullName={user.fullnames || "Undefined"}
-        department={user.department || "Undefined"}
+        email={user.email || "Undefined"}
       />
       <ToastContainer />
       <Outlet />

@@ -9,7 +9,7 @@ import "./styles/Navbar.css";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/features/user/userSlice";
 
-const Navbar = ({ fullName, department }) => {
+const Navbar = ({ fullName, email }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ const Navbar = ({ fullName, department }) => {
           <div className="flex items-center">
             <div className="text-end mr-2 content-center hide-on-mobile text-white">
               <h1 className="font-bold text-sm">{fullName}</h1>
-              <p className="text-xs italic">{department}</p>
+              <p className="text-xs italic">{email}</p>
             </div>
             <label
               tabIndex={0}

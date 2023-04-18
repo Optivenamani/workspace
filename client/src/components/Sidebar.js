@@ -178,7 +178,7 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   <a
                     className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                    href="/clients-contacts"
+                    href="/my-clients-contacts"
                   >
                     My Clients' Contacts
                   </a>
