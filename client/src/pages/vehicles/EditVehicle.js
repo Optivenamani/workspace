@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const EditVehicle = () => {
   const { id } = useParams();
-  const [vehicleId, setVehicleId] = useState(id);
+  const vehicleId = id;
   const [vehicleMake, setVehicleMake] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
   const [vehicleRegistration, setVehicleRegistration] = useState("");
@@ -17,6 +17,7 @@ const EditVehicle = () => {
 
   useEffect(() => {
     fetchVehicle();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchVehicle = async () => {

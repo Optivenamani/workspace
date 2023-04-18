@@ -29,7 +29,7 @@ const PastRequests = () => {
     };
 
     fetchVehicleRequests();
-  }, [token]);
+  }, [token, userId]);
 
   const userVehicleRequests = vehicleRequests.filter(
     (request) =>
