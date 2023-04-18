@@ -58,7 +58,7 @@ const Sidebar = ({ children }) => {
                       My Site Visits
                     </a>
                   )}
-                  {isAdmin && (
+                  {(isAdmin || isDriver) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/assigned-site-visits"
@@ -100,9 +100,10 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-title font-bold">Sites</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {isAdmin && (
+                    // eslint-disable-next-line jsx-a11y/anchor-is-valid
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                      href="/create-site"
+                      className="font-medium mt-1 hover:bg-base-200 rounded p-2 disabled opacity-50 pointer-events-none"
+                      href="#"
                     >
                       Create Site
                     </a>
@@ -125,7 +126,7 @@ const Sidebar = ({ children }) => {
                   href="/request-vehicle"
                   className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                 >
-                  Request Vehicle
+                  Request For A Vehicle
                 </a>
                 {isAdmin && (
                   <a
@@ -139,7 +140,7 @@ const Sidebar = ({ children }) => {
                   href="/past-vehicle-requests"
                   className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                 >
-                  Past Requests
+                  My Past Vehicle Requests
                 </a>
                 {(isAdmin || isOperations) && (
                   <>
@@ -159,7 +160,7 @@ const Sidebar = ({ children }) => {
                     </a>
                   </>
                 )}
-                {isAdmin && (
+                {(isAdmin || isDriver) && (
                   <a
                     className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                     href="/assigned-vehicle-requests"

@@ -3,6 +3,7 @@ import Sidebar from "../../components/Sidebar";
 
 const CreateSite = () => {
   const [siteName, setSiteName] = useState("");
+  const [siteMapLink, setSiteMapLink] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
@@ -10,6 +11,7 @@ const CreateSite = () => {
     setLoading(true);
     const site = {
       siteName,
+      siteMapLink
     };
     console.log(site);
     setLoading(false);
@@ -31,8 +33,19 @@ const CreateSite = () => {
               type="text"
               id="siteName"
               value={siteName}
-              placeholder="Furaha Gardens"
+              placeholder="Sunshine Valley"
               onChange={(event) => setSiteName(event.target.value)}
+              className="input input-bordered w-full max-w-xs"
+            />
+            <label htmlFor="siteMapLink" className="label">
+              <span className="label-text font-bold">Site Map Link</span>
+            </label>
+            <input
+              type="text"
+              id="siteMapLink"
+              value={siteMapLink}
+              placeholder="http://tinyurl.com/2g9mqh"
+              onChange={(event) => setSiteMapLink(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
             <button

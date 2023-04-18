@@ -91,10 +91,11 @@ const CreateVehicle = () => {
               <option value="Truck">Truck</option>
               <option value="Mini Truck">Mini Truck</option>
               <option value="Sedan">Sedan</option>
+              <option value="Estate">Estate</option>
               <option value="SUV">SUV</option>
             </select>
             <label htmlFor="vehicleSeats" className="label">
-              <span className="label-text font-bold">Seats</span>
+              <span className="label-text font-bold">Passenger Capacity</span>
             </label>
             <input
               type="text"

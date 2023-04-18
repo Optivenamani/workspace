@@ -173,7 +173,7 @@ module.exports = (connection) => {
             if (siteVisitResults.length > 0) {
               // Check if the vehicle is available and has enough seats
               const checkVehicleQuery =
-                "SELECT number_of_seats FROM vehicles WHERE id = ? AND status = 'available'";
+                "SELECT number_of_seats, passengers_assigned FROM vehicles WHERE id = ? AND status = 'available'";
               connection.query(
                 checkVehicleQuery,
                 [vehicle_id],
@@ -181,6 +181,8 @@ module.exports = (connection) => {
                   if (err) throw err;
                   if (vehicleResults.length > 0) {
                     const numberOfSeats = vehicleResults[0].number_of_seats;
+                    const passengersAssigned =
+                      vehicleResults[0].passengers_assigned;
                     const checkClientsQuery =
                       "SELECT COUNT(*) as client_count FROM site_visit_clients WHERE site_visit_id = ?";
                     connection.query(
@@ -190,7 +192,10 @@ module.exports = (connection) => {
                         if (err) throw err;
                         const clientCount = clientResults[0].client_count;
                         // Add 1 for the marketer
-                        if (numberOfSeats >= clientCount + 1) {
+                        if (
+                          numberOfSeats >=
+                          clientCount + 1 + passengersAssigned
+                        ) {
                           // Update vehicle_id in the site_visits table
                           const updateSiteVisitQuery =
                             "UPDATE site_visits SET vehicle_id = ? WHERE id = ?";
@@ -200,12 +205,12 @@ module.exports = (connection) => {
                             (err, result) => {
                               if (err) throw err;
 
-                              // Set the vehicle status to unavailable
-                              const updateVehicleStatusQuery =
-                                "UPDATE vehicles SET status = 'unavailable' WHERE id = ?";
+                              // Increment passengers_assigned in the vehicles table
+                              const updateVehiclePassengersQuery =
+                                "UPDATE vehicles SET passengers_assigned = passengers_assigned + ? WHERE id = ?";
                               connection.query(
-                                updateVehicleStatusQuery,
-                                [vehicle_id],
+                                updateVehiclePassengersQuery,
+                                [clientCount + 1, vehicle_id],
                                 (err, result) => {
                                   if (err) throw err;
                                   res.status(200).json({
@@ -217,7 +222,11 @@ module.exports = (connection) => {
                             }
                           );
                         } else {
-                          const seatsExceeded = clientCount + 1 - numberOfSeats;
+                          const seatsExceeded =
+                            clientCount +
+                            1 +
+                            passengersAssigned -
+                            numberOfSeats;
                           res.status(400).json({
                             message:
                               "The selected vehicle does not have enough seats.",

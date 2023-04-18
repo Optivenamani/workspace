@@ -444,15 +444,16 @@ module.exports = (connection) => {
         const requestId = req.params.id;
         const updateRequestQuery =
           "UPDATE vehicle_requests SET status = 'completed' WHERE id = ?";
-        const getDriverIdQuery =
-          "SELECT driver_id FROM vehicle_requests WHERE id = ?";
+        const getRequestInfoQuery =
+          "SELECT driver_id, vehicle_id FROM vehicle_requests WHERE id = ?";
 
-        connection.query(getDriverIdQuery, [requestId], (err, results) => {
+        connection.query(getRequestInfoQuery, [requestId], (err, results) => {
           if (err) {
             res.status(500).json({ error: err.message });
             return;
           }
           const driverId = results[0].driver_id;
+          const vehicleId = results[0].vehicle_id;
 
           connection.query(updateRequestQuery, [requestId], (err) => {
             if (err) {
@@ -467,9 +468,24 @@ module.exports = (connection) => {
                 res.status(500).json({ error: err.message });
                 return;
               }
-              res
-                .status(200)
-                .json({ message: "Trip ended and driver made available." });
+
+              // Make the vehicle available again
+              const makeVehicleAvailableQuery =
+                "UPDATE vehicles SET status = 'available' WHERE id = ?";
+              connection.query(
+                makeVehicleAvailableQuery,
+                [vehicleId],
+                (err) => {
+                  if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                  }
+                  res.status(200).json({
+                    message:
+                      "Trip ended, driver and vehicle made available again.",
+                  });
+                }
+              );
             });
           });
         });
