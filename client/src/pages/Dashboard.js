@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   VictoryBar,
   VictoryChart,
@@ -11,13 +11,7 @@ import {
   VictoryLabel,
 } from "victory";
 import Sidebar from "../components/Sidebar";
-
-const clientData = [
-  { quarter: 1, visits: 1300 },
-  { quarter: 2, visits: 1650 },
-  { quarter: 3, visits: 1425 },
-  { quarter: 4, visits: 1900 },
-];
+import { useSelector } from "react-redux";
 
 const siteData = [
   { month: "Jan", visits: 250 },
@@ -32,13 +26,6 @@ const siteData = [
   { month: "Oct", visits: 265 },
   { month: "Nov", visits: 280 },
   { month: "Dec", visits: 270 },
-];
-
-const pieData = [
-  { x: "Acme Acres", y: 40 },
-  { x: "South Park", y: 30 },
-  { x: "Bedrock", y: 20 },
-  { x: "Duckburg", y: 10 },
 ];
 
 const propertyData = [
@@ -57,6 +44,54 @@ const propertyData = [
 ];
 
 const Dashboard = () => {
+  const [sitesData, setSitesData] = useState([]);
+  const token = useSelector((state) => state.user.token);
+  useEffect(() => {
+    const fetchSiteVisits = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/site-visits", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSitesData(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchSiteVisits();
+  }, [token]);
+
+  const countVisits = () => {
+    // Create an object to hold the count for each site
+    const counts = {};
+    // Iterate over the sitesData array and increment the count for each site
+    sitesData.forEach((site) => {
+      if (site.site_name in counts) {
+        counts[site.site_name]++;
+      } else {
+        counts[site.site_name] = 1;
+      }
+    });
+    // Create an array of objects with the site names and their respective counts
+    const countsArray = Object.entries(counts).map(([site_name, count]) => ({
+      site_name,
+      count,
+    }));
+
+    // Sort the countsArray from most visited to least visited
+    countsArray.sort((a, b) => b.count - a.count);
+
+    // Return the sorted counts array
+    return countsArray;
+  };
+
+  const siteCounts = countVisits();
+
+  const maxVisits = Math.max(...siteCounts.map((site) => site.count));
+
   return (
     <>
       <Sidebar>
@@ -75,13 +110,13 @@ const Dashboard = () => {
                     />
                   </div>
                   <VictoryPie
-                    data={pieData}
-                    x="x"
-                    y="y"
-                    colorScale={["navy", "skyBlue", "darkGreen", "lightGreen"]}
+                    data={siteCounts}
+                    x="site_name"
+                    y="count"
+                    colorScale={"qualitative"}
                     innerRadius={80}
                     labelRadius={({ innerRadius }) => innerRadius + 30}
-                    labels={({ datum }) => `${datum.x}: ${datum.y}`}
+                    labels={({ datum }) => `${datum.site_name}: ${datum.count}`}
                     animate={{
                       onLoad: { duration: 1000 },
                     }}
@@ -102,20 +137,38 @@ const Dashboard = () => {
                   </div>
                   <VictoryChart
                     theme={VictoryTheme.material}
-                    domainPadding={20}
+                    domainPadding={10}
                     animate={{ duration: 1000 }}
                   >
                     <VictoryAxis
-                      tickValues={[1, 2, 3, 4]}
-                      tickFormat={["Q1", "Q2", "Q3", "Q4"]}
+                      tickValues={siteCounts.map((site, index) => index)}
+                      tickFormat={siteCounts.map((site) => site.site_name)}
+                      style={{
+                        tickLabels: {
+                          angle: -22.5,
+                          textAnchor: "end",
+                          fontSize: 5,
+                        },
+                      }}
                     />
-                    <VictoryAxis dependentAxis tickFormat={(x) => `${x}`} />
+                    <VictoryAxis
+                      dependentAxis
+                      tickValues={Array.from(
+                        { length: maxVisits + 1 },
+                        (_, index) => index
+                      )}
+                    />
                     <VictoryBar
-                      data={clientData}
-                      x="quarter"
-                      y="visits"
-                      labels={({ datum }) => `${datum.visits}`}
+                      data={siteCounts}
+                      cornerRadius={{ topLeft: ({ datum }) => datum.count * 4 }}
+                      x="site_name"
+                      y="count"
+                      labels={({ datum }) => `${datum.count}`}
                       labelComponent={<VictoryTooltip />}
+                      animate={{
+                        duration: 2000,
+                        onLoad: { duration: 1000 },
+                      }}
                     />
                   </VictoryChart>
                 </div>
@@ -156,7 +209,6 @@ const Dashboard = () => {
                   </VictoryChart>
                 </div>
               </div>
-                        
               <div className="lg:w-2/3 xl:w-2/3 md:w-1/2 p-4">
                 <div className="card w-full bg-base-100 shadow-xl">
                   <div className="m-4">

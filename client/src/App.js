@@ -8,7 +8,7 @@ import MySiteVisits from "./pages/site-visit-requests/MySiteVisits";
 import CreateBooking from "./pages/site-visit-requests/CreateBooking";
 import AssignedBookings from "./pages/site-visit-requests/AssignedBookings";
 import ApprovedBookings from "./pages/site-visit-requests/ApprovedBookings";
-import AllBookings from "./pages/site-visit-requests/AllBookings";
+import AllSiteVisits from "./pages/site-visit-requests/AllSiteVisits";
 import CreateSite from "./pages/sites/CreateSite";
 import ViewSites from "./pages/sites/ViewSites";
 import CreateVehicle from "./pages/vehicles/CreateVehicle";
@@ -56,7 +56,7 @@ const App = () => {
               path="/approved-site-visits"
               element={<ApprovedBookings />}
             />
-            <Route path="/all-site-visits" element={<AllBookings />} />
+            <Route path="/all-site-visits" element={<AllSiteVisits />} />
             <Route
               path="/site-visit-requests"
               element={<SiteVisitRequests />}

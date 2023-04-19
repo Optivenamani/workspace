@@ -3,7 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 import format12HourTime from "../../utils/formatTime";
 
-const AllBookings = () => {
+const AllSiteVisits = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteVisits, setSiteVisits] = useState([]);
@@ -115,4 +115,4 @@ const AllBookings = () => {
   );
 };
 
-export default AllBookings;
+export default AllSiteVisits;
