@@ -29,7 +29,7 @@ const ApprovedBookings = () => {
   }, [token]);
 
   const approvedSiteBookings = siteVisits.filter(
-    (siteVisit) => siteVisit.status === "complete"
+    (siteVisit) => siteVisit.status !== "rejected"
   );
 
   console.log(approvedSiteBookings);
@@ -98,9 +98,9 @@ const ApprovedBookings = () => {
                     <th>{i + 1}</th>
                     <td>{item.site_name}</td>
                     <td>{item.pickup_location}</td>
-                    <td>{new Date(item.pickup_date).toLocaleDateString(
-                      "en-GB"
-                    )}</td>
+                    <td>
+                      {new Date(item.pickup_date).toLocaleDateString("en-GB")}
+                    </td>
                     <td>{format12HourTime(item.pickup_time)}</td>
                     <td>{item.clients.length}</td>
                   </tr>
