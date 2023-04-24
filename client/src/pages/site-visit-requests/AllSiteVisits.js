@@ -27,7 +27,7 @@ const AllSiteVisits = () => {
     fetchSiteVisits();
   }, [token]);
 
-  console.log(siteVisits)
+  console.log(siteVisits);
 
   const filteredSiteVisits = siteVisits.filter((visit) => {
     const visitDate = new Date(visit.pickup_date);
@@ -93,7 +93,7 @@ const AllSiteVisits = () => {
                 {filteredSiteVisits.map((siteVisit, index) => (
                   <tr key={index}>
                     <th>{index + 1}</th>
-                    <td>{siteVisit.marketer_id}</td>
+                    <td>{siteVisit.marketer_name.toUpperCase()}</td>
                     <td>{siteVisit.site_name}</td>
                     <td>{siteVisit.pickup_location}</td>
                     <td>
@@ -107,6 +107,17 @@ const AllSiteVisits = () => {
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <th>Index</th>
+                  <th>Marketer ID</th>
+                  <th>Site Visited</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Number of Clients</th>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

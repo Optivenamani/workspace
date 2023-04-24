@@ -5,9 +5,9 @@ const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (connection) => {
-  // Get all the pending site visit requests
+  // Get all site visits with driver and vehicle info
   router.get(
-    "/pending-site-visits",
+    "/all",
     authenticateJWT,
     checkPermissions([
       AccessRoles.isAchola,
@@ -17,27 +17,27 @@ module.exports = (connection) => {
     async (req, res) => {
       try {
         const query = `
-          SELECT 
-            site_visits.id, 
-            site_visits.status, 
-            site_visits.pickup_location,
-            site_visits.pickup_time,
-            site_visits.pickup_date,
-            site_visits.created_at,
-            Projects.name AS site_name,
-            COUNT(site_visit_clients.id) as num_clients,
-            users.fullnames as marketer_name
-          FROM site_visits 
-          LEFT JOIN Projects 
-            ON site_visits.project_id = Projects.project_id 
-          LEFT JOIN site_visit_clients 
-            ON site_visits.id = site_visit_clients.site_visit_id
-          LEFT JOIN users 
-            ON site_visits.marketer_id = users.user_id
-          WHERE site_visits.status = 'pending'
-          GROUP BY site_visits.id
-          ORDER BY site_visits.created_at ASC;      
-      `;
+      SELECT 
+        site_visits.*,
+        Projects.name AS site_name,
+        COUNT(site_visit_clients.id) as num_clients,
+        users.fullnames as marketer_name,
+        drivers.fullnames as driver_name,
+        vehicles.vehicle_registration as vehicle_name
+      FROM site_visits
+      LEFT JOIN Projects
+        ON site_visits.project_id = Projects.project_id
+      LEFT JOIN site_visit_clients
+        ON site_visits.id = site_visit_clients.site_visit_id
+      LEFT JOIN users
+        ON site_visits.marketer_id = users.user_id
+      LEFT JOIN users as drivers
+        ON site_visits.driver_id = drivers.user_id
+      LEFT JOIN vehicles
+        ON site_visits.vehicle_id = vehicles.id
+      GROUP BY site_visits.id
+      ORDER BY site_visits.created_at DESC;
+    `;
         connection.query(query, (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
@@ -47,7 +47,6 @@ module.exports = (connection) => {
       }
     }
   );
-
   // Get a single pending site visit request
   router.get(
     "/pending-site-visits/:id",
@@ -60,27 +59,25 @@ module.exports = (connection) => {
     async (req, res) => {
       const id = req.params.id;
       const query = `
-        SELECT 
-          site_visits.id, 
-          site_visits.status, 
-          site_visits.pickup_location,
-          site_visits.pickup_time,
-          site_visits.pickup_date,
-          site_visits.created_at,
-          Projects.name AS site_name,
-          COUNT(site_visit_clients.id) as num_clients,
-          users.fullnames as marketer_name
-        FROM site_visits 
-        LEFT JOIN Projects 
-          ON site_visits.project_id = Projects.project_id 
-        LEFT JOIN site_visit_clients 
-          ON site_visits.id = site_visit_clients.site_visit_id
-        LEFT JOIN users 
-          ON site_visits.marketer_id = users.user_id
-        WHERE site_visits.id = ?
-        GROUP BY site_visits.id
-        ORDER BY site_visits.created_at ASC;
-      `;
+      SELECT 
+        site_visits.*,
+        Projects.name AS site_name,
+        COUNT(site_visit_clients.id) as num_clients,
+        users.fullnames as marketer_name,
+        drivers.fullnames as driver_name
+      FROM site_visits 
+      LEFT JOIN Projects 
+        ON site_visits.project_id = Projects.project_id 
+      LEFT JOIN site_visit_clients 
+        ON site_visits.id = site_visit_clients.site_visit_id
+      LEFT JOIN users 
+        ON site_visits.marketer_id = users.user_id
+      LEFT JOIN users as drivers
+        ON site_visits.driver_id = drivers.user_id
+      WHERE site_visits.id = ?
+      GROUP BY site_visits.id
+      ORDER BY site_visits.created_at ASC;
+    `;
       connection.query(query, [id], (err, results) => {
         if (err) throw err;
         if (results.length > 0) {
@@ -91,36 +88,8 @@ module.exports = (connection) => {
       });
     }
   );
-
-  // Approve site visit request
-  router.post(
-    "/approve-site-visit/:id",
-    authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-    ]),
-    async (req, res) => {
-      try {
-        const id = req.params.id;
-        const query = "UPDATE site_visits SET status = 'approved' WHERE id = ?";
-        connection.query(query, [id], (err, result) => {
-          if (err) throw err;
-          if (result.affectedRows > 0) {
-            res.status(200).json({ message: "Site visit request approved." });
-          } else {
-            res.status(404).json({ message: "Site visit request not found." });
-          }
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    }
-  );
-
-  // Reject site visit request with a reason
-  router.post(
+  // Reject site visit request (with remarks)
+  router.patch(
     "/reject-site-visit/:id",
     authenticateJWT,
     checkPermissions([
@@ -131,10 +100,10 @@ module.exports = (connection) => {
     async (req, res) => {
       try {
         const id = req.params.id;
-        const { rejection_reason } = req.body;
+        const { remarks } = req.body;
         const query =
-          "UPDATE site_visits SET status = 'rejected', rejection_reason = ? WHERE id = ?";
-        connection.query(query, [rejection_reason, id], (err, result) => {
+          "UPDATE site_visits SET status = 'rejected', remarks = ?, vehicle_id = null, driver_id = null WHERE id = ?";
+        connection.query(query, [remarks, id], (err, result) => {
           if (err) throw err;
           if (result.affectedRows > 0) {
             res.status(200).json({ message: "Site visit request rejected." });
@@ -147,10 +116,9 @@ module.exports = (connection) => {
       }
     }
   );
-
-  // Place marketer and client in a vehicle
-  router.post(
-    "/assign-vehicle/:id",
+  // View, edit and approve the site visit request
+  router.patch(
+    "/pending-site-visits/:id",
     authenticateJWT,
     checkPermissions([
       AccessRoles.isAchola,
@@ -159,219 +127,179 @@ module.exports = (connection) => {
     ]),
     async (req, res) => {
       try {
-        const site_visit_id = req.params.id;
-        const { vehicle_id } = req.body;
+        const { id } = req.params;
+        const {
+          vehicle_id,
+          pickup_location,
+          pickup_date,
+          pickup_time,
+          remarks,
+          status,
+          driver_id,
+        } = req.body;
 
-        // Check if site visit exists and is approved
-        const checkSiteVisitQuery =
-          "SELECT * FROM site_visits WHERE id = ? AND status = 'approved'";
-        connection.query(
-          checkSiteVisitQuery,
-          [site_visit_id],
-          (err, siteVisitResults) => {
-            if (err) throw err;
-            if (siteVisitResults.length > 0) {
-              // Check if the vehicle is available and has enough seats
-              const checkVehicleQuery =
-                "SELECT number_of_seats, passengers_assigned FROM vehicles WHERE id = ? AND status = 'available'";
-              connection.query(
-                checkVehicleQuery,
-                [vehicle_id],
-                (err, vehicleResults) => {
-                  if (err) throw err;
-                  if (vehicleResults.length > 0) {
-                    const numberOfSeats = vehicleResults[0].number_of_seats;
-                    const passengersAssigned =
-                      vehicleResults[0].passengers_assigned;
-                    const checkClientsQuery =
-                      "SELECT COUNT(*) as client_count FROM site_visit_clients WHERE site_visit_id = ?";
-                    connection.query(
-                      checkClientsQuery,
-                      [site_visit_id],
-                      (err, clientResults) => {
-                        if (err) throw err;
-                        const clientCount = clientResults[0].client_count;
-                        // Add 1 for the marketer
-                        if (
-                          numberOfSeats >=
-                          clientCount + 1 + passengersAssigned
-                        ) {
-                          // Update vehicle_id in the site_visits table
-                          const updateSiteVisitQuery =
-                            "UPDATE site_visits SET vehicle_id = ? WHERE id = ?";
+        if (vehicle_id) {
+          // Check if the vehicle is available and has enough seats
+          const checkVehicleQuery = `SELECT 
+              number_of_seats, 
+              passengers_assigned 
+            FROM vehicles 
+            WHERE id = ? AND status = 'available'`;
+          connection.query(
+            checkVehicleQuery,
+            [vehicle_id],
+            (err, vehicleResults) => {
+              if (err) throw err;
+              if (vehicleResults.length > 0) {
+                const numberOfSeats = vehicleResults[0].number_of_seats;
+                const passengersAssigned =
+                  vehicleResults[0].passengers_assigned;
+                const checkClientsQuery = `SELECT COUNT(*) as client_count
+                  FROM site_visit_clients 
+                  WHERE site_visit_id = ?`;
+                connection.query(
+                  checkClientsQuery,
+                  [id],
+                  (err, clientResults) => {
+                    if (err) throw err;
+                    const clientCount = clientResults[0].client_count;
+
+                    // Add 1 for the marketer
+                    if (numberOfSeats >= clientCount + 1 + passengersAssigned) {
+                      // Update site visit
+                      const query = `
+                        UPDATE site_visits
+                        SET 
+                          vehicle_id = ?,
+                          pickup_location = ?, 
+                          pickup_date = ?, 
+                          pickup_time = ?, 
+                          remarks = ?, 
+                          status = ?, 
+                          driver_id = ?
+                        WHERE id = ?
+                      `;
+
+                      connection.query(
+                        query,
+                        [
+                          vehicle_id,
+                          pickup_location,
+                          pickup_date,
+                          pickup_time,
+                          remarks,
+                          status === "pending" ? "approved" : status,
+                          driver_id,
+                          id,
+                        ],
+                        async (err, results) => {
+                          if (err) {
+                            res.status(500).json({ error: err.message });
+                            return;
+                          }
+
+                          // New SELECT query to get the updated site visit with the driver's name
+                          const updatedSiteVisitQuery = `
+                            SELECT 
+                              site_visits.*,
+                              Projects.name AS site_name,
+                              COUNT(site_visit_clients.id) as num_clients,
+                              users.fullnames as marketer_name,
+                              drivers.fullnames as driver_name
+                            FROM site_visits 
+                            LEFT JOIN Projects 
+                              ON site_visits.project_id = Projects.project_id 
+                            LEFT JOIN site_visit_clients 
+                              ON site_visits.id = site_visit_clients.site_visit_id
+                            LEFT JOIN users 
+                              ON site_visits.marketer_id = users.user_id
+                            LEFT JOIN users as drivers
+                              ON site_visits.driver_id = drivers.user_id
+                            WHERE site_visits.id = ?
+                            GROUP BY site_visits.id
+                            ORDER BY site_visits.created_at ASC;
+                          `;
+
                           connection.query(
-                            updateSiteVisitQuery,
-                            [vehicle_id, site_visit_id],
-                            (err, result) => {
-                              if (err) throw err;
+                            updatedSiteVisitQuery,
+                            [id],
+                            (err, updatedResults) => {
+                              if (err) {
+                                res.status(500).json({ error: err.message });
+                                return;
+                              }
 
-                              // Increment passengers_assigned in the vehicles table
-                              const updateVehiclePassengersQuery =
-                                "UPDATE vehicles SET passengers_assigned = passengers_assigned + ? WHERE id = ?";
-                              connection.query(
-                                updateVehiclePassengersQuery,
-                                [clientCount + 1, vehicle_id],
-                                (err, result) => {
-                                  if (err) throw err;
-                                  res.status(200).json({
-                                    message:
-                                      "Vehicle assigned to site visit successfully.",
-                                  });
-                                }
-                              );
+                              if (updatedResults.length > 0) {
+                                res.status(200).json(updatedResults[0]);
+                              } else {
+                                res.status(404).json({
+                                  message: "Updated site visit not found.",
+                                });
+                              }
                             }
                           );
-                        } else {
-                          const seatsExceeded =
-                            clientCount +
-                            1 +
-                            passengersAssigned -
-                            numberOfSeats;
-                          res.status(400).json({
-                            message:
-                              "The selected vehicle does not have enough seats.",
-                            exceeded_by: seatsExceeded,
-                          });
                         }
-                      }
-                    );
-                  } else {
-                    res.status(404).json({
-                      message: "Available vehicle not found.",
-                    });
+                      );
+                    } else {
+                      const seatsExceeded =
+                        clientCount + 1 + passengersAssigned - numberOfSeats;
+                      res.status(400).json({
+                        message:
+                          "The selected vehicle does not have enough seats.",
+                        exceeded_by: seatsExceeded,
+                      });
+                    }
                   }
-                }
-              );
-            } else {
-              res
-                .status(404)
-                .json({ message: "Approved site visit request not found." });
+                );
+              } else {
+                res.status(404).json({
+                  message: "Available vehicle not found.",
+                });
+              }
             }
-          }
-        );
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    }
-  );
-
-  // Assign driver to a vehicle
-  router.post(
-    "/assign-vehicle-driver/:id",
-    authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
-    async (req, res) => {
-      try {
-        const site_visit_id = req.params.id;
-        const { driver_id } = req.body;
-
-        const checkSiteVisitQuery =
-          "SELECT * FROM site_visits WHERE id = ? AND status = 'approved'";
-        connection.query(
-          checkSiteVisitQuery,
-          [site_visit_id],
-          async (err, siteVisitResults) => {
-            if (err) throw err;
-
-            console.log("Site Visit Results:", siteVisitResults);
-
-            if (siteVisitResults.length > 0) {
-              const checkDriverAvailabilityQuery =
-                "SELECT * FROM users WHERE user_id = ? AND is_available = 1";
-              connection.query(
-                checkDriverAvailabilityQuery,
-                [driver_id],
-                async (err, driverResults) => {
-                  if (err) throw err;
-
-                  console.log("Driver Results:", driverResults);
-
-                  if (driverResults.length > 0) {
-                    const updateSiteVisitQuery =
-                      "UPDATE site_visits SET driver_id = ? WHERE id = ?";
-                    connection.query(
-                      updateSiteVisitQuery,
-                      [driver_id, site_visit_id],
-                      async (err, result) => {
-                        if (err) throw err;
-
-                        const updateDriverAvailabilityQuery =
-                          "UPDATE users SET is_available = 0 WHERE user_id = ?";
-                        connection.query(
-                          updateDriverAvailabilityQuery,
-                          [driver_id],
-                          (err, result) => {
-                            if (err) throw err;
-                            res.status(200).json({
-                              message:
-                                "Driver assigned to vehicle successfully.",
-                            });
-                          }
-                        );
-                      }
-                    );
-                  } else {
-                    res
-                      .status(400)
-                      .json({ message: "Driver is not available." });
-                  }
-                }
-              );
-            } else {
+          );
+        } else {
+          // Update site visit without vehicle
+          const query = `
+            UPDATE site_visits
+            SET 
+              vehicle_id = ?,
+              pickup_location = ?, 
+              pickup_date = ?, 
+              pickup_time = ?, 
+              remarks = ?, 
+              status = ?, 
+              driver_id = ?
+            WHERE id = ?
+          `;
+          connection.query(
+            query,
+            [
+              null,
+              pickup_location,
+              pickup_date,
+              pickup_time,
+              remarks,
+              status === "pending" ? "approved" : status,
+              driver_id,
+              id,
+            ],
+            (err, results) => {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
               res
-                .status(404)
-                .json({ message: "Approved site visit request not found." });
+                .status(200)
+                .json({ message: "Site visit updated successfully." });
             }
-          }
-        );
+          );
+        }
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
     }
   );
-
-  // Get vehicles with passengers and without assigned drivers
-  router.get(
-    "/vehicles-with-passengers",
-    authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
-    async (req, res) => {
-      try {
-        const query = `
-        SELECT 
-        vehicles.*,
-        GROUP_CONCAT(site_visits.id) as site_visit_id,
-        GROUP_CONCAT(site_visits.pickup_location) as pickup_location,
-        GROUP_CONCAT(site_visits.pickup_time) as pickup_time,
-        GROUP_CONCAT(site_visits.pickup_date) as pickup_date,
-        GROUP_CONCAT(Projects.name) AS site_name
-      FROM vehicles
-      INNER JOIN site_visits
-        ON vehicles.id = site_visits.vehicle_id
-      LEFT JOIN Projects 
-        ON site_visits.project_id = Projects.project_id 
-      WHERE site_visits.status = 'approved' AND site_visits.vehicle_id IS NOT NULL
-      GROUP BY vehicles.id
-    `;
-        connection.query(query, (err, results) => {
-          if (err) throw err;
-          res.status(200).json(results);
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    }
-  );
-
+  
   return router;
 };

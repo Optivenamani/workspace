@@ -182,10 +182,10 @@ module.exports = (connection) => {
     async (req, res) => {
       try {
         const id = req.params.id;
-        const { rejection_reason } = req.body;
+        const { remarks } = req.body;
         const query =
-          "UPDATE vehicle_requests SET status = 'rejected', rejection_reason = ? WHERE id = ?";
-        connection.query(query, [rejection_reason, id], (err, result) => {
+          "UPDATE vehicle_requests SET status = 'rejected', remarks = ? WHERE id = ?";
+        connection.query(query, [remarks, id], (err, result) => {
           if (err) throw err;
           if (result.affectedRows > 0) {
             res.status(200).json({ message: "Vehicle request rejected." });

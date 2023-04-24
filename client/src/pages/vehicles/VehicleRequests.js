@@ -63,7 +63,7 @@ const VehicleRequests = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ rejection_reason: rejectionReason }),
+          body: JSON.stringify({ remarks: rejectionReason }),
         }
       );
 

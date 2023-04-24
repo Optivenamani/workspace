@@ -25,7 +25,6 @@ import Notifications from "./pages/Notification";
 import Login from "./pages/Login";
 import SiteVisitDetails from "./pages/site-visit-requests/SiteVisitDetails";
 import EditVehicle from "./pages/vehicles/EditVehicle";
-import AssignSiteVisitDriver from "./pages/drivers/AssignSiteVisitDriver";
 import VehicleRequests from "./pages/vehicles/VehicleRequests";
 import VehicleRequestDetails from "./pages/vehicles/VehicleRequestDetails";
 import AssignVehicleRequestDriver from "./pages/drivers/AssignVehicleRequestDriver";
@@ -86,10 +85,6 @@ const App = () => {
             {/* Drivers */}
             <Route path="/create-driver" element={<AddDriver />} />
             <Route path="/drivers" element={<ViewDrivers />} />
-            <Route
-              path="/assign-driver-to-svr"
-              element={<AssignSiteVisitDriver />}
-            />
             <Route
               path="/assign-driver-to-vr"
               element={<AssignVehicleRequestDriver />}

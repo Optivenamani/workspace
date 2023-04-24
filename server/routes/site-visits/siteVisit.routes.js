@@ -14,7 +14,9 @@ module.exports = (connection) => {
     try {
       // Insert the site visit request into the `site_visits` table
       connection.query(
-        "INSERT INTO site_visits (marketer_id, project_id, pickup_location, pickup_time, pickup_date, status) VALUES (?, ?, ?, ?, ?, 'pending')",
+        `INSERT INTO site_visits 
+          (marketer_id, project_id, pickup_location, pickup_time, pickup_date, status) 
+        VALUES (?, ?, ?, ?, ?, 'pending')`,
         [marketer_id, project_id, pickup_location, pickup_time, pickup_date],
         (err, result) => {
           if (err) throw err;
@@ -29,7 +31,7 @@ module.exports = (connection) => {
             client.phone_number,
           ]);
           connection.query(
-            "INSERT INTO site_visit_clients (site_visit_id, name, email, phone_number) VALUES ?",
+            `INSERT INTO site_visit_clients (site_visit_id, name, email, phone_number) VALUES ?`,
             [clientValues],
             (err, result) => {
               if (err) throw err;
@@ -48,63 +50,69 @@ module.exports = (connection) => {
   });
 
   // Retrieve all site visit requests
-  router.get("/", authenticateJWT, async (req, res) => {
-    try {
-      connection.query(
-        `SELECT site_visits.*, 
+// Retrieve all site visit requests
+router.get("/", authenticateJWT, async (req, res) => {
+  try {
+    connection.query(
+      `SELECT site_visits.*, 
         site_visit_clients.id as client_id, 
-        site_visit_clients.name, 
-        site_visit_clients.email, 
-        site_visit_clients.phone_number,
-        Projects.name as site_name
-       FROM site_visits
-       LEFT JOIN site_visit_clients 
-       ON site_visits.id = site_visit_clients.site_visit_id
-       LEFT JOIN Projects
-       ON site_visits.project_id = Projects.project_id
-      `,
-        (err, results) => {
-          if (err) throw err;
+        site_visit_clients.name as client_name, 
+        site_visit_clients.email as client_email, 
+        site_visit_clients.phone_number as client_phone,
+        Projects.name as site_name,
+        users.fullnames as marketer_name
+      FROM site_visits
+      LEFT JOIN site_visit_clients 
+      ON site_visits.id = site_visit_clients.site_visit_id
+      LEFT JOIN Projects
+      ON site_visits.project_id = Projects.project_id
+      LEFT JOIN users
+      ON site_visits.marketer_id = users.user_id
+    `,
+      (err, results) => {
+        if (err) throw err;
 
-          // Process the results here, then send the response
-          const siteVisitsMap = {};
+        // Process the results here, then send the response
+        const siteVisitsMap = {};
 
-          results.forEach((row) => {
-            if (!siteVisitsMap[row.id]) {
-              siteVisitsMap[row.id] = {
-                id: row.id,
-                site_name: row.site_name,
-                pickup_location: row.pickup_location,
-                pickup_time: row.pickup_time,
-                pickup_date: row.pickup_date,
-                status: row.status,
-                created_by: row.created_by,
-                clients: [],
-                marketer_id: row.marketer_id,
-              };
-            }
+        results.forEach((row) => {
+          if (!siteVisitsMap[row.id]) {
+            siteVisitsMap[row.id] = {
+              id: row.id,
+              site_name: row.site_name,
+              pickup_location: row.pickup_location,
+              pickup_time: row.pickup_time,
+              pickup_date: row.pickup_date,
+              status: row.status,
+              created_by: row.created_by,
+              clients: [],
+              marketer_id: row.marketer_id,
+              marketer_name: row.marketer_name,
+            };
+          }
 
-            if (row.client_id) {
-              siteVisitsMap[row.id].clients.push({
-                id: row.client_id,
-                name: row.name,
-                email: row.email,
-                phone_number: row.phone_number,
-              });
-            }
-          });
+          if (row.client_id) {
+            siteVisitsMap[row.id].clients.push({
+              id: row.client_id,
+              name: row.client_name,
+              email: row.client_email,
+              phone_number: row.client_phone,
+            });
+          }
+        });
 
-          const siteVisitsArray = Object.values(siteVisitsMap);
+        const siteVisitsArray = Object.values(siteVisitsMap);
 
-          res.json(siteVisitsArray);
-        }
-      );
-    } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while fetching site visit requests.",
-      });
-    }
-  });
+        res.json(siteVisitsArray);
+      }
+    );
+  } catch (error) {
+    res.status(500).json({
+      message: "An error occurred while fetching site visit requests.",
+    });
+  }
+});
+
 
   // Update site visit request status
   router.patch(
@@ -123,7 +131,7 @@ module.exports = (connection) => {
 
       try {
         connection.query(
-          "UPDATE site_visits SET status = ? WHERE id = ?",
+          `UPDATE site_visits SET status = ? WHERE id = ?`,
           [status, id],
           (err, result) => {
             if (err) throw err;

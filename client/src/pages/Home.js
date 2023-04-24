@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import bus from "../assets/HOME.JPG"
 
 const Home = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -42,7 +43,7 @@ const Home = () => {
             <div className="overflow-hidden rounded-lg shadow-2xl md:grid md:grid-cols-3">
               <img
                 alt="Bus"
-                src="https://images.unsplash.com/photo-1532939163844-547f958e91b4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80"
+                src={bus}
                 className="h-32 w-full object-cover md:h-full"
               />
 

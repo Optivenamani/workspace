@@ -29,7 +29,7 @@ const ApprovedBookings = () => {
   }, [token]);
 
   const approvedSiteBookings = siteVisits.filter(
-    (siteVisit) => siteVisit.status === "approved"
+    (siteVisit) => siteVisit.status === "complete"
   );
 
   console.log(approvedSiteBookings);
@@ -78,7 +78,7 @@ const ApprovedBookings = () => {
             />
           </div>
         </div>
-        <div className="px-4 mt-4 flex justify-center">
+        <div className="px-4 mt-4 flex justify-center pb-10">
           <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
             <table className="table table-zebra w-full">
               {/* head */}

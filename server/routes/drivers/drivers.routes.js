@@ -70,6 +70,31 @@ module.exports = (connection) => {
     }
   );
 
+  // Get all drivers
+  router.get(
+    "/all-drivers",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+    ]),
+    async (req, res) => {
+      try {
+        const query = `SELECT * 
+        FROM users
+        WHERE (users.Accessrole = 'driver69' OR users.Accessrole = '     112#114#700')`;
+        connection.query(query, async (err, results) => {
+          if (err) throw err;
+          const drivers = results;
+          res.status(200).json(drivers);
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+
   // Get assigned vehicle requests
   router.get(
     "/assigned-vehicle-requests",
