@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Get all site visits with driver and vehicle info
   router.get(
     "/all",
@@ -38,7 +38,7 @@ module.exports = (connection) => {
       GROUP BY site_visits.id
       ORDER BY site_visits.created_at DESC;
     `;
-        connection.query(query, (err, results) => {
+        pool.query(query, (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
         });
@@ -78,7 +78,7 @@ module.exports = (connection) => {
       GROUP BY site_visits.id
       ORDER BY site_visits.created_at ASC;
     `;
-      connection.query(query, [id], (err, results) => {
+      pool.query(query, [id], (err, results) => {
         if (err) throw err;
         if (results.length > 0) {
           res.status(200).json(results[0]);
@@ -103,7 +103,7 @@ module.exports = (connection) => {
         const { remarks } = req.body;
         const query =
           "UPDATE site_visits SET status = 'rejected', remarks = ?, vehicle_id = null, driver_id = null WHERE id = ?";
-        connection.query(query, [remarks, id], (err, result) => {
+        pool.query(query, [remarks, id], (err, result) => {
           if (err) throw err;
           if (result.affectedRows > 0) {
             res.status(200).json({ message: "Site visit request rejected." });
@@ -145,7 +145,7 @@ module.exports = (connection) => {
               passengers_assigned 
             FROM vehicles 
             WHERE id = ? AND status = 'available'`;
-          connection.query(
+          pool.query(
             checkVehicleQuery,
             [vehicle_id],
             (err, vehicleResults) => {
@@ -157,7 +157,7 @@ module.exports = (connection) => {
                 const checkClientsQuery = `SELECT COUNT(*) as client_count
                   FROM site_visit_clients 
                   WHERE site_visit_id = ?`;
-                connection.query(
+                pool.query(
                   checkClientsQuery,
                   [id],
                   (err, clientResults) => {
@@ -180,7 +180,7 @@ module.exports = (connection) => {
                         WHERE id = ?
                       `;
 
-                      connection.query(
+                      pool.query(
                         query,
                         [
                           vehicle_id,
@@ -220,7 +220,7 @@ module.exports = (connection) => {
                             ORDER BY site_visits.created_at ASC;
                           `;
 
-                          connection.query(
+                          pool.query(
                             updatedSiteVisitQuery,
                             [id],
                             (err, updatedResults) => {
@@ -272,7 +272,7 @@ module.exports = (connection) => {
               driver_id = ?
             WHERE id = ?
           `;
-          connection.query(
+          pool.query(
             query,
             [
               null,

@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import bus from "../assets/HOME.JPG"
+import bus from "../assets/home.jpg";
 
 const Home = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};

@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Get all clients added by a certain marketer
   router.get(
     "/clients-by-marketer/:id",
@@ -26,7 +26,7 @@ module.exports = (connection) => {
         JOIN users ON site_visits.marketer_id = users.user_id 
         WHERE site_visits.marketer_id = ?;
       `;
-        connection.query(query, [marketer_id], (err, results) => {
+        pool.query(query, [marketer_id], (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
         });
@@ -54,7 +54,7 @@ module.exports = (connection) => {
         JOIN site_visits ON site_visit_clients.site_visit_id = site_visits.id 
         JOIN users ON site_visits.marketer_id = users.user_id 
       `;
-        connection.query(query, (err, results) => {
+        pool.query(query, (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
         });

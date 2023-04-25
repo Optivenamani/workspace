@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Create a new site visit request
   router.post("/", authenticateJWT, async (req, res) => {
     const { project_id, pickup_location, pickup_time, pickup_date, clients } =
@@ -13,7 +13,7 @@ module.exports = (connection) => {
 
     try {
       // Insert the site visit request into the `site_visits` table
-      connection.query(
+      pool.query(
         `INSERT INTO site_visits 
           (marketer_id, project_id, pickup_location, pickup_time, pickup_date, status) 
         VALUES (?, ?, ?, ?, ?, 'pending')`,
@@ -30,7 +30,7 @@ module.exports = (connection) => {
             client.email,
             client.phone_number,
           ]);
-          connection.query(
+          pool.query(
             `INSERT INTO site_visit_clients (site_visit_id, name, email, phone_number) VALUES ?`,
             [clientValues],
             (err, result) => {
@@ -50,11 +50,10 @@ module.exports = (connection) => {
   });
 
   // Retrieve all site visit requests
-// Retrieve all site visit requests
-router.get("/", authenticateJWT, async (req, res) => {
-  try {
-    connection.query(
-      `SELECT site_visits.*, 
+  router.get("/", authenticateJWT, async (req, res) => {
+    try {
+      pool.query(
+        `SELECT site_visits.*, 
         site_visit_clients.id as client_id, 
         site_visit_clients.name as client_name, 
         site_visit_clients.email as client_email, 
@@ -69,50 +68,49 @@ router.get("/", authenticateJWT, async (req, res) => {
       LEFT JOIN users
       ON site_visits.marketer_id = users.user_id
     `,
-      (err, results) => {
-        if (err) throw err;
+        (err, results) => {
+          if (err) throw err;
 
-        // Process the results here, then send the response
-        const siteVisitsMap = {};
+          // Process the results here, then send the response
+          const siteVisitsMap = {};
 
-        results.forEach((row) => {
-          if (!siteVisitsMap[row.id]) {
-            siteVisitsMap[row.id] = {
-              id: row.id,
-              site_name: row.site_name,
-              pickup_location: row.pickup_location,
-              pickup_time: row.pickup_time,
-              pickup_date: row.pickup_date,
-              status: row.status,
-              created_by: row.created_by,
-              clients: [],
-              marketer_id: row.marketer_id,
-              marketer_name: row.marketer_name,
-            };
-          }
+          results.forEach((row) => {
+            if (!siteVisitsMap[row.id]) {
+              siteVisitsMap[row.id] = {
+                id: row.id,
+                site_name: row.site_name,
+                pickup_location: row.pickup_location,
+                pickup_time: row.pickup_time,
+                pickup_date: row.pickup_date,
+                status: row.status,
+                created_by: row.created_by,
+                clients: [],
+                marketer_id: row.marketer_id,
+                marketer_name: row.marketer_name,
+              };
+            }
 
-          if (row.client_id) {
-            siteVisitsMap[row.id].clients.push({
-              id: row.client_id,
-              name: row.client_name,
-              email: row.client_email,
-              phone_number: row.client_phone,
-            });
-          }
-        });
+            if (row.client_id) {
+              siteVisitsMap[row.id].clients.push({
+                id: row.client_id,
+                name: row.client_name,
+                email: row.client_email,
+                phone_number: row.client_phone,
+              });
+            }
+          });
 
-        const siteVisitsArray = Object.values(siteVisitsMap);
+          const siteVisitsArray = Object.values(siteVisitsMap);
 
-        res.json(siteVisitsArray);
-      }
-    );
-  } catch (error) {
-    res.status(500).json({
-      message: "An error occurred while fetching site visit requests.",
-    });
-  }
-});
-
+          res.json(siteVisitsArray);
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching site visit requests.",
+      });
+    }
+  });
 
   // Update site visit request status
   router.patch(
@@ -130,7 +128,7 @@ router.get("/", authenticateJWT, async (req, res) => {
       const { id } = req.params;
 
       try {
-        connection.query(
+        pool.query(
           `UPDATE site_visits SET status = ? WHERE id = ?`,
           [status, id],
           (err, result) => {
@@ -169,7 +167,7 @@ router.get("/", authenticateJWT, async (req, res) => {
       const { id } = req.params;
 
       try {
-        connection.query(
+        pool.query(
           "UPDATE site_visits SET status = 'in_progress' WHERE id = ?",
           [id],
           (err, result) => {
@@ -210,60 +208,91 @@ router.get("/", authenticateJWT, async (req, res) => {
       const { id } = req.params;
       const driverId = req.user.id;
 
-      try {
-        connection.beginTransaction((err) => {
-          if (err) throw err;
+      pool.getConnection((err, connection) => {
+        if (err) {
+          return res.status(500).json({
+            message:
+              "An error occurred while establishing the database connection.",
+          });
+        }
 
-          // Update site visit status
-          connection.query(
-            "UPDATE site_visits SET status = 'complete' WHERE id = ?",
-            [id],
-            (err, result) => {
-              if (err) {
-                connection.rollback(() => {
-                  throw err;
-                });
-              }
+        connection.beginTransaction(async (err) => {
+          if (err) {
+            connection.release();
+            return res.status(500).json({
+              message: "An error occurred while beginning the transaction.",
+            });
+          }
 
-              if (result.affectedRows === 0) {
-                res
-                  .status(404)
-                  .json({ message: "Site visit request not found." });
-              } else {
-                // Update driver's availability status
-                connection.query(
-                  "UPDATE users SET is_available = 1 WHERE user_id = ?",
-                  [driverId],
-                  (err, result) => {
-                    if (err) {
-                      connection.rollback(() => {
-                        throw err;
-                      });
-                    }
+          try {
+            // Update site visit status
+            connection.query(
+              "UPDATE site_visits SET status = 'complete' WHERE id = ?",
+              [id],
+              (err, result) => {
+                if (err) {
+                  connection.rollback(() => {
+                    connection.release();
+                    return res.status(500).json({
+                      message:
+                        "An error occurred while updating the site visit request status.",
+                    });
+                  });
+                }
 
-                    connection.commit((err) => {
+                if (result.affectedRows === 0) {
+                  connection.release();
+                  return res
+                    .status(404)
+                    .json({ message: "Site visit request not found." });
+                } else {
+                  // Update driver's availability status
+                  connection.query(
+                    "UPDATE users SET is_available = 1 WHERE user_id = ?",
+                    [driverId],
+                    (err, result) => {
                       if (err) {
                         connection.rollback(() => {
-                          throw err;
+                          connection.release();
+                          return res.status(500).json({
+                            message:
+                              "An error occurred while updating the driver availability.",
+                          });
                         });
                       }
-                      res.json({
-                        message:
-                          "Site visit request status updated to 'complete' and driver set to 'available' successfully.",
+
+                      connection.commit((err) => {
+                        if (err) {
+                          connection.rollback(() => {
+                            connection.release();
+                            return res.status(500).json({
+                              message:
+                                "An error occurred while committing the transaction.",
+                            });
+                          });
+                        }
+                        connection.release();
+                        return res.json({
+                          message:
+                            "Site visit request status updated to 'complete' and driver set to 'available' successfully.",
+                        });
                       });
-                    });
-                  }
-                );
+                    }
+                  );
+                }
               }
-            }
-          );
+            );
+          } catch (error) {
+            connection.rollback(() => {
+              connection.release();
+              return res.status(500).json({
+                message:
+                  "An error occurred while updating the site visit request status and driver availability.",
+              });
+            });
+          }
         });
-      } catch (error) {
-        res.status(500).json({
-          message:
-            "An error occurred while updating the site visit request status and driver availability.",
-        });
-      }
+      });
     }
   );
 
@@ -280,32 +309,32 @@ router.get("/", authenticateJWT, async (req, res) => {
       const { id } = req.params;
 
       try {
-        connection.beginTransaction((err) => {
+        pool.beginTransaction((err) => {
           if (err) throw err;
 
-          connection.query(
+          pool.query(
             "DELETE FROM site_visit_clients WHERE site_visit_id = ?",
             [id],
             (err, result) => {
               if (err) {
-                connection.rollback(() => {
+                pool.rollback(() => {
                   throw err;
                 });
               }
 
-              connection.query(
+              pool.query(
                 "DELETE FROM site_visits WHERE id = ?",
                 [id],
                 (err, result) => {
                   if (err) {
-                    connection.rollback(() => {
+                    pool.rollback(() => {
                       throw err;
                     });
                   }
 
-                  connection.commit((err) => {
+                  pool.commit((err) => {
                     if (err) {
-                      connection.rollback(() => {
+                      pool.rollback(() => {
                         throw err;
                       });
                     }

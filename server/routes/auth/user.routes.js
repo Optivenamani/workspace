@@ -18,7 +18,7 @@ const checkPermissions = (allowedRoles) => {
   };
 };
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Retrieve all users
   router.get(
     "/",
@@ -30,7 +30,7 @@ module.exports = (connection) => {
     ]),
     async (req, res) => {
       try {
-        connection.query("SELECT * FROM users", (err, results) => {
+        pool.query("SELECT * FROM users", (err, results) => {
           if (err) throw err;
 
           res.json(results);

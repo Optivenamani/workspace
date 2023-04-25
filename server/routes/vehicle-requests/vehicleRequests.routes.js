@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Create a vehicle request
   router.post("/create-vehicle-request", authenticateJWT, async (req, res) => {
     try {
@@ -19,7 +19,7 @@ module.exports = (connection) => {
       } = req.body;
       const query =
         "INSERT INTO vehicle_requests (requester_id, pickup_location, destination_location, pickup_time, pickup_date, number_of_passengers, purpose) VALUES (?, ?, ?, ?, ?, ?, ?)";
-      connection.query(
+      pool.query(
         query,
         [
           requester_id,
@@ -64,7 +64,7 @@ module.exports = (connection) => {
         WHERE vehicle_requests.status = 'pending'
         ORDER BY vehicle_requests.created_at ASC
       `;
-        connection.query(query, (err, results) => {
+        pool.query(query, (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
         });
@@ -102,7 +102,7 @@ module.exports = (connection) => {
         ON vehicle_requests.driver_id = driver.user_id
       WHERE vehicle_requests.id = ?;
     `;
-      connection.query(query, [id], (err, results) => {
+      pool.query(query, [id], (err, results) => {
         if (err) throw err;
         if (results.length > 0) {
           res.status(200).json(results[0]);
@@ -130,7 +130,7 @@ module.exports = (connection) => {
       WHERE vehicle_requests.requester_id = ?
       ORDER BY vehicle_requests.created_at DESC
     `;
-        connection.query(query, [user_id], (err, results) => {
+        pool.query(query, [user_id], (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
         });
@@ -155,7 +155,7 @@ module.exports = (connection) => {
         const id = req.params.id;
         const query =
           "UPDATE vehicle_requests SET status = 'approved' WHERE id = ?";
-        connection.query(query, [id], (err, result) => {
+        pool.query(query, [id], (err, result) => {
           if (err) throw err;
           if (result.affectedRows > 0) {
             res.status(200).json({ message: "Vehicle request approved." });
@@ -185,7 +185,7 @@ module.exports = (connection) => {
         const { remarks } = req.body;
         const query =
           "UPDATE vehicle_requests SET status = 'rejected', remarks = ? WHERE id = ?";
-        connection.query(query, [remarks, id], (err, result) => {
+        pool.query(query, [remarks, id], (err, result) => {
           if (err) throw err;
           if (result.affectedRows > 0) {
             res.status(200).json({ message: "Vehicle request rejected." });
@@ -217,7 +217,7 @@ module.exports = (connection) => {
         // Check if vehicle request exists and is approved
         const checkRequestQuery =
           "SELECT * FROM vehicle_requests WHERE id = ? AND status = 'approved'";
-        connection.query(
+        pool.query(
           checkRequestQuery,
           [request_id],
           (err, requestResults) => {
@@ -226,7 +226,7 @@ module.exports = (connection) => {
               // Check if the vehicle is available and has enough seats
               const checkVehicleQuery =
                 "SELECT number_of_seats FROM vehicles WHERE id = ? AND status = 'available'";
-              connection.query(
+              pool.query(
                 checkVehicleQuery,
                 [vehicle_id],
                 (err, vehicleResults) => {
@@ -238,7 +238,7 @@ module.exports = (connection) => {
                       // Update vehicle_id in the vehicle_requests table
                       const updateRequestQuery =
                         "UPDATE vehicle_requests SET vehicle_id = ? WHERE id = ?";
-                      connection.query(
+                      pool.query(
                         updateRequestQuery,
                         [vehicle_id, request_id],
                         (err, result) => {
@@ -247,7 +247,7 @@ module.exports = (connection) => {
                           // Set the vehicle status to unavailable
                           const updateVehicleStatusQuery =
                             "UPDATE vehicles SET status = 'unavailable' WHERE id = ?";
-                          connection.query(
+                          pool.query(
                             updateVehicleStatusQuery,
                             [vehicle_id],
                             (err, result) => {
@@ -305,7 +305,7 @@ module.exports = (connection) => {
 
         const checkRequestQuery =
           "SELECT * FROM vehicle_requests WHERE id = ? AND status = 'approved' AND vehicle_id IS NOT NULL";
-        connection.query(
+        pool.query(
           checkRequestQuery,
           [request_id],
           async (err, requestResults) => {
@@ -314,7 +314,7 @@ module.exports = (connection) => {
             if (requestResults.length > 0) {
               const checkDriverAvailabilityQuery =
                 "SELECT * FROM users WHERE user_id = ? AND is_available = 1";
-              connection.query(
+              pool.query(
                 checkDriverAvailabilityQuery,
                 [driver_id],
                 async (err, driverResults) => {
@@ -323,7 +323,7 @@ module.exports = (connection) => {
                   if (driverResults.length > 0) {
                     const updateRequestQuery =
                       "UPDATE vehicle_requests SET driver_id = ? WHERE id = ?";
-                    connection.query(
+                    pool.query(
                       updateRequestQuery,
                       [driver_id, request_id],
                       async (err, result) => {
@@ -331,7 +331,7 @@ module.exports = (connection) => {
 
                         const updateDriverAvailabilityQuery =
                           "UPDATE users SET is_available = 0 WHERE user_id = ?";
-                        connection.query(
+                        pool.query(
                           updateDriverAvailabilityQuery,
                           [driver_id],
                           (err, result) => {
@@ -390,7 +390,7 @@ module.exports = (connection) => {
     WHERE vehicle_requests.status = 'approved' AND vehicle_requests.vehicle_id IS NOT NULL
     GROUP BY vehicles.id
   `;
-        connection.query(query, (err, results) => {
+        pool.query(query, (err, results) => {
           if (err) throw err;
           res.status(200).json(results);
         });
@@ -416,7 +416,7 @@ module.exports = (connection) => {
         const query =
           "UPDATE vehicle_requests SET status = 'in_progress' WHERE id = ?";
 
-        connection.query(query, [requestId], (err, results) => {
+        pool.query(query, [requestId], (err, results) => {
           if (err) {
             res.status(500).json({ error: err.message });
             return;
@@ -447,7 +447,7 @@ module.exports = (connection) => {
         const getRequestInfoQuery =
           "SELECT driver_id, vehicle_id FROM vehicle_requests WHERE id = ?";
 
-        connection.query(getRequestInfoQuery, [requestId], (err, results) => {
+        pool.query(getRequestInfoQuery, [requestId], (err, results) => {
           if (err) {
             res.status(500).json({ error: err.message });
             return;
@@ -455,7 +455,7 @@ module.exports = (connection) => {
           const driverId = results[0].driver_id;
           const vehicleId = results[0].vehicle_id;
 
-          connection.query(updateRequestQuery, [requestId], (err) => {
+          pool.query(updateRequestQuery, [requestId], (err) => {
             if (err) {
               res.status(500).json({ error: err.message });
               return;
@@ -463,7 +463,7 @@ module.exports = (connection) => {
 
             const makeDriverAvailableQuery =
               "UPDATE users SET is_available = 1 WHERE user_id = ?";
-            connection.query(makeDriverAvailableQuery, [driverId], (err) => {
+            pool.query(makeDriverAvailableQuery, [driverId], (err) => {
               if (err) {
                 res.status(500).json({ error: err.message });
                 return;
@@ -472,7 +472,7 @@ module.exports = (connection) => {
               // Make the vehicle available again
               const makeVehicleAvailableQuery =
                 "UPDATE vehicles SET status = 'available' WHERE id = ?";
-              connection.query(
+              pool.query(
                 makeVehicleAvailableQuery,
                 [vehicleId],
                 (err) => {

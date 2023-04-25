@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Get assigned site visit deets
   router.get(
     "/assigned-site-visits",
@@ -25,7 +25,7 @@ module.exports = (connection) => {
         ON site_visits.project_id = Projects.project_id
         WHERE (site_visits.status = 'approved' OR site_visits.status = 'in_progress') AND site_visits.driver_id = ?`;
 
-        connection.query(query, [driverId], async (err, results) => {
+        pool.query(query, [driverId], async (err, results) => {
           if (err) throw err;
 
           const siteVisits = results;
@@ -37,7 +37,7 @@ module.exports = (connection) => {
 
           for (const siteVisit of siteVisits) {
             await new Promise((resolve, reject) => {
-              connection.query(
+              pool.query(
                 getClientDetailsQuery,
                 [siteVisit.id],
                 (err, clientResults) => {
@@ -49,7 +49,7 @@ module.exports = (connection) => {
             });
 
             await new Promise((resolve, reject) => {
-              connection.query(
+              pool.query(
                 getTotalPassengersQuery,
                 [siteVisit.id],
                 (err, totalPassengersResult) => {
@@ -84,7 +84,7 @@ module.exports = (connection) => {
         const query = `SELECT * 
         FROM users
         WHERE (users.Accessrole = 'driver69' OR users.Accessrole = '     112#114#700')`;
-        connection.query(query, async (err, results) => {
+        pool.query(query, async (err, results) => {
           if (err) throw err;
           const drivers = results;
           res.status(200).json(drivers);
@@ -114,7 +114,7 @@ module.exports = (connection) => {
           AND driver_id = ?
           `;
 
-        connection.query(query, [driverId], (err, results) => {
+        pool.query(query, [driverId], (err, results) => {
           if (err) {
             res.status(500).json({ error: err.message });
             return;

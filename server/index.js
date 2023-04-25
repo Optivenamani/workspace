@@ -5,21 +5,18 @@ const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-// Set up the Express app and database connection
+// Set up the Express app and database connection pool
 const app = express();
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_NAME,
   ssl: { rejectUnauthorized: false },
-});
-
-// Handle connection errors
-connection.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to database!");
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 // Import auth routes
@@ -48,20 +45,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Apply route middlewares
-app.use("/api/login", login(connection));
+app.use("/api/login", login(pool));
 app.use("/api/logout", logout);
-app.use("/api/users", users(connection));
-app.use("/api/sites", sites(connection));
-app.use("/api/vehicles", vehicles(connection));
-app.use("/api/site-visit-requests", siteVisitRequests(connection));
-app.use("/api/site-visits", siteVisits(connection));
-app.use("/api/drivers", drivers(connection));
-app.use("/api/vehicle-requests", vehicleRequests(connection));
-app.use("/api/clients", clients(connection));
+app.use("/api/users", users(pool));
+app.use("/api/sites", sites(pool));
+app.use("/api/vehicles", vehicles(pool));
+app.use("/api/site-visit-requests", siteVisitRequests(pool));
+app.use("/api/site-visits", siteVisits(pool));
+app.use("/api/drivers", drivers(pool));
+app.use("/api/vehicle-requests", vehicleRequests(pool));
+app.use("/api/clients", clients(pool));
 
 // Define a sample route to fetch all users
 app.get("/", (req, res) => {
-  connection.query("SELECT * FROM users", (err, results) => {
+  pool.query("SELECT * FROM users", (err, results) => {
     if (err) throw err;
     res.send(results);
   });

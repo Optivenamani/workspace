@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Create a new vehicle
   router.post(
     "/",
@@ -28,7 +28,7 @@ module.exports = (connection) => {
       } = req.body;
 
       try {
-        connection.query(
+        pool.query(
           "INSERT INTO vehicles (make, model, body_type, number_of_seats, engine_capacity, vehicle_registration) VALUES (?, ?, ?, ?, ?, ?)",
           [
             make,
@@ -66,7 +66,7 @@ module.exports = (connection) => {
     ]),
     async (req, res) => {
       try {
-        connection.query("SELECT * FROM vehicles", (err, results) => {
+        pool.query("SELECT * FROM vehicles", (err, results) => {
           if (err) throw err;
 
           res.json(results);
@@ -95,7 +95,7 @@ module.exports = (connection) => {
       const { id } = req.params;
 
       try {
-        connection.query(
+        pool.query(
           "SELECT * FROM vehicles WHERE id = ?",
           [id],
           (err, results) => {
@@ -130,7 +130,7 @@ module.exports = (connection) => {
     ]),
     async (req, res) => {
       try {
-        connection.query(
+        pool.query(
           "SELECT * FROM vehicles WHERE status = 'available'",
           (err, results) => {
             if (err) throw err;
@@ -169,7 +169,7 @@ module.exports = (connection) => {
       } = req.body;
       const { id } = req.params;
       try {
-        connection.query(
+        pool.query(
           "UPDATE vehicles SET make = ?, model = ?, body_type = ?, number_of_seats = ?, engine_capacity = ?, vehicle_registration = ? WHERE id = ?",
           [
             make,
@@ -215,7 +215,7 @@ module.exports = (connection) => {
     async (req, res) => {
       const { id } = req.params;
       try {
-        connection.query(
+        pool.query(
           "DELETE FROM vehicles WHERE id = ?",
           [id],
           (err, result) => {

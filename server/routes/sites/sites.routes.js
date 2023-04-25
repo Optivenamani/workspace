@@ -2,14 +2,14 @@ const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   // Get all sites
   router.get(
     "/",
     authenticateJWT,
     async (req, res) => {
       try {
-        connection.query("SELECT * FROM Projects", (err, results) => {
+        pool.query("SELECT * FROM Projects", (err, results) => {
           if (err) throw err;
           res.json(results);
         });

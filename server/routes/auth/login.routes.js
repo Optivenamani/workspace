@@ -5,7 +5,7 @@ const md5 = require("md5");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 
-module.exports = (connection) => {
+module.exports = (pool) => {
   router.post(
     "/",
     // Validate email and password
@@ -20,7 +20,7 @@ module.exports = (connection) => {
       const hashedPassword = md5(password);
 
       try {
-        const [rows] = await connection
+        const [rows] = await pool
           .promise()
           .query("SELECT * FROM users WHERE email = ? AND password = ?", [
             email,
