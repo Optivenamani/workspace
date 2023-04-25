@@ -7,7 +7,7 @@ const SiteVisitDetails = () => {
   const [siteVisitData, setSiteVisitData] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const [vehicle, setVehicle] = useState("");
-  const [isApproved, setIsApproved] = useState(false);
+  const [, setIsApproved] = useState(false);
   const [pickupLocation, setPickupLocation] = useState("");
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
@@ -224,6 +224,11 @@ const SiteVisitDetails = () => {
                           (siteVisitData && siteVisitData.pickup_location)
                         }
                         onChange={(e) => setPickupLocation(e.target.value)}
+                        disabled={
+                          siteVisitData &&
+                          siteVisitData.status !== "pending" &&
+                          siteVisitData.status !== "approved"
+                        }
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -241,6 +246,11 @@ const SiteVisitDetails = () => {
                             formatDate(siteVisitData.pickup_date))
                         }
                         onChange={(e) => setDate(e.target.value)}
+                        disabled={
+                          siteVisitData &&
+                          siteVisitData.status !== "pending" &&
+                          siteVisitData.status !== "approved"
+                        }
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -269,6 +279,11 @@ const SiteVisitDetails = () => {
                           time || (siteVisitData && siteVisitData.pickup_time)
                         }
                         onChange={(e) => setTime(e.target.value)}
+                        disabled={
+                          siteVisitData &&
+                          siteVisitData.status !== "pending" &&
+                          siteVisitData.status !== "approved"
+                        }
                       />
                     </div>
 
@@ -298,6 +313,11 @@ const SiteVisitDetails = () => {
                           setDriver(event.target.value);
                         }}
                         className="select select-bordered"
+                        disabled={
+                          siteVisitData &&
+                          siteVisitData.status !== "pending" &&
+                          siteVisitData.status !== "approved"
+                        }
                       >
                         <option value="">Select a driver</option>
                         {drivers.map((driver) => (
@@ -319,6 +339,11 @@ const SiteVisitDetails = () => {
                         value={vehicle}
                         onChange={(event) => setVehicle(event.target.value)}
                         className="select select-bordered"
+                        disabled={
+                          siteVisitData &&
+                          siteVisitData.status !== "pending" &&
+                          siteVisitData.status !== "approved"
+                        }
                       >
                         <option value="">Select a Vehicle</option>
                         {vehicles.map((v) => (
@@ -340,6 +365,11 @@ const SiteVisitDetails = () => {
                         className="input input-bordered h-24 w-full p-2"
                         value={remarks || ""}
                         onChange={(e) => setRemarks(e.target.value)}
+                        disabled={
+                          siteVisitData &&
+                          siteVisitData.status !== "pending" &&
+                          siteVisitData.status !== "approved"
+                        }
                       />
                     </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Sidebar from "../../components/Sidebar";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 
 const PastRequests = () => {
   const [startDate, setStartDate] = useState("");
@@ -102,7 +102,7 @@ const PastRequests = () => {
                   <td>
                     {new Date(request.pickup_date).toLocaleDateString("en-GB")}
                   </td>
-                  <td>{format12HourTime(request.pickup_time)}</td>
+                  <td>{formatTime(request.pickup_time)}</td>
                 </tr>
               ))}
             </tbody>

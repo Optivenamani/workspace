@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 
 const ConfirmInfo = ({ onSubmitForm, formData }) => {
   const [isChecked, setIsChecked] = useState(false);
   console.log("formData:", formData);
 
-  console.log(format12HourTime(formData.pickup_time));
+  console.log(formatTime(formData.pickup_time));
 
   return (
     <>
@@ -38,7 +38,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
           <h1>
             <span className="font-bold">Time: </span>
             {formData.pickup_time ? (
-              format12HourTime(formData.pickup_time)
+              formatTime(formData.pickup_time)
             ) : (
               <span className="italic">Not Provided</span>
             )}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 
 const ApprovedBookings = () => {
   const [startDate, setStartDate] = useState("");
@@ -101,7 +101,7 @@ const ApprovedBookings = () => {
                     <td>
                       {new Date(item.pickup_date).toLocaleDateString("en-GB")}
                     </td>
-                    <td>{format12HourTime(item.pickup_time)}</td>
+                    <td>{formatTime(item.pickup_time)}</td>
                     <td>{item.clients.length}</td>
                   </tr>
                 ))}

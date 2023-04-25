@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 import { useNavigate } from "react-router-dom";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
 
@@ -154,7 +154,7 @@ const SiteVisitRequests = () => {
                           {svr.driver_name}
                         </td>
                         <td className="border border-secondary-content px-2">
-                          {format12HourTime(svr.pickup_time)}
+                          {formatTime(svr.pickup_time)}
                         </td>
                         <td className="border border-secondary-content px-2">
                           {svr.vehicle_name}

@@ -54,20 +54,21 @@ module.exports = (pool) => {
     try {
       pool.query(
         `SELECT site_visits.*, 
-        site_visit_clients.id as client_id, 
-        site_visit_clients.name as client_name, 
-        site_visit_clients.email as client_email, 
-        site_visit_clients.phone_number as client_phone,
-        Projects.name as site_name,
-        users.fullnames as marketer_name
-      FROM site_visits
-      LEFT JOIN site_visit_clients 
-      ON site_visits.id = site_visit_clients.site_visit_id
-      LEFT JOIN Projects
-      ON site_visits.project_id = Projects.project_id
-      LEFT JOIN users
-      ON site_visits.marketer_id = users.user_id
-    `,
+          site_visit_clients.id as client_id, 
+          site_visit_clients.name as client_name, 
+          site_visit_clients.email as client_email, 
+          site_visit_clients.phone_number as client_phone,
+          Projects.name as site_name,
+          users.fullnames as marketer_name
+        FROM site_visits
+        LEFT JOIN site_visit_clients 
+        ON site_visits.id = site_visit_clients.site_visit_id
+        LEFT JOIN Projects
+        ON site_visits.project_id = Projects.project_id
+        LEFT JOIN users
+        ON site_visits.marketer_id = users.user_id
+        ORDER BY site_visits.created_at DESC;
+      `,
         (err, results) => {
           if (err) throw err;
 

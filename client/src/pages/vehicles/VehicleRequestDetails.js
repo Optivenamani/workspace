@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 
 const VehicleRequestDetails = () => {
   const [vehicleRequestData, setvehicleRequestData] = useState(null);
@@ -152,7 +152,7 @@ const VehicleRequestDetails = () => {
                   <h1 className="text-black font-bold">
                     Time:{" "}
                     <span className="font-bold text-primary">
-                      {format12HourTime(vehicleRequestData.pickup_time)}
+                      {formatTime(vehicleRequestData.pickup_time)}
                     </span>
                   </h1>
                   <h1 className="text-black font-bold">

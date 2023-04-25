@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
 
 const AssignedVehicleRequests = () => {
@@ -120,7 +120,7 @@ const AssignedVehicleRequests = () => {
 
                       <div className="flex flex-col-reverse">
                         <dt className="text-sm font-medium text-gray-600">
-                          {format12HourTime(vr.pickup_time)}
+                          {formatTime(vr.pickup_time)}
                         </dt>
                         <dd className="text-xs font-bold">Pickup Time</dd>
                       </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 
 const AllSiteVisits = () => {
   const [startDate, setStartDate] = useState("");
@@ -102,7 +102,7 @@ const AllSiteVisits = () => {
                       )}
                     </td>
 
-                    <td>{format12HourTime(siteVisit.pickup_time)}</td>
+                    <td>{formatTime(siteVisit.pickup_time)}</td>
                     <td>{siteVisit.clients.length}</td>
                   </tr>
                 ))}

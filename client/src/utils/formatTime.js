@@ -1,4 +1,4 @@
-const format12HourTime = (timeStr) => {
+const formatTime = (timeStr) => {
   if (!timeStr) return '';
   const [hours, minutes] = timeStr.split(":");
   const ampm = hours >= 12 ? "pm" : "am";
@@ -6,4 +6,4 @@ const format12HourTime = (timeStr) => {
   return `${formattedHours}:${minutes}${ampm}`;
 };
 
-export default format12HourTime;
+export default formatTime;

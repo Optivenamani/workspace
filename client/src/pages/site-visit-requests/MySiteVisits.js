@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Sidebar from "../../components/Sidebar";
-import format12HourTime from "../../utils/formatTime";
+import formatTime from "../../utils/formatTime";
 
 const MySiteVisits = () => {
   const [startDate, setStartDate] = useState("");
@@ -56,7 +56,7 @@ const MySiteVisits = () => {
     }
   });
 
-  console.log(filteredSiteVisits)
+  console.log(filteredSiteVisits);
 
   return (
     <Sidebar>
@@ -104,7 +104,7 @@ const MySiteVisits = () => {
                       "en-GB"
                     )}
                   </td>
-                  <td>{format12HourTime(siteVisit.pickup_time)}</td>
+                  <td>{formatTime(siteVisit.pickup_time)}</td>
                   <td
                     style={{
                       textTransform: "uppercase",
