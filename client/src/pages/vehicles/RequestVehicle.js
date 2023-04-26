@@ -66,7 +66,7 @@ const RequestVehicle = () => {
               type="text"
               id="location"
               value={location}
-              placeholder="Location"
+              placeholder="eg. ABSA Towers"
               onChange={(event) => setLocation(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
@@ -77,7 +77,7 @@ const RequestVehicle = () => {
               type="text"
               id="destination"
               value={destination}
-              placeholder="Destination"
+              placeholder="eg. Kitengela"
               onChange={(event) => setDestination(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />

@@ -88,7 +88,7 @@ const Sidebar = ({ children }) => {
                       My Site Visits
                     </a>
                   )}
-                  {(isAdmin || isDriver) && (
+                  {(isAdmin || (isDriver && !isMarketer)) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/assigned-site-visits"
@@ -190,7 +190,7 @@ const Sidebar = ({ children }) => {
                     </a>
                   </>
                 )}
-                {(isAdmin || isDriver) && (
+                {(isAdmin || (isDriver && !isMarketer)) && (
                   <a
                     className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                     href="/assigned-vehicle-requests"

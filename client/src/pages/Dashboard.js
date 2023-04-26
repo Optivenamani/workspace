@@ -122,9 +122,9 @@ const Dashboard = () => {
                       tickFormat={siteCounts.map((site) => site.site_name)}
                       style={{
                         tickLabels: {
-                          angle: -15,
+                          angle: -10,
                           textAnchor: "end",
-                          fontSize: 8,
+                          fontSize: 7,
                         },
                       }}
                     />

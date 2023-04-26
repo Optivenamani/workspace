@@ -11,12 +11,34 @@ module.exports = (pool) => {
       req.body;
     const marketer_id = req.body.marketer_id; // Get the authenticated user ID from the JWT
 
+    // Validation for client information
+    if (!clients || clients.length === 0) {
+      return res.status(400).json({
+        message: "Client information is mandatory.",
+      });
+    }
+
+    for (const client of clients) {
+      if (!client.name || !client.phone_number) {
+        return res.status(400).json({
+          message: "Name and phone number are required for each client.",
+        });
+      }
+    }
+
     try {
       // Insert the site visit request into the `site_visits` table
       pool.query(
         `INSERT INTO site_visits 
-          (marketer_id, project_id, pickup_location, pickup_time, pickup_date, status) 
-        VALUES (?, ?, ?, ?, ?, 'pending')`,
+          (
+            marketer_id, 
+            project_id, 
+            pickup_location, 
+            pickup_time, 
+            pickup_date, 
+            status
+          ) 
+         VALUES (?, ?, ?, ?, ?, 'pending')`,
         [marketer_id, project_id, pickup_location, pickup_time, pickup_date],
         (err, result) => {
           if (err) throw err;
@@ -25,13 +47,20 @@ module.exports = (pool) => {
 
           // Insert clients associated with this site visit request into the `site_visit_clients` table
           const clientValues = clients.map((client) => [
-            siteVisitId, // Add the siteVisitId here
+            siteVisitId,
             client.name,
             client.email,
             client.phone_number,
           ]);
           pool.query(
-            `INSERT INTO site_visit_clients (site_visit_id, name, email, phone_number) VALUES ?`,
+            `INSERT INTO site_visit_clients 
+              (
+                site_visit_id, 
+                name, 
+                email, 
+                phone_number
+              ) 
+             VALUES ?`,
             [clientValues],
             (err, result) => {
               if (err) throw err;

@@ -5,6 +5,8 @@ import ConfirmInfo from "./ConfirmInfo";
 import { createSiteVisitRequest } from "./api/api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Form = () => {
   const user = useSelector((state) => state.user.user);
@@ -23,11 +25,7 @@ const Form = () => {
 
   const navigate = useNavigate();
 
-  const formTitles = [
-    "Site Visit Info",
-    "Client Info",
-    "Confirm Details",
-  ];
+  const formTitles = ["Site Visit Info", "Client Info", "Confirm Details"];
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -57,25 +55,67 @@ const Form = () => {
       setPage(0);
 
       // Display a success message or redirect the user to another page
-      alert("Site visit request created successfully!");
+      toast.success("Site visit request created successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       navigate("/");
     } catch (error) {
       // Display an error message
-      alert("Error creating site visit request. Please try again.");
+      toast.error("Error creating site visit request. Please try again.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
+  };
+
+  const validateForm = () => {
+    if (page === 0) {
+      return (
+        formData.project_id &&
+        formData.site_name &&
+        formData.pickup_location &&
+        formData.pickup_date &&
+        formData.pickup_time
+      );
+    } else if (page === 1) {
+      return formData.clients.every((client) => {
+        return client.name && client.phone_number;
+      });
+    }
+    return false;
   };
 
   const pageDisplay = () => {
     if (page === 0) {
-      return <SiteVisitInfo formData={formData} setFormData={setFormData} />;
+      return (
+        <SiteVisitInfo
+          formData={formData}
+          setFormData={setFormData}
+          validateForm={validateForm}
+        />
+      );
     } else if (page === 1) {
-      return <ClientInfo formData={formData} setFormData={setFormData} />;
+      return (
+        <ClientInfo
+          formData={formData}
+          setFormData={setFormData}
+          validateForm={validateForm}
+        />
+      );
     } else if (page === 2) {
       return (
         <ConfirmInfo
           formData={formData}
           setFormData={setFormData}
           onSubmitForm={handleFormSubmit}
+          validateForm={validateForm}
         />
       );
     }
@@ -127,11 +167,19 @@ const Form = () => {
             <button
               disabled={page === formTitles.length - 1}
               onClick={() => {
-                if (page === formTitles.length - 1) {
-                  alert("FORM SUBMITTED");
-                  console.log("formData");
-                } else {
+                if (validateForm()) {
                   setPage((currentPage) => currentPage + 1);
+                } else {
+                  toast.error(
+                    "Please fill in all required fields before proceeding.",
+                    {
+                      position: "top-center",
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                    }
+                  );
                 }
               }}
               className="mx-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200"

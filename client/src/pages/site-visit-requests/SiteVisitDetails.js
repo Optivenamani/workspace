@@ -89,7 +89,7 @@ const SiteVisitDetails = () => {
     if (siteVisitData) {
       setVehicle(siteVisitData.vehicle_id);
       setPickupLocation(siteVisitData.pickup_location);
-      setDate(new Date(siteVisitData.pickup_date).toISOString().slice(0, 10));
+      setDate(formatDate(siteVisitData.pickup_date));
       setTime(siteVisitData.pickup_time);
       setRemarks(siteVisitData.remarks);
       setDriver(siteVisitData.driver_id);
@@ -171,7 +171,13 @@ const SiteVisitDetails = () => {
   const formatDate = (dateString) => {
     if (!dateString) return null;
     const date = new Date(dateString);
-    return date.toISOString().slice(0, 10);
+    return date
+      .toLocaleDateString("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "-");
   };
 
   return (
