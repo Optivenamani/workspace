@@ -8,7 +8,7 @@ const Sidebar = ({ children }) => {
   const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
   const status = useSelector((state) => state.siteVisit.status);
 
-  console.log(activeVisits, status);
+  console.log("Active Site Visits:", activeVisits.length);
 
   const isMarketer = accessRole === `113`;
   const isHOSorGM = accessRole === `113#114` || accessRole === `113#115`;

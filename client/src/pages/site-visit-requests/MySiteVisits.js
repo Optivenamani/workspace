@@ -56,7 +56,7 @@ const MySiteVisits = () => {
     }
   });
 
-  console.log(filteredSiteVisits);
+  console.log("My site visits:", filteredSiteVisits);
 
   return (
     <Sidebar>
@@ -93,41 +93,43 @@ const MySiteVisits = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredSiteVisits.map((siteVisit, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{siteVisit.site_name}</td>
-                  <td>{siteVisit.clients.length}</td>
-                  <td>{siteVisit.pickup_location}</td>
-                  <td>
-                    {new Date(siteVisit.pickup_date).toLocaleDateString(
-                      "en-GB"
-                    )}
-                  </td>
-                  <td>{formatTime(siteVisit.pickup_time)}</td>
-                  <td
-                    style={{
-                      textTransform: "uppercase",
-                      fontWeight: "bold",
-                      color:
-                        siteVisit.status === "rejected"
-                          ? "red"
-                          : siteVisit.status === "complete"
-                          ? "green"
-                          : "black",
-                    }}
-                  >
-                    {siteVisit.status}
-                  </td>
-                  <td>
-                    {siteVisit.status === "pending" ? (
-                      <button className="btn btn-sm btn-outline btn-warning">
-                        Edit
-                      </button>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
+              {filteredSiteVisits
+                .sort((a, b) => b.id - a.id)
+                .map((siteVisit, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{siteVisit.site_name}</td>
+                    <td>{siteVisit.clients.length}</td>
+                    <td>{siteVisit.pickup_location}</td>
+                    <td>
+                      {new Date(siteVisit.pickup_date).toLocaleDateString(
+                        "en-GB"
+                      )}
+                    </td>
+                    <td>{formatTime(siteVisit.pickup_time)}</td>
+                    <td
+                      style={{
+                        textTransform: "uppercase",
+                        fontWeight: "bold",
+                        color:
+                          siteVisit.status === "rejected"
+                            ? "red"
+                            : siteVisit.status === "complete"
+                            ? "green"
+                            : "black",
+                      }}
+                    >
+                      {siteVisit.status}
+                    </td>
+                    <td>
+                      {siteVisit.status === "pending" ? (
+                        <button className="btn btn-sm btn-outline btn-warning">
+                          Edit
+                        </button>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
