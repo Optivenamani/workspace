@@ -47,6 +47,27 @@ module.exports = (pool) => {
       }
     }
   );
+  // Get info on the user, to see if he's booked any active site-visits
+  router.get("/active", authenticateJWT, async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const query = `
+        SELECT
+          site_visits.*,
+          users.fullnames as marketer_name,
+          site_visits.status as site_visit_status
+        FROM site_visits
+        JOIN users ON site_visits.marketer_id = users.user_id
+        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected');
+        `;
+      pool.query(query, [userId], (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
   // Get a single pending site visit request
   router.get(
     "/pending-site-visits/:id",
@@ -145,29 +166,22 @@ module.exports = (pool) => {
               passengers_assigned 
             FROM vehicles 
             WHERE id = ? AND status = 'available'`;
-          pool.query(
-            checkVehicleQuery,
-            [vehicle_id],
-            (err, vehicleResults) => {
-              if (err) throw err;
-              if (vehicleResults.length > 0) {
-                const numberOfSeats = vehicleResults[0].number_of_seats;
-                const passengersAssigned =
-                  vehicleResults[0].passengers_assigned;
-                const checkClientsQuery = `SELECT COUNT(*) as client_count
+          pool.query(checkVehicleQuery, [vehicle_id], (err, vehicleResults) => {
+            if (err) throw err;
+            if (vehicleResults.length > 0) {
+              const numberOfSeats = vehicleResults[0].number_of_seats;
+              const passengersAssigned = vehicleResults[0].passengers_assigned;
+              const checkClientsQuery = `SELECT COUNT(*) as client_count
                   FROM site_visit_clients 
                   WHERE site_visit_id = ?`;
-                pool.query(
-                  checkClientsQuery,
-                  [id],
-                  (err, clientResults) => {
-                    if (err) throw err;
-                    const clientCount = clientResults[0].client_count;
+              pool.query(checkClientsQuery, [id], (err, clientResults) => {
+                if (err) throw err;
+                const clientCount = clientResults[0].client_count;
 
-                    // Add 1 for the marketer
-                    if (numberOfSeats >= clientCount + 1 + passengersAssigned) {
-                      // Update site visit
-                      const query = `
+                // Add 1 for the marketer
+                if (numberOfSeats >= clientCount + 1 + passengersAssigned) {
+                  // Update site visit
+                  const query = `
                         UPDATE site_visits
                         SET 
                           vehicle_id = ?,
@@ -180,26 +194,26 @@ module.exports = (pool) => {
                         WHERE id = ?
                       `;
 
-                      pool.query(
-                        query,
-                        [
-                          vehicle_id,
-                          pickup_location,
-                          pickup_date,
-                          pickup_time,
-                          remarks,
-                          status === "pending" ? "approved" : status,
-                          driver_id,
-                          id,
-                        ],
-                        async (err, results) => {
-                          if (err) {
-                            res.status(500).json({ error: err.message });
-                            return;
-                          }
+                  pool.query(
+                    query,
+                    [
+                      vehicle_id,
+                      pickup_location,
+                      pickup_date,
+                      pickup_time,
+                      remarks,
+                      status === "pending" ? "approved" : status,
+                      driver_id,
+                      id,
+                    ],
+                    async (err, results) => {
+                      if (err) {
+                        res.status(500).json({ error: err.message });
+                        return;
+                      }
 
-                          // New SELECT query to get the updated site visit with the driver's name
-                          const updatedSiteVisitQuery = `
+                      // New SELECT query to get the updated site visit with the driver's name
+                      const updatedSiteVisitQuery = `
                             SELECT 
                               site_visits.*,
                               Projects.name AS site_name,
@@ -220,44 +234,41 @@ module.exports = (pool) => {
                             ORDER BY site_visits.created_at ASC;
                           `;
 
-                          pool.query(
-                            updatedSiteVisitQuery,
-                            [id],
-                            (err, updatedResults) => {
-                              if (err) {
-                                res.status(500).json({ error: err.message });
-                                return;
-                              }
+                      pool.query(
+                        updatedSiteVisitQuery,
+                        [id],
+                        (err, updatedResults) => {
+                          if (err) {
+                            res.status(500).json({ error: err.message });
+                            return;
+                          }
 
-                              if (updatedResults.length > 0) {
-                                res.status(200).json(updatedResults[0]);
-                              } else {
-                                res.status(404).json({
-                                  message: "Updated site visit not found.",
-                                });
-                              }
-                            }
-                          );
+                          if (updatedResults.length > 0) {
+                            res.status(200).json(updatedResults[0]);
+                          } else {
+                            res.status(404).json({
+                              message: "Updated site visit not found.",
+                            });
+                          }
                         }
                       );
-                    } else {
-                      const seatsExceeded =
-                        clientCount + 1 + passengersAssigned - numberOfSeats;
-                      res.status(400).json({
-                        message:
-                          "The selected vehicle does not have enough seats.",
-                        exceeded_by: seatsExceeded,
-                      });
                     }
-                  }
-                );
-              } else {
-                res.status(404).json({
-                  message: "Available vehicle not found.",
-                });
-              }
+                  );
+                } else {
+                  const seatsExceeded =
+                    clientCount + 1 + passengersAssigned - numberOfSeats;
+                  res.status(400).json({
+                    message: "The selected vehicle does not have enough seats.",
+                    exceeded_by: seatsExceeded,
+                  });
+                }
+              });
+            } else {
+              res.status(404).json({
+                message: "Available vehicle not found.",
+              });
             }
-          );
+          });
         } else {
           // Update site visit without vehicle
           const query = `
@@ -300,6 +311,5 @@ module.exports = (pool) => {
       }
     }
   );
-  
   return router;
 };

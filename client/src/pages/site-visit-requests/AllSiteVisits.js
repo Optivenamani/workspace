@@ -80,7 +80,7 @@ const AllSiteVisits = () => {
               <thead>
                 <tr>
                   <th>Index</th>
-                  <th>Marketer ID</th>
+                  <th>Marketer</th>
                   <th>Site Visited</th>
                   <th>Location</th>
                   <th>Date</th>

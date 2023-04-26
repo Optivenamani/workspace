@@ -1,8 +1,14 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchActiveSiteVisits } from "../redux/features/siteVisit/siteVisitSlice";
+import "./Sidebar.css";
 
 const Sidebar = ({ children }) => {
   const accessRole = useSelector((state) => state.user.accessRole);
+  const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
+  const status = useSelector((state) => state.siteVisit.status);
+
+  console.log(activeVisits, status);
 
   const isMarketer = accessRole === `113`;
   const isHOSorGM = accessRole === `113#114` || accessRole === `113#115`;
@@ -15,6 +21,25 @@ const Sidebar = ({ children }) => {
     accessRole === `   112#304` ||
     accessRole === `   112#305`;
   const isDriver = `driver69`;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchActiveSiteVisits());
+  }, [dispatch]);
+
+  const canBookSiteVisit = () => {
+    if (status === "loading") {
+      return false;
+    }
+
+    if (activeVisits.length === 0) {
+      return true;
+    }
+
+    const latestVisit = activeVisits[0];
+    return latestVisit.state === "completed";
+  };
 
   return (
     <>
@@ -45,11 +70,16 @@ const Sidebar = ({ children }) => {
                   {(isMarketer || isHOSorGM || isAdmin) && (
                     <a
                       href="/book-site-visit"
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${
+                        !canBookSiteVisit() || status === "loading"
+                          ? "disabled-link"
+                          : ""
+                      }`}
                     >
                       Book a Site Visit
                     </a>
                   )}
+
                   {(isMarketer || isHOSorGM || isAdmin) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"

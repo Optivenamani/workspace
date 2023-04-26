@@ -17,6 +17,17 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  connectTimeout: 10000,
+});
+
+// Check database connection
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error("Error connecting to the database:", err.message);
+  } else {
+    console.log("Connected to the database");
+    connection.release();
+  }
 });
 
 // Import auth routes
