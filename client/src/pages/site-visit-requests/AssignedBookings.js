@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import formatTime from "../../utils/formatTime";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
 
 const AssignedBookings = () => {
   const [siteVisits, setSiteVisits] = useState([]);
   const token = useSelector((state) => state.user.token);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -46,12 +51,32 @@ const AssignedBookings = () => {
           sv.id === id ? { ...sv, status: "in_progress" } : sv
         );
         setSiteVisits(updatedSiteVisits);
-        alert("site visit set to in progress");
+        toast.success("Trip set to in progress.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
         const data = await response.json();
+        toast.error("An error occurred while attempting to start trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         console.error("Error starting trip:", data.message);
       }
     } catch (error) {
+      toast.error("An error occurred while attempting to start trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error starting trip:", error);
     }
   };
@@ -71,12 +96,33 @@ const AssignedBookings = () => {
       if (response.ok) {
         const updatedSiteVisits = siteVisits.filter((sv) => sv.id !== id);
         setSiteVisits(updatedSiteVisits);
-        alert("site visit set to complete");
+        toast.success("Trip set to complete.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/");
       } else {
         const data = await response.json();
+        toast.error("An error occurred while attempting to end trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         console.error("Error ending trip:", data.message);
       }
     } catch (error) {
+      toast.error("An error occurred while attempting to end trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error ending trip:", error);
     }
   };

@@ -132,15 +132,32 @@ const SiteVisitDetails = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        toast.success("Site visit updated successfully.");
+        toast.success("Site visit updated successfully.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         navigate("/site-visit-requests");
       } else {
         console.error("Error updating site visit:", data.message);
-        toast.error(
-          data.message || "An error occurred while updating the site visit."
-        );
+        toast.error("An error occurred while updating the site visit.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (error) {
+      toast.error("An error occurred while updating the site visit.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error updating site visit:", error);
     }
   };

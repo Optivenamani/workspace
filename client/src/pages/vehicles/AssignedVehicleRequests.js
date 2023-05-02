@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import formatTime from "../../utils/formatTime";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
+import formatTime from "../../utils/formatTime";
 
 const AssignedVehicleRequests = () => {
   const [vehicleRequests, setVehicleRequests] = useState([]);
   const token = useSelector((state) => state.user.token);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -47,12 +52,32 @@ const AssignedVehicleRequests = () => {
           vr.id === id ? { ...vr, status: "in_progress" } : vr
         );
         setVehicleRequests(updatedVehicleRequests);
-        alert("vehicle request set to in progress");
+        toast.success("Trip set to in progress.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
         const data = await response.json();
+        toast.error("An error occurred while attempting to start trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         console.error("Error starting trip:", data.message);
       }
     } catch (error) {
+      toast.error("An error occurred while attempting to start trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error starting trip:", error);
     }
   };
@@ -74,12 +99,33 @@ const AssignedVehicleRequests = () => {
           (vr) => vr.id !== id
         );
         setVehicleRequests(updatedVehicleRequests);
-        alert("vehicle request set to complete");
+        toast.success("Trip set to complete.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/");
       } else {
         const data = await response.json();
+        toast.error("An error occurred while attempting to end trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         console.error("Error ending trip:", data.message);
       }
     } catch (error) {
+      toast.error("An error occurred while attempting to end trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error ending trip:", error);
     }
   };
@@ -151,7 +197,8 @@ const AssignedVehicleRequests = () => {
                 <div className="flex flex-col items-center mt-20">
                   <img src={huh} alt="huh" className="lg:w-96" />
                   <h1 className="font-bold text-center">
-                    No assigned vehicle requests' trips available. Check back later.
+                    No assigned vehicle requests' trips available. Check back
+                    later.
                   </h1>
                 </div>
               </div>
