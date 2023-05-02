@@ -1,11 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import userSlice from './features/user/userSlice';
-import siteVisitSlice from './features/siteVisit/siteVisitSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import userSlice from "./features/user/userSlice";
+import siteVisitSlice from "./features/siteVisit/siteVisitSlice";
+import vehicleRequestSlice from "./features/vehicleRequest/vehicleRequestSlice";
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
 };
 
@@ -15,11 +16,12 @@ export const store = configureStore({
   reducer: {
     user: persistedUserReducer,
     siteVisit: siteVisitSlice,
+    vehicleRequest: vehicleRequestSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
+        ignoredActions: ["persist/PERSIST"],
       },
     }),
 });

@@ -2,21 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  visits: [],
-  activeVisits: [],
+  requests: [],
+  activeRequests: [],
   status: "idle",
   error: null,
 };
 
-export const fetchActiveSiteVisits = createAsyncThunk(
-  "siteVisit/fetchActiveSiteVisits",
+export const fetchActiveVehicleRequests = createAsyncThunk(
+  "vehicleRequest/fetchActiveVehicleRequests",
   async (_, { getState }) => {
     const token = getState().user.token;
     const userId = getState().user.user.user_id;
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/site-visit-requests/active?user_id=${userId}`,
+        `http://localhost:8080/api/vehicle-requests/active?user_id=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -25,19 +25,19 @@ export const fetchActiveSiteVisits = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log("Server error:", error.response); // Debugging
+      console.log("Server error:", error.response);
       throw error;
     }
   }
 );
 
-export const approveSiteVisit = createAsyncThunk(
-  "siteVisits/approveSiteVisit",
+export const approveVehicleRequest = createAsyncThunk(
+  "vehicleRequest/approveVehicleRequest",
   async ({ id, data }, { getState, rejectWithValue }) => {
     try {
       const token = getState().user.token;
       const response = await axios.patch(
-        `http://localhost:8080/api/site-visit-requests/pending-site-visits/${id}`,
+        `http://localhost:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
         data,
         {
           headers: {
@@ -52,39 +52,43 @@ export const approveSiteVisit = createAsyncThunk(
   }
 );
 
-const siteVisitSlice = createSlice({
-  name: "siteVisit",
+const vehicleRequestSlice = createSlice({
+  name: "vehicleRequest",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchActiveSiteVisits.pending, (state) => {
+      .addCase(fetchActiveVehicleRequests.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchActiveSiteVisits.fulfilled, (state, action) => {
+      .addCase(fetchActiveVehicleRequests.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.activeVisits = action.payload;
+        state.activeRequests = action.payload;
       })
-      .addCase(fetchActiveSiteVisits.rejected, (state, action) => {
+
+      .addCase(fetchActiveVehicleRequests.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(approveSiteVisit.pending, (state) => {
+      .addCase(approveVehicleRequest.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(approveSiteVisit.fulfilled, (state, action) => {
+      .addCase(approveVehicleRequest.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.activeVisits = state.activeVisits.map((siteVisit) =>
-          siteVisit.id === action.payload.id ? action.payload : siteVisit
+        state.pendingRequest = state.pendingRequest.map((vehicleRequest) =>
+          vehicleRequest.id === action.payload.id
+            ? action.payload
+            : vehicleRequest
         );
       })
-      .addCase(approveSiteVisit.rejected, (state, action) => {
+      .addCase(approveVehicleRequest.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
   },
 });
 
-export const selectActiveSiteVisits = (state) => state.siteVisit.activeVisits;
+export const selectPendingVehicleRequest = (state) =>
+  state.vehicleRequest.pendingRequest;
 
-export default siteVisitSlice.reducer;
+export default vehicleRequestSlice.reducer;

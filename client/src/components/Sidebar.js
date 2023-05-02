@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchActiveSiteVisits } from "../redux/features/siteVisit/siteVisitSlice";
+import { fetchActiveVehicleRequests } from "../redux/features/vehicleRequest/vehicleRequestSlice";
 import "./Sidebar.css";
 
 const Sidebar = ({ children }) => {
@@ -8,7 +9,15 @@ const Sidebar = ({ children }) => {
   const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
   const status = useSelector((state) => state.siteVisit.status);
 
-  console.log("Active Site Visits:", activeVisits.length);
+  const activeVehicleRequests = useSelector(
+    (state) => state.vehicleRequest.activeRequests
+  );
+  const vehicleRequestStatus = useSelector(
+    (state) => state.vehicleRequest.status
+  );
+
+  console.log("Active Site Visits:", activeVisits ? activeVisits.length : 'undefined');
+  console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
 
   const isMarketer = accessRole === `113`;
   const isHOSorGM = accessRole === `113#114` || accessRole === `113#115`;
@@ -28,6 +37,11 @@ const Sidebar = ({ children }) => {
     dispatch(fetchActiveSiteVisits());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchActiveSiteVisits());
+    dispatch(fetchActiveVehicleRequests()); // Fetch active vehicle requests
+  }, [dispatch]);
+
   const canBookSiteVisit = () => {
     if (status === "loading") {
       return false;
@@ -39,6 +53,19 @@ const Sidebar = ({ children }) => {
 
     const latestVisit = activeVisits[0];
     return latestVisit.state === "completed";
+  };
+
+  const canRequestVehicle = () => {
+    if (vehicleRequestStatus === "loading") {
+      return false;
+    }
+
+    if (activeVehicleRequests.length === 0) {
+      return true;
+    }
+
+    const latestVehicleRequest = activeVehicleRequests[0];
+    return latestVehicleRequest.state === "completed";
   };
 
   return (
@@ -154,7 +181,11 @@ const Sidebar = ({ children }) => {
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
                   href="/request-vehicle"
-                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${
+                    !canRequestVehicle() || vehicleRequestStatus === "loading"
+                      ? "disabled-link"
+                      : ""
+                  }`}
                 >
                   Request For A Vehicle
                 </a>

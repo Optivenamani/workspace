@@ -179,6 +179,28 @@ module.exports = (pool) => {
     }
   );
 
+  // Get active vehicle requests by a user
+  router.get("/active", authenticateJWT, async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const query = `
+      SELECT
+        vehicle_requests.*,
+        users.fullnames as requester_name,
+        vehicle_requests.status as vehicle_request_status
+      FROM vehicle_requests
+      JOIN users ON vehicle_requests.requester_id = users.user_id
+      WHERE vehicle_requests.requester_id = ? AND (vehicle_requests.status != 'completed' AND vehicle_requests.status != 'rejected');
+      `;
+      pool.query(query, [userId], (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Approve and edit vehicle request
   router.patch(
     "/pending-vehicle-requests/:id",
