@@ -30,7 +30,7 @@ const Form = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // Get the token from the storage (e.g., localStorage or sessionStorage)
+    // Get the token from the storage
     const token = localStorage.getItem("token");
 
     // Add the marketer_id to formData before sending it to the server
@@ -39,7 +39,6 @@ const Form = () => {
       marketer_id,
     };
 
-    console.log(completeFormData);
     try {
       // Send the form data to the server
       await createSiteVisitRequest(completeFormData, token);
@@ -90,7 +89,7 @@ const Form = () => {
       });
     }
     return false;
-  };
+  };  
 
   const pageDisplay = () => {
     if (page === 0) {

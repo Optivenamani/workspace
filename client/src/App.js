@@ -16,7 +16,6 @@ import ViewVehicles from "./pages/vehicles/ViewVehicles";
 import RequestVehicle from "./pages/vehicles/RequestVehicle";
 import MyClientContacts from "./pages/clients/MyClientContacts";
 import ClientsFeedback from "./pages/clients/ClientsFeedback";
-import AddDriver from "./pages/drivers/AddDriver";
 import ViewDrivers from "./pages/drivers/ViewDrivers";
 import Users from "./pages/Users";
 import SiteVisitRequests from "./pages/site-visit-requests/SiteVisitRequests";
@@ -27,7 +26,6 @@ import SiteVisitDetails from "./pages/site-visit-requests/SiteVisitDetails";
 import EditVehicle from "./pages/vehicles/EditVehicle";
 import VehicleRequests from "./pages/vehicles/VehicleRequests";
 import VehicleRequestDetails from "./pages/vehicles/VehicleRequestDetails";
-import AssignVehicleRequestDriver from "./pages/drivers/AssignVehicleRequestDriver";
 import AssignedVehicleRequests from "./pages/vehicles/AssignedVehicleRequests";
 import PastRequests from "./pages/vehicles/PastRequests";
 import AllClientsContacts from "./pages/clients/AllClientsContacts";
@@ -80,15 +78,13 @@ const App = () => {
             />
             {/* Clients */}
             <Route path="/my-clients-contacts" element={<MyClientContacts />} />
-            <Route path="/all-clients-contacts" element={<AllClientsContacts />} />
+            <Route
+              path="/all-clients-contacts"
+              element={<AllClientsContacts />}
+            />
             <Route path="/clients-feedback" element={<ClientsFeedback />} />
             {/* Drivers */}
-            <Route path="/create-driver" element={<AddDriver />} />
             <Route path="/drivers" element={<ViewDrivers />} />
-            <Route
-              path="/assign-driver-to-vr"
-              element={<AssignVehicleRequestDriver />}
-            />
             <Route
               path="/assigned-vehicle-requests"
               element={<AssignedVehicleRequests />}

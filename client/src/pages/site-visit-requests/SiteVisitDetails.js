@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SiteVisitDetails = () => {
   const [siteVisitData, setSiteVisitData] = useState(null);
@@ -18,6 +20,7 @@ const SiteVisitDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // fetch the current site visit request
   useEffect(() => {
     const fetchSiteVisitRequest = async (id) => {
       try {
@@ -41,6 +44,7 @@ const SiteVisitDetails = () => {
     fetchSiteVisitRequest(id);
   }, [id, token]);
 
+  // fetch *available vehicles
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -63,6 +67,7 @@ const SiteVisitDetails = () => {
     fetchVehicles();
   }, [token]);
 
+  // fetch *available drivers
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
@@ -85,6 +90,7 @@ const SiteVisitDetails = () => {
     fetchDrivers();
   }, [token]);
 
+  // fetch site visit data
   useEffect(() => {
     if (siteVisitData) {
       setVehicle(siteVisitData.vehicle_id);
@@ -96,6 +102,7 @@ const SiteVisitDetails = () => {
     }
   }, [siteVisitData]);
 
+  // approve/edit site visit
   const approveSiteVisit = async () => {
     try {
       const requestBody = {
@@ -108,7 +115,7 @@ const SiteVisitDetails = () => {
         status: "approved",
       };
 
-      console.log(driver);
+      console.log("Driver", driver);
 
       console.log("Request object: ", requestBody);
 
@@ -125,11 +132,11 @@ const SiteVisitDetails = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        alert("Site visit updated successfully.");
+        toast.success("Site visit updated successfully.");
         navigate("/site-visit-requests");
       } else {
         console.error("Error updating site visit:", data.message);
-        alert(
+        toast.error(
           data.message || "An error occurred while updating the site visit."
         );
       }
@@ -138,6 +145,7 @@ const SiteVisitDetails = () => {
     }
   };
 
+  // reject site visit
   const rejectSiteVisit = async () => {
     try {
       const requestBody = {

@@ -115,7 +115,7 @@ function ClientInfo({ formData, setFormData }) {
           </div>
           <div className="mx-2 w-full">
             <label className="label">
-              <span className="label-text font-bold">Phone Number</span>
+              <span className="label-text font-bold">Phone Number (Required)</span>
             </label>
             <input
               type="tel"

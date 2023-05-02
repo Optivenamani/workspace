@@ -68,7 +68,8 @@ const SiteVisitRequests = () => {
           <div className="mt-6 mb-6 flex justify-between mx-4">
             <h1 className="text-2xl font-bold text-gray-800 uppercase">
               <span className="text-primary font-bold">{pending.length}</span>{" "}
-              Pending Site Visit Requests
+              Pending Site Visit Request
+              {pending.length > 1 || pending.length === 0 ? "s" : ""}
             </h1>
             <div>
               <div className="badge badge-warning text-white font-bold mr-1">

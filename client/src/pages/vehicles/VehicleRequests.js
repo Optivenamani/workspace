@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import formatTime from "../../utils/formatTime";
 import { useNavigate } from "react-router-dom";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
 
 const VehicleRequests = () => {
-  const [actionStates, setActionStates] = useState({});
   const [vehicleRequests, setVehicleRequests] = useState([]);
+  const [pending, setPending] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
@@ -16,29 +15,27 @@ const VehicleRequests = () => {
     const fetchVehicleRequests = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/vehicle-requests/pending-vehicle-requests",
+          "http://localhost:8080/api/vehicle-requests/all-vehicle-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
         const data = await response.json();
-        const pendingVehicleRequests = data.filter(
-          (request) => request.status === "pending"
-        );
-        setVehicleRequests(pendingVehicleRequests);
+        const filtered = data.filter((item) => item.status === "pending");
+        setPending(filtered);
+        setVehicleRequests(data);
+        console.log(filtered);
       } catch (error) {
         console.error("Error fetching vehicle requests:", error);
       }
     };
 
     fetchVehicleRequests();
-
-    const pendingVehicleRequests = vehicleRequests.filter(
-      (request) => request.status === "pending"
-    );
-    setVehicleRequests(pendingVehicleRequests);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
@@ -46,39 +43,20 @@ const VehicleRequests = () => {
     navigate(`/vehicle-request-details/${id}`);
   };
 
-  const handleReject = (id) => {
-    setActionStates((prevStates) => ({
-      ...prevStates,
-      [id]: { showVehicleMenu: false, showRejectReason: true },
-    }));
-  };
-
-  const handleRejectReason = async (id, rejectionReason) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/vehicle-requests/reject-vehicle-request/${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ remarks: rejectionReason }),
-        }
-      );
-
-      if (response.ok) {
-        setVehicleRequests((prevRequests) =>
-          prevRequests.filter((request) => request.id !== id)
-        );
-      } else {
-        console.error(
-          "Error rejecting vehicle request:",
-          await response.json()
-        );
-      }
-    } catch (error) {
-      console.error("Error rejecting vehicle request:", error);
+  const getRowColor = (status) => {
+    switch (status) {
+      case "pending":
+        return "bg-warning";
+      case "approved":
+        return "bg-info";
+      case "in_progress":
+        return "bg-secondary";
+      case "rejected":
+        return "bg-error";
+      case "completed":
+        return "bg-primary";
+      default:
+        return "";
     }
   };
 
@@ -86,125 +64,163 @@ const VehicleRequests = () => {
     <>
       <Sidebar>
         <div className="flex flex-col">
-          <div className="mt-6 mb-6 flex justify-center">
+          <div className="mt-6 mb-6 flex justify-between mx-4">
             <h1 className="text-2xl font-bold text-gray-800 uppercase">
-              <span className="text-primary font-bold">
-                {vehicleRequests.length}
-              </span>{" "}
-              Vehicle Requests
+              <span className="text-primary font-bold">{pending.length}</span>{" "}
+              Pending Vehicle Request
+              {pending.length > 1 || pending.length === 0 ? "s" : ""}
             </h1>
+            <div>
+              <div className="badge badge-warning text-white font-bold mr-1">
+                Pending
+              </div>
+
+              <div className="badge badge-info text-white font-bold">
+                Approved
+              </div>
+              <div className="badge badge-error text-white font-bold mx-1">
+                Rejected
+              </div>
+              <div className="badge badge-primary text-white font-bold mr-1">
+                Completed
+              </div>
+              <div className="badge badge-secondary text-white font-bold">
+                In Progress
+              </div>
+            </div>
           </div>
-          {vehicleRequests.length > 0 ? (
-            <div className="w-full p-3">
-              <div className="bg-white shadow-md rounded-md overflow-x-auto">
-                <table className="min-w-max w-full table-auto">
+          <div className="px-4 mt-2 flex justify-center mb-10">
+            {vehicleRequests.length > 0 ? (
+              <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
+                <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                      <th className="py-3 px-6 text-left">Requester</th>
-                      <th className="py-3 px-6 text-left">Destination</th>
-                      <th className="py-3 px-6 text-left">Purpose</th>
-                      <th className="py-3 px-6 text-left">Passengers</th>
-                      <th className="py-3 px-6 text-left">Pickup Location</th>
-                      <th className="py-3 px-6 text-left">Pickup Date</th>
-                      <th className="py-3 px-6 text-left">Pickup Time</th>
-                      <th className="py-3 px-6 text-left">Actions</th>
+                    <tr className="text-center bg-gray-500 text-secondary-content">
+                      <th className="border border-secondary-content px-2">
+                        #
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Requester
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Purpose
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Passengers
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Pickup Location
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Destination
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Pickup Date
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Pickup Time
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Vehicle
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Driver
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Remarks
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="text-gray-600 text-sm font-light">
-                    {vehicleRequests.map((vr) => {
-                      const { showRejectReason } = actionStates[vr.id] || {};
-                      return (
+                  <tbody>
+                    {vehicleRequests
+                      .sort((a, b) => b.id - a.id)
+                      .map((vr, index) => (
                         <tr
                           key={vr.id}
-                          className="border-b border-gray-200 hover:bg-gray-100"
+                          className={`text-secondary-content text-center hover:bg-neutral cursor-pointer ${getRowColor(
+                            vr.status
+                          )}`}
+                          onClick={() => handleView(vr.id)}
                         >
-                          <td className="py-3 px-6 text-left whitespace-nowrap">
+                          <td className="border px-4 py-2">{index + 1}</td>
+                          <td className="border px-4 py-2">
                             {vr.requester_name}
                           </td>
-                          <td className="py-3 px-6 text-left">
-                            {vr.destination_location}
-                          </td>
-                          <td className="py-3 px-6 text-left">{vr.purpose}</td>
-                          <td className="py-3 px-6 text-left">
+                          <td className="border px-4 py-2">{vr.purpose}</td>
+                          <td className="border px-4 py-2">
                             {vr.number_of_passengers}
                           </td>
-                          <td className="py-3 px-6 text-left">
+                          <td className="border px-4 py-2">
                             {vr.pickup_location}
                           </td>
-                          <td className="py-3 px-6 text-left">
+                          <td className="border px-4 py-2">
+                            {vr.destination_location}
+                          </td>
+                          <td className="border px-4 py-2">
                             {new Date(vr.pickup_date).toLocaleDateString(
                               "en-GB"
                             )}
                           </td>
-                          <td className="py-3 px-6 text-left">
-                            {formatTime(vr.pickup_time)}
+                          <td className="border px-4 py-2">
+                            {vr.pickup_time}
                           </td>
-                          <td className="py-3 px-6 text-left">
-                            <div className="flex">
-                              <button
-                                onClick={() => handleView(vr.id)}
-                                className="btn btn-primary text-white"
-                              >
-                                View
-                              </button>
-                              <button
-                                onClick={() => handleReject(vr.id)}
-                                className={
-                                  showRejectReason
-                                    ? `btn btn-disabled ml-2`
-                                    : `btn btn-outline btn-error text-white ml-2`
-                                }
-                              >
-                                Reject
-                              </button>
-                            </div>
-                            {showRejectReason && (
-                              <div className="mt-2">
-                                <label
-                                  className="label"
-                                  htmlFor={`rejectionReason-${vr.id}`}
-                                >
-                                  <span className="label-text font-bold">
-                                    Reason
-                                  </span>
-                                </label>
-                                <textarea
-                                  name={`rejectionReason-${vr.id}`}
-                                  id={`rejectionReason-${vr.id}`}
-                                  className="textarea textarea-bordered h-24 w-full border"
-                                ></textarea>
-                                <button
-                                  onClick={() => {
-                                    const rejectionReason =
-                                      document.getElementById(
-                                        `rejectionReason-${vr.id}`
-                                      ).value;
-                                    handleRejectReason(vr.id, rejectionReason);
-                                  }}
-                                  className="btn btn-error text-white"
-                                >
-                                  Reject and Send Reason
-                                </button>
-                              </div>
-                            )}
+                          <td className="border px-4 py-2">
+                            {vr.vehicle_registration}
                           </td>
+                          <td className="border px-4 py-2">{vr.driver_name}</td>
+                          <td className="border px-4 py-2">{vr.remarks}</td>
                         </tr>
-                      );
-                    })}
+                      ))}
                   </tbody>
+                  <tfoot>
+                    <tr className="text-center bg-gray-500 text-secondary-content">
+                      <th className="border border-secondary-content px-2">
+                        #
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Requester
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Purpose
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Passengers
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Pickup Location
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Destination
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Pickup Date
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Pickup Time
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Vehicle
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Driver
+                      </th>
+                      <th className="border border-secondary-content px-2">
+                        Remarks
+                      </th>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <div className="flex flex-col items-center mt-20">
-                <img src={huh} alt="huh" className="lg:w-96" />
-                <h1 className="font-bold text-center">
-                  No vehicle requests available. Check back later.
-                </h1>
+            ) : (
+              <div className="flex justify-center">
+                <div className="flex flex-col items-center mt-20">
+                  <img src={huh} alt="huh" className="lg:w-96" />
+                  <h1 className="font-bold text-center">
+                    No vehicle requests available. Check back later.
+                  </h1>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </Sidebar>
     </>

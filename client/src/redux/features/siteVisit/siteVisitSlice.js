@@ -14,9 +14,6 @@ export const fetchActiveSiteVisits = createAsyncThunk(
     const token = getState().user.token;
     const userId = getState().user.user.user_id;
 
-    console.log("Token:", token); // Debugging
-    console.log("User ID:", userId); // Debugging
-
     try {
       const response = await axios.get(
         `http://localhost:8080/api/site-visit-requests/active?user_id=${userId}`, // Pass the user ID as a query parameter

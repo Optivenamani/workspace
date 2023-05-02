@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RequestVehicle = () => {
   const [location, setLocation] = useState("");
@@ -44,10 +46,24 @@ const RequestVehicle = () => {
       const data = await response.json();
       console.log(data);
       setLoading(false);
+      toast.success("Vehicle request created successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       navigate("/");
     } catch (error) {
       console.error(error);
       setLoading(false);
+      toast.error("Error vehicle request. Please try again.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
