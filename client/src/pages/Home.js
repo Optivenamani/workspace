@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import bus from "../assets/home.jpg";
+import Popup from "../components/Popup";
 
 const Home = () => {
+  const [showPopup, setShowPopup] = useState(false);
+
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const firstName = user.fullnames
     ? user.fullnames.trim().split(" ")[0]
@@ -35,38 +38,51 @@ const Home = () => {
     accessRole === `    112#770#303#304#305#116` ||
     accessRole === `     112#114#700`;
 
+  const handleCompleteClick = () => {
+    navigate("/survey");
+    setShowPopup(false);
+  };
+
   return (
     <>
       <Sidebar>
-        <div className="flex justify-center items-center mt-20">
-          <div className="w-2/3">
-            <div className="overflow-hidden rounded-lg shadow-2xl md:grid md:grid-cols-3">
-              <img
-                alt="Bus"
-                src={bus}
-                className="h-32 w-full object-cover md:h-full"
-              />
+        {showPopup && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-black opacity-50 w-full h-full" />
+            <Popup onCompleteClick={handleCompleteClick} />
+          </div>
+        )}
+        <div className={`${showPopup ? "opacity-50 pointer-events-none" : ""}`}>
+          <div className="flex justify-center items-center mt-20">
+            <div className="w-2/3">
+              <div className="overflow-hidden rounded-lg shadow-2xl md:grid md:grid-cols-3">
+                <img
+                  alt="Bus"
+                  src={bus}
+                  className="h-32 w-full object-cover md:h-full"
+                />
 
-              <div className="flex flex-col justify-center p-4 text-start sm:p-6 md:col-span-2 lg:p-8">
-                <h2 className="mt-6 font-black">
-                  <span className="text-4xl sm:text-5xl lg:text-7xl">
-                    {greeting} {firstName}
-                  </span>
-                </h2>
-                {(isMarketer || isHOSorGM || isAdmin) && (
+                <div className="flex flex-col justify-center p-4 text-start sm:p-6 md:col-span-2 lg:p-8">
+                  <h2 className="mt-6 font-black">
+                    <span className="text-4xl sm:text-5xl lg:text-7xl">
+                      {greeting} {firstName}.
+                    </span>
+                  </h2>
+                  {(isMarketer || isHOSorGM || isAdmin) && (
+                    <button
+                      onClick={() => navigate("/book-site-visit")}
+                      className="mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white"
+                    >
+                      Book a Site Visit
+                    </button>
+                  )}
                   <button
-                    onClick={() => navigate("/book-site-visit")}
-                    className="mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white"
+                    onClick={() => navigate("/request-vehicle")}
+                    className="mt-4 inline-block w-full bg-neutral py-4 text-sm font-bold uppercase tracking-widest text-white"
                   >
-                    Book a Site Visit
+                    Request for a Vehicle
                   </button>
-                )}
-                <button
-                  onClick={() => navigate("/request-vehicle")}
-                  className="mt-4 inline-block w-full bg-neutral py-4 text-sm font-bold uppercase tracking-widest text-white"
-                >
-                  Request for a Vehicle
-                </button>
+                </div>
               </div>
             </div>
           </div>

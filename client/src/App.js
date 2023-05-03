@@ -29,6 +29,7 @@ import VehicleRequestDetails from "./pages/vehicles/VehicleRequestDetails";
 import AssignedVehicleRequests from "./pages/vehicles/AssignedVehicleRequests";
 import PastRequests from "./pages/vehicles/PastRequests";
 import AllClientsContacts from "./pages/clients/AllClientsContacts";
+import Survey from "./pages/Survey";
 
 const App = () => {
   return (
@@ -93,6 +94,8 @@ const App = () => {
             <Route path="/users" element={<Users />} />
             {/* Notifications */}
             <Route path="/notifications" element={<Notifications />} />
+            {/* Survey */}
+            <Route path="/survey" element={<Survey />} />
           </Route>
         </Routes>
       </Router>
