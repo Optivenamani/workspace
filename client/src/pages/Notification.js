@@ -1,101 +1,242 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
+import { formatDistanceToNowStrict } from "date-fns";
+import { useDispatch } from "react-redux";
+import {
+  fetchNotifications,
+  setNotifications as updateNotifications,
+} from "../redux/features/notifications/notificationsSlice";
 
 const Notifications = () => {
+  const socket = io("http://localhost:8080");
+
+  const notificationsArray = useSelector(
+    (state) => state.notifications.notifications.notifications
+  );
+
+  const token = useSelector((state) => state.user.token);
+
+  const dispatch = useDispatch();
+
+  const markAsRead = useCallback(
+    async (notificationId) => {
+      if (!notificationId) {
+        console.error("Notification ID is missing or invalid");
+        return;
+      }
+
+      console.log(notificationId);
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/notifications/${notificationId}`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ isRead: true }),
+          }
+        );
+
+        if (response.ok) {
+          // Update the notification's read status in the local state
+          dispatch(
+            updateNotifications(
+              notificationsArray.map((notification) =>
+                notification.id === notificationId
+                  ? { ...notification, isRead: true }
+                  : notification
+              )
+            )
+          );
+        } else {
+          console.error("Error marking notification as read:", response.status);
+        }
+      } catch (error) {
+        console.error("Error marking notification as read:", error);
+      }
+    },
+    [dispatch, notificationsArray, token]
+  );
+
+  const markAllAsRead = useCallback(async () => {
+    if (!Array.isArray(notificationsArray)) return;
+
+    const unreadNotifications = notificationsArray.filter(
+      (notification) => !notification.isRead
+    );
+
+    const markReadPromises = unreadNotifications.map((notification) =>
+      markAsRead(notification.id)
+    );
+
+    await Promise.all(markReadPromises);
+  }, [markAsRead, notificationsArray]);
+
+  useEffect(() => {
+    const markAllAsReadOnView = async () => {
+      if (!Array.isArray(notificationsArray)) return;
+
+      const unreadNotifications = notificationsArray.filter(
+        (notification) => !notification.isRead
+      );
+
+      const markReadPromises = unreadNotifications.map(async (notification) => {
+        await markAsRead(notification.id);
+      });
+
+      await Promise.all(markReadPromises);
+    };
+
+    markAllAsReadOnView();
+  }, [notificationsArray, markAsRead]);
+
+  useEffect(() => {
+    return () => {
+      (async () => {
+        await markAllAsRead();
+      })();
+    };
+  }, [markAllAsRead]);
+
+  // Fetch notifications and listen for socket events
+  useEffect(() => {
+    dispatch(fetchNotifications());
+
+    const handleSiteVisitRejected = (notification) => {
+      console.log("Site visit rejected:", notification);
+      // Update the notifications state
+      dispatch(
+        updateNotifications([
+          {
+            type: "rejected",
+            message: "Your site visit request has been rejected",
+            remarks: notification.remarks,
+            timestamp: new Date(notification.timestamp),
+            isRead: false,
+          },
+          ...notificationsArray,
+        ])
+      );
+    };
+
+    const handleSiteVisitApproved = (notification) => {
+      console.log("Site visit approved:", notification);
+      // Update the notifications state
+      dispatch(
+        updateNotifications([
+          {
+            type: "approved",
+            message: "Your site visit request has been approved",
+            remarks: notification.remarks,
+            timestamp: new Date(notification.timestamp),
+            isRead: false,
+          },
+          ...notificationsArray,
+        ])
+      );
+    };
+
+    socket.on("siteVisitRejected", handleSiteVisitRejected);
+    socket.on("siteVisitApproved", handleSiteVisitApproved);
+
+    return () => {
+      socket.off("siteVisitRejected", handleSiteVisitRejected);
+      socket.off("siteVisitApproved", handleSiteVisitApproved);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  // Fetch notifications
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
+
+  const notificationIcons = {
+    rejected: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+        className="h-8 w-8 mr-2"
+        color="red"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    ),
+    approved: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+        className="h-9 w-9 mr-2"
+        color="green"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+  };
+
   return (
     <>
       <Sidebar>
-        <div className="flex flex-col">
+        <div className="flex flex-col mb-10">
           <div className="mt-6 mb-6 flex justify-center">
             <h1 className="text-2xl font-bold text-gray-800">Notifications</h1>
           </div>
           <div className="flex flex-col items-center justify-center px-3">
             <div className="flex flex-col space-y-4">
-              <div className="bg-white shadow-lg rounded-md p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-red-500 mr-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+              {Array.isArray(notificationsArray) ? (
+                notificationsArray.map((notification, index) => (
+                  <div
+                    key={index}
+                    className={`bg-white shadow-lg rounded-md p-4 flex items-center justify-between ${
+                      !notification.isRead ? "bg-blue-100" : ""
+                    }`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 12l-5 5m0 0l-5-5m5 5V6"
-                    />
-                  </svg>
-                  <div>
-                    <p className="text-gray-800 font-medium">
-                      Site Visit Booking Request Sent
-                    </p>
-                    <p className="text-gray-600 italic text-sm">
-                      Your application has been submitted successfully.
-                    </p>
+                    <div className="flex items-center">
+                      {notificationIcons[notification.type]}
+                      <div>
+                        <p className="text-gray-800 font-medium">
+                          {notification.message}
+                        </p>
+                        <div className="text-gray-500 text-sm flex justify-between">
+                          <p className="text-sm">
+                            Remarks: {notification.remarks}
+                          </p>
+                        </div>
+                        <p className="text-sm italic">
+                          {notification.timestamp && (
+                            <>
+                              {formatDistanceToNowStrict(
+                                new Date(notification.timestamp),
+                                { addSuffix: true }
+                              )}
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="text-gray-500 text-sm">
-                  <p>2 hours ago</p>
-                </div>
-              </div>
-              <div className="bg-white shadow-lg rounded-md p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-yellow-500 mr-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  <div>
-                    <p className="text-gray-800 font-medium">Site Visit Booking Accepted!</p>
-                    <p className="text-gray-600 italic text-sm">
-                      Your site visit booking request has been accepted.
-                    </p>
-                  </div>
-                </div>
-                <div className="text-gray-500 text-sm">
-                  <p>3 hours ago</p>
-                </div>
-              </div>
-              <div className="bg-white shadow-lg rounded-md p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-green-500 mr-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <div>
-                    <p className="text-gray-800 font-medium">
-                      Site Visit Complete
-                    </p>
-                    <p className="text-gray-600 italic text-sm">
-                      Your site visit has been marked as complete.
-                    </p>
-                  </div>
-                </div>
-                <div className="text-gray-500 text-sm">
-                  <p>5 hours ago</p>
-                </div>
-              </div>
+                ))
+              ) : (
+                <p>Loading notifications...</p>
+              )}
             </div>
           </div>
         </div>

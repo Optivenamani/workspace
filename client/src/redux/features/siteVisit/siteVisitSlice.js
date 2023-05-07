@@ -25,7 +25,7 @@ export const fetchActiveSiteVisits = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log("Server error:", error.response); // Debugging
+      console.log("Server error:", error.response);
       throw error;
     }
   }

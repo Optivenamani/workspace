@@ -182,7 +182,13 @@ const SiteVisitDetails = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        alert("Site visit rejected.");
+        toast.error("Site visit rejected.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         navigate("/site-visit-requests");
       } else {
         console.error("Error rejecting site visit:", data.message);

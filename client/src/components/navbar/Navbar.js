@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // assets
 import logo from "../../assets/optiven-logo-full.png";
@@ -6,12 +6,24 @@ import userAvatar from "../../assets/gifs/user.gif";
 // css
 import "./styles/Navbar.css";
 // redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/features/user/userSlice";
 
 const Navbar = ({ fullName, email }) => {
+  const [unreadCount, setUnreadCount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { notifications, status } = useSelector((state) => state.notifications.notifications);
+
+  useEffect(() => {
+    if (status === "succeeded") {
+      const unread = notifications.filter(
+        (notification) => notification.isRead === 0
+      ).length;
+      setUnreadCount(unread);
+    }
+  }, [notifications, status]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -19,6 +31,9 @@ const Navbar = ({ fullName, email }) => {
     dispatch(logout());
     navigate("/login");
   };
+
+  console.log("status", status);
+  console.log("unreadCount", unreadCount);
 
   return (
     <div className="navbar bg-primary">
@@ -64,9 +79,9 @@ const Navbar = ({ fullName, email }) => {
             >
               <div className="w-10 rounded-full">
                 <img alt="user" src={userAvatar} />
-                {1 + 1 === 2 && (
+                {unreadCount > 0 && status === "succeeded" && (
                   <span className="h-5 w-5 rounded-3xl badge badge-xs badge-neutral indicator-item">
-                    3
+                    {unreadCount}
                   </span>
                 )}
               </div>
@@ -79,11 +94,13 @@ const Navbar = ({ fullName, email }) => {
             <li>
               <Link className="justify-between" to="/notifications">
                 Notifications
-                {1 + 1 === 2 && (
-                  <span className="badge badge-sm badge-neutral h-5 w-5 rounded-3xl font-bold">
-                    3
-                  </span>
-                )}
+                <span
+                  className={`badge badge-sm badge-neutral h-5 w-5 rounded-3xl font-bold ${
+                    unreadCount === 0 ? "hidden" : ""
+                  }`}
+                >
+                  {unreadCount}
+                </span>
               </Link>
             </li>
             <li>

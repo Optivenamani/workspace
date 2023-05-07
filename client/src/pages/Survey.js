@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const Survey = () => {
   const [visited, setVisited] = useState("");
@@ -7,6 +9,10 @@ const Survey = () => {
   const [plotDetails, setPlotDetails] = useState("");
   const [reasonNotBooked, setReasonNotBooked] = useState("");
   const [reasonNoVisit, setReasonNoVisit] = useState("");
+
+  const navigate = useNavigate();
+
+  const { id } = useParams();
 
   const handleVisitedChange = (event) => {
     setVisited(event.target.value);
@@ -24,16 +30,37 @@ const Survey = () => {
     setReasonNotBooked("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      visited,
-      booked,
+    const surveyData = {
+      visited: visited === "Yes",
+      booked: booked === "Yes",
       amountReserved,
       plotDetails,
       reasonNotBooked,
       reasonNoVisit,
-    });
+    };
+
+    // Get the token from local storage
+    const token = localStorage.getItem("token");
+
+    try {
+      // Include the JWT in the request headers
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await axios.post(
+        `http://localhost:8080/api/site-visit-requests/submit-survey/${id}`,
+        surveyData,
+        config
+      );
+      navigate("/");
+    } catch (error) {
+      console.error("Error submitting the survey:", error.message);
+    }
   };
 
   return (
@@ -46,7 +73,7 @@ const Survey = () => {
         </div>
         <form onSubmit={handleSubmit} className="mx-auto mb-0 mt-8 space-y-4">
           <div>
-            <label htmlFor="clientVisit" className="label text-sm">
+            <label htmlFor="clientVisit" className="label text-md">
               Did the client visit the site?
             </label>
             <div className="flex justify-evenly lg:justify-between">
@@ -62,7 +89,7 @@ const Survey = () => {
             </div>
             {visited === "Yes" && (
               <div>
-                <label htmlFor="bookedPlot" className="label text-sm">
+                <label htmlFor="bookedPlot" className="label text-md">
                   Did the client book the plot?
                 </label>
                 <select
@@ -76,7 +103,7 @@ const Survey = () => {
                 </select>
                 {booked === "Yes" && (
                   <div>
-                    <label htmlFor="amountReserved" className="label text-sm">
+                    <label htmlFor="amountReserved" className="label text-md">
                       How much money was reserved in KES?
                     </label>
                     <input
@@ -87,8 +114,8 @@ const Survey = () => {
                       className="input input-bordered w-full max-w-xs"
                       placeholder="100000"
                     />
-                    <label htmlFor="plotDetails" className="label text-sm">
-                      What are the details of the plot that he reserved?
+                    <label htmlFor="plotDetails" className="label text-md">
+                      What are the details of the plot that they reserved?
                     </label>
                     <textarea
                       type="text"
@@ -101,7 +128,7 @@ const Survey = () => {
                 )}
                 {booked === "No" && (
                   <div>
-                    <label htmlFor="reasonNotBooked" className="label text-sm">
+                    <label htmlFor="reasonNotBooked" className="label text-md">
                       Why did the client NOT book a plot?
                     </label>
                     <textarea
@@ -117,7 +144,7 @@ const Survey = () => {
             )}
             {visited === "No" && (
               <div>
-                <label htmlFor="reasonNoVisit" className="label text-sm">
+                <label htmlFor="reasonNoVisit" className="label text-md">
                   Why did the client not visit the site?
                 </label>
                 <textarea

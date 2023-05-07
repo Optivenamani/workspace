@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { io } from "socket.io-client";
+import { useDispatch, useSelector } from "react-redux";
+// Redux
+import { setNotifications as updateNotifications } from "./redux/features/notifications/notificationsSlice";
 // utils
 import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
@@ -32,6 +36,52 @@ import AllClientsContacts from "./pages/clients/AllClientsContacts";
 import Survey from "./pages/Survey";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  const notifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+
+  useEffect(() => {
+    const socket = io("http://localhost:8080");
+
+    socket.on("siteVisitRejected", (notification) => {
+      console.log("Site visit rejected");
+      // Update the notifications state
+      dispatch(
+        updateNotifications({
+          type: "rejected",
+          message: "Your site visit request has been rejected",
+          remarks: notification.remarks,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+        })
+      );
+    });
+
+    socket.on("siteVisitApproved", (notification) => {
+      console.log("Site visit approved");
+      // Update the notifications state
+      dispatch(
+        updateNotifications({
+          type: "rejected",
+          message: "Your site visit request has been rejected",
+          remarks: notification.remarks,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+        })
+      );
+    });
+
+    return () => {
+      // Remove event listeners
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("siteVisitRejected");
+      socket.off("siteVisitApproved");
+    };
+  }, [dispatch, notifications]);
+
   return (
     <>
       <Router>
@@ -95,7 +145,7 @@ const App = () => {
             {/* Notifications */}
             <Route path="/notifications" element={<Notifications />} />
             {/* Survey */}
-            <Route path="/survey" element={<Survey />} />
+            <Route path="/survey/:id" element={<Survey />} />
           </Route>
         </Routes>
       </Router>

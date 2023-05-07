@@ -56,6 +56,8 @@ const SiteVisitRequests = () => {
         return "bg-primary";
       case "in_progress":
         return "bg-secondary";
+      case "reviewed":
+        return "bg-primary";
       default:
         return "";
     }
@@ -85,7 +87,7 @@ const SiteVisitRequests = () => {
               <div className="badge badge-primary text-white font-bold mr-1">
                 Completed
               </div>
-              <div className="badge badge-secondary text-white font-bold">
+              <div className="badge badge-secondary text-white font-bold mr-1">
                 In Progress
               </div>
             </div>

@@ -4,9 +4,11 @@ const express = require("express");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const http = require("http");
+const socketIO = require("socket.io");
+const app = express();
 
 // Set up the Express app and database connection pool
-const app = express();
 const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -30,6 +32,19 @@ pool.getConnection((err, connection) => {
   }
 });
 
+// Create an HTTP server instance and attach the Express app to it
+const server = http.createServer(app);
+
+// Initialize a Socket.IO instance and attach it to the HTTP server
+const io = socketIO(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  },
+});
+
 // Import auth routes
 const login = require("./routes/auth/login.routes");
 const logout = require("./routes/auth/logout.routes");
@@ -42,6 +57,7 @@ const siteVisits = require("./routes/site-visits/siteVisit.routes");
 const drivers = require("./routes/drivers/drivers.routes");
 const vehicleRequests = require("./routes/vehicle-requests/vehicleRequests.routes");
 const clients = require("./routes/clients/clients.routes");
+const notifications = require("./routes/notifications/notifications.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -61,21 +77,23 @@ app.use("/api/logout", logout);
 app.use("/api/users", users(pool));
 app.use("/api/sites", sites(pool));
 app.use("/api/vehicles", vehicles(pool));
-app.use("/api/site-visit-requests", siteVisitRequests(pool));
+app.use("/api/site-visit-requests", siteVisitRequests(pool, io));
 app.use("/api/site-visits", siteVisits(pool));
 app.use("/api/drivers", drivers(pool));
 app.use("/api/vehicle-requests", vehicleRequests(pool));
 app.use("/api/clients", clients(pool));
+app.use("/api/notifications", notifications(pool));
 
-// Define a sample route to fetch all users
-app.get("/", (req, res) => {
-  pool.query("SELECT * FROM users", (err, results) => {
-    if (err) throw err;
-    res.send(results);
+// Set up Socket.IO connection handling
+io.on("connection", (socket) => {
+  console.log("Connected");
+
+  socket.on("disconnect", () => {
+    console.log("Disconnected");
   });
 });
 
 // Listen for incoming requests
-app.listen(8080, () => {
+server.listen(8080, () => {
   console.log("Server started on port 8080");
 });
