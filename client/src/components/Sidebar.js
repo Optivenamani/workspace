@@ -97,11 +97,11 @@ const Sidebar = ({ children }) => {
                   {(isMarketer || isHOSorGM || isAdmin) && (
                     <a
                       href="/book-site-visit"
-                      // className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${
-                      //   !canBookSiteVisit() || status === "loading"
-                      //     ? "disabled-link"
-                      //     : ""
-                      // }`}
+                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${
+                        !canBookSiteVisit() || status === "loading"
+                          ? "disabled-link"
+                          : ""
+                      }`}
                     >
                       Book a Site Visit
                     </a>

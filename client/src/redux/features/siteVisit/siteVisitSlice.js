@@ -52,10 +52,37 @@ export const approveSiteVisit = createAsyncThunk(
   }
 );
 
+export const completeSiteVisit = createAsyncThunk(
+  "siteVisits/completeSiteVisit",
+  async ({ id, data }, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().user.token;
+      const response = await axios.patch(
+        `http://localhost:8080/api/site-visit-requests/pending-site-visits/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const siteVisitSlice = createSlice({
   name: "siteVisit",
   initialState,
-  reducers: {},
+  reducers: {
+    updateSiteVisit: (state, action) => {
+      state.activeVisits = state.activeVisits.map((siteVisit) =>
+        siteVisit.id === action.payload.id ? action.payload : siteVisit
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchActiveSiteVisits.pending, (state) => {
@@ -79,6 +106,19 @@ const siteVisitSlice = createSlice({
         );
       })
       .addCase(approveSiteVisit.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(completeSiteVisit.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(completeSiteVisit.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.activeVisits = state.activeVisits.map((siteVisit) =>
+          siteVisit.id === action.payload.id ? action.payload : siteVisit
+        );
+      })
+      .addCase(completeSiteVisit.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });

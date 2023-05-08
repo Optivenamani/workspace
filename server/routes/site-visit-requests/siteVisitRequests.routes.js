@@ -54,11 +54,10 @@ module.exports = (pool, io) => {
       const query = `
         SELECT
           site_visits.*,
-          users.fullnames as marketer_name,
-          site_visits.status as site_visit_status
+          users.fullnames as marketer_name
         FROM site_visits
         JOIN users ON site_visits.marketer_id = users.user_id
-        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected');
+        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected' AND site_visits.status != 'reviewed');
         `;
       pool.query(query, [userId], (err, results) => {
         if (err) throw err;
@@ -396,6 +395,7 @@ module.exports = (pool, io) => {
           reason_not_booked,
           visited,
         } = req.body;
+
         const checkSiteVisitQuery = `
         SELECT *
         FROM site_visits

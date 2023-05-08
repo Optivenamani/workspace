@@ -5,7 +5,7 @@ import axios from "axios";
 const Survey = () => {
   const [visited, setVisited] = useState("");
   const [booked, setBooked] = useState("");
-  const [amountReserved, setAmountReserved] = useState("");
+  const [amountReserved, setAmountReserved] = useState(0);
   const [plotDetails, setPlotDetails] = useState("");
   const [reasonNotBooked, setReasonNotBooked] = useState("");
   const [reasonNoVisit, setReasonNoVisit] = useState("");
@@ -17,7 +17,7 @@ const Survey = () => {
   const handleVisitedChange = (event) => {
     setVisited(event.target.value);
     setBooked("");
-    setAmountReserved("");
+    setAmountReserved(0);
     setPlotDetails("");
     setReasonNotBooked("");
     setReasonNoVisit("");
@@ -25,21 +25,27 @@ const Survey = () => {
 
   const handleBookedChange = (event) => {
     setBooked(event.target.value);
-    setAmountReserved("");
+    setAmountReserved(0);
     setPlotDetails("");
     setReasonNotBooked("");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Convert visited and booked values to tinyint
+    const visitedInt = visited === "Yes" ? 1 : 0;
+    const bookedInt = booked === "Yes" ? 1 : 0;
+
     const surveyData = {
-      visited: visited === "Yes",
-      booked: booked === "Yes",
-      amountReserved,
-      plotDetails,
-      reasonNotBooked,
-      reasonNoVisit,
+      visited: visitedInt,
+      booked: bookedInt,
+      amount_reserved: parseFloat(amountReserved) || null,
+      plot_details: plotDetails || null,
+      reason_not_visited: reasonNoVisit || null,
+      reason_not_booked: reasonNotBooked || null,
     };
+
+    console.log(surveyData);
 
     // Get the token from local storage
     const token = localStorage.getItem("token");

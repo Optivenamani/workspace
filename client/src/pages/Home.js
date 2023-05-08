@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import bus from "../assets/home.jpg";
 import Popup from "../components/Popup";
+import {
+  completeSiteVisit,
+  selectActiveSiteVisits,
+} from "../redux/features/siteVisit/siteVisitSlice";
 
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
+
+  const activeSiteVisits = useSelector(selectActiveSiteVisits);
+  const dispatch = useDispatch();
 
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const firstName = user.fullnames
@@ -30,7 +37,6 @@ const Home = () => {
   const accessRole = useSelector((state) => state.user.accessRole);
 
   const isMarketer = accessRole === `113`;
-  const isHOSorGM = accessRole === `113#114` || accessRole === `113#115`;
   const isAdmin =
     accessRole === `        112#700#117#116` ||
     accessRole === `    112#770#303#304#305#116` ||
@@ -40,6 +46,17 @@ const Home = () => {
     navigate("/survey");
     setShowPopup(false);
   };
+
+  useEffect(() => {
+    const completedVisit = activeSiteVisits.find(
+      (visit) => visit.status === "complete"
+    );
+
+    if (completedVisit && !showPopup) {
+      dispatch(completeSiteVisit({ id: completedVisit.id }));
+      setShowPopup(true);
+    }
+  }, [activeSiteVisits, dispatch, showPopup]);
 
   return (
     <>
@@ -66,14 +83,20 @@ const Home = () => {
                       {greeting} {firstName}.
                     </span>
                   </h2>
-                  {(isMarketer || isHOSorGM || isAdmin) && (
+                  {(isMarketer || isAdmin) && (
                     <button
                       onClick={() => navigate("/book-site-visit")}
-                      className="mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white"
+                      disabled={activeSiteVisits.length > 0}
+                      className={`mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white ${
+                        activeSiteVisits.length > 0
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
                     >
                       Book a Site Visit
                     </button>
                   )}
+
                   <button
                     onClick={() => navigate("/request-vehicle")}
                     className="mt-4 inline-block w-full bg-neutral py-4 text-sm font-bold uppercase tracking-widest text-white"
