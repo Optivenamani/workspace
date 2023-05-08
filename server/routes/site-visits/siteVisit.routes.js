@@ -4,7 +4,7 @@ const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
-module.exports = (pool) => {
+module.exports = (pool, io) => {
   // Create a new site visit request
   router.post("/", authenticateJWT, async (req, res) => {
     const { project_id, pickup_location, pickup_time, pickup_date, clients } =
@@ -238,6 +238,28 @@ module.exports = (pool) => {
       const { id } = req.params;
       const driverId = req.user.id;
 
+      const sendCompletionNotification = async () => {
+        const getUserIdQuery =
+          "SELECT marketer_id FROM site_visits WHERE id = ?";
+        pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
+          if (err) throw err;
+          if (userIdResult.length > 0) {
+            const userId = userIdResult[0].marketer_id;
+            const notificationQuery = `
+          INSERT INTO notifications (user_id, type, message, remarks, site_visit_id)
+          VALUES (?, 'completed', 'Your site visit has been completed', 'The site visit has been marked as complete by the driver', ?);
+        `;
+            pool.query(notificationQuery, [userId, id], (err, result) => {
+              if (err) throw err;
+              io.emit("siteVisitCompleted", {
+                id: req.params.id,
+                message: "Site visit has been completed",
+              });
+            });
+          }
+        });
+      };
+
       pool.getConnection((err, connection) => {
         if (err) {
           return res.status(500).json({
@@ -259,7 +281,7 @@ module.exports = (pool) => {
             connection.query(
               "UPDATE site_visits SET status = 'complete' WHERE id = ?",
               [id],
-              (err, result) => {
+              async (err, result) => {
                 if (err) {
                   connection.rollback(() => {
                     connection.release();
@@ -276,6 +298,8 @@ module.exports = (pool) => {
                     .status(404)
                     .json({ message: "Site visit request not found." });
                 } else {
+                  await sendCompletionNotification();
+
                   // Update driver's availability status
                   connection.query(
                     "UPDATE users SET is_available = 1 WHERE user_id = ?",
@@ -304,7 +328,7 @@ module.exports = (pool) => {
                         connection.release();
                         return res.json({
                           message:
-                            "Site visit request status updated to 'complete' and driver set to 'available' successfully.",
+                            "Site visit request status updated to 'complete', driver set to 'available', and notification sent successfully.",
                         });
                       });
                     }

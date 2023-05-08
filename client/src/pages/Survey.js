@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Survey = () => {
   const [visited, setVisited] = useState("");
@@ -65,6 +67,16 @@ const Survey = () => {
       );
       navigate("/");
     } catch (error) {
+      toast.error(
+        "An error occurred while submitting the survey. It is possible that you might have already filled the survey",
+        {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
       console.error("Error submitting the survey:", error.message);
     }
   };

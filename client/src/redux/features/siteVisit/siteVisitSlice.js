@@ -54,12 +54,12 @@ export const approveSiteVisit = createAsyncThunk(
 
 export const completeSiteVisit = createAsyncThunk(
   "siteVisits/completeSiteVisit",
-  async ({ id, data }, { getState, rejectWithValue }) => {
+  async ({ id }, { getState, rejectWithValue }) => {
     try {
       const token = getState().user.token;
       const response = await axios.patch(
         `http://localhost:8080/api/site-visit-requests/pending-site-visits/${id}`,
-        data,
+        { status: "complete" },
         {
           headers: {
             Authorization: `Bearer ${token}`,

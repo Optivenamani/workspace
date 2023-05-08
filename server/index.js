@@ -78,7 +78,7 @@ app.use("/api/users", users(pool));
 app.use("/api/sites", sites(pool));
 app.use("/api/vehicles", vehicles(pool));
 app.use("/api/site-visit-requests", siteVisitRequests(pool, io));
-app.use("/api/site-visits", siteVisits(pool));
+app.use("/api/site-visits", siteVisits(pool, io));
 app.use("/api/drivers", drivers(pool));
 app.use("/api/vehicle-requests", vehicleRequests(pool));
 app.use("/api/clients", clients(pool));

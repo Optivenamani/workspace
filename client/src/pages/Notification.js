@@ -2,16 +2,15 @@ import React, { useCallback, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
-import { formatDistanceToNowStrict } from "date-fns";
+import { formatDistanceToNowStrict, add } from "date-fns";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   fetchNotifications,
   setNotifications as updateNotifications,
 } from "../redux/features/notifications/notificationsSlice";
 
 const Notifications = () => {
-  const socket = io("http://localhost:8080");
-
   const notificationsArray = useSelector(
     (state) => state.notifications.notifications.notifications
   );
@@ -104,6 +103,9 @@ const Notifications = () => {
 
   // Fetch notifications and listen for socket events
   useEffect(() => {
+    const socket = io("http://localhost:8080");
+
+    // Fetch notifications
     dispatch(fetchNotifications());
 
     const handleSiteVisitRejected = (notification) => {
@@ -140,13 +142,35 @@ const Notifications = () => {
       );
     };
 
+    const handleSiteVisitCompleted = (notification) => {
+      console.log("Site visit completed:", notification);
+      // Update the notifications state
+      dispatch(
+        updateNotifications([
+          {
+            type: "completed",
+            message: "A site visit has been completed. Please fill the survey",
+            site_visit_id: notification.site_visit_id,
+            timestamp: new Date(notification.timestamp),
+            isRead: false,
+          },
+          ...notificationsArray,
+        ])
+      );
+    };
+
     socket.on("siteVisitRejected", handleSiteVisitRejected);
     socket.on("siteVisitApproved", handleSiteVisitApproved);
+    socket.on("siteVisitCompleted", handleSiteVisitCompleted);
 
     return () => {
       socket.off("siteVisitRejected", handleSiteVisitRejected);
       socket.off("siteVisitApproved", handleSiteVisitApproved);
+      socket.off("siteVisitCompleted", handleSiteVisitCompleted);
+      // Disconnect the socket
+      socket.disconnect();
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
@@ -174,6 +198,23 @@ const Notifications = () => {
       </svg>
     ),
     approved: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+        className="h-9 w-9 mr-2"
+        color="green"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+    completed: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -224,12 +265,23 @@ const Notifications = () => {
                           {notification.timestamp && (
                             <>
                               {formatDistanceToNowStrict(
-                                new Date(notification.timestamp),
+                                add(new Date(notification.timestamp), {
+                                  hours: 3,
+                                }),
                                 { addSuffix: true }
                               )}
                             </>
                           )}
                         </p>
+
+                        {notification.type === "completed" && (
+                          <Link
+                            to={`/survey/${notification.site_visit_id}`}
+                            className="text-blue-500 underline text-sm mt-2"
+                          >
+                            Complete the survey
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>

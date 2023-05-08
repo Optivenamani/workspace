@@ -48,6 +48,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("Active site visits:", activeSiteVisits);
     const completedVisit = activeSiteVisits.find(
       (visit) => visit.status === "complete"
     );
@@ -56,7 +57,7 @@ const Home = () => {
       dispatch(completeSiteVisit({ id: completedVisit.id }));
       setShowPopup(true);
     }
-  }, [activeSiteVisits, dispatch, showPopup]);
+  }, [activeSiteVisits, dispatch]);
 
   return (
     <>

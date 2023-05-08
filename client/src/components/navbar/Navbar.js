@@ -14,7 +14,9 @@ const Navbar = ({ fullName, email }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { notifications, status } = useSelector((state) => state.notifications.notifications);
+  const { notifications, status } = useSelector(
+    (state) => state.notifications.notifications
+  );
 
   useEffect(() => {
     if (status === "succeeded") {
