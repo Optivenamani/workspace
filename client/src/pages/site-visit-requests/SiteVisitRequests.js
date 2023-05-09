@@ -58,6 +58,8 @@ const SiteVisitRequests = () => {
         return "bg-secondary";
       case "reviewed":
         return "bg-primary";
+      case "cancelled":
+        return "bg-gray-500";
       default:
         return "";
     }
@@ -77,7 +79,9 @@ const SiteVisitRequests = () => {
               <div className="badge badge-warning text-white font-bold mr-1">
                 Pending
               </div>
-
+              <div className="badge bg-gray-500 border-none text-white font-bold mr-1">
+                Cancelled
+              </div>
               <div className="badge badge-info text-white font-bold">
                 Approved
               </div>

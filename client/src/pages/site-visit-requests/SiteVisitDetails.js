@@ -414,6 +414,7 @@ const SiteVisitDetails = () => {
                       {siteVisitData &&
                       siteVisitData.status !== "complete" &&
                       siteVisitData.status !== "rejected" &&
+                      siteVisitData.status !== "cancelled" &&
                       siteVisitData.status !== "in_progress" ? (
                         <>
                           <button

@@ -28,6 +28,38 @@ const MySiteVisits = () => {
     fetchSiteVisits();
   }, [token]);
 
+  const cancelSiteVisit = async (siteVisitId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/site-visit-requests/cancel-site-visit/${siteVisitId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSiteVisits(
+          siteVisits.map((siteVisit) =>
+            siteVisit.id === siteVisitId
+              ? { ...siteVisit, status: "cancelled" }
+              : siteVisit
+          )
+        );
+        alert(data.message);
+      } else {
+        alert(data.message || "Error cancelling site visit.");
+      }
+    } catch (error) {
+      console.error("Error cancelling site visit:", error);
+      alert("Error cancelling site visit.");
+    }
+  };
+
   const userSiteVisits = siteVisits.filter(
     (siteVisit) => siteVisit.marketer_id === userId
   );
@@ -123,8 +155,11 @@ const MySiteVisits = () => {
                     </td>
                     <td>
                       {siteVisit.status === "pending" ? (
-                        <button className="btn btn-sm btn-outline btn-warning">
-                          Edit
+                        <button
+                          className="btn btn-sm btn-outline btn-warning"
+                          onClick={() => cancelSiteVisit(siteVisit.id)} // Add onClick event listener
+                        >
+                          Cancel
                         </button>
                       ) : null}
                     </td>

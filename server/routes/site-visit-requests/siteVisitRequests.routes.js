@@ -57,7 +57,7 @@ module.exports = (pool, io) => {
           users.fullnames as marketer_name
         FROM site_visits
         JOIN users ON site_visits.marketer_id = users.user_id
-        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected' AND site_visits.status != 'reviewed');
+        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected' AND site_visits.status != 'reviewed' AND site_visits.status != 'cancelled');
         `;
       pool.query(query, [userId], (err, results) => {
         if (err) throw err;
@@ -106,6 +106,48 @@ module.exports = (pool, io) => {
           res.status(404).json({ message: "Site visit request not found." });
         }
       });
+    }
+  );
+  // Cancel a site visit request
+  router.patch(
+    "/cancel-site-visit/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isMarketer,
+    ]),
+    async (req, res) => {
+      try {
+        const { id } = req.params;
+
+        const updateSiteVisitStatusQuery = `
+        UPDATE site_visits
+        SET status = 'cancelled'
+        WHERE id = ? AND status IN ('pending')
+      `;
+
+        pool.query(updateSiteVisitStatusQuery, [id], (err, result) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+
+          if (result.affectedRows > 0) {
+            res
+              .status(200)
+              .json({ message: "Site visit request cancelled successfully." });
+          } else {
+            res.status(400).json({
+              message:
+                "Invalid site visit ID or the site visit has already been completed or cancelled.",
+            });
+          }
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     }
   );
   // Reject site visit request (with remarks)
