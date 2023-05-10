@@ -4,23 +4,9 @@ const express = require("express");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const fs = require("fs");
-const https = require("https");
+const http = require("http");
 const socketIO = require("socket.io");
 const app = express();
-
-const privateKey = fs.readFileSync("./keys/private.key", "utf8");
-const certificate = fs.readFileSync(
-  "./keys/workspace_optiven_co_ke.crt",
-  "utf8"
-);
-const ca = fs.readFileSync("./keys/workspace_optiven_co_ke.ca-bundle", "utf8");
-
-const credentials = {
-  key: privateKey,
-  cert: certificate,
-  ca: ca,
-};
 
 // Set up the Express app and database connection pool
 const pool = mysql.createPool({
@@ -47,7 +33,7 @@ pool.getConnection((err, connection) => {
 });
 
 // Create an HTTP server instance and attach the Express app to it
-const server = https.createServer(credentials, app);
+const server = http.createServer(credentials, app);
 
 // Initialize a Socket.IO instance and attach it to the HTTP server
 const io = socketIO(server, {
