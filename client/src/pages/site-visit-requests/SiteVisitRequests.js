@@ -16,7 +16,7 @@ const SiteVisitRequests = () => {
     const fetchSiteVisitRequests = async () => {
       try {
         const response = await fetch(
-          "https://209.38.246.14:8080/api/site-visit-requests/all",
+          "http://209.38.246.14:8080/api/site-visit-requests/all",
           {
             headers: {
               Authorization: `Bearer ${token}`,

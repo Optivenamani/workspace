@@ -16,7 +16,7 @@ export const fetchActiveSiteVisits = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://209.38.246.14:8080/api/site-visit-requests/active?user_id=${userId}`,
+        `http://209.38.246.14:8080/api/site-visit-requests/active?user_id=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ export const approveSiteVisit = createAsyncThunk(
     try {
       const token = getState().user.token;
       const response = await axios.patch(
-        `https://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
+        `http://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
         data,
         {
           headers: {
@@ -58,7 +58,7 @@ export const completeSiteVisit = createAsyncThunk(
     try {
       const token = getState().user.token;
       const response = await axios.patch(
-        `https://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
+        `http://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
         { status: "complete" },
         {
           headers: {

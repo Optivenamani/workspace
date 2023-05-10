@@ -24,7 +24,7 @@ const EditVehicle = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://209.38.246.14:8080/api/vehicles/vehicle/${vehicleId}`,
+        `http://209.38.246.14:8080/api/vehicles/vehicle/${vehicleId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -58,7 +58,7 @@ const EditVehicle = () => {
     };
     try {
       const response = await fetch(
-        `https://209.38.246.14:8080/api/vehicles/${vehicleId}`,
+        `http://209.38.246.14:8080/api/vehicles/${vehicleId}`,
         {
           method: "PATCH",
           headers: {

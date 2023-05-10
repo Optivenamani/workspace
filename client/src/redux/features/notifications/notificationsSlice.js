@@ -12,7 +12,7 @@ export const fetchNotifications = createAsyncThunk(
   "notifications/fetchNotifications",
   async (_, { getState }) => {
     const token = getState().user.token;
-    const response = await fetch("https://209.38.246.14:8080/api/notifications", {
+    const response = await fetch("http://209.38.246.14:8080/api/notifications", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

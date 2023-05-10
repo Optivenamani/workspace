@@ -23,7 +23,7 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post("https://209.38.246.14:8080/api/login", {
+      const response = await axios.post("http://209.38.246.14:8080/api/login", {
         email,
         password,
       });

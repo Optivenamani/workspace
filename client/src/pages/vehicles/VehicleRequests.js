@@ -15,7 +15,7 @@ const VehicleRequests = () => {
     const fetchVehicleRequests = async () => {
       try {
         const response = await fetch(
-          "https://209.38.246.14:8080/api/vehicle-requests/all-vehicle-requests",
+          "http://209.38.246.14:8080/api/vehicle-requests/all-vehicle-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,
