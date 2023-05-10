@@ -10,18 +10,17 @@ const app = express();
 
 // Set up the Express app and database connection pool
 const pool = mysql.createPool({
-  user: "doadmin",
-  password: "AVNS_r83MmKjINtd5qaznvHw",
-  host: "db-mysql-optiven-do-user-12885265-0.b.db.ondigitalocean.com",
-  port: 25060,
-  database: "defaultdb",
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
   ssl: { rejectUnauthorized: false },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
   connectTimeout: 30000,
 });
-
 // Check database connection
 pool.getConnection((err, connection) => {
   if (err) {
@@ -31,10 +30,8 @@ pool.getConnection((err, connection) => {
     connection.release();
   }
 });
-
 // Create an HTTP server instance and attach the Express app to it
-const server = http.createServer(credentials, app);
-
+const server = http.createServer(app);
 // Initialize a Socket.IO instance and attach it to the HTTP server
 const io = socketIO(server, {
   cors: {
@@ -47,7 +44,6 @@ const io = socketIO(server, {
     credentials: true,
   },
 });
-
 // Import auth routes
 const login = require("./routes/auth/login.routes");
 const logout = require("./routes/auth/logout.routes");
@@ -61,7 +57,6 @@ const drivers = require("./routes/drivers/drivers.routes");
 const vehicleRequests = require("./routes/vehicle-requests/vehicleRequests.routes");
 const clients = require("./routes/clients/clients.routes");
 const notifications = require("./routes/notifications/notifications.routes");
-
 // Configure CORS options
 const corsOptions = {
   origin: [
@@ -70,13 +65,11 @@ const corsOptions = {
   ],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
 // Apply middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 // Apply route middlewares
 app.use("/api/login", login(pool));
 app.use("/api/logout", logout);
@@ -89,16 +82,13 @@ app.use("/api/drivers", drivers(pool));
 app.use("/api/vehicle-requests", vehicleRequests(pool));
 app.use("/api/clients", clients(pool));
 app.use("/api/notifications", notifications(pool));
-
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
   console.log("Connected");
-
   socket.on("disconnect", () => {
     console.log("Disconnected");
   });
 });
-
 // Listen for incoming requests
 server.listen(8080, () => {
   console.log("Server started on port 8080");
