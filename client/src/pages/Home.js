@@ -1,7 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import bus from "../assets/home.jpg";
+import bus from "../assets/media/home.jpg";
 import { selectActiveSiteVisits } from "../redux/features/siteVisit/siteVisitSlice";
 
 const Home = () => {
