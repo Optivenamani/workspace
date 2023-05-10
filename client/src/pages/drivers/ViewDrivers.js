@@ -12,7 +12,7 @@ const ViewDrivers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/users", {
+        const response = await fetch("http://209.38.246.14:8080/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -43,7 +43,7 @@ const ViewDrivers = () => {
   const deleteDriver = (driverId) => {
     const token = localStorage.getItem("token");
     // Send a DELETE request to the server to delete the driver with the specified ID
-    fetch(`http://localhost:8080/api/users/${driverId}`, {
+    fetch(`http://209.38.246.14:8080/api/users/${driverId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -10,7 +10,7 @@ const ViewSites = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/sites", {
+        const response = await fetch("http://209.38.246.14:8080/api/sites", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

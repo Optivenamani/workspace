@@ -61,7 +61,7 @@ const Survey = () => {
       };
 
       await axios.post(
-        `http://localhost:8080/api/site-visit-requests/submit-survey/${id}`,
+        `http://209.38.246.14:8080/api/site-visit-requests/submit-survey/${id}`,
         surveyData,
         config
       );

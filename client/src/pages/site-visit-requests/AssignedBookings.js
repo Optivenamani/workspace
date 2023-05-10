@@ -17,7 +17,7 @@ const AssignedBookings = () => {
     const fetchTrips = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/drivers/assigned-site-visits",
+          "http://209.38.246.14:8080/api/drivers/assigned-site-visits",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ const AssignedBookings = () => {
   const startTrip = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/site-visits/start-trip/${id}`,
+        `http://209.38.246.14:8080/api/site-visits/start-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -84,7 +84,7 @@ const AssignedBookings = () => {
   const endTrip = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/site-visits/end-trip/${id}`,
+        `http://209.38.246.14:8080/api/site-visits/end-trip/${id}`,
         {
           method: "PATCH",
           headers: {

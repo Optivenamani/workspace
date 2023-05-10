@@ -27,7 +27,7 @@ const VehicleRequestDetails = () => {
     const fetchDrivers = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/drivers/all-drivers",
+          "http://209.38.246.14:8080/api/drivers/all-drivers",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ const VehicleRequestDetails = () => {
     const fetchVehicleRequest = async (id) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
+          `http://209.38.246.14:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ const VehicleRequestDetails = () => {
     const fetchVehicles = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/vehicles/available",
+          "http://209.38.246.14:8080/api/vehicles/available",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -114,7 +114,7 @@ const VehicleRequestDetails = () => {
       };
 
       const response = await fetch(
-        `http://localhost:8080/api/vehicle-requests/reject-vehicle-request/${id}`,
+        `http://209.38.246.14:8080/api/vehicle-requests/reject-vehicle-request/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -170,7 +170,7 @@ const VehicleRequestDetails = () => {
       console.log("Request object: ", requestBody);
 
       const response = await fetch(
-        `http://localhost:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
+        `http://209.38.246.14:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
         {
           method: "PATCH",
           headers: {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "http://209.38.246.14:8080/api",
 });
 
 export const createSiteVisitRequest = async (data, token) => {

@@ -43,7 +43,7 @@ const App = () => {
   );
 
   useEffect(() => {
-    const socket = io("http://localhost:8080");
+    const socket = io("http://209.38.246.14:8080");
 
     socket.on("siteVisitRejected", (notification) => {
       console.log("Site visit rejected");

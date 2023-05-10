@@ -25,7 +25,7 @@ const CreateVehicle = () => {
       engine_capacity: vehicleEngineCapacity,
     };
     try {
-      const response = await fetch("http://localhost:8080/api/vehicles", {
+      const response = await fetch("http://209.38.246.14:8080/api/vehicles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

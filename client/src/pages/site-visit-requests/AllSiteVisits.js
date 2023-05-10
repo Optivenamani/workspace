@@ -12,7 +12,7 @@ const AllSiteVisits = () => {
   useEffect(() => {
     const fetchSiteVisits = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/site-visits", {
+        const response = await fetch("http://209.38.246.14:8080/api/site-visits", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

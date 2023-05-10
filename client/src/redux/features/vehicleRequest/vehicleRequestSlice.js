@@ -16,7 +16,7 @@ export const fetchActiveVehicleRequests = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/vehicle-requests/active?user_id=${userId}`,
+        `http://209.38.246.14:8080/api/vehicle-requests/active?user_id=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ export const approveVehicleRequest = createAsyncThunk(
     try {
       const token = getState().user.token;
       const response = await axios.patch(
-        `http://localhost:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
+        `http://209.38.246.14:8080/api/vehicle-requests/pending-vehicle-requests/${id}`,
         data,
         {
           headers: {
