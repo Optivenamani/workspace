@@ -32,7 +32,7 @@ const RequestVehicle = () => {
     };
     try {
       const response = await fetch(
-        "http://209.38.246.14:8080/api/vehicle-requests/create-vehicle-request",
+        "https://209.38.246.14:8080/api/vehicle-requests/create-vehicle-request",
         {
           method: "POST",
           headers: {

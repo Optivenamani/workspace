@@ -29,7 +29,7 @@ const Notifications = () => {
       console.log(notificationId);
       try {
         const response = await fetch(
-          `http://209.38.246.14:8080/api/notifications/${notificationId}`,
+          `https://209.38.246.14:8080/api/notifications/${notificationId}`,
           {
             method: "PATCH",
             headers: {
