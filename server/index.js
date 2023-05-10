@@ -38,7 +38,10 @@ const server = http.createServer(app);
 // Initialize a Socket.IO instance and attach it to the HTTP server
 const io = socketIO(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://optiven-logistics-zmest.ondigitalocean.app",
+    ],
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -61,7 +64,10 @@ const notifications = require("./routes/notifications/notifications.routes");
 
 // Configure CORS options
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: [
+    "http://localhost:3000",
+    "https://optiven-logistics-zmest.ondigitalocean.app",
+  ],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
