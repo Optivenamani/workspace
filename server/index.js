@@ -37,7 +37,7 @@ const io = socketIO(server, {
   cors: {
     origin: [
       "http://localhost:3000",
-      "https://optiven-logistics-zmest.ondigitalocean.app",
+      "http://209.38.246.14/",
     ],
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -61,7 +61,7 @@ const notifications = require("./routes/notifications/notifications.routes");
 const corsOptions = {
   origin: [
     "http://localhost:3000",
-    "https://optiven-logistics-zmest.ondigitalocean.app",
+    "http://209.38.246.14/",
   ],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
