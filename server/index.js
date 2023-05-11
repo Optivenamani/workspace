@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const http = require("http");
 const socketIO = require("socket.io");
+const path = require("path");
 const app = express();
 
 // Set up the Express app and database connection pool
@@ -57,6 +58,7 @@ const drivers = require("./routes/drivers/drivers.routes");
 const vehicleRequests = require("./routes/vehicle-requests/vehicleRequests.routes");
 const clients = require("./routes/clients/clients.routes");
 const notifications = require("./routes/notifications/notifications.routes");
+
 // Configure CORS options
 const corsOptions = {
   origin: [
@@ -89,6 +91,11 @@ io.on("connection", (socket) => {
     console.log("Disconnected");
   });
 });
+
+server.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/index.html"));
+});
+
 // Listen for incoming requests
 server.listen(8080, () => {
   console.log("Server started on port 8080");
