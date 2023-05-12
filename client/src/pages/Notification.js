@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
-import { formatDistanceToNowStrict, add } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -114,6 +114,7 @@ const Notifications = () => {
       dispatch(
         updateNotifications([
           {
+            id: notification.id,
             type: "rejected",
             message: "Your site visit request has been rejected",
             remarks: notification.remarks,
@@ -129,15 +130,17 @@ const Notifications = () => {
       console.log("Site visit approved:", notification);
       // Update the notifications state
       dispatch(
-        updateNotifications([
+        updateNotifications((prevState) => [
           {
+            id: notification.id,
             type: "approved",
             message: "Your site visit request has been approved",
             remarks: notification.remarks,
             timestamp: new Date(notification.timestamp),
             isRead: false,
+            site_visit_id: notification.site_visit_id,
           },
-          ...notificationsArray,
+          ...prevState,
         ])
       );
     };
@@ -148,6 +151,7 @@ const Notifications = () => {
       dispatch(
         updateNotifications([
           {
+            id: notification.id,
             type: "completed",
             message: "A site visit has been completed. Please fill the survey",
             site_visit_id: notification.site_visit_id,
@@ -233,6 +237,9 @@ const Notifications = () => {
     ),
   };
 
+  const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
+  const activeSiteVisitId = activeVisits[0].id;
+
   return (
     <>
       <Sidebar>
@@ -265,10 +272,7 @@ const Notifications = () => {
                           {notification.timestamp && (
                             <>
                               {formatDistanceToNowStrict(
-                                add(new Date(notification.timestamp), {
-                                  hours: 3,
-                                }),
-                                { addSuffix: true }
+                                new Date(notification.timestamp)
                               )}
                             </>
                           )}
@@ -280,6 +284,15 @@ const Notifications = () => {
                             className="text-blue-500 underline text-sm mt-2"
                           >
                             Complete the survey
+                          </Link>
+                        )}
+
+                        {notification.type === "approved" && (
+                          <Link
+                            to={`/my-site-visits`}
+                            className="text-blue-500 underline text-sm mt-2"
+                          >
+                            View site visit details
                           </Link>
                         )}
                       </div>

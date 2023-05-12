@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import vehicleSide from "../../assets/media/vehicle-side.jpg";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -220,7 +221,7 @@ const SiteVisitDetails = () => {
               <div className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
                 <img
                   alt="Night"
-                  src="https://images.pexels.com/photos/2387532/pexels-photo-2387532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  src={vehicleSide}
                   className="absolute inset-0 h-full w-full object-cover opacity-80"
                 />
               </div>
