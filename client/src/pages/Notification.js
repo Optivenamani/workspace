@@ -114,7 +114,6 @@ const Notifications = () => {
       dispatch(
         updateNotifications([
           {
-            id: notification.id,
             type: "rejected",
             message: "Your site visit request has been rejected",
             remarks: notification.remarks,
@@ -132,7 +131,6 @@ const Notifications = () => {
       dispatch(
         updateNotifications((prevState) => [
           {
-            id: notification.id,
             type: "approved",
             message: "Your site visit request has been approved",
             remarks: notification.remarks,
@@ -151,7 +149,6 @@ const Notifications = () => {
       dispatch(
         updateNotifications([
           {
-            id: notification.id,
             type: "completed",
             message: "A site visit has been completed. Please fill the survey",
             site_visit_id: notification.site_visit_id,
@@ -237,9 +234,6 @@ const Notifications = () => {
     ),
   };
 
-  const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
-  const activeSiteVisitId = activeVisits[0].id;
-
   return (
     <>
       <Sidebar>
@@ -281,7 +275,7 @@ const Notifications = () => {
                         {notification.type === "completed" && (
                           <Link
                             to={`/survey/${notification.site_visit_id}`}
-                            className="text-blue-500 underline text-sm mt-2"
+                            className="text-primary underline text-sm mt-2"
                           >
                             Complete the survey
                           </Link>
@@ -290,7 +284,7 @@ const Notifications = () => {
                         {notification.type === "approved" && (
                           <Link
                             to={`/my-site-visits`}
-                            className="text-blue-500 underline text-sm mt-2"
+                            className="text-secondary underline text-sm mt-2"
                           >
                             View site visit details
                           </Link>
