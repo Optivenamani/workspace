@@ -6,6 +6,7 @@ import {
   VictoryTheme,
   VictoryPie,
   VictoryTooltip,
+  VictoryGroup,
 } from "victory";
 import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
@@ -24,11 +25,14 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchSiteVisits = async () => {
       try {
-        const response = await fetch("http://209.38.246.14:8080/api/site-visits", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://209.38.246.14:8080/api/site-visits",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setSitesData(data);
       } catch (error) {
@@ -38,6 +42,8 @@ const Dashboard = () => {
 
     fetchSiteVisits();
   }, [token]);
+
+  console.log("Site Visits data: ", sitesData);
 
   const countVisits = () => {
     // Create an object to hold the count for each site
@@ -70,6 +76,33 @@ const Dashboard = () => {
 
   const maxVisits = Math.max(...siteCounts.map((site) => site.count));
 
+  const countVisitsPerDay = () => {
+    const counts = {};
+    sitesData.forEach((visit) => {
+      const date = visit.pickup_date.split("T")[0];
+      if (date in counts) {
+        counts[date]++;
+      } else {
+        counts[date] = 1;
+      }
+    });
+
+    // Sort the counts by date
+    const sortedCounts = Object.entries(counts).sort(
+      ([dateA], [dateB]) => Date.parse(dateA) - Date.parse(dateB)
+    );
+
+    // Take the last 10 items from the sortedCounts array
+    const last10Counts = sortedCounts.slice(-10);
+
+    // Create an array of objects with x and y properties for VictoryBar
+    const data = last10Counts.map(([date, count]) => ({ x: date, y: count }));
+
+    return data;
+  };
+
+  const data = countVisitsPerDay();
+
   return (
     <>
       <Sidebar>
@@ -80,10 +113,10 @@ const Dashboard = () => {
                 <div className="card w-full bg-base-100 shadow-xl">
                   <div className="m-4">
                     <CustomLabel
-                      text="Most Visited Sites"
+                      text="Most Booked Sites"
                       x={30}
                       y={30}
-                      style={{ fontSize: 20 }}
+                      style={{ fontSize: 20, textAlign: "center" }}
                     />
                   </div>
                   <VictoryPie
@@ -106,10 +139,10 @@ const Dashboard = () => {
                 <div className="card w-full bg-base-100 shadow-xl">
                   <div className="m-4">
                     <CustomLabel
-                      text="Top 5 Most Visited Sites"
+                      text="Top 5 Most Booked Sites"
                       x={30}
                       y={30}
-                      style={{ fontSize: 20 }}
+                      style={{ fontSize: 20, textAlign: "center" }}
                     />
                   </div>
                   <VictoryChart
@@ -122,7 +155,7 @@ const Dashboard = () => {
                       tickFormat={siteCounts.map((site) => site.site_name)}
                       style={{
                         tickLabels: {
-                          angle: -10,
+                          angle: -15,
                           textAnchor: "end",
                           fontSize: 7,
                         },
@@ -137,7 +170,9 @@ const Dashboard = () => {
                     />
                     <VictoryBar
                       data={siteCounts}
-                      // cornerRadius={{ topLeft: ({ datum }) => datum.count * 4 }}
+                      cornerRadius={{
+                        topLeft: ({ datum }) => datum.count * 1.05,
+                      }}
                       x="site_name"
                       y="count"
                       labels={({ datum }) => `${datum.count}`}
@@ -147,6 +182,86 @@ const Dashboard = () => {
                         onLoad: { duration: 1000 },
                       }}
                     />
+                  </VictoryChart>
+                </div>
+              </div>
+              <div className="xl:w-1/3 md:w-1/2 p-4">
+                <div className="card w-full bg-base-100 shadow-xl">
+                  <div className="m-4">
+                    <CustomLabel
+                      text="Total Site Visit Requests"
+                      x={30}
+                      y={30}
+                      style={{ fontSize: 20, textAlign: "center" }}
+                    />
+                    <div className="font-bold text-7xl text-center">
+                      {sitesData.length}
+                    </div>
+                  </div>
+                </div>
+                <div className="card w-full bg-base-100 shadow-xl mt-5">
+                  <div className="m-4">
+                    <CustomLabel
+                      text="Total Completed Site Visits"
+                      x={30}
+                      y={30}
+                      style={{ fontSize: 20, textAlign: "center" }}
+                    />
+                    <div className="font-bold text-7xl text-center">
+                      {
+                        sitesData.filter((sv) => sv.status === "complete")
+                          .length
+                      }
+                    </div>
+                  </div>
+                </div>
+                <div className="card w-full bg-base-100 shadow-xl mt-5">
+                  <div className="m-4">
+                    <CustomLabel
+                      text="Total Rejected and Cancelled Site Visits"
+                      x={30}
+                      y={30}
+                      style={{ fontSize: 17.5, textAlign: "center" }}
+                    />
+                    <div className="font-bold text-7xl text-center">
+                      {
+                        sitesData.filter(
+                          (sv) =>
+                            sv.status === "rejected" ||
+                            sv.status === "cancelled"
+                        ).length
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="xl:w-full p-4">
+                <div
+                  className="card w-full bg-base-100 shadow-xl"
+                  style={{ height: "400px" }}
+                >
+                  <div className="m-4">
+                    <CustomLabel
+                      text="Site Visits per Day for the Last 10 Site Visit Days"
+                      x={30}
+                      y={30}
+                      style={{ fontSize: 20, textAlign: "center" }}
+                    />
+                  </div>
+                  <VictoryChart
+                    theme={VictoryTheme.material}
+                    width={window.innerWidth}
+                    domainPadding={50}
+                  >
+                    <VictoryGroup offset={20} colorScale={"qualitative"}>
+                      <VictoryBar
+                        data={data}
+                        labels={({ datum }) => `${datum.y}`}
+                        labelComponent={<VictoryTooltip />}
+                      />
+                    </VictoryGroup>
+                    <VictoryAxis />
+                    <VictoryAxis dependentAxis />
                   </VictoryChart>
                 </div>
               </div>
