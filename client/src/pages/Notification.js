@@ -29,7 +29,7 @@ const Notifications = () => {
       console.log(notificationId);
       try {
         const response = await fetch(
-          `http://209.38.246.14:8080/api/notifications/${notificationId}`,
+          `https://209.38.246.14:8080/api/notifications/${notificationId}`,
           {
             method: "PATCH",
             headers: {
@@ -103,7 +103,7 @@ const Notifications = () => {
 
   // Fetch notifications and listen for socket events
   useEffect(() => {
-    const socket = io("http://209.38.246.14:8080");
+    const socket = io("https://209.38.246.14:8080");
 
     // Fetch notifications
     dispatch(fetchNotifications());

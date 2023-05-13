@@ -26,7 +26,7 @@ const SiteVisitDetails = () => {
     const fetchSiteVisitRequest = async (id) => {
       try {
         const response = await fetch(
-          `http://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
+          `https://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ const SiteVisitDetails = () => {
     const fetchVehicles = async () => {
       try {
         const response = await fetch(
-          "http://209.38.246.14:8080/api/vehicles/available",
+          "https://209.38.246.14:8080/api/vehicles/available",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ const SiteVisitDetails = () => {
     const fetchDrivers = async () => {
       try {
         const response = await fetch(
-          "http://209.38.246.14:8080/api/drivers/all-drivers",
+          "https://209.38.246.14:8080/api/drivers/all-drivers",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -121,7 +121,7 @@ const SiteVisitDetails = () => {
       console.log("Request object: ", requestBody);
 
       const response = await fetch(
-        `http://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
+        `https://209.38.246.14:8080/api/site-visit-requests/pending-site-visits/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -171,7 +171,7 @@ const SiteVisitDetails = () => {
       };
 
       const response = await fetch(
-        `http://209.38.246.14:8080/api/site-visit-requests/reject-site-visit/${id}`,
+        `https://209.38.246.14:8080/api/site-visit-requests/reject-site-visit/${id}`,
         {
           method: "PATCH",
           headers: {

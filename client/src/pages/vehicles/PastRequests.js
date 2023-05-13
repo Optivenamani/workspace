@@ -14,7 +14,7 @@ const PastRequests = () => {
     const fetchVehicleRequests = async () => {
       try {
         const response = await fetch(
-          `http://209.38.246.14:8080/api/vehicle-requests/user-vehicle-requests/${userId}`,
+          `https://209.38.246.14:8080/api/vehicle-requests/user-vehicle-requests/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

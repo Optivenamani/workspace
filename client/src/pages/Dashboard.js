@@ -35,7 +35,7 @@ const Dashboard = () => {
       try {
         // Making GET request to fetch site visits data
         const response = await fetch(
-          "http://209.38.246.14:8080/api/site-visits",
+          "https://209.38.246.14:8080/api/site-visits",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -224,7 +224,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="card w-full bg-base-100 shadow-xl mt-5">
+                  <div className="card w-full bg-base-100 shadow-xl mt-6">
                     <div className="m-4">
                       <CustomLabel
                         text="Total Completed Site Visits"
