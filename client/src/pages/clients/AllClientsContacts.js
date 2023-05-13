@@ -12,7 +12,7 @@ const AllClientsContacts = () => {
       const fetchClients = async () => {
         try {
           const response = await fetch(
-            `https://209.38.246.14:8080/api/clients/all`,
+            `https://workspace.optiven.co.ke/api/clients/all`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

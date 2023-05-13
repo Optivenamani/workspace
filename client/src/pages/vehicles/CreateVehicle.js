@@ -25,7 +25,7 @@ const CreateVehicle = () => {
       engine_capacity: vehicleEngineCapacity,
     };
     try {
-      const response = await fetch("https://209.38.246.14:8080/api/vehicles", {
+      const response = await fetch("https://workspace.optiven.co.ke/api/vehicles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

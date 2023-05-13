@@ -10,7 +10,7 @@ const ViewSites = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch("https://209.38.246.14:8080/api/sites", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/sites", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

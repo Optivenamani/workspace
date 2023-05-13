@@ -13,7 +13,7 @@ const ViewVehicles = () => {
   useEffect(() => {
     const fetchVehicle = async () => {
       try {
-        const response = await fetch("https://209.38.246.14:8080/api/vehicles", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/vehicles", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -40,7 +40,7 @@ const ViewVehicles = () => {
   const deleteVehicle = (vehicleId) => {
     const token = localStorage.getItem("token");
     // Send a DELETE request to the server to delete the vehicle with the specified ID
-    fetch(`https://209.38.246.14:8080/api/vehicles/${vehicleId}`, {
+    fetch(`https://workspace.optiven.co.ke/api/vehicles/${vehicleId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

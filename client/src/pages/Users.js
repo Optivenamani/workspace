@@ -10,7 +10,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://209.38.246.14:8080/api/users", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

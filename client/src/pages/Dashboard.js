@@ -35,7 +35,7 @@ const Dashboard = () => {
       try {
         // Making GET request to fetch site visits data
         const response = await fetch(
-          "https://209.38.246.14:8080/api/site-visits",
+          "https://workspace.optiven.co.ke/api/site-visits",
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -62,7 +62,7 @@ const Survey = () => {
       };
 
       await axios.post(
-        `https://209.38.246.14:8080/api/site-visit-requests/submit-survey/${id}`,
+        `https://workspace.optiven.co.ke/api/site-visit-requests/submit-survey/${id}`,
         surveyData,
         config
       );

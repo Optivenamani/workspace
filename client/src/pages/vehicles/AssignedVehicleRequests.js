@@ -17,7 +17,7 @@ const AssignedVehicleRequests = () => {
     const fetchTrips = async () => {
       try {
         const response = await fetch(
-          "https://209.38.246.14:8080/api/drivers/assigned-vehicle-requests",
+          "https://workspace.optiven.co.ke/api/drivers/assigned-vehicle-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ const AssignedVehicleRequests = () => {
   const startTrip = async (id) => {
     try {
       const response = await fetch(
-        `https://209.38.246.14:8080/api/vehicle-requests/start-trip/${id}`,
+        `https://workspace.optiven.co.ke/api/vehicle-requests/start-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -85,7 +85,7 @@ const AssignedVehicleRequests = () => {
   const endTrip = async (id) => {
     try {
       const response = await fetch(
-        `https://209.38.246.14:8080/api/vehicle-requests/end-trip/${id}`,
+        `https://workspace.optiven.co.ke/api/vehicle-requests/end-trip/${id}`,
         {
           method: "PATCH",
           headers: {

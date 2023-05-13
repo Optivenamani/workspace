@@ -13,7 +13,7 @@ const MySiteVisits = () => {
   useEffect(() => {
     const fetchSiteVisits = async () => {
       try {
-        const response = await fetch("https://209.38.246.14:8080/api/site-visits", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/site-visits", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -31,7 +31,7 @@ const MySiteVisits = () => {
   const cancelSiteVisit = async (siteVisitId) => {
     try {
       const response = await fetch(
-        `https://209.38.246.14:8080/api/site-visit-requests/cancel-site-visit/${siteVisitId}`,
+        `https://workspace.optiven.co.ke/api/site-visit-requests/cancel-site-visit/${siteVisitId}`,
         {
           method: "PATCH",
           headers: {
