@@ -41,6 +41,7 @@ const io = socketIO(server, {
       "https://localhost:3000",
       "https://209.38.246.14/",
       "https://www.workspace.optiven.co.ke",
+      "https://workspace.optiven.co.ke",
     ],
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -68,6 +69,7 @@ const corsOptions = {
     "https://localhost:3000",
     "https://209.38.246.14/",
     "https://www.workspace.optiven.co.ke",
+    "https://workspace.optiven.co.ke",
   ],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
