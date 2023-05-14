@@ -229,8 +229,8 @@ const Notifications = () => {
             <h1 className="text-2xl font-bold text-gray-800">Notifications</h1>
           </div>
           <div className="flex flex-col items-center justify-center px-3">
-            <div className="flex flex-col space-y-4">
-              {Array.isArray(notificationsArray) ? (
+            {Array.isArray(notificationsArray) ? (<div className="flex flex-col space-y-4">
+              {notificationsArray && notificationsArray.length > 0 ? (
                 notificationsArray.map((notification, index) => (
                   <div
                     key={index}
@@ -253,7 +253,7 @@ const Notifications = () => {
                             <>
                               {formatDistanceToNowStrict(
                                 new Date(notification.timestamp)
-                              )}
+                              )} ago
                             </>
                           )}
                         </p>
@@ -269,7 +269,7 @@ const Notifications = () => {
 
                         {notification.type === "approved" && (
                           <Link
-                            to={`/my-site-visits`}
+                            to={`/sv-details/${notification.site_visit_id}`}
                             className="text-secondary underline text-sm mt-2"
                           >
                             View site visit details
@@ -289,7 +289,16 @@ const Notifications = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </div>) : (
+              <div className="flex justify-center">
+                <div className="flex flex-col items-center mt-20">
+                  <img src={huh} alt="huh" className="lg:w-96" />
+                  <h1 className="font-bold text-center">
+                    Nothing to see here.
+                  </h1>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Sidebar>

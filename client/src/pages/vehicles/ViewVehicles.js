@@ -71,7 +71,7 @@ const ViewVehicles = () => {
           />
         </div>
         {filteredVehicles.length > 0 ? (
-          <div className="px-4 mt-4 flex justify-center">
+          <div className="px-4 mt-4 mb-10 flex justify-center">
             <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
               <table className="table table-zebra w-full">
                 {/* head */}

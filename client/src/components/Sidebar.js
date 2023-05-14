@@ -29,17 +29,14 @@ const Sidebar = ({ children }) => {
     accessRole === `     112#116#303#305` ||
     accessRole === `   112#304` ||
     accessRole === `   112#305`;
-  const isDriver = `driver69`;
+  const isDriver = accessRole === `driver69`;
+  // const isNormie = accessRole === ``
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchActiveSiteVisits());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchActiveSiteVisits());
-    dispatch(fetchActiveVehicleRequests()); // Fetch active vehicle requests
+    dispatch(fetchActiveVehicleRequests());
   }, [dispatch]);
 
   const canBookSiteVisit = () => {
@@ -94,20 +91,19 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Site Visits</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  {(isMarketer || isHOSorGM || isAdmin) && (
+                  {(isMarketer || isAdmin) && (
                     <a
                       href="/book-site-visit"
-                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${
-                        !canBookSiteVisit() || status === "loading"
-                          ? "disabled-link"
-                          : ""
-                      }`}
+                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${!canBookSiteVisit() || status === "loading"
+                        ? "disabled-link"
+                        : ""
+                        }`}
                     >
                       Book a Site Visit
                     </a>
                   )}
 
-                  {(isMarketer || isHOSorGM || isAdmin) && (
+                  {(isMarketer || isAdmin) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/my-site-visits"
@@ -115,7 +111,7 @@ const Sidebar = ({ children }) => {
                       My Site Visits
                     </a>
                   )}
-                  {(isAdmin || (isDriver && !isMarketer)) && (
+                  {(isAdmin || isDriver) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/assigned-site-visits"
@@ -181,11 +177,7 @@ const Sidebar = ({ children }) => {
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
                   href="/request-vehicle"
-                  className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${
-                    !canRequestVehicle() || vehicleRequestStatus === "loading"
-                      ? "disabled-link"
-                      : ""
-                  }`}
+                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                 >
                   Request For A Vehicle
                 </a>
@@ -237,12 +229,16 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Clients</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  <a
-                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
-                    href="/my-clients-contacts"
-                  >
-                    My Clients' Contacts
-                  </a>
+                  {(isMarketer || isAdmin) && (
+                    <>
+                      <a
+                        className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                        href="/my-clients-contacts"
+                      >
+                        My Clients' Contacts
+                      </a>
+                    </>
+                  )}
                   {(isHOSorGM || isAdmin) && (
                     <>
                       <a
@@ -251,12 +247,12 @@ const Sidebar = ({ children }) => {
                       >
                         All Clients' Contacts
                       </a>
-                      <a
+                      {/* <a
                         className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                         href="/clients-feedback"
                       >
                         Clients Feedback
-                      </a>
+                      </a> */}
                     </>
                   )}
                 </div>

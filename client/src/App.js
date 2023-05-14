@@ -34,6 +34,7 @@ import AssignedVehicleRequests from "./pages/vehicles/AssignedVehicleRequests";
 import PastRequests from "./pages/vehicles/PastRequests";
 import AllClientsContacts from "./pages/clients/AllClientsContacts";
 import Survey from "./pages/Survey";
+import ApprovedSVDetails from "./pages/site-visit-requests/ApprovedSVDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -156,6 +157,7 @@ const App = () => {
             <Route path="/users" element={<Users />} />
             {/* Notifications */}
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/sv-details/:id" element={<ApprovedSVDetails />} />
             {/* Survey */}
             <Route path="/survey/:id" element={<Survey />} />
           </Route>

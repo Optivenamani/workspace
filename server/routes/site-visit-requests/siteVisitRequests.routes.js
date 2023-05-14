@@ -5,6 +5,62 @@ const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool, io) => {
+  // Get single site visit with driver, vehicle info, and all associated clients
+  router.get(
+    "/:id",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+    ]),
+    async (req, res) => {
+      try {
+        const siteVisitQuery = `
+        SELECT 
+          site_visits.*,
+          Projects.name AS site_name,
+          users.fullnames as marketer_name,
+          drivers.fullnames as driver_name,
+          vehicles.vehicle_registration as vehicle_name
+        FROM site_visits
+        LEFT JOIN Projects
+          ON site_visits.project_id = Projects.project_id
+        LEFT JOIN users
+          ON site_visits.marketer_id = users.user_id
+        LEFT JOIN users as drivers
+          ON site_visits.driver_id = drivers.user_id
+        LEFT JOIN vehicles
+          ON site_visits.vehicle_id = vehicles.id
+        WHERE site_visits.id = ?
+        ORDER BY site_visits.created_at DESC;
+      `;
+        pool.query(siteVisitQuery, [req.params.id], async (err, results) => {
+          if (err) throw err;
+          if (results.length > 0) {
+            const siteVisit = results[0];
+            const clientsQuery = `
+            SELECT 
+              site_visit_clients.name as client_name,
+              site_visit_clients.email as client_email,
+              site_visit_clients.phone_number as client_phone
+            FROM site_visit_clients
+            WHERE site_visit_clients.site_visit_id = ?
+          `;
+            pool.query(clientsQuery, [req.params.id], (err, results) => {
+              if (err) throw err;
+              siteVisit.clients = results;
+              res.status(200).json(siteVisit);
+            });
+          } else {
+            res.status(404).json({ message: "Site visit not found" });
+          }
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
   // Get all site visits with driver and vehicle info
   router.get(
     "/all",
@@ -178,7 +234,7 @@ module.exports = (pool, io) => {
                 // Insert a record into the notifications table
                 const notificationQuery = `
                 INSERT INTO notifications (user_id, type, message, remarks)
-                VALUES (?, 'rejected', 'Your site visit request has been rejected', ?);
+                VALUES (?, 'rejected', 'Your site visit request has been rejected :(', ?);
               `;
                 pool.query(
                   notificationQuery,
@@ -240,7 +296,7 @@ module.exports = (pool, io) => {
                 const notificationQuery = `
                   INSERT INTO notifications 
                     (user_id, type, message, remarks, site_visit_id)
-                  VALUES (?, 'approved', 'Your site visit request has been approved', ?, ?);
+                  VALUES (?, 'approved', 'Your site visit request has been approved!', ?, ?);
                   `;
                 pool.query(
                   notificationQuery,

@@ -7,8 +7,8 @@ const CreateVehicle = () => {
   const [vehicleModel, setVehicleModel] = useState("");
   const [vehicleRegistration, setVehicleRegistration] = useState("");
   const [vehicleBodyType, setVehicleBodyType] = useState("");
-  const [vehicleSeats, setVehicleSeats] = useState("");
-  const [vehicleEngineCapacity, setVehicleEngineCapacity] = useState("");
+  const [vehicleSeats, setVehicleSeats] = useState(0);
+  const [vehicleEngineCapacity, setVehicleEngineCapacity] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -92,13 +92,15 @@ const CreateVehicle = () => {
               <option value="Mini Truck">Mini Truck</option>
               <option value="Sedan">Sedan</option>
               <option value="Estate">Estate</option>
+              <option value="Hatchback">Hatchback</option>
               <option value="SUV">SUV</option>
+              <option value="Other">Other</option>
             </select>
             <label htmlFor="vehicleSeats" className="label">
               <span className="label-text font-bold">Passenger Capacity</span>
             </label>
             <input
-              type="text"
+              type="number"
               id="vehicleSeats"
               placeholder="30"
               value={vehicleSeats}
@@ -111,7 +113,7 @@ const CreateVehicle = () => {
               </span>
             </label>
             <input
-              type="text"
+              type="number"
               id="vehicleEngineCapacity"
               placeholder="3000"
               value={vehicleEngineCapacity}
