@@ -238,12 +238,13 @@ module.exports = (pool, io) => {
                 const userId = userIdResult[0].marketer_id;
                 // Insert a record into the notifications table
                 const notificationQuery = `
-                INSERT INTO notifications (user_id, type, message, remarks)
-                VALUES (?, 'approved', 'Your site visit request has been approved', ?);
-              `;
+                  INSERT INTO notifications 
+                    (user_id, type, message, remarks, site_visit_id)
+                  VALUES (?, 'approved', 'Your site visit request has been approved', ?, ?);
+                  `;
                 pool.query(
                   notificationQuery,
-                  [userId, remarks],
+                  [userId, remarks, id], // id added here
                   (err, result) => {
                     if (err) throw err;
                     // Emit the notification via Socket.IO

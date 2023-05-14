@@ -17,8 +17,6 @@ const Notifications = () => {
     (state) => state.notifications.notifications.notifications
   );
 
-  console.log(notificationsArray)
-
   const token = useSelector((state) => state.user.token);
 
   const dispatch = useDispatch();
