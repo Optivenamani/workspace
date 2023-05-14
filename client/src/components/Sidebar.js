@@ -12,9 +12,9 @@ const Sidebar = ({ children }) => {
   const activeVehicleRequests = useSelector(
     (state) => state.vehicleRequest.activeRequests
   );
-  const vehicleRequestStatus = useSelector(
-    (state) => state.vehicleRequest.status
-  );
+  // const vehicleRequestStatus = useSelector(
+  //   (state) => state.vehicleRequest.status
+  // );
 
   console.log("Active Site Visits:", activeVisits ? activeVisits.length : 'undefined');
   console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
@@ -52,18 +52,18 @@ const Sidebar = ({ children }) => {
     return latestVisit.state === "completed";
   };
 
-  const canRequestVehicle = () => {
-    if (vehicleRequestStatus === "loading") {
-      return false;
-    }
+  // const canRequestVehicle = () => {
+  //   if (vehicleRequestStatus === "loading") {
+  //     return false;
+  //   }
 
-    if (activeVehicleRequests.length === 0) {
-      return true;
-    }
+  //   if (activeVehicleRequests.length === 0) {
+  //     return true;
+  //   }
 
-    const latestVehicleRequest = activeVehicleRequests[0];
-    return latestVehicleRequest.state === "completed";
-  };
+  //   const latestVehicleRequest = activeVehicleRequests[0];
+  //   return latestVehicleRequest.state === "completed";
+  // };
 
   return (
     <>
