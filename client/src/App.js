@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { io } from "socket.io-client";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 // Redux
-import { setNotifications as updateNotifications } from "./redux/features/notifications/notificationsSlice";
+import { addNotification, fetchNotifications } from "./redux/features/notifications/notificationsSlice";
 // utils
 import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
@@ -38,20 +38,18 @@ import Survey from "./pages/Survey";
 const App = () => {
   const dispatch = useDispatch();
 
-  const notifications = useSelector(
-    (state) => state.notifications.notifications
-  );
-
   useEffect(() => {
     const socket = io("https://workspace.optiven.co.ke");
+
+    dispatch(fetchNotifications());
 
     socket.on("siteVisitRejected", (notification) => {
       console.log("Site visit rejected");
       // Update the notifications state
       dispatch(
-        updateNotifications({
+        addNotification({
           type: "rejected",
-          message: "Your site visit request has been rejected",
+          message: "Your site visit request has been rejected :(",
           remarks: notification.remarks,
           timestamp: new Date(notification.timestamp),
           isRead: false,
@@ -63,15 +61,28 @@ const App = () => {
       console.log("Site visit approved");
       // Update the notifications state
       dispatch(
-        updateNotifications({
-          type: "rejected",
-          message: "Your site visit request has been rejected",
+        addNotification({
+          type: "approved",
+          message: "Your site visit request has been approved!",
           remarks: notification.remarks,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+          site_visit_id: notification.site_visit_id,
+        })
+      );
+    });
+
+    socket.on("siteVisitCompleted", (notification) => {
+      dispatch(
+        addNotification({
+          type: "completed",
+          message: "A site visit has been completed. Please fill the survey",
+          site_visit_id: notification.site_visit_id,
           timestamp: new Date(notification.timestamp),
           isRead: false,
         })
       );
-    });
+    })
 
     return () => {
       // Remove event listeners
@@ -79,8 +90,9 @@ const App = () => {
       socket.off("disconnect");
       socket.off("siteVisitRejected");
       socket.off("siteVisitApproved");
+      socket.off("siteVisitCompleted");
     };
-  }, [dispatch, notifications]);
+  }, [dispatch]);
 
   return (
     <>

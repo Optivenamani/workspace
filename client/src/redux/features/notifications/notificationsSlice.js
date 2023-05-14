@@ -32,6 +32,9 @@ const notificationsSlice = createSlice({
     setNotifications: (state, action) => {
       state.notifications = action.payload;
     },
+    addNotification: (state, action) => {
+      state.notifications = [action.payload, ...state.notifications];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -49,5 +52,5 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { setNotifications } = notificationsSlice.actions;
+export const { setNotifications, addNotification } = notificationsSlice.actions;
 export default notificationsSlice.reducer;

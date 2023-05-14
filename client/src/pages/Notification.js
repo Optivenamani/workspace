@@ -8,12 +8,16 @@ import { Link } from "react-router-dom";
 import {
   fetchNotifications,
   setNotifications as updateNotifications,
+  addNotification
 } from "../redux/features/notifications/notificationsSlice";
+import huh from "../assets/app-illustrations/Shrug-bro.png";
 
 const Notifications = () => {
   const notificationsArray = useSelector(
     (state) => state.notifications.notifications.notifications
   );
+
+  console.log(notificationsArray)
 
   const token = useSelector((state) => state.user.token);
 
@@ -22,11 +26,9 @@ const Notifications = () => {
   const markAsRead = useCallback(
     async (notificationId) => {
       if (!notificationId) {
-        console.error("Notification ID is missing or invalid");
         return;
       }
 
-      console.log(notificationId);
       try {
         const response = await fetch(
           `https://workspace.optiven.co.ke/api/notifications/${notificationId}`,
@@ -51,6 +53,8 @@ const Notifications = () => {
               )
             )
           );
+          console.log(`Notification of ID ${notificationId} has been marked as read`);
+
         } else {
           console.error("Error marking notification as read:", response.status);
         }
@@ -105,58 +109,48 @@ const Notifications = () => {
   useEffect(() => {
     const socket = io("https://workspace.optiven.co.ke");
 
-    // Fetch notifications
-    dispatch(fetchNotifications());
+    // Fetch notifications only if there are none currently
+    if (!notificationsArray || notificationsArray.length === 0) {
+      dispatch(fetchNotifications());
+    }
 
     const handleSiteVisitRejected = (notification) => {
-      console.log("Site visit rejected:", notification);
       // Update the notifications state
       dispatch(
-        updateNotifications([
-          {
-            type: "rejected",
-            message: "Your site visit request has been rejected",
-            remarks: notification.remarks,
-            timestamp: new Date(notification.timestamp),
-            isRead: false,
-          },
-          ...notificationsArray,
-        ])
+        addNotification({
+          type: "rejected",
+          message: "Your site visit request has been rejected :(",
+          remarks: notification.remarks,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+        })
       );
     };
 
     const handleSiteVisitApproved = (notification) => {
-      console.log("Site visit approved:", notification);
       // Update the notifications state
       dispatch(
-        updateNotifications((prevState) => [
-          {
-            type: "approved",
-            message: "Your site visit request has been approved",
-            remarks: notification.remarks,
-            timestamp: new Date(notification.timestamp),
-            isRead: false,
-            site_visit_id: notification.site_visit_id,
-          },
-          ...prevState,
-        ])
+        addNotification({
+          type: "approved",
+          message: "Your site visit request has been approved!",
+          site_visit_id: notification.site_visit_id,
+          remarks: notification.remarks,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+        })
       );
     };
 
     const handleSiteVisitCompleted = (notification) => {
-      console.log("Site visit completed:", notification);
       // Update the notifications state
       dispatch(
-        updateNotifications([
-          {
-            type: "completed",
-            message: "A site visit has been completed. Please fill the survey",
-            site_visit_id: notification.site_visit_id,
-            timestamp: new Date(notification.timestamp),
-            isRead: false,
-          },
-          ...notificationsArray,
-        ])
+        addNotification({
+          type: "completed",
+          message: "A site visit has been completed. Please fill the survey",
+          site_visit_id: notification.site_visit_id,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+        })
       );
     };
 
@@ -173,12 +167,7 @@ const Notifications = () => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-
-  // Fetch notifications
-  useEffect(() => {
-    dispatch(fetchNotifications());
-  }, [dispatch]);
+  }, [dispatch, notificationsArray]);
 
   const notificationIcons = {
     rejected: (
@@ -247,9 +236,8 @@ const Notifications = () => {
                 notificationsArray.map((notification, index) => (
                   <div
                     key={index}
-                    className={`bg-white shadow-lg rounded-md p-4 flex items-center justify-between ${
-                      !notification.isRead ? "bg-blue-100" : ""
-                    }`}
+                    className={`bg-white shadow-lg rounded-md p-4 flex items-center justify-between ${!notification.isRead ? "bg-blue-100" : ""
+                      }`}
                   >
                     <div className="flex items-center">
                       {notificationIcons[notification.type]}
@@ -294,7 +282,14 @@ const Notifications = () => {
                   </div>
                 ))
               ) : (
-                <p>Loading notifications...</p>
+                <div className="flex justify-center">
+                  <div className="flex flex-col items-center mt-20">
+                    <img src={huh} alt="huh" className="lg:w-96" />
+                    <h1 className="font-bold text-center">
+                      No notifications. Check back later.
+                    </h1>
+                  </div>
+                </div>
               )}
             </div>
           </div>

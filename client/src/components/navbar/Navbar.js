@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 // assets
 import logo from "../../assets/optiven-logo-full.png";
@@ -9,23 +9,17 @@ import "./styles/Navbar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/features/user/userSlice";
 
+const selectNotifications = state => state.notifications.notifications.notifications;
+
 const Navbar = ({ fullName, email }) => {
-  const [unreadCount, setUnreadCount] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { notifications, status } = useSelector(
-    (state) => state.notifications.notifications
-  );
+  const notifications = useSelector(selectNotifications);
 
-  useEffect(() => {
-    if (status === "succeeded") {
-      const unread = notifications.filter(
-        (notification) => notification.isRead === 0
-      ).length;
-      setUnreadCount(unread);
-    }
-  }, [notifications, status]);
+  const unreadNotifications = Array.isArray(notifications) && notifications.filter(notification => notification.isRead === 0);
+  const unreadNumber = unreadNotifications.length;
+  const hasUnreadNotifications = unreadNotifications.length > 0;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -33,9 +27,6 @@ const Navbar = ({ fullName, email }) => {
     dispatch(logout());
     navigate("/login");
   };
-
-  console.log("status", status);
-  console.log("unreadCount", unreadCount);
 
   return (
     <div className="navbar bg-primary">
@@ -81,9 +72,9 @@ const Navbar = ({ fullName, email }) => {
             >
               <div className="w-10 rounded-full">
                 <img alt="user" src={userAvatar} />
-                {unreadCount > 0 && status === "succeeded" && (
+                {hasUnreadNotifications && (
                   <span className="h-5 w-5 rounded-3xl badge badge-xs badge-neutral indicator-item">
-                    {unreadCount}
+                    {unreadNumber}
                   </span>
                 )}
               </div>
@@ -97,16 +88,12 @@ const Navbar = ({ fullName, email }) => {
               <Link className="justify-between" to="/notifications">
                 Notifications
                 <span
-                  className={`badge badge-sm badge-neutral h-5 w-5 rounded-3xl font-bold ${
-                    unreadCount === 0 ? "hidden" : ""
-                  }`}
+                  className={`badge badge-sm badge-neutral font-bold ${hasUnreadNotifications ? "" : "hidden"
+                    }`}
                 >
-                  {unreadCount}
+                  {hasUnreadNotifications && <span className="">New</span>}
                 </span>
               </Link>
-            </li>
-            <li>
-              <Link>Change Password</Link>
             </li>
             <li>
               <button

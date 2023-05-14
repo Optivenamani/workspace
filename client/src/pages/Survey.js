@@ -94,7 +94,7 @@ const Survey = () => {
           <form onSubmit={handleSubmit} className="mx-auto mb-0 mt-8 space-y-4">
             <div>
               <label htmlFor="clientVisit" className="label text-md">
-                Did the client visit the site?
+                Did the client(s) visit the site?
               </label>
               <div className="flex justify-evenly lg:justify-between">
                 <select
@@ -110,7 +110,7 @@ const Survey = () => {
               {visited === "Yes" && (
                 <div>
                   <label htmlFor="bookedPlot" className="label text-md">
-                    Did the client book the plot?
+                    Did the client(s) book the plot?
                   </label>
                   <select
                     className="select select-bordered w-full max-w-xs"
@@ -152,7 +152,7 @@ const Survey = () => {
                         htmlFor="reasonNotBooked"
                         className="label text-md"
                       >
-                        Why did the client NOT book a plot?
+                        Why did the client(s) NOT book a plot?
                       </label>
                       <textarea
                         type="text"
@@ -168,7 +168,7 @@ const Survey = () => {
               {visited === "No" && (
                 <div>
                   <label htmlFor="reasonNoVisit" className="label text-md">
-                    Why did the client not visit the site?
+                    Why did the client(s) not visit the site?
                   </label>
                   <textarea
                     id="reasonNoVisit"
