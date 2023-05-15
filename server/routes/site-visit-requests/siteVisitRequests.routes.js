@@ -63,7 +63,7 @@ module.exports = (pool, io) => {
   );
   // Get all site visits with driver and vehicle info
   router.get(
-    "/all",
+    "/",
     authenticateJWT,
     checkPermissions([
       AccessRoles.isAchola,

@@ -16,7 +16,7 @@ const SiteVisitRequests = () => {
     const fetchSiteVisitRequests = async () => {
       try {
         const response = await fetch(
-          "https://workspace.optiven.co.ke/api/site-visit-requests/all",
+          "https://workspace.optiven.co.ke/api/site-visit-requests/",
           {
             headers: {
               Authorization: `Bearer ${token}`,
