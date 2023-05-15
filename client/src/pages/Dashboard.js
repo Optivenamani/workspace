@@ -22,14 +22,14 @@ const CustomLabel = ({ text, x, y, style }) => {
 const Dashboard = () => {
   // State to hold the site visits data
   const [sitesData, setSitesData] = useState([]);
-  // State to hold the site visits data
+  // State to hold the vehicle requests data
   const [vehicleRequests, setVehicleRequests] = useState([]);
   // State to hold the loading state
   const [isLoading, setIsLoading] = useState(true);
   // Fetching token from redux state
   const token = useSelector((state) => state.user.token);
 
-  // Fetching site visits data on initial render and whenever token changes
+  // Fetching site visits/ VRs data on initial render and whenever token changes
   useEffect(() => {
     // Function to fetch site visits
     const fetchSiteVisits = async () => {
@@ -37,7 +37,7 @@ const Dashboard = () => {
       try {
         // Making GET request to fetch site visits data
         const response = await fetch(
-          "https://workspace.optiven.co.ke/api/site-visits",
+          "https://workspace.optiven.co.ke/api/site-visit-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,

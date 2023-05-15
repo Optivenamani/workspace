@@ -20,15 +20,15 @@ const Sidebar = ({ children }) => {
   console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
 
   const isMarketer = accessRole === `113`;
-  const isHOSorGM = accessRole === `113#114` || accessRole === `113#115`;
+  const isHOSorGM = (accessRole === `113#114` || accessRole === `113#115`);
   const isAdmin =
-    accessRole === `            112#700#117#116` ||
-    accessRole === ` 112#305#117#116#113#770` ||
-    accessRole === `     112#114#700`;
+    (accessRole === `            112#700#117#116` ||
+      accessRole === ` 112#305#117#116#113#770` ||
+      accessRole === `     112#114#700`);
   const isOperations =
-    accessRole === `     112#116#303#305` ||
-    accessRole === `   112#304` ||
-    accessRole === `   112#305`;
+    (accessRole === `     112#116#303#305` ||
+      accessRole === `   112#304` ||
+      accessRole === `   112#305`);
   const isDriver = accessRole === `driver69`;
   const isBrian = accessRole === `brianHR`;
 
