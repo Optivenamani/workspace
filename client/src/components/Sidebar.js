@@ -22,15 +22,15 @@ const Sidebar = ({ children }) => {
   const isMarketer = accessRole === `113`;
   const isHOSorGM = accessRole === `113#114` || accessRole === `113#115`;
   const isAdmin =
-    accessRole === `        112#700#117#116` ||
-    accessRole === `    112#770#303#304#305#116` ||
+    accessRole === `            112#700#117#116` ||
+    accessRole === ` 112#305#117#116#113#770` ||
     accessRole === `     112#114#700`;
   const isOperations =
     accessRole === `     112#116#303#305` ||
     accessRole === `   112#304` ||
     accessRole === `   112#305`;
   const isDriver = accessRole === `driver69`;
-  // const isNormie = accessRole === ``
+  const isBrian = accessRole === `brianHR`;
 
   const dispatch = useDispatch();
 
@@ -86,7 +86,7 @@ const Sidebar = ({ children }) => {
               </li>
             )}
             {/* Site Visit */}
-            {(isMarketer || isHOSorGM || isAdmin || isDriver) && (
+            {(isMarketer || isHOSorGM || isAdmin || isDriver || isBrian) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Site Visits</div>
@@ -102,7 +102,6 @@ const Sidebar = ({ children }) => {
                       Book a Site Visit
                     </a>
                   )}
-
                   {(isMarketer || isAdmin) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
@@ -119,7 +118,7 @@ const Sidebar = ({ children }) => {
                       Assigned Site Visits
                     </a>
                   )}
-                  {(isHOSorGM || isAdmin || isOperations) && (
+                  {(isHOSorGM || isAdmin || isOperations || isBrian) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/approved-site-visits"
@@ -127,7 +126,7 @@ const Sidebar = ({ children }) => {
                       Approved Site Visits
                     </a>
                   )}
-                  {isAdmin && (
+                  {(isAdmin || isBrian) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/site-visit-requests"
@@ -135,7 +134,7 @@ const Sidebar = ({ children }) => {
                       Site Visit Requests
                     </a>
                   )}
-                  {(isHOSorGM || isAdmin || isOperations) && (
+                  {(isHOSorGM || isAdmin || isOperations || isBrian) && (
                     <a
                       className="font-medium mt-3 hover:bg-base-200 rounded p-2"
                       href="/all-site-visits"
@@ -147,12 +146,12 @@ const Sidebar = ({ children }) => {
               </div>
             )}
             {/* Sites */}
-            {(isAdmin || isOperations) && (
+            {(isAdmin || isOperations || isBrian) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Sites</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  {isAdmin && (
+                  {(isAdmin || isBrian) && (
                     // eslint-disable-next-line jsx-a11y/anchor-is-valid
                     <a
                       className="font-medium mt-1 hover:bg-base-200 rounded p-2 disabled opacity-50 pointer-events-none"
@@ -181,7 +180,7 @@ const Sidebar = ({ children }) => {
                 >
                   Request For A Vehicle
                 </a>
-                {isAdmin && (
+                {(isAdmin || isBrian) && (
                   <a
                     href="/vehicle-requests"
                     className="font-medium mt-3 hover:bg-base-200 rounded p-2"
@@ -195,7 +194,7 @@ const Sidebar = ({ children }) => {
                 >
                   My Past Vehicle Requests
                 </a>
-                {(isAdmin || isOperations) && (
+                {(isAdmin || isOperations || isBrian) && (
                   <>
                     {isAdmin && (
                       <a
@@ -224,7 +223,7 @@ const Sidebar = ({ children }) => {
               </div>
             </div>
             {/* Clients */}
-            {(isMarketer || isHOSorGM || isAdmin) && (
+            {(isMarketer || isHOSorGM || isAdmin || isBrian) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Clients</div>
@@ -239,7 +238,7 @@ const Sidebar = ({ children }) => {
                       </a>
                     </>
                   )}
-                  {(isHOSorGM || isAdmin) && (
+                  {(isHOSorGM || isAdmin || isBrian) && (
                     <>
                       <a
                         className="font-medium mt-3 hover:bg-base-200 rounded p-2"
@@ -259,7 +258,7 @@ const Sidebar = ({ children }) => {
               </div>
             )}
             {/* Drivers */}
-            {isAdmin && (
+            {(isAdmin || isBrian) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Drivers</div>
@@ -274,7 +273,7 @@ const Sidebar = ({ children }) => {
               </div>
             )}
             {/* Users */}
-            {isAdmin && (
+            {(isAdmin || isBrian) && (
               <li>
                 <a href="/users" className="font-bold my-1">
                   Users

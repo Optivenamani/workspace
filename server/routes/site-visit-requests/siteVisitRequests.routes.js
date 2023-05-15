@@ -13,6 +13,7 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -69,6 +70,7 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -131,6 +133,7 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       const id = req.params.id;
@@ -214,6 +217,7 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -269,6 +273,7 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {

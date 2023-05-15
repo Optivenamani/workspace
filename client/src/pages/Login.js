@@ -38,15 +38,32 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error(error.response.data);
-      toast.error(error.response.data, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // Check if the error is a validation error
+      if (error.response.data.errors) {
+        // Loop over the errors array and display each error message
+        error.response.data.errors.forEach((err) => {
+          toast.error(err.msg, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        });
+      } else {
+        // If it's not a validation error, display the error message
+        toast.error(error.response.data.message, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
     setIsSubmitting(false);
   };

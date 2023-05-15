@@ -40,7 +40,6 @@ module.exports = (pool) => {
       res.status(500).json({ error: error.message });
     }
   });
-
   // Get all pending vehicle requests
   router.get(
     "/pending-vehicle-requests",
@@ -72,7 +71,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Get a single vehicle request
   router.get(
     "/pending-vehicle-requests/:id",
@@ -111,7 +109,6 @@ module.exports = (pool) => {
       });
     }
   );
-
   // Get all vehicle requests of a user by user_id
   router.get(
     "/user-vehicle-requests/:id",
@@ -138,7 +135,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Get all vehicle requests
   router.get(
     "/all-vehicle-requests",
@@ -148,6 +144,7 @@ module.exports = (pool) => {
       AccessRoles.isNancy,
       AccessRoles.isKasili,
       AccessRoles.isDriver,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -178,7 +175,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Get active vehicle requests by a user
   router.get("/active", authenticateJWT, async (req, res) => {
     try {
@@ -200,7 +196,6 @@ module.exports = (pool) => {
       res.status(500).json({ error: error.message });
     }
   });
-
   // Approve and edit vehicle request
   router.patch(
     "/pending-vehicle-requests/:id",
@@ -209,6 +204,7 @@ module.exports = (pool) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -290,7 +286,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Reject vehicle request with a reason
   router.patch(
     "/reject-vehicle-request/:id",
@@ -299,7 +294,7 @@ module.exports = (pool) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isDriver,
+      AccessRoles.isBrian,
     ]),
     async (req, res) => {
       try {
@@ -325,7 +320,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Start a trip
   router.patch(
     "/start-trip/:id",
@@ -354,7 +348,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // End a trip
   router.patch(
     "/end-trip/:id",
@@ -416,6 +409,5 @@ module.exports = (pool) => {
       }
     }
   );
-
   return router;
 };

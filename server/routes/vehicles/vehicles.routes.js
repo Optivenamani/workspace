@@ -16,6 +16,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       const {
@@ -51,7 +52,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Retrieve all vehicles
   router.get(
     "/",
@@ -63,6 +63,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -78,7 +79,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Retrieve a single vehicle by id
   router.get(
     "/vehicle/:id",
@@ -90,6 +90,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       const { id } = req.params;
@@ -115,7 +116,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Retrieve all vehicles with status "available"
   router.get(
     "/available",
@@ -127,6 +127,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -145,7 +146,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Update a vehicle
   router.patch(
     "/:id",
@@ -157,6 +157,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       const {
@@ -199,7 +200,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Delete a vehicle
   router.delete(
     "/:id",
@@ -211,6 +211,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       const { id } = req.params;
@@ -234,6 +235,5 @@ module.exports = (pool) => {
       }
     }
   );
-
   return router;
 };

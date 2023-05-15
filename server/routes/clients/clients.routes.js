@@ -35,7 +35,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Get all clients
   router.get(
     "/all",
@@ -44,6 +43,7 @@ module.exports = (pool) => {
       AccessRoles.isKasili,
       AccessRoles.isAchola,
       AccessRoles.isNancy,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {
@@ -63,6 +63,5 @@ module.exports = (pool) => {
       }
     }
   );
-
   return router;
 };

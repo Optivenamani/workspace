@@ -5,7 +5,7 @@ const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool) => {
-  // Get assigned site visit deets
+  // Get assigned site visits
   router.get(
     "/assigned-site-visits",
     authenticateJWT,
@@ -78,6 +78,7 @@ module.exports = (pool) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
+      AccessRoles.isBrian
     ]),
     async (req, res) => {
       try {

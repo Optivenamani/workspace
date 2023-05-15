@@ -22,6 +22,8 @@ const CustomLabel = ({ text, x, y, style }) => {
 const Dashboard = () => {
   // State to hold the site visits data
   const [sitesData, setSitesData] = useState([]);
+  // State to hold the site visits data
+  const [vehicleRequests, setVehicleRequests] = useState([]);
   // State to hold the loading state
   const [isLoading, setIsLoading] = useState(true);
   // Fetching token from redux state
@@ -54,11 +56,37 @@ const Dashboard = () => {
       }
     };
 
+    // Function to fetch vehicle requests
+    const fetchVehicleRequests = async () => {
+      setIsLoading(true); // Set loading state to true before fetching data
+      try {
+        // Making GET request to fetch vehicle requests data
+        const response = await fetch(
+          "http://localhost:8080/api/vehicle-requests/all-vehicle-requests",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        // Parsing response to JSON
+        const data = await response.json();
+        // Updating state with fetched data
+        setVehicleRequests(data);
+      } catch (error) {
+        // Logging error in case of failure
+        console.error("Error fetching vehicle requests:", error);
+      } finally {
+        setIsLoading(false); // Set loading state to false after fetching data
+      }
+    };
+
     // Call the function to fetch site visits
     fetchSiteVisits();
-  }, [token]); // Re-run effect when token changes
+    // Call the function to fetch vehicle requests
+    fetchVehicleRequests();
 
-  console.log("Site Visits data: ", sitesData);
+  }, [token]);
 
   const countVisits = () => {
     // Create an object to hold the count for each site
@@ -288,6 +316,55 @@ const Dashboard = () => {
                       <VictoryAxis />
                       <VictoryAxis dependentAxis />
                     </VictoryChart>
+                  </div>
+                </div>
+                <div className="xl:w-1/3 md:w-1/2 p-4">
+                  <div className="card w-full bg-base-100 shadow-xl">
+                    <div className="m-4">
+                      <CustomLabel
+                        text="Total Vehicle Requests"
+                        x={30}
+                        y={30}
+                        style={{ fontSize: 20, textAlign: "center" }}
+                      />
+                      <div className="font-bold text-7xl text-center">
+                        {vehicleRequests.length}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card w-full bg-base-100 shadow-xl mt-6">
+                    <div className="m-4">
+                      <CustomLabel
+                        text="Total Completed Vehicle Requests"
+                        x={30}
+                        y={30}
+                        style={{ fontSize: 20, textAlign: "center" }}
+                      />
+                      <div className="font-bold text-7xl text-center">
+                        {
+                          vehicleRequests.filter((vr) => vr.status === "completed")
+                            .length
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card w-full bg-base-100 shadow-xl mt-5">
+                    <div className="m-4">
+                      <CustomLabel
+                        text="Total Rejected Vehicle Requests"
+                        x={30}
+                        y={30}
+                        style={{ fontSize: 17.5, textAlign: "center" }}
+                      />
+                      <div className="font-bold text-7xl text-center">
+                        {
+                          vehicleRequests.filter(
+                            (vr) =>
+                              vr.status === "rejected"
+                          ).length
+                        }
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -74,7 +74,6 @@ const VehicleRequests = () => {
               <div className="badge badge-warning text-white font-bold mr-1">
                 Pending
               </div>
-
               <div className="badge badge-info text-white font-bold">
                 Approved
               </div>
