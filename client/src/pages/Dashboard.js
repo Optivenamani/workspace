@@ -62,7 +62,7 @@ const Dashboard = () => {
       try {
         // Making GET request to fetch vehicle requests data
         const response = await fetch(
-          "http://localhost:8080/api/vehicle-requests/all-vehicle-requests",
+          "https://workspace.optiven.co.ke/api/vehicle-requests/all-vehicle-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -73,6 +73,7 @@ const Dashboard = () => {
         const data = await response.json();
         // Updating state with fetched data
         setVehicleRequests(data);
+        console.log(data)
       } catch (error) {
         // Logging error in case of failure
         console.error("Error fetching vehicle requests:", error);

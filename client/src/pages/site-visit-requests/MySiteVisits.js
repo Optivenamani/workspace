@@ -13,7 +13,7 @@ const MySiteVisits = () => {
   useEffect(() => {
     const fetchSiteVisits = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/site-visits", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/site-visit-requests", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -131,7 +131,7 @@ const MySiteVisits = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{siteVisit.site_name}</td>
-                    <td>{siteVisit.clients.length}</td>
+                    <td>{siteVisit.num_clients.length}</td>
                     <td>{siteVisit.pickup_location}</td>
                     <td>
                       {new Date(siteVisit.pickup_date).toLocaleDateString(

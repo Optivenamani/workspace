@@ -13,7 +13,7 @@ const ApprovedBookings = () => {
   useEffect(() => {
     const fetchSiteVisits = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/site-visits", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/site-visit-requests", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -89,7 +89,7 @@ const ApprovedBookings = () => {
                   <th>Pickup Location</th>
                   <th>Date</th>
                   <th>Time</th>
-                  <th>Clients</th>
+                  <th>Number of Clients</th>
                 </tr>
               </thead>
               <tbody>
@@ -102,7 +102,7 @@ const ApprovedBookings = () => {
                       {new Date(item.pickup_date).toLocaleDateString("en-GB")}
                     </td>
                     <td>{formatTime(item.pickup_time)}</td>
-                    <td>{item.clients.length}</td>
+                    <td className="text-center">{item.num_clients}</td>
                   </tr>
                 ))}
               </tbody>
