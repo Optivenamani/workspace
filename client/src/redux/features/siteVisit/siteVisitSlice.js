@@ -16,7 +16,7 @@ export const fetchActiveSiteVisits = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://workspace.optiven.co.ke/api/site-visit-requests/active?user_id=${userId}`,
+        `https://workspace.optiven.co.ke/api/site-visit-requests/active/active?user_id=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -16,7 +16,7 @@ export const fetchActiveVehicleRequests = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://workspace.optiven.co.ke/api/vehicle-requests/active?user_id=${userId}`,
+        `https://workspace.optiven.co.ke/api/vehicle-requests/active/active?user_id=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

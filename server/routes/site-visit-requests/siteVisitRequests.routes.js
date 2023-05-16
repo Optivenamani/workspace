@@ -106,7 +106,7 @@ module.exports = (pool, io) => {
     }
   );
   // Get info on the user, to see if he's booked any active site-visits
-  router.get("/active", authenticateJWT, async (req, res) => {
+  router.get("/active/active", authenticateJWT, async (req, res) => {
     try {
       const userId = req.user.id;
       const query = `

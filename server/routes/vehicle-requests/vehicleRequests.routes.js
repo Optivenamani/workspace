@@ -176,7 +176,7 @@ module.exports = (pool) => {
     }
   );
   // Get active vehicle requests by a user
-  router.get("/active", authenticateJWT, async (req, res) => {
+  router.get("/active/active", authenticateJWT, async (req, res) => {
     try {
       const userId = req.user.id;
       const query = `
