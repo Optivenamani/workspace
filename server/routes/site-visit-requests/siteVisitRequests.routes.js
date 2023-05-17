@@ -38,6 +38,23 @@ function dataToPdfRows(data) {
   });
 }
 
+// Define your dataToPdfRows function
+function dataToPdfRows2(results) {
+  return results.map((result, index) => {
+    const date = new Date(result.date);
+    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+    return [
+      { text: index + 1, style: 'tableCell' },
+      { text: formattedDate, style: 'tableCell' },
+      { text: result.successful, style: 'tableCell' },
+      { text: result.cancelled, style: 'tableCell' },
+      { text: result.rejected, style: 'tableCell' },
+      { text: result.total, style: 'tableCell' },
+    ];
+  });
+}
+
 module.exports = (pool, io) => {
   // Get single site visit with driver, vehicle info, and all associated clients
   router.get(
@@ -143,16 +160,18 @@ module.exports = (pool, io) => {
       }
     }
   );
-  // Download the site visit info in a pdf
+  // Download the approved site visits info in a pdf
   router.get(
-    "/download-pdf/download",
+    "/download-pdf/approved-site-visits",
     authenticateJWT,
     checkPermissions([
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
       AccessRoles.isBrian,
-      AccessRoles.isAnalyst
+      AccessRoles.isAnalyst,
+      AccessRoles.isJoe,
+      AccessRoles.isRachel
     ]),
     async (req, res) => {
       try {
@@ -233,6 +252,303 @@ module.exports = (pool, io) => {
           };
           // Populate the body array with your data
           docDefinition.content[0].table.body.push(...dataToPdfRows(results));
+          // Create the PDF and send it as a response
+          const pdfDoc = printer.createPdfKitDocument(docDefinition);
+          res.setHeader('Content-Type', 'application/pdf');
+          pdfDoc.pipe(res);
+          pdfDoc.end();
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+  // Download the site visits summary into pdf
+  router.get(
+    "/download-pdf/site-visit-summary",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst,
+      AccessRoles.isJoe,
+      AccessRoles.isRachel
+    ]),
+    async (req, res) => {
+      try {
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+
+        const query = `
+          SELECT 
+            DATE(site_visits.pickup_date) as date,
+            SUM(CASE WHEN site_visits.status = 'complete' OR site_visits.status = 'reviewed' THEN 1 ELSE 0 END) as successful,
+            SUM(CASE WHEN site_visits.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled,
+            SUM(CASE WHEN site_visits.status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+            COUNT(*) as total
+          FROM site_visits
+          WHERE site_visits.pickup_date BETWEEN ? AND ?
+          GROUP BY DATE(site_visits.pickup_date)
+          ORDER BY DATE(site_visits.pickup_date);
+        `;
+
+        pool.query(query, [startDate, endDate], (err, results) => {
+          if (err) throw err;
+
+          const docDefinition = {
+            pageSize: 'A4',
+            pageOrientation: 'landscape',
+            content: [
+              {
+                text: `Site Visit Summary from ${startDate} to ${endDate}`,
+                fontSize: 20,
+                alignment: 'center',
+                margin: [0, 0, 0, 20]
+              },
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  body: [
+                    [
+                      { text: 'Index', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Date', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Successful Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Cancelled Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Rejected Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Total Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
+                    ],
+                  ],
+                },
+                layout: {
+                  hLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  vLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  fillColor: function (rowIndex, node, columnIndex) {
+                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                  },
+                },
+              }
+
+            ],
+            styles: {
+              tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'white',
+              },
+              tableBody: {
+                italic: true,
+              },
+            },
+          };
+
+          // Populate the body array with your data
+          docDefinition.content[1].table.body.push(...dataToPdfRows2(results));
+
+          // Create the PDF and send it as a response
+          const pdfDoc = printer.createPdfKitDocument(docDefinition);
+          res.setHeader('Content-Type', 'application/pdf');
+          pdfDoc.pipe(res);
+          pdfDoc.end();
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+  // Download most booked sites within a certain date range
+  router.get(
+    "/download-pdf/most-booked-sites",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst,
+      AccessRoles.isJoe,
+      AccessRoles.isRachel
+    ]),
+    async (req, res) => {
+      try {
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+
+        const query = `
+          SELECT 
+            Projects.name AS site_name, 
+            COUNT(*) as total_bookings
+          FROM site_visits
+          INNER JOIN Projects ON site_visits.project_id = Projects.project_id
+          WHERE site_visits.pickup_date BETWEEN ? AND ?
+          GROUP BY Projects.name
+          ORDER BY total_bookings DESC;
+        `;
+        pool.query(query, [startDate, endDate], (err, results) => {
+          if (err) throw err;
+
+          const docDefinition = {
+            pageSize: 'A4',
+            pageOrientation: 'landscape',
+            content: [
+              {
+                text: `Most Booked Sites from ${startDate} to ${endDate}`,
+                fontSize: 20,
+                alignment: 'center',
+                margin: [0, 0, 0, 20]
+              },
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ['auto', 'auto'],
+                  body: [
+                    [
+                      { text: 'Site Name', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Total Bookings', fillColor: '#BBD4E1', style: 'tableHeader' },
+                    ],
+                    ...results.map((result, index) => [
+                      { text: result.site_name, style: 'tableCell' },
+                      { text: result.total_bookings, style: 'tableCell' },
+                    ])
+                  ],
+                },
+                layout: {
+                  hLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  vLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  fillColor: function (rowIndex, node, columnIndex) {
+                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                  },
+                },
+              },
+            ],
+            styles: {
+              tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'white',
+              },
+              tableCell: {
+                fontSize: 12,
+              },
+            },
+          };
+
+          // Create the PDF and send it as a response
+          const pdfDoc = printer.createPdfKitDocument(docDefinition);
+          res.setHeader('Content-Type', 'application/pdf');
+          pdfDoc.pipe(res);
+          pdfDoc.end();
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
+  // Downloadable PDF for marketer feedback
+  router.get(
+    "/download-pdf/marketer-feedback",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst,
+      AccessRoles.isJoe,
+      AccessRoles.isRachel
+    ]),
+    async (req, res) => {
+      try {
+        const query = `
+        SELECT 
+          Projects.name AS site_name, 
+          users.fullnames AS marketer, 
+          site_visit_surveys.amount_reserved,
+          IF(site_visit_surveys.booked = 1, 'Yes', 'No') AS booked,
+          site_visit_surveys.reason_not_visited,
+          site_visit_surveys.reason_not_booked,
+          IF(site_visit_surveys.visited = 1, 'Yes', 'No') AS visited
+        FROM site_visit_surveys
+        INNER JOIN site_visits ON site_visit_surveys.site_visit_id = site_visits.id
+        INNER JOIN Projects ON site_visits.project_id = Projects.project_id
+        INNER JOIN users ON site_visits.marketer_id = users.user_id
+        ORDER BY site_visit_surveys.id;
+      `;
+        pool.query(query, [], (err, results) => {
+          if (err) throw err;
+
+          const docDefinition = {
+            pageSize: 'A4',
+            pageOrientation: 'landscape',
+            content: [
+              {
+                text: `Marketer Feedback`,
+                fontSize: 20,
+                alignment: 'center',
+                margin: [0, 0, 0, 20]
+              },
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  body: [
+                    [
+                      { text: 'Index', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Site Name', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Marketer', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Amount Reserved By Client(Ksh)', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Did the Client Book the Plot?', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Reason the Client did not Visit', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Reason the Client did not Book the Plot', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Did the Client Visit the Plot?', fillColor: '#BBD4E1', style: 'tableHeader' },
+                    ],
+                    ...results.map((result, index) => [
+                      { text: index + 1, style: 'tableCell' },
+                      { text: result.site_name, style: 'tableCell' },
+                      { text: result.marketer, style: 'tableCell' },
+                      { text: result.amount_reserved, style: 'tableCell' },
+                      { text: result.booked, style: 'tableCell' },
+                      { text: result.reason_not_visited || 'N/A', style: 'tableCell' },
+                      { text: result.reason_not_booked || 'N/A', style: 'tableCell' },
+                      { text: result.visited, style: 'tableCell' },
+                    ])
+                  ],
+                },
+                layout: {
+                  hLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  vLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  fillColor: function (rowIndex, node, columnIndex) {
+                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                  },
+                },
+              },
+            ],
+            styles: {
+              tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'white',
+              },
+              tableCell: {
+                fontSize: 12,
+              },
+            },
+          };
+
           // Create the PDF and send it as a response
           const pdfDoc = printer.createPdfKitDocument(docDefinition);
           res.setHeader('Content-Type', 'application/pdf');

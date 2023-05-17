@@ -34,7 +34,10 @@ import PastRequests from "./pages/vehicles/PastRequests";
 import AllClientsContacts from "./pages/clients/AllClientsContacts";
 import Survey from "./pages/Survey";
 import ApprovedSVDetails from "./pages/site-visit-requests/ApprovedSVDetails";
-import SiteVisitReports from "./pages/reports/SiteVisitReports";
+import ApprovedSiteVisitsReports from "./pages/reports/ApprovedSiteVisitsReports";
+import SiteVisitsSummary from "./pages/reports/SiteVisitsSummaryReports";
+import MostBookedSitesReports from "./pages/reports/MostBookedSitesReports";
+import MarketersFeedback from "./pages/reports/MarketersFeedback";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -126,7 +129,6 @@ const App = () => {
               path="/site-visit-requests/:id"
               element={<SiteVisitDetails />}
             />
-            <Route path="/site-visit-reports" element={<SiteVisitReports />} />
             {/* Sites */}
             <Route path="/view-sites" element={<ViewSites />} />
             {/* Vehicles */}
@@ -160,6 +162,11 @@ const App = () => {
             <Route path="/sv-details/:id" element={<ApprovedSVDetails />} />
             {/* Survey */}
             <Route path="/survey/:id" element={<Survey />} />
+            {/* Reports */}
+            <Route path="/site-visits-summary-reports" element={<SiteVisitsSummary />} />
+            <Route path="/approved-site-visit-reports" element={<ApprovedSiteVisitsReports />} />
+            <Route path="/most-booked-sites-reports" element={<MostBookedSitesReports />} />
+            <Route path="/marketers-feedback-reports" element={<MarketersFeedback />} />
           </Route>
         </Routes>
       </Router>

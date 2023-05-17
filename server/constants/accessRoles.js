@@ -1,7 +1,7 @@
 const AccessRoles = {
   isMarketer: `113`,
-  isHOSorGM1: `113#114`,
-  isHOSorGM2: `113#115`,
+  isRachel: `113#114`,
+  isJoe: `113#115`,
   isAchola: `112#700#117#116`,
   isNancy: `112#305#117#116#113#770`,
   isKasili: `112#114#700`,
