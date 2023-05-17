@@ -47,7 +47,9 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst,
+      AccessRoles.isMarketer
     ]),
     async (req, res) => {
       try {
@@ -104,7 +106,9 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst,
+      AccessRoles.isMarketer
     ]),
     async (req, res) => {
       try {
@@ -147,7 +151,8 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst
     ]),
     async (req, res) => {
       try {
@@ -249,7 +254,7 @@ module.exports = (pool, io) => {
           users.fullnames as marketer_name
         FROM site_visits
         JOIN users ON site_visits.marketer_id = users.user_id
-        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected' AND site_visits.status != 'reviewed' AND site_visits.status != 'cancelled');
+        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected' AND site_visits.status != 'cancelled' AND site_visits.status != 'pending');
         `;
       pool.query(query, [userId], (err, results) => {
         if (err) throw err;
@@ -267,7 +272,8 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst
     ]),
     async (req, res) => {
       const id = req.params.id;
@@ -351,7 +357,7 @@ module.exports = (pool, io) => {
       AccessRoles.isAchola,
       AccessRoles.isNancy,
       AccessRoles.isKasili,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
     ]),
     async (req, res) => {
       try {

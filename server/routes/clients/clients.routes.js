@@ -43,7 +43,8 @@ module.exports = (pool) => {
       AccessRoles.isKasili,
       AccessRoles.isAchola,
       AccessRoles.isNancy,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst
     ]),
     async (req, res) => {
       try {

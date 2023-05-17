@@ -10,15 +10,15 @@ const Sidebar = ({ children }) => {
   const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
   const status = useSelector((state) => state.siteVisit.status);
 
-  const activeVehicleRequests = useSelector(
-    (state) => state.vehicleRequest.activeRequests
-  );
+  // const activeVehicleRequests = useSelector(
+  //   (state) => state.vehicleRequest.activeRequests
+  // );
   // const vehicleRequestStatus = useSelector(
   //   (state) => state.vehicleRequest.status
   // );
 
-  console.log("Active Site Visits:", activeVisits ? activeVisits.length : 'undefined');
-  console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
+  // console.log("Active Site Visits:", activeVisits ? activeVisits.length : 'undefined');
+  // console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
 
   const isMarketer = accessRole === `113`;
   const isHOSorGM = (accessRole === `113#114` || accessRole === `113#115`);
@@ -30,9 +30,9 @@ const Sidebar = ({ children }) => {
     (accessRole === `112#116#303#305` ||
       accessRole === `112#304` ||
       accessRole === `112#305`);
-  const isDriver = accessRole === `driver69`;
-  const isBrian = accessRole === `brianHR`;
-  const isAnalyst = userEmail === `analyst@optiven.co.ke`
+  const isDriver = (accessRole === `driver69`);
+  const isBrian = (accessRole === `brianHR`);
+  const isAnalyst = (userEmail === `analyst@optiven.co.ke`);
 
   const dispatch = useDispatch();
 

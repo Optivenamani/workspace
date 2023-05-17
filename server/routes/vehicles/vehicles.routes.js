@@ -63,7 +63,8 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
+      AccessRoles.isAnalyst
     ]),
     async (req, res) => {
       try {
@@ -90,7 +91,7 @@ module.exports = (pool) => {
       AccessRoles.isOperations1,
       AccessRoles.isOperations2,
       AccessRoles.isOperations3,
-      AccessRoles.isBrian
+      AccessRoles.isBrian,
     ]),
     async (req, res) => {
       const { id } = req.params;

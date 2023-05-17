@@ -7,7 +7,7 @@ const authenticateJWT = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, 'logistics_app', (err, decoded) => {
       if (err) {
         return res.status(403).json({ message: "Forbidden: Invalid token" });
       }
