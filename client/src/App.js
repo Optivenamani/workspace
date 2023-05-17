@@ -35,6 +35,7 @@ import PastRequests from "./pages/vehicles/PastRequests";
 import AllClientsContacts from "./pages/clients/AllClientsContacts";
 import Survey from "./pages/Survey";
 import ApprovedSVDetails from "./pages/site-visit-requests/ApprovedSVDetails";
+import SiteVisitReports from "./pages/reports/SiteVisitReports";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -126,6 +127,7 @@ const App = () => {
               path="/site-visit-requests/:id"
               element={<SiteVisitDetails />}
             />
+            <Route path="/site-visit-reports" element={<SiteVisitReports />} />
             {/* Sites */}
             <Route path="/create-site" element={<CreateSite />} />
             <Route path="/view-sites" element={<ViewSites />} />

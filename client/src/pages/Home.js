@@ -30,9 +30,9 @@ const Home = () => {
 
   const isMarketer = accessRole === `113`;
   const isAdmin =
-    accessRole === `        112#700#117#116` ||
-    accessRole === `    112#770#303#304#305#116` ||
-    accessRole === `     112#114#700`;
+    accessRole === `112#700#117#116` ||
+    accessRole === `112#770#303#304#305#116` ||
+    accessRole === `112#114#700`;
 
   return (
     <>
@@ -56,11 +56,10 @@ const Home = () => {
                   <button
                     onClick={() => navigate("/book-site-visit")}
                     disabled={activeSiteVisits.length > 0}
-                    className={`mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white ${
-                      activeSiteVisits.length > 0
+                    className={`mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white ${activeSiteVisits.length > 0
                         ? "opacity-50 cursor-not-allowed"
                         : ""
-                    }`}
+                      }`}
                   >
                     Book a Site Visit
                   </button>

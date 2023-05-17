@@ -5,6 +5,7 @@ import { fetchActiveVehicleRequests } from "../redux/features/vehicleRequest/veh
 import "./Sidebar.css";
 
 const Sidebar = ({ children }) => {
+  const userEmail = useSelector(state => state.user.user.email)
   const accessRole = useSelector((state) => state.user.accessRole);
   const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
   const status = useSelector((state) => state.siteVisit.status);
@@ -22,15 +23,16 @@ const Sidebar = ({ children }) => {
   const isMarketer = accessRole === `113`;
   const isHOSorGM = (accessRole === `113#114` || accessRole === `113#115`);
   const isAdmin =
-    (accessRole === `            112#700#117#116` ||
-      accessRole === ` 112#305#117#116#113#770` ||
-      accessRole === `     112#114#700`);
+    (accessRole === `112#700#117#116` ||
+      accessRole === `112#305#117#116#113#770` ||
+      accessRole === `112#114#700`);
   const isOperations =
-    (accessRole === `     112#116#303#305` ||
-      accessRole === `   112#304` ||
-      accessRole === `   112#305`);
+    (accessRole === `112#116#303#305` ||
+      accessRole === `112#304` ||
+      accessRole === `112#305`);
   const isDriver = accessRole === `driver69`;
   const isBrian = accessRole === `brianHR`;
+  const isAnalyst = userEmail === `analyst@optiven.co.ke`
 
   const dispatch = useDispatch();
 
@@ -78,12 +80,25 @@ const Sidebar = ({ children }) => {
                 Home
               </a>
             </li>
-            {(isHOSorGM || isAdmin) && (
+            {(isHOSorGM || isAdmin || isBrian || isAnalyst) && (
               <li>
                 <a href="/dashboard" className="font-bold my-1">
                   Dashboard
                 </a>
               </li>
+            )}
+            {(isHOSorGM || isAdmin || isBrian || isAnalyst) && (
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+                <input type="checkbox" className="peer" />
+                <div className="collapse-title font-bold">Reports</div>
+                <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
+                  {(isHOSorGM || isAdmin || isBrian || isAnalyst) && (
+                    <a href="/site-visit-reports" className="font-medium mt-1 hover:bg-base-200 rounded p-2">
+                      Approved Site Visits
+                    </a>
+                  )}
+                </div>
+              </div>
             )}
             {/* Site Visit */}
             {(isMarketer || isHOSorGM || isAdmin || isDriver || isBrian) && (

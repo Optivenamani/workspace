@@ -1,8 +1,42 @@
 const express = require("express");
+const pdfMakePrinter = require('pdfmake/src/printer');
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const AccessRoles = require("../../constants/accessRoles");
 const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
+
+// Define your fonts
+var fonts = {
+  Roboto: {
+    normal: 'node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf',
+    bold: 'node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf',
+    italic: 'node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf',
+    bolditalics: 'node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf'
+  }
+};
+
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
+
+// Define your dataToPdfRows function
+function dataToPdfRows(data) {
+  return data.map((item, index) => {
+    const date = new Date(item.pickup_date);
+    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    return [
+      { text: index + 1 ?? '', style: 'tableCell' },
+      { text: formattedDate ?? '', style: 'tableCell' },
+      { text: item.marketer_name ?? '', style: 'tableCell' },
+      { text: item.num_clients ?? '', style: 'tableCell' },
+      { text: item.site_name ?? '', style: 'tableCell' },
+      { text: item.driver_name ?? '', style: 'tableCell' },
+      { text: item.pickup_time ?? '', style: 'tableCell' },
+      { text: item.vehicle_name ?? '', style: 'tableCell' },
+      { text: item.pickup_location ?? '', style: 'tableCell' },
+      { text: item.remarks ?? '', style: 'tableCell' },
+    ]
+  });
+}
 
 module.exports = (pool, io) => {
   // Get single site visit with driver, vehicle info, and all associated clients
@@ -105,8 +139,108 @@ module.exports = (pool, io) => {
       }
     }
   );
+  // Download the site visit info in a pdf
+  router.get(
+    "/download-pdf/download",
+    authenticateJWT,
+    checkPermissions([
+      AccessRoles.isAchola,
+      AccessRoles.isNancy,
+      AccessRoles.isKasili,
+      AccessRoles.isBrian
+    ]),
+    async (req, res) => {
+      try {
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+        const query = `
+          SELECT 
+            site_visits.*,
+            Projects.name AS site_name,
+            COUNT(site_visit_clients.id) as num_clients,
+            users.fullnames as marketer_name,
+            drivers.fullnames as driver_name,
+            vehicles.vehicle_registration as vehicle_name
+          FROM site_visits
+          LEFT JOIN Projects
+            ON site_visits.project_id = Projects.project_id
+          LEFT JOIN site_visit_clients
+            ON site_visits.id = site_visit_clients.site_visit_id
+          LEFT JOIN users
+            ON site_visits.marketer_id = users.user_id
+          LEFT JOIN users as drivers
+            ON site_visits.driver_id = drivers.user_id
+          LEFT JOIN vehicles
+            ON site_visits.vehicle_id = vehicles.id
+          WHERE site_visits.status = 'approved'
+            AND site_visits.pickup_date BETWEEN ? AND ?
+          GROUP BY site_visits.id
+          ORDER BY site_visits.created_at DESC;
+        `;
+        pool.query(query, [startDate, endDate], (err, results) => {
+          if (err) throw err;
+          const docDefinition = {
+            pageSize: 'A4',
+            pageOrientation: 'landscape',
+            content: [
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  body: [
+                    [
+                      { text: 'Index', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Pickup Date', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Converter', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Number of Clients', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Site', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Driver', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Pickup Time', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Vehicle Reg No', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Pickup Location', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      { text: 'Admin Remarks', fillColor: '#BBD4E1', style: 'tableHeader' },
+                    ],
+                  ],
+                },
+                layout: {
+                  hLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  vLineWidth: function (i, node) {
+                    return 0;
+                  },
+                  fillColor: function (rowIndex, node, columnIndex) {
+                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                  },
+                },
+              },
+            ],
+            styles: {
+              tableHeader: {
+                bold: true,
+                fontSize: 13,
+                color: 'white',
+              },
+              tableBody: {
+                italic: true,
+              },
+            },
+          };
+          // Populate the body array with your data
+          docDefinition.content[0].table.body.push(...dataToPdfRows(results));
+          // Create the PDF and send it as a response
+          const pdfDoc = printer.createPdfKitDocument(docDefinition);
+          res.setHeader('Content-Type', 'application/pdf');
+          pdfDoc.pipe(res);
+          pdfDoc.end();
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
   // Get info on the user, to see if he's booked any active site-visits
-  router.get("/active/active", authenticateJWT, async (req, res) => {
+  router.get("/active", authenticateJWT, async (req, res) => {
     try {
       const userId = req.user.id;
       const query = `
