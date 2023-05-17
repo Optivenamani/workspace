@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const ViewDrivers = () => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
-  const navigate = useNavigate();
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
@@ -35,34 +33,6 @@ const ViewDrivers = () => {
     driver.fullnames.toLowerCase().includes(query.toLowerCase())
   );
 
-  const editDriver = (driverId) => {
-    // Navigate to the edit driver page with the driver ID as a parameter
-    navigate(`/drivers/edit/${driverId}`);
-  };
-
-  const deleteDriver = (driverId) => {
-    const token = localStorage.getItem("token");
-    // Send a DELETE request to the server to delete the driver with the specified ID
-    fetch(`https://workspace.optiven.co.ke/api/users/${driverId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        // Remove the driver from the drivers state
-        setUsers((prevUsers) =>
-          prevUsers.filter((driver) => driver.user_id !== driverId)
-        );
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-      });
-  };
-
   return (
     <>
       <Sidebar>
@@ -83,7 +53,6 @@ const ViewDrivers = () => {
                   <th>Index</th>
                   <th>Name</th>
                   <th>Email</th>
-                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -93,20 +62,6 @@ const ViewDrivers = () => {
                     <th>{index + 1}</th>
                     <td>{driver.fullnames}</td>
                     <td>{driver.email}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-warning mr-2 text-white"
-                        onClick={() => editDriver(driver.user_id)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn btn-sm btn-error text-white"
-                        onClick={() => deleteDriver(driver.user_id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>

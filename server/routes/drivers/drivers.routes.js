@@ -18,23 +18,22 @@ module.exports = (pool) => {
     async (req, res) => {
       try {
         const driverId = req.user.id;
-        const query = `SELECT site_visits.*, 
-          Projects.name as site_name
-        FROM site_visits
-        LEFT JOIN Projects
-        ON site_visits.project_id = Projects.project_id
-        WHERE (site_visits.status = 'approved' OR site_visits.status = 'in_progress') AND site_visits.driver_id = ?`;
+        const query = `
+          SELECT site_visits.*, 
+            Projects.name as site_name
+          FROM site_visits
+          LEFT JOIN Projects
+          ON site_visits.project_id = Projects.project_id
+          WHERE (site_visits.status = 'approved' OR site_visits.status = 'in_progress') AND site_visits.driver_id = ?
+          `;
 
         pool.query(query, [driverId], async (err, results) => {
           if (err) throw err;
-
           const siteVisits = results;
-
           const getClientDetailsQuery =
             "SELECT name, email, phone_number FROM site_visit_clients WHERE site_visit_id = ?";
           const getTotalPassengersQuery =
             "SELECT COUNT(*) as total_passengers FROM site_visit_clients WHERE site_visit_id = ?";
-
           for (const siteVisit of siteVisits) {
             await new Promise((resolve, reject) => {
               pool.query(
@@ -47,7 +46,6 @@ module.exports = (pool) => {
                 }
               );
             });
-
             await new Promise((resolve, reject) => {
               pool.query(
                 getTotalPassengersQuery,
@@ -61,7 +59,6 @@ module.exports = (pool) => {
               );
             });
           }
-
           res.status(200).json(siteVisits);
         });
       } catch (error) {
@@ -69,7 +66,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Get all drivers
   router.get(
     "/all-drivers",
@@ -82,9 +78,10 @@ module.exports = (pool) => {
     ]),
     async (req, res) => {
       try {
-        const query = `SELECT * 
-        FROM users
-        WHERE (users.Accessrole = 'driver69' OR users.Accessrole = '     112#114#700')`;
+        const query = `
+          SELECT * FROM users
+          WHERE (users.Accessrole = 'driver69' OR users.Accessrole = '112#114#700')
+          `;
         pool.query(query, async (err, results) => {
           if (err) throw err;
           const drivers = results;
@@ -95,7 +92,6 @@ module.exports = (pool) => {
       }
     }
   );
-
   // Get assigned vehicle requests
   router.get(
     "/assigned-vehicle-requests",
@@ -114,7 +110,6 @@ module.exports = (pool) => {
           WHERE (status = 'approved' OR status = 'in_progress') 
           AND driver_id = ?
           `;
-
         pool.query(query, [driverId], (err, results) => {
           if (err) {
             res.status(500).json({ error: err.message });
@@ -127,6 +122,5 @@ module.exports = (pool) => {
       }
     }
   );
-
   return router;
 };

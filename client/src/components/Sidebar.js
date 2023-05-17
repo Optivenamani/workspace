@@ -166,17 +166,8 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Sites</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  {(isAdmin || isBrian) && (
-                    // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                    <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2 disabled opacity-50 pointer-events-none"
-                      href="#"
-                    >
-                      Create Site
-                    </a>
-                  )}
                   <a
-                    className="font-medium mt-3 hover:bg-base-200 rounded p-2"
+                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
                     href="/view-sites"
                   >
                     View Sites

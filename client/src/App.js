@@ -13,7 +13,6 @@ import CreateBooking from "./pages/site-visit-requests/CreateBooking";
 import AssignedBookings from "./pages/site-visit-requests/AssignedBookings";
 import ApprovedBookings from "./pages/site-visit-requests/ApprovedBookings";
 import AllSiteVisits from "./pages/site-visit-requests/AllSiteVisits";
-import CreateSite from "./pages/sites/CreateSite";
 import ViewSites from "./pages/sites/ViewSites";
 import CreateVehicle from "./pages/vehicles/CreateVehicle";
 import ViewVehicles from "./pages/vehicles/ViewVehicles";
@@ -129,7 +128,6 @@ const App = () => {
             />
             <Route path="/site-visit-reports" element={<SiteVisitReports />} />
             {/* Sites */}
-            <Route path="/create-site" element={<CreateSite />} />
             <Route path="/view-sites" element={<ViewSites />} />
             {/* Vehicles */}
             <Route path="/create-vehicle" element={<CreateVehicle />} />
