@@ -6,8 +6,6 @@ import "./Sidebar.css";
 
 const Sidebar = ({ children }) => {
   const accessRole = useSelector((state) => state.user.accessRole);
-  const activeVisits = useSelector((state) => state.siteVisit.activeVisits);
-  const status = useSelector((state) => state.siteVisit.status);
 
   // const activeVehicleRequests = useSelector(
   //   (state) => state.vehicleRequest.activeRequests
@@ -40,19 +38,6 @@ const Sidebar = ({ children }) => {
     dispatch(fetchActiveSiteVisits());
     dispatch(fetchActiveVehicleRequests());
   }, [dispatch]);
-
-  const canBookSiteVisit = () => {
-    if (status === "loading") {
-      return false;
-    }
-
-    if (activeVisits.length === 0) {
-      return true;
-    }
-
-    const latestVisit = activeVisits[0];
-    return latestVisit.state === "completed";
-  };
 
   // const canRequestVehicle = () => {
   //   if (vehicleRequestStatus === "loading") {

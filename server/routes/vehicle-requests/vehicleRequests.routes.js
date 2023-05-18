@@ -44,12 +44,6 @@ module.exports = (pool) => {
   router.get(
     "/pending-vehicle-requests",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
     async (req, res) => {
       try {
         const query = `
@@ -75,12 +69,6 @@ module.exports = (pool) => {
   router.get(
     "/pending-vehicle-requests/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
     async (req, res) => {
       const id = req.params.id;
       const query = `
@@ -139,13 +127,6 @@ module.exports = (pool) => {
   router.get(
     "/all-vehicle-requests",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst
-    ]),
     async (req, res) => {
       try {
         const query = `
@@ -200,12 +181,6 @@ module.exports = (pool) => {
   router.patch(
     "/pending-vehicle-requests/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-    ]),
     async (req, res) => {
       try {
         const { id } = req.params;
@@ -290,12 +265,6 @@ module.exports = (pool) => {
   router.patch(
     "/reject-vehicle-request/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-    ]),
     async (req, res) => {
       try {
         const id = req.params.id;
@@ -324,12 +293,6 @@ module.exports = (pool) => {
   router.patch(
     "/start-trip/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isDriver,
-      AccessRoles.isAchola,
-      AccessRoles.isKasili,
-      AccessRoles.isNancy,
-    ]),
     async (req, res) => {
       try {
         const requestId = req.params.id;
@@ -352,12 +315,6 @@ module.exports = (pool) => {
   router.patch(
     "/end-trip/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isDriver,
-      AccessRoles.isAchola,
-      AccessRoles.isKasili,
-      AccessRoles.isNancy,
-    ]),
     async (req, res) => {
       try {
         const requestId = req.params.id;

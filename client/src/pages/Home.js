@@ -2,11 +2,8 @@ import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import bus from "../assets/media/home.jpg";
-import { selectActiveSiteVisits } from "../redux/features/siteVisit/siteVisitSlice";
 
 const Home = () => {
-  const activeSiteVisits = useSelector(selectActiveSiteVisits);
-
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const firstName = user.fullnames
     ? user.fullnames.trim().split(" ")[0]
@@ -55,13 +52,11 @@ const Home = () => {
                 {(isMarketer || isAdmin) && (
                   <button
                     onClick={() => navigate("/book-site-visit")}
-                    disabled={activeSiteVisits.length > 0}
-                    className={`mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white`}
+                    className="mt-4 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white"
                   >
                     Book a Site Visit
                   </button>
                 )}
-
                 <button
                   onClick={() => navigate("/request-vehicle")}
                   className="mt-4 inline-block w-full bg-neutral py-4 text-sm font-bold uppercase tracking-widest text-white"

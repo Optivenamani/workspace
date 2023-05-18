@@ -131,7 +131,7 @@ const MySiteVisits = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{siteVisit.site_name}</td>
-                    <td>{siteVisit.num_clients.length}</td>
+                    <td>{siteVisit.num_clients}</td>
                     <td>{siteVisit.pickup_location}</td>
                     <td>
                       {new Date(siteVisit.pickup_date).toLocaleDateString(
