@@ -81,22 +81,22 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-title font-bold">Reports</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isRachel || isJoe || isAdmin || isBrian || isAnalyst) && (
-                    <a href="/approved-site-visit-reports" className="font-medium mt-1 hover:bg-base-200 rounded p-2">
+                    <a href="/approved-site-visit-reports" className="font-light mt-1 hover:bg-base-200 rounded p-2">
                       Approved Site Visits
                     </a>
                   )}
                   {(isRachel || isJoe || isAdmin || isBrian || isAnalyst) && (
-                    <a href="/site-visits-summary-reports" className="font-medium mt-1 hover:bg-base-200 rounded p-2">
+                    <a href="/site-visits-summary-reports" className="font-light mt-1 hover:bg-base-200 rounded p-2">
                       Site Visits Summary
                     </a>
                   )}
                   {(isRachel || isJoe || isAdmin || isBrian || isAnalyst) && (
-                    <a href="/most-booked-sites-reports" className="font-medium mt-1 hover:bg-base-200 rounded p-2">
+                    <a href="/most-booked-sites-reports" className="font-light mt-1 hover:bg-base-200 rounded p-2">
                       Most Booked Sites
                     </a>
                   )}
                   {(isRachel || isJoe || isAdmin || isBrian || isAnalyst) && (
-                    <a href="/marketers-feedback-reports" className="font-medium mt-1 hover:bg-base-200 rounded p-2">
+                    <a href="/marketers-feedback-reports" className="font-light mt-1 hover:bg-base-200 rounded p-2">
                       Marketers Feedback
                     </a>
                   )}
@@ -112,14 +112,14 @@ const Sidebar = ({ children }) => {
                   {(isMarketer || isAdmin) && (
                     <a
                       href="/book-site-visit"
-                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2`}
+                      className={`font-light mt-1 hover:bg-base-200 rounded p-2`}
                     >
                       Book a Site Visit
                     </a>
                   )}
                   {(isMarketer || isAdmin) && (
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className="font-light mt-1 hover:bg-base-200 rounded p-2"
                       href="/my-site-visits"
                     >
                       My Site Visits
@@ -127,7 +127,7 @@ const Sidebar = ({ children }) => {
                   )}
                   {(isAdmin || isDriver) && (
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className="font-light mt-1 hover:bg-base-200 rounded p-2"
                       href="/assigned-site-visits"
                     >
                       Assigned Site Visits
@@ -135,7 +135,7 @@ const Sidebar = ({ children }) => {
                   )}
                   {(isRachel || isJoe || isAdmin || isOperations || isBrian) && (
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className="font-light mt-1 hover:bg-base-200 rounded p-2"
                       href="/approved-site-visits"
                     >
                       Approved Site Visits
@@ -143,7 +143,7 @@ const Sidebar = ({ children }) => {
                   )}
                   {(isAdmin || isBrian) && (
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className="font-light mt-1 hover:bg-base-200 rounded p-2"
                       href="/site-visit-requests"
                     >
                       Site Visit Requests
@@ -151,7 +151,7 @@ const Sidebar = ({ children }) => {
                   )}
                   {(isRachel || isJoe || isAdmin || isOperations || isBrian) && (
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className="font-light mt-1 hover:bg-base-200 rounded p-2"
                       href="/all-site-visits"
                     >
                       All Site Visit Bookings
@@ -167,7 +167,7 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-title font-bold">Sites</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   <a
-                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                    className="font-light mt-1 hover:bg-base-200 rounded p-2"
                     href="/view-sites"
                   >
                     View Sites
@@ -182,21 +182,21 @@ const Sidebar = ({ children }) => {
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <a
                   href="/request-vehicle"
-                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  className="font-light mt-1 hover:bg-base-200 rounded p-2"
                 >
                   Request For A Vehicle
                 </a>
                 {(isAdmin || isBrian) && (
                   <a
                     href="/vehicle-requests"
-                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                    className="font-light mt-1 hover:bg-base-200 rounded p-2"
                   >
                     Vehicle Requests
                   </a>
                 )}
                 <a
                   href="/past-vehicle-requests"
-                  className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                  className="font-light mt-1 hover:bg-base-200 rounded p-2"
                 >
                   My Past Vehicle Requests
                 </a>
@@ -204,14 +204,14 @@ const Sidebar = ({ children }) => {
                   <>
                     {isAdmin && (
                       <a
-                        className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                        className="font-light mt-1 hover:bg-base-200 rounded p-2"
                         href="/create-vehicle"
                       >
                         Add Vehicle
                       </a>
                     )}
                     <a
-                      className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                      className="font-light mt-1 hover:bg-base-200 rounded p-2"
                       href="/vehicles"
                     >
                       View Vehicles
@@ -220,7 +220,7 @@ const Sidebar = ({ children }) => {
                 )}
                 {(isAdmin || isDriver) && (
                   <a
-                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                    className="font-light mt-1 hover:bg-base-200 rounded p-2"
                     href="/assigned-vehicle-requests"
                   >
                     Assigned Vehicle Requests
@@ -237,7 +237,7 @@ const Sidebar = ({ children }) => {
                   {(isMarketer || isAdmin) && (
                     <>
                       <a
-                        className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                        className="font-light mt-1 hover:bg-base-200 rounded p-2"
                         href="/my-clients-contacts"
                       >
                         My Clients' Contacts
@@ -247,13 +247,13 @@ const Sidebar = ({ children }) => {
                   {(isRachel || isJoe || isAdmin || isBrian) && (
                     <>
                       <a
-                        className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                        className="font-light mt-1 hover:bg-base-200 rounded p-2"
                         href="/all-clients-contacts"
                       >
                         All Clients' Contacts
                       </a>
                       {/* <a
-                        className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                        className="font-light mt-1 hover:bg-base-200 rounded p-2"
                         href="/clients-feedback"
                       >
                         Clients Feedback
@@ -270,7 +270,7 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-title font-bold">Drivers</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   <a
-                    className="font-medium mt-1 hover:bg-base-200 rounded p-2"
+                    className="font-light mt-1 hover:bg-base-200 rounded p-2"
                     href="/drivers"
                   >
                     View Drivers

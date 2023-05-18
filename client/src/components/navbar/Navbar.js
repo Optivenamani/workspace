@@ -85,7 +85,7 @@ const Navbar = ({ fullName, email }) => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <Link className="justify-between" to="/notifications">
+              <Link className="justify-between font-bold" to="/notifications">
                 Notifications
                 <span
                   className={`badge badge-sm badge-neutral font-bold ${hasUnreadNotifications ? "" : "hidden"
@@ -98,7 +98,7 @@ const Navbar = ({ fullName, email }) => {
             <li>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left py-2 hover:bg-gray-200"
+                className="block w-full text-left py-2 font-bold hover:bg-gray-200"
               >
                 Logout
               </button>
