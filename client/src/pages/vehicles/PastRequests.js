@@ -33,7 +33,7 @@ const PastRequests = () => {
 
   const userVehicleRequests = vehicleRequests.filter(
     (request) =>
-      request.requester_id === userId && request.status === "completed"
+      request.requester_id === userId
   );
 
   const handleStartDateChange = (e) => {

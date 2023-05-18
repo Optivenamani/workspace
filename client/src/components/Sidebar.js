@@ -21,7 +21,7 @@ const Sidebar = ({ children }) => {
   const isRachel = (accessRole === `113#114`);
   const isJoe = (accessRole === `113#115`);
   const isDriver = (accessRole === `driver69`);
-  const isBrian = (accessRole === `brianHR`);
+  const isBrian = (accessRole === `headOfLogistics`);
   const isAnalyst = (accessRole === `112#420#69`);
   const isAdmin =
     (accessRole === `112#700#117#116` ||
