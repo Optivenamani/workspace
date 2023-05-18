@@ -127,10 +127,7 @@ const Sidebar = ({ children }) => {
                   {(isMarketer || isAdmin) && (
                     <a
                       href="/book-site-visit"
-                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2 ${!canBookSiteVisit() || status === "loading"
-                        ? "disabled-link"
-                        : ""
-                        }`}
+                      className={`font-medium mt-1 hover:bg-base-200 rounded p-2`}
                     >
                       Book a Site Visit
                     </a>

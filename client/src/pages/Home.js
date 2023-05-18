@@ -56,10 +56,7 @@ const Home = () => {
                   <button
                     onClick={() => navigate("/book-site-visit")}
                     disabled={activeSiteVisits.length > 0}
-                    className={`mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white ${activeSiteVisits.length > 0
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                      }`}
+                    className={`mt-8 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white`}
                   >
                     Book a Site Visit
                   </button>
