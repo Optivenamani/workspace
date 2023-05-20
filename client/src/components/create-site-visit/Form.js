@@ -33,10 +33,23 @@ const Form = () => {
     // Get the token from the storage
     const token = localStorage.getItem("token");
 
+    // Prepare the form data, adjusting phone numbers as necessary.
+    const clientsWithAdjustedPhoneNumbers = formData.clients.map(client => {
+      let phoneNumber = client.phone_number;
+      if (phoneNumber.charAt(0) === '+') {
+        phoneNumber = phoneNumber.substring(1);
+      }
+      return {
+        ...client,
+        phone_number: phoneNumber,
+      };
+    });
+
     // Add the marketer_id to formData before sending it to the server
     const completeFormData = {
       ...formData,
       marketer_id,
+      clients: clientsWithAdjustedPhoneNumbers,
     };
 
     try {
@@ -89,7 +102,7 @@ const Form = () => {
       });
     }
     return false;
-  };  
+  };
 
   const pageDisplay = () => {
     if (page === 0) {

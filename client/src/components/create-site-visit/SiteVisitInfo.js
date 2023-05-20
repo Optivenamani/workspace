@@ -67,7 +67,7 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
           onChange={(e) =>
             setFormData({ ...formData, pickup_location: e.target.value })
           }
-          placeholder="ABSA Towers"
+          placeholder="eg. ABSA Towers"
           className="input input-bordered w-full"
         />
         <label className="label">

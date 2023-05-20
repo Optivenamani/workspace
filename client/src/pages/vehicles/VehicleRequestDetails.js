@@ -127,7 +127,7 @@ const VehicleRequestDetails = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Vehicle request rejected", {
+        toast.error("Vehicle request rejected", {
           position: "top-center",
           closeOnClick: true,
           pauseOnHover: true,
@@ -447,9 +447,9 @@ const VehicleRequestDetails = () => {
 
                     <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                       {vehicleRequestData &&
-                      vehicleRequestData.status !== "completed" &&
-                      vehicleRequestData.status !== "rejected" &&
-                      vehicleRequestData.status !== "in_progress" ? (
+                        vehicleRequestData.status !== "completed" &&
+                        vehicleRequestData.status !== "rejected" &&
+                        vehicleRequestData.status !== "in_progress" ? (
                         <>
                           <button
                             className="btn btn-primary text-white"

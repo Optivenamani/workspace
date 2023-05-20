@@ -29,7 +29,7 @@ const Login = () => {
       });
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      console.log("User successfully logged in", response.data);
+      // console.log("User successfully logged in", response.data);
 
       dispatch(setUser(response.data.user));
       dispatch(setToken(response.data.token));
@@ -98,17 +98,17 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <label htmlFor="submit" className="label">
-          <span className="label-text font-bold">&nbsp;</span>
-        </label>
         <button
           type="submit"
           id="submit"
-          className="btn btn-primary w-full max-w-xs"
+          className="btn btn-primary w-full max-w-xs mt-4"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Submitting..." : "Submit"}
         </button>
+        <label htmlFor="password" className="label">
+          <a href="https://www.portal.optiven.co.ke/Auth/forgotpass.php" className="label-text font-bold text-green-600 italic hover:underline">Forgot Password?</a>
+        </label>
       </form>
     </div>
   );

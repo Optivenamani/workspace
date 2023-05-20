@@ -150,7 +150,7 @@ const Dashboard = () => {
   if (isLoading) {
     // Render loading state if isLoading is true
     return (
-      <div className="flex justify-center items-center mt-20 italic text-3xl">
+      <div className="font-sans flex justify-center items-center mt-20 italic text-3xl">
         Loading...
       </div>
     );

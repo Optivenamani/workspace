@@ -1,7 +1,5 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const AccessRoles = require("../../constants/accessRoles");
-const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool) => {
@@ -9,15 +7,6 @@ module.exports = (pool) => {
   router.post(
     "/",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isOperations1,
-      AccessRoles.isOperations2,
-      AccessRoles.isOperations3,
-      AccessRoles.isBrian
-    ]),
     async (req, res) => {
       const {
         make,
@@ -56,16 +45,6 @@ module.exports = (pool) => {
   router.get(
     "/",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isOperations1,
-      AccessRoles.isOperations2,
-      AccessRoles.isOperations3,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst
-    ]),
     async (req, res) => {
       try {
         pool.query("SELECT * FROM vehicles", (err, results) => {
@@ -84,15 +63,6 @@ module.exports = (pool) => {
   router.get(
     "/vehicle/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isOperations1,
-      AccessRoles.isOperations2,
-      AccessRoles.isOperations3,
-      AccessRoles.isBrian,
-    ]),
     async (req, res) => {
       const { id } = req.params;
 
@@ -121,15 +91,6 @@ module.exports = (pool) => {
   router.get(
     "/available",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isOperations1,
-      AccessRoles.isOperations2,
-      AccessRoles.isOperations3,
-      AccessRoles.isBrian
-    ]),
     async (req, res) => {
       try {
         pool.query(
@@ -151,15 +112,6 @@ module.exports = (pool) => {
   router.patch(
     "/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isOperations1,
-      AccessRoles.isOperations2,
-      AccessRoles.isOperations3,
-      AccessRoles.isBrian
-    ]),
     async (req, res) => {
       const {
         make,
@@ -205,15 +157,6 @@ module.exports = (pool) => {
   router.delete(
     "/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isOperations1,
-      AccessRoles.isOperations2,
-      AccessRoles.isOperations3,
-      AccessRoles.isBrian
-    ]),
     async (req, res) => {
       const { id } = req.params;
       try {

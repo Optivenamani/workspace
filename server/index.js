@@ -11,11 +11,11 @@ const app = express();
 
 // Set up the Express app and database connection pool
 const pool = mysql.createPool({
-  user: 'doadmin',
-  password: 'AVNS_r83MmKjINtd5qaznvHw',
-  host: 'db-mysql-optiven-do-user-12885265-0.b.db.ondigitalocean.com',
-  port: 25060,
-  database: 'defaultdb',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
   ssl: { rejectUnauthorized: false },
   waitForConnections: true,
   connectionLimit: 10,

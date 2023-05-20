@@ -66,6 +66,13 @@ const Survey = () => {
         surveyData,
         config
       );
+      toast.success("Survey successfully submitted! You can now book another site visit :)", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       navigate("/");
     } catch (error) {
       toast.error(

@@ -1,7 +1,5 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const AccessRoles = require("../../constants/accessRoles");
-const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool) => {
@@ -9,12 +7,6 @@ module.exports = (pool) => {
   router.get(
     "/clients-by-marketer/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isMarketer,
-      AccessRoles.isKasili,
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-    ]),
     async (req, res) => {
       try {
         const marketer_id = req.params.id;
@@ -39,13 +31,6 @@ module.exports = (pool) => {
   router.get(
     "/all",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isKasili,
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst
-    ]),
     async (req, res) => {
       try {
         const query = `

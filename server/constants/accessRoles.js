@@ -9,7 +9,7 @@ const AccessRoles = {
   isOperations2: "112#304",
   isOperations3: "112#305",
   isDriver: "driver69",
-  isBrian: "headOfLogistics",
+  isHOL: "headOfLogistics",
   isAnalyst: "112#420#69"
 };
 

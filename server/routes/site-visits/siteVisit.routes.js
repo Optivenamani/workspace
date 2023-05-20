@@ -1,7 +1,5 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const AccessRoles = require("../../constants/accessRoles");
-const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool, io) => {
@@ -81,12 +79,6 @@ module.exports = (pool, io) => {
   router.patch(
     "/start-trip/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
     async (req, res) => {
       const { id } = req.params;
 
@@ -120,12 +112,6 @@ module.exports = (pool, io) => {
   router.patch(
     "/end-trip/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
     async (req, res) => {
       const { id } = req.params;
       const driverId = req.user.id;

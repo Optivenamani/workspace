@@ -26,21 +26,18 @@ module.exports = (pool) => {
             email,
             hashedPassword,
           ]);
-
         if (rows.length > 0) {
           // User found, authentication successful
           const user = rows[0];
           delete user.password;
-
           // Sign and set the token
           const token = jwt.sign(
             { id: user.user_id, Accessrole: user.Accessrole },
-            'logistics_app',
+            process.env.JWT_SECRET,
             {
               expiresIn: "1d",
             }
           );
-
           res
             .status(200)
             .header("Authorization", `Bearer ${token}`)

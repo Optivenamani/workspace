@@ -1,7 +1,5 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const AccessRoles = require("../../constants/accessRoles");
-const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool) => {
@@ -9,21 +7,18 @@ module.exports = (pool) => {
   router.get(
     "/assigned-site-visits",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
     async (req, res) => {
       try {
         const driverId = req.user.id;
         const query = `
           SELECT site_visits.*, 
-            Projects.name as site_name
+            Projects.name as site_name,
+            users.fullnames as marketer_name
           FROM site_visits
           LEFT JOIN Projects
           ON site_visits.project_id = Projects.project_id
+          LEFT JOIN users
+          ON site_visits.marketer_id = users.user_id
           WHERE (site_visits.status = 'approved' OR site_visits.status = 'in_progress') AND site_visits.driver_id = ?
           `;
 
@@ -70,13 +65,6 @@ module.exports = (pool) => {
   router.get(
     "/all-drivers",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst
-    ]),
     async (req, res) => {
       try {
         const query = `
@@ -97,12 +85,6 @@ module.exports = (pool) => {
   router.get(
     "/assigned-vehicle-requests",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isDriver,
-    ]),
     async (req, res) => {
       try {
         const driverId = req.user.id;

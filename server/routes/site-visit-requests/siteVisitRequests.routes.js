@@ -1,9 +1,34 @@
+// Load required modules and environment variables
+require("dotenv").config();
 const express = require("express");
+const axios = require('axios');
 const pdfMakePrinter = require('pdfmake/src/printer');
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const AccessRoles = require("../../constants/accessRoles");
-const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
+
+const WATI_TOKEN = process.env.WATI_TOKEN;
+const WATI_BASE_URL = process.env.WATI_BASE_URL;
+
+// WATI Helper function to send the WhatsApp msg
+const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadcastName) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${WATI_TOKEN}`,
+    },
+  };
+  const bodyData = {
+    parameters: parameters,
+    template_name: templateName,
+    broadcast_name: broadcastName,
+  };
+  try {
+    const response = await axios.post(`${WATI_BASE_URL}/api/v1/sendTemplateMessage?whatsappNumber=${phoneNumber}`, bodyData, config);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to send WhatsApp message:', error.message);
+    throw error;
+  }
+};
 
 // Define your fonts
 var fonts = {
@@ -60,14 +85,6 @@ module.exports = (pool, io) => {
   router.get(
     "/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst,
-      AccessRoles.isMarketer
-    ]),
     async (req, res) => {
       try {
         const siteVisitQuery = `
@@ -119,14 +136,6 @@ module.exports = (pool, io) => {
   router.get(
     "/",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst,
-      AccessRoles.isMarketer
-    ]),
     async (req, res) => {
       try {
         const query = `
@@ -164,15 +173,6 @@ module.exports = (pool, io) => {
   router.get(
     "/download-pdf/approved-site-visits",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst,
-      AccessRoles.isJoe,
-      AccessRoles.isRachel
-    ]),
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -267,15 +267,6 @@ module.exports = (pool, io) => {
   router.get(
     "/download-pdf/site-visit-summary",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst,
-      AccessRoles.isJoe,
-      AccessRoles.isRachel
-    ]),
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -366,15 +357,6 @@ module.exports = (pool, io) => {
   router.get(
     "/download-pdf/most-booked-sites",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst,
-      AccessRoles.isJoe,
-      AccessRoles.isRachel
-    ]),
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -458,15 +440,6 @@ module.exports = (pool, io) => {
   router.get(
     "/download-pdf/marketer-feedback",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst,
-      AccessRoles.isJoe,
-      AccessRoles.isRachel
-    ]),
     async (req, res) => {
       try {
         const query = `
@@ -584,13 +557,6 @@ module.exports = (pool, io) => {
   router.get(
     "/pending-site-visits/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-      AccessRoles.isAnalyst
-    ]),
     async (req, res) => {
       const id = req.params.id;
       const query = `
@@ -627,12 +593,6 @@ module.exports = (pool, io) => {
   router.patch(
     "/cancel-site-visit/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isMarketer,
-    ]),
     async (req, res) => {
       try {
         const { id } = req.params;
@@ -669,12 +629,6 @@ module.exports = (pool, io) => {
   router.patch(
     "/reject-site-visit/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian,
-    ]),
     async (req, res) => {
       try {
         const id = req.params.id;
@@ -725,12 +679,6 @@ module.exports = (pool, io) => {
   router.patch(
     "/pending-site-visits/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isBrian
-    ]),
     async (req, res) => {
       try {
         const { id } = req.params;
@@ -745,10 +693,9 @@ module.exports = (pool, io) => {
         } = req.body;
 
         const updateAndSendNotification = async () => {
-          if (status === "approved") {
+          if (status === 'approved') {
             // Get the user_id from the site_visits table
-            const getUserIdQuery =
-              "SELECT marketer_id FROM site_visits WHERE id = ?";
+            const getUserIdQuery = 'SELECT marketer_id FROM site_visits WHERE id = ?';
             pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
               if (err) throw err;
               if (userIdResult.length > 0) {
@@ -758,19 +705,37 @@ module.exports = (pool, io) => {
                   INSERT INTO notifications 
                     (user_id, type, message, remarks, site_visit_id)
                   VALUES (?, 'approved', 'Your site visit request has been approved!', ?, ?);
-                  `;
-                pool.query(
-                  notificationQuery,
-                  [userId, remarks, id], // id added here
-                  (err, result) => {
+                `;
+                pool.query(notificationQuery, [userId, remarks, id], (err, result) => {
+                  if (err) throw err;
+
+                  // Send WhatsApp message to the client
+                  const getClientPhoneNumberQuery = 'SELECT phone_number FROM site_visit_clients WHERE site_visit_id = ?';
+                  pool.query(getClientPhoneNumberQuery, [id], async (err, phoneNumberResult) => {
                     if (err) throw err;
-                    // Emit the notification via Socket.IO
-                    io.emit("siteVisitApproved", {
-                      id: req.params.id,
-                      message: "Site visit request approved",
-                    });
-                  }
-                );
+                    if (phoneNumberResult.length > 0) {
+                      const clientPhoneNumber = phoneNumberResult[0].phone_number;
+                      const surveyLink = 'https://example.com/survey';
+                      const templateName = 'site_visit_approved';
+                      const parameters = [{ name: 'survey_link', value: surveyLink }];
+                      const broadcastName = 'test_broadcast';
+
+                      try {
+                        await sendWhatsAppMessage(clientPhoneNumber, templateName, parameters, broadcastName);
+                      } catch (error) {
+                        // Handle any errors that occur during message sending
+                        console.error('Failed to send WhatsApp message:', error);
+                      }
+                    }
+
+                  });
+
+                  // Emit the notification via Socket.IO
+                  io.emit('siteVisitApproved', {
+                    id: req.params.id,
+                    message: 'Site visit request approved',
+                  });
+                });
               }
             });
           }
@@ -937,12 +902,6 @@ module.exports = (pool, io) => {
   router.post(
     "/submit-survey/:id",
     authenticateJWT,
-    checkPermissions([
-      AccessRoles.isAchola,
-      AccessRoles.isNancy,
-      AccessRoles.isKasili,
-      AccessRoles.isMarketer,
-    ]),
     async (req, res) => {
       try {
         const siteVisitId = req.params.id;

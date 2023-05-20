@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import formatTime from "../../utils/formatTime";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,8 +9,6 @@ import huh from "../../assets/app-illustrations/Shrug-bro.png";
 const AssignedBookings = () => {
   const [siteVisits, setSiteVisits] = useState([]);
   const token = useSelector((state) => state.user.token);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -30,9 +27,10 @@ const AssignedBookings = () => {
         console.error("Error fetching site visits:", error);
       }
     };
-
+    
     fetchTrips();
   }, [token]);
+  console.log(siteVisits)
 
   const startTrip = async (id) => {
     try {
@@ -103,7 +101,6 @@ const AssignedBookings = () => {
           draggable: true,
           progress: undefined,
         });
-        navigate("/");
       } else {
         const data = await response.json();
         toast.error("An error occurred while attempting to end trip.", {
@@ -149,6 +146,10 @@ const AssignedBookings = () => {
                         <p className="mt-1 text-xs font-medium text-gray-600">
                           <span className="font-bold">Site Name: </span>{" "}
                           {sv.site_name}
+                        </p>
+                        <p className="mt-1 text-xs font-medium text-gray-600">
+                          <span className="font-bold">Marketer Name: </span>{" "}
+                          {sv.marketer_name}
                         </p>
                       </div>
                     </div>

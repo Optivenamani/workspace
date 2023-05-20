@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
@@ -10,8 +9,6 @@ import formatTime from "../../utils/formatTime";
 const AssignedVehicleRequests = () => {
   const [vehicleRequests, setVehicleRequests] = useState([]);
   const token = useSelector((state) => state.user.token);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -106,7 +103,6 @@ const AssignedVehicleRequests = () => {
           draggable: true,
           progress: undefined,
         });
-        navigate("/");
       } else {
         const data = await response.json();
         toast.error("An error occurred while attempting to end trip.", {

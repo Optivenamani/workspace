@@ -1,7 +1,5 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const AccessRoles = require("../../constants/accessRoles");
-const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool) => {
