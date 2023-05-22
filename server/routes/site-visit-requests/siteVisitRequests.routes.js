@@ -2,9 +2,32 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require('axios');
+const nodemailer = require('nodemailer');
 const pdfMakePrinter = require('pdfmake/src/printer');
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
+
+// Nodemailer helper function to send email
+async function sendEmail(userEmail, subject, text) {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: process.env.DOMAIN_EMAIL, // your domain email account
+      pass: process.env.DOMAIN_PASSWORD, // your domain email password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Optiven Logistics 🚌" <notify@optiven.co.ke>', // sender address
+    to: userEmail, // list of receivers
+    subject: subject, // Subject line
+    text: text, // plain text body
+  });
+}
 
 const WATI_TOKEN = process.env.WATI_TOKEN;
 const WATI_BASE_URL = process.env.WATI_BASE_URL;
@@ -654,11 +677,21 @@ module.exports = (pool, io) => {
                   notificationQuery,
                   [userId, remarks],
                   (err, result) => {
-                    if (err) throw err;
+                    if (err) res.status(500).json({ error: err.message });
                     // Emit the notification via Socket.IO
                     io.emit("siteVisitRejected", {
                       id: req.params.id,
                       message: "Site visit request rejected",
+                    });
+                    // Fetch the email of the marketer from the users table
+                    const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                    pool.query(getEmailQuery, [userId], async (err, emailResult) => {
+                      if (err) res.status(500).json({ error: err.message });
+                      if (emailResult.length > 0) {
+                        const userEmail = emailResult[0].email;
+                        // Send an email to the marketer
+                        await sendEmail(userEmail, 'Site Visit Request Rejected', 'Greetings,\n\nYour site visit request has been rejected. 😔 \n Please check your notifications in the app for more details. \n\n Kind regards,\nOptiven ICT Department');
+                      }
                     });
                   }
                 );
@@ -707,12 +740,44 @@ module.exports = (pool, io) => {
                   VALUES (?, 'approved', 'Your site visit request has been approved!', ?, ?);
                 `;
                 pool.query(notificationQuery, [userId, remarks, id], (err, result) => {
-                  if (err) throw err;
+                  if (err) res.status(500).json({ error: err.message });
+
+                  // Send an email to the marketer
+                  const getEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
+                  pool.query(getEmailQuery, [userId], async (err, emailResult) => {
+                    if (err) res.status(500).json({ error: err.message });
+                    if (emailResult.length > 0) {
+                      const userEmail = emailResult[0].email;
+                      await sendEmail(
+                        userEmail,
+                        'Site Visit Request Approved',
+                        'Greetings,\n\nYour site visit request has been approved!😃 \n Please check your notifications in the app for more details.\n\n Kind regards,\nOptiven ICT Department'
+                      );
+                    }
+                  });
+
+                  // Send an email to the driver
+                  const getDriverEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
+                  pool.query(getDriverEmailQuery, [driver_id], async (err, driverEmailResult) => {
+                    if (err) {
+                      res.status(500).json({ error: err.message });
+                      return;
+                    }
+
+                    if (driverEmailResult.length > 0) {
+                      const driverEmail = driverEmailResult[0].email;
+                      await sendEmail(
+                        driverEmail,
+                        'Site Visit Assignment',
+                        `Greetings,\n\nYou have been assigned to a site visit.\nPlease check the app for more details.\n\n Kind regards,\nOptiven ICT Department`
+                      );
+                    }
+                  });
 
                   // Send WhatsApp message to the client
                   const getClientPhoneNumberQuery = 'SELECT phone_number FROM site_visit_clients WHERE site_visit_id = ?';
                   pool.query(getClientPhoneNumberQuery, [id], async (err, phoneNumberResult) => {
-                    if (err) throw err;
+                    if (err) res.status(500).json({ error: err.message });
                     if (phoneNumberResult.length > 0) {
                       const clientPhoneNumber = phoneNumberResult[0].phone_number;
                       const surveyLink = 'https://example.com/survey';
@@ -727,7 +792,6 @@ module.exports = (pool, io) => {
                         console.error('Failed to send WhatsApp message:', error);
                       }
                     }
-
                   });
 
                   // Emit the notification via Socket.IO

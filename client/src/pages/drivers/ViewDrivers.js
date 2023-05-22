@@ -25,7 +25,7 @@ const ViewDrivers = () => {
     fetchUsers();
   }, [token]);
 
-  const drivers = users.filter((user) => user.Accessrole === "driver69");
+  const drivers = users.filter((user) => user.Accessrole === "driver69" || user.Accessrole === "112#114#700");
 
   console.log(drivers);
 

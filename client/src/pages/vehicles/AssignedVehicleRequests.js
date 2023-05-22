@@ -146,8 +146,20 @@ const AssignedVehicleRequests = () => {
                           {vr.pickup_location}
                         </h3>
                         <p className="mt-1 text-xs font-medium text-gray-600">
+                          <span className="font-bold">Requester: </span>{" "}
+                          {vr.requester}
+                        </p>
+                        <p className="mt-1 text-xs font-medium text-gray-600">
                           <span className="font-bold">Destination: </span>{" "}
                           {vr.destination_location}
+                        </p>
+                        <p className="mt-1 text-xs font-medium text-gray-600">
+                          <span className="font-bold">Number of Passengers: </span>{" "}
+                          {vr.number_of_passengers}
+                        </p>
+                        <p className="mt-1 text-xs font-medium text-gray-600">
+                          <span className="font-bold">Vehicle Registration: </span>{" "}
+                          {vr.vehicle_registration}
                         </p>
                       </div>
                     </div>
@@ -168,11 +180,10 @@ const AssignedVehicleRequests = () => {
                       </div>
                       <div className="flex flex-col-reverse">
                         <button
-                          className={`btn ${
-                            vr.status === "in_progress"
-                              ? "btn-error"
-                              : "btn-primary"
-                          } text-white`}
+                          className={`btn ${vr.status === "in_progress"
+                            ? "btn-error"
+                            : "btn-primary"
+                            } text-white`}
                           onClick={() =>
                             vr.status === "in_progress"
                               ? endTrip(vr.id)

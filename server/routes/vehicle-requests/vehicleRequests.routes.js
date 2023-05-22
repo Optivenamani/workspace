@@ -1,6 +1,29 @@
 const express = require("express");
+const nodemailer = require('nodemailer');
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
+
+// Nodemailer helper function to send email
+async function sendEmail(userEmail, subject, text) {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'notify@optiven.co.ke', // your domain email account
+      pass: 'Peace@6t4r#!', // your domain email password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Optiven Logistics 🚌" <notify@optiven.co.ke>', // sender address
+    to: userEmail, // list of receivers
+    subject: subject, // Subject line
+    text: text, // plain text body
+  });
+}
 
 module.exports = (pool) => {
   // Create a vehicle request
@@ -195,18 +218,18 @@ module.exports = (pool) => {
 
         // Update vehicle request
         const query = `
-            UPDATE vehicle_requests
-            SET 
-              vehicle_id = ?,
-              pickup_location = ?, 
-              pickup_date = ?, 
-              pickup_time = ?, 
-              remarks = ?, 
-              status = ?, 
-              driver_id = ?,
-              destination_location = ?
-            WHERE id = ?
-          `;
+        UPDATE vehicle_requests
+        SET 
+          vehicle_id = ?,
+          pickup_location = ?, 
+          pickup_date = ?, 
+          pickup_time = ?, 
+          remarks = ?, 
+          status = ?, 
+          driver_id = ?,
+          destination_location = ?
+        WHERE id = ?
+      `;
 
         pool.query(
           query,
@@ -227,12 +250,49 @@ module.exports = (pool) => {
               return;
             }
 
+            // Send an email to the requester
+            const getEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
+            pool.query(getEmailQuery, [req.user.id], async (err, emailResult) => {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+
+              if (emailResult.length > 0) {
+                const userEmail = emailResult[0].email;
+                await sendEmail(
+                  userEmail,
+                  'Vehicle Request Approved',
+                  'Greetings,\n\nYour vehicle request has been approved!😃\nPlease check the app for more details.\n\nKind regards,\nOptiven ICT Team'
+                );
+              }
+            });
+
+            // Send an email to the driver
+            const getDriverEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
+            pool.query(getDriverEmailQuery, [driver_id], async (err, driverEmailResult) => {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+
+              if (driverEmailResult.length > 0) {
+                const driverEmail = driverEmailResult[0].email;
+                await sendEmail(
+                  driverEmail,
+                  'Vehicle Request Assignment',
+                  'Greetings,\n\nYou have been assigned to a vehicle request.\nPlease check the app for more details.\n\nKind regards,\nOptiven ICT Team'
+                );
+              }
+            });
+
+
             // New SELECT query to get the updated vehicle request
             const updatedVehicleRequestQuery = `
-                SELECT *
-                FROM vehicle_requests
-                WHERE id = ?
-              `;
+            SELECT *
+            FROM vehicle_requests
+            WHERE id = ?
+          `;
 
             pool.query(
               updatedVehicleRequestQuery,
@@ -267,16 +327,40 @@ module.exports = (pool) => {
       try {
         const id = req.params.id;
         const { remarks } = req.body;
-        const query = `UPDATE vehicle_requests 
-          SET 
-            status = 'rejected', 
-            remarks = ?, 
-            driver_id = NULL, 
-            vehicle_id = NULL 
-          WHERE id = ?`;
-        pool.query(query, [remarks, id], (err, result) => {
-          if (err) throw err;
+        const query = `
+        UPDATE vehicle_requests 
+        SET 
+          status = 'rejected', 
+          remarks = ?, 
+          driver_id = NULL, 
+          vehicle_id = NULL 
+        WHERE id = ?
+      `;
+        pool.query(query, [remarks, id], async (err, result) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+
           if (result.affectedRows > 0) {
+            // Send an email to the requester
+            const getEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
+            pool.query(getEmailQuery, [req.user.id], async (err, emailResult) => {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+
+              if (emailResult.length > 0) {
+                const userEmail = emailResult[0].email;
+                await sendEmail(
+                  userEmail,
+                  'Vehicle Request Rejected',
+                  'Greetings,\n\nYour vehicle request has been rejected. 😔 \n Please check the app for more details. \n\n Kind regards,\nOptiven ICT Department'
+                );
+              }
+            });
+
             res.status(200).json({ message: "Vehicle request rejected." });
           } else {
             res.status(404).json({ message: "Vehicle request not found." });

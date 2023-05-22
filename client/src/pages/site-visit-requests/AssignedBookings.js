@@ -151,6 +151,10 @@ const AssignedBookings = () => {
                           <span className="font-bold">Marketer Name: </span>{" "}
                           {sv.marketer_name}
                         </p>
+                        <p className="mt-1 text-xs font-medium text-gray-600">
+                          <span className="font-bold">Vehicle Registration: </span>{" "}
+                          {sv.reg}
+                        </p>
                       </div>
                     </div>
 

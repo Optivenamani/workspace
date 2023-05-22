@@ -13,12 +13,15 @@ module.exports = (pool) => {
         const query = `
           SELECT site_visits.*, 
             Projects.name as site_name,
-            users.fullnames as marketer_name
+            users.fullnames as marketer_name,
+            vehicles.vehicle_registration as reg
           FROM site_visits
           LEFT JOIN Projects
           ON site_visits.project_id = Projects.project_id
           LEFT JOIN users
           ON site_visits.marketer_id = users.user_id
+          LEFT JOIN vehicles
+          ON site_visits.vehicle_id = vehicles.id
           WHERE (site_visits.status = 'approved' OR site_visits.status = 'in_progress') AND site_visits.driver_id = ?
           `;
 
@@ -89,9 +92,18 @@ module.exports = (pool) => {
       try {
         const driverId = req.user.id;
         const query = `
-          SELECT * FROM vehicle_requests
-          WHERE (status = 'approved' OR status = 'in_progress') 
-          AND driver_id = ?
+          SELECT 
+            vr.*, 
+            v.vehicle_registration,
+            u.fullnames as requester
+          FROM 
+            vehicle_requests vr
+          LEFT JOIN vehicles v
+          ON vr.vehicle_id = v.id
+          LEFT JOIN users u
+          ON vr.requester_id = u.user_id
+          WHERE (vr.status = 'approved' OR vr.status = 'in_progress') 
+          AND vr.driver_id = ?
           `;
         pool.query(query, [driverId], (err, results) => {
           if (err) {

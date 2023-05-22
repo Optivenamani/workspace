@@ -1,6 +1,33 @@
+// Load required modules and environment variables
+require("dotenv").config();
 const express = require("express");
+const axios = require('axios');
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
+
+const WATI_TOKEN = process.env.WATI_TOKEN;
+const WATI_BASE_URL = process.env.WATI_BASE_URL;
+
+// WATI Helper function to send the WhatsApp msg
+const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadcastName) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${WATI_TOKEN}`,
+    },
+  };
+  const bodyData = {
+    parameters: parameters,
+    template_name: templateName,
+    broadcast_name: broadcastName,
+  };
+  try {
+    const response = await axios.post(`${WATI_BASE_URL}/api/v1/sendTemplateMessage?whatsappNumber=${phoneNumber}`, bodyData, config);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to send WhatsApp message:', error.message);
+    throw error;
+  }
+};
 
 module.exports = (pool, io) => {
   // Create a new site visit request
@@ -117,18 +144,41 @@ module.exports = (pool, io) => {
       const driverId = req.user.id;
 
       const sendCompletionNotification = async () => {
-        const getUserIdQuery =
-          "SELECT marketer_id FROM site_visits WHERE id = ?";
+        const getUserIdQuery = "SELECT marketer_id FROM site_visits WHERE id = ?";
         pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
           if (err) throw err;
           if (userIdResult.length > 0) {
             const userId = userIdResult[0].marketer_id;
             const notificationQuery = `
-          INSERT INTO notifications (user_id, type, message, remarks, site_visit_id)
-          VALUES (?, 'completed', 'Your site visit has been completed', 'The site visit has been marked as complete by the driver', ?);
-        `;
-            pool.query(notificationQuery, [userId, id], (err, result) => {
+              INSERT INTO notifications (user_id, type, message, remarks, site_visit_id)
+              VALUES (?, 'completed', 'Your site visit has been completed', 'The site visit has been marked as complete by the driver', ?);
+            `;
+            pool.query(notificationQuery, [userId, id], async (err, result) => {
               if (err) throw err;
+
+              // Send WhatsApp message to clients
+              const getClientPhoneNumbersQuery = 'SELECT phone_number FROM site_visit_clients WHERE site_visit_id = ?';
+              pool.query(getClientPhoneNumbersQuery, [id], async (err, phoneNumbersResult) => {
+                if (err) throw err;
+                if (phoneNumbersResult.length > 0) {
+                  const clientPhoneNumbers = phoneNumbersResult.map(item => item.phone_number);
+                  const completionMessage = "Your site visit has been completed.";
+                  const templateName = "site_visit_complete";
+                  const parameters = [{ name: "message", value: completionMessage }];
+                  const broadcastName = "site_visit_complete";
+
+                  try {
+                    // Send WhatsApp messages to all client phone numbers
+                    for (const phoneNumber of clientPhoneNumbers) {
+                      await sendWhatsAppMessage(phoneNumber, templateName, parameters, broadcastName);
+                    }
+                  } catch (error) {
+                    console.error("Failed to send WhatsApp message:", error);
+                  }
+                }
+              });
+
+              // Emit the notification via Socket.IO
               io.emit("siteVisitCompleted", {
                 id: req.params.id,
                 message: "Site visit has been completed",
