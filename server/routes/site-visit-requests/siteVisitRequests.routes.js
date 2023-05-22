@@ -15,8 +15,8 @@ async function sendEmail(userEmail, subject, text) {
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: process.env.DOMAIN_EMAIL, // your domain email account
-      pass: process.env.DOMAIN_PASSWORD, // your domain email password
+      user: `notify@optiven.co.ke`, // your domain email account
+      pass: `Peace@6t4r#!`, // your domain email password
     },
   });
 
