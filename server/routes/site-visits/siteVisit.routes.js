@@ -279,9 +279,9 @@ module.exports = (pool, io) => {
                 if (phoneNumbersResult.length > 0) {
                   const clientPhoneNumbers = phoneNumbersResult.map(item => item.phone_number);
                   const completionMessage = "Your site visit has been completed.";
-                  const templateName = "site_visit_complete";
+                  const templateName = "site_visit_completed";
                   const parameters = [{ name: "message", value: completionMessage }];
-                  const broadcastName = "site_visit_complete";
+                  const broadcastName = "site_visit_completed";
 
                   try {
                     // Send WhatsApp messages to all client phone numbers

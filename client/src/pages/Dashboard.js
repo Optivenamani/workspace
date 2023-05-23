@@ -7,6 +7,7 @@ import {
   VictoryPie,
   VictoryTooltip,
   VictoryGroup,
+  VictoryLine,
 } from "victory";
 import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
@@ -178,14 +179,13 @@ const Dashboard = () => {
                       x="site_name"
                       y="count"
                       colorScale={"qualitative"}
-                      innerRadius={100}
                       // labelRadius={({ innerRadius }) => innerRadius + 30}
                       // labels={({ datum }) => `${datum.site_name}: ${datum.count}`}
                       animate={{
                         onLoad: { duration: 1000 },
                       }}
                       labelComponent={<VictoryTooltip />}
-                      padAngle={({ datum }) => datum.count}
+                    // padAngle={({ datum }) => datum.count}
                     />
                   </div>
                 </div>
@@ -193,7 +193,7 @@ const Dashboard = () => {
                   <div className="card w-full bg-base-100 shadow-xl">
                     <div className="m-4">
                       <CustomLabel
-                        text="Top 5 Most Booked Sites"
+                        text="Most Booked Sites"
                         x={30}
                         y={30}
                         style={{ fontSize: 20, textAlign: "center" }}
@@ -221,12 +221,10 @@ const Dashboard = () => {
                           { length: maxVisits + 1 },
                           (_, index) => index
                         )}
+                        tickCount='5'
                       />
                       <VictoryBar
                         data={siteCounts}
-                        cornerRadius={{
-                          topLeft: ({ datum }) => datum.count * 1.05,
-                        }}
                         x="site_name"
                         y="count"
                         labels={({ datum }) => `${datum.count}`}
@@ -366,6 +364,36 @@ const Dashboard = () => {
                         }
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div className="xl:w-2/3 md:w-full p-4">
+                  <div
+                    className="card w-full bg-base-100 shadow-xl"
+                    style={{ height: "435px" }}
+                  >
+                    <div className="m-4">
+                      <CustomLabel
+                        text="Site Visits Booking Trends"
+                        x={30}
+                        y={30}
+                        style={{ fontSize: 20, textAlign: "center" }}
+                      />
+                    </div>
+                    <VictoryChart
+                      theme={VictoryTheme.material}
+                      width={window.innerWidth}
+                      domainPadding={{ x: 0, y: 5 }}
+                    >
+                      <VictoryGroup offset={20} colorScale={"qualitative"}>
+                        <VictoryLine
+                          data={data}
+                          labels={({ datum }) => `${datum.y}`}
+                          labelComponent={<VictoryTooltip />}
+                        />
+                      </VictoryGroup>
+                      <VictoryAxis />
+                      <VictoryAxis dependentAxis />
+                    </VictoryChart>
                   </div>
                 </div>
               </div>
