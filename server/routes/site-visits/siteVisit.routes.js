@@ -102,6 +102,122 @@ module.exports = (pool, io) => {
       });
     }
   });
+  // Edit a site visit request
+  router.patch("/:id", authenticateJWT, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
+        project_id,
+        pickup_location,
+        pickup_time,
+        pickup_date,
+        clients,
+      } = req.body;
+
+      // Validation for client information
+      if (!clients || clients.length === 0) {
+        return res.status(400).json({
+          message: "Client information is mandatory.",
+        });
+      }
+
+      for (const client of clients) {
+        if (!client.name || !client.phone_number) {
+          return res.status(400).json({
+            message: "Name and phone number are required for each client.",
+          });
+        }
+      }
+
+      // Update the site visit request in the `site_visits` table
+      const updateQuery = `
+      UPDATE site_visits
+      SET 
+        project_id = ?,
+        pickup_location = ?, 
+        pickup_time = ?, 
+        pickup_date = ?
+      WHERE id = ? AND status = 'pending'
+    `;
+
+      pool.query(
+        updateQuery,
+        [project_id, pickup_location, pickup_time, pickup_date, id],
+        (err, result) => {
+          if (err) {
+            res.status(500).json({
+              message: "An error occurred while updating the site visit request.",
+            });
+            return;
+          }
+
+          if (result.affectedRows === 0) {
+            res.status(404).json({
+              message: "Site visit request not found or cannot be updated.",
+            });
+            return;
+          }
+
+          // Delete existing clients associated with this site visit request from the `site_visit_clients` table
+          const deleteClientsQuery = `
+          DELETE FROM site_visit_clients
+          WHERE site_visit_id = ?
+        `;
+
+          pool.query(deleteClientsQuery, [id], (err, deleteResult) => {
+            if (err) {
+              res.status(500).json({
+                message:
+                  "An error occurred while deleting existing client information.",
+              });
+              return;
+            }
+
+            // Insert updated clients associated with this site visit request into the `site_visit_clients` table
+            const clientValues = clients.map((client) => [
+              id,
+              client.name,
+              client.email,
+              client.phone_number,
+            ]);
+
+            const insertClientsQuery = `
+            INSERT INTO site_visit_clients 
+              (
+                site_visit_id, 
+                name, 
+                email, 
+                phone_number
+              ) 
+             VALUES ?
+          `;
+
+            pool.query(
+              insertClientsQuery,
+              [clientValues],
+              (err, insertResult) => {
+                if (err) {
+                  res.status(500).json({
+                    message:
+                      "An error occurred while inserting updated client information.",
+                  });
+                  return;
+                }
+
+                res.status(200).json({
+                  message: "Site visit request updated successfully!",
+                });
+              }
+            );
+          });
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while updating the site visit request.",
+      });
+    }
+  });
   // Set site_visit status to "in_progress" when starting a trip
   router.patch(
     "/start-trip/:id",

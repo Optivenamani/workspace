@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import formatTime from "../../utils/formatTime";
 
@@ -9,6 +10,8 @@ const MySiteVisits = () => {
   const [siteVisits, setSiteVisits] = useState([]);
   const token = useSelector((state) => state.user.token);
   const userId = useSelector((state) => state.user.user.user_id);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSiteVisits = async () => {
@@ -88,8 +91,6 @@ const MySiteVisits = () => {
     }
   });
 
-  console.log("My site visits:", filteredSiteVisits);
-
   return (
     <Sidebar>
       <div className="container px-4 pb-6 mx-auto">
@@ -147,8 +148,8 @@ const MySiteVisits = () => {
                           siteVisit.status === "rejected"
                             ? "red"
                             : siteVisit.status === "complete"
-                            ? "green"
-                            : "black",
+                              ? "green"
+                              : "black",
                       }}
                     >
                       {siteVisit.status}
@@ -156,7 +157,15 @@ const MySiteVisits = () => {
                     <td>
                       {siteVisit.status === "pending" ? (
                         <button
-                          className="btn btn-sm btn-outline btn-warning"
+                          className="btn btn-sm btn-outline btn-warning mr-2"
+                          onClick={() => navigate(`/edit-site-visit/${siteVisit.id}`)} // Add onClick event listener
+                        >
+                          Edit
+                        </button>
+                      ) : null}
+                      {siteVisit.status === "pending" ? (
+                        <button
+                          className="btn btn-sm btn-gray-500"
                           onClick={() => cancelSiteVisit(siteVisit.id)} // Add onClick event listener
                         >
                           Cancel

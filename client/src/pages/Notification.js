@@ -226,7 +226,7 @@ const Notifications = () => {
       <Sidebar>
         <div className="flex flex-col mb-10">
           <div className="mt-6 mb-6 flex justify-center">
-            <h1 className="text-2xl font-bold text-gray-800">Notifications</h1>
+            <h1 className="text-2xl font-bold text-gray-800 uppercase">Notifications</h1>
           </div>
           <div className="flex flex-col items-center justify-center px-3">
             {Array.isArray(notificationsArray) ? (<div className="flex flex-col space-y-4">

@@ -38,6 +38,7 @@ import ApprovedSiteVisitsReports from "./pages/reports/ApprovedSiteVisitsReports
 import SiteVisitsSummary from "./pages/reports/SiteVisitsSummaryReports";
 import MostBookedSitesReports from "./pages/reports/MostBookedSitesReports";
 import MarketersFeedback from "./pages/reports/MarketersFeedback";
+import EditSiteVisit from "./pages/site-visit-requests/EditSiteVisit";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -129,6 +130,7 @@ const App = () => {
               path="/site-visit-requests/:id"
               element={<SiteVisitDetails />}
             />
+            <Route path="/edit-site-visit/:id" element={<EditSiteVisit />} />
             {/* Sites */}
             <Route path="/view-sites" element={<ViewSites />} />
             {/* Vehicles */}

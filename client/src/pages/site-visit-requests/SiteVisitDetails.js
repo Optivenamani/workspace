@@ -116,10 +116,6 @@ const SiteVisitDetails = () => {
         status: "approved",
       };
 
-      console.log("Driver", driver);
-
-      console.log("Request object: ", requestBody);
-
       const response = await fetch(
         `https://workspace.optiven.co.ke/api/site-visit-requests/pending-site-visits/${id}`,
         {
