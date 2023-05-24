@@ -50,7 +50,7 @@ const SiteVisitsSummary = () => {
         }
 
         if (office === "") {
-            toast.error("You need to select a region.", {
+            toast.error("You need to select an office.", {
                 position: "top-center",
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -137,14 +137,14 @@ const SiteVisitsSummary = () => {
                             onChange={(e) => setEndDate(e.target.value)}
                         />
                         <label className="label">
-                            <span className="label-text font-bold">Region</span>
+                            <span className="label-text font-bold">Office</span>
                         </label>
                         <select
                             className="select select-bordered w-full max-w-xs"
                             value={office}
                             onChange={(e) => setOffice(e.target.value)}
                         >
-                            <option value="">Select a region</option>
+                            <option value="">Select an office</option>
                             {(isAdmin || isRachel || isHOL || isAnalyst || isOperations) && <option value="HQ Ofice (ABSA)">HQ Office (ABSA Towers)</option>}
                             {(isAdmin || isJoe || isHOL || isAnalyst || isOperations) && <option value="Global Office(KAREN)">
                                 Global Office (Karen)
