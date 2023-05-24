@@ -62,7 +62,7 @@ const SiteVisitsSummary = () => {
 
         try {
             const response = await axios.get(
-                "http://localhost:8080/api/site-visit-requests/download-pdf/site-visit-summary",
+                "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/site-visit-summary",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
