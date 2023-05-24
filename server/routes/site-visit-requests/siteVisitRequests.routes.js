@@ -294,6 +294,7 @@ module.exports = (pool, io) => {
       try {
         const startDate = req.query.startDate;
         const endDate = req.query.endDate;
+        const office = req.query.office;
 
         const query = `
           SELECT 
@@ -303,12 +304,14 @@ module.exports = (pool, io) => {
             SUM(CASE WHEN site_visits.status = 'rejected' THEN 1 ELSE 0 END) as rejected,
             COUNT(*) as total
           FROM site_visits
+          JOIN users ON site_visits.marketer_id = users.user_id
           WHERE site_visits.pickup_date BETWEEN ? AND ?
+            AND users.office = ?
           GROUP BY DATE(site_visits.pickup_date)
           ORDER BY DATE(site_visits.pickup_date);
         `;
 
-        pool.query(query, [startDate, endDate], (err, results) => {
+        pool.query(query, [startDate, endDate, office], (err, results) => {
           if (err) throw err;
 
           const docDefinition = {
@@ -316,7 +319,7 @@ module.exports = (pool, io) => {
             pageOrientation: 'landscape',
             content: [
               {
-                text: `Site Visit Summary from ${startDate} to ${endDate}`,
+                text: `Site Visit Summary from ${startDate} to ${endDate} for convertors in ${office}`,
                 fontSize: 20,
                 alignment: 'center',
                 margin: [0, 0, 0, 20]
