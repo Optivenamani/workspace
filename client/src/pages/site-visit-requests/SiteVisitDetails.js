@@ -409,11 +409,10 @@ const SiteVisitDetails = () => {
 
                     <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                       {siteVisitData &&
-                      siteVisitData.status !== "reviewed" &&
-                      siteVisitData.status !== "complete" &&
-                      siteVisitData.status !== "rejected" &&
-                      siteVisitData.status !== "cancelled" &&
-                      siteVisitData.status !== "in_progress" ? (
+                        siteVisitData.status !== "reviewed" &&
+                        siteVisitData.status !== "complete" &&
+                        siteVisitData.status !== "rejected" &&
+                        siteVisitData.status !== "in_progress" ? (
                         <>
                           <button
                             className="btn btn-primary text-white"

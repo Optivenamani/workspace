@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../components/Sidebar";
 import formatTime from "../../utils/formatTime";
 
@@ -53,13 +55,31 @@ const MySiteVisits = () => {
               : siteVisit
           )
         );
-        alert(data.message);
+        toast.success(data.message, {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
-        alert(data.message || "Error cancelling site visit.");
+        toast.error((data.message || "Error cancelling site visit."), {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (error) {
       console.error("Error cancelling site visit:", error);
-      alert("Error cancelling site visit.");
+      toast.error((error.message || "Error cancelling site visit."), {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -163,7 +183,7 @@ const MySiteVisits = () => {
                           Edit
                         </button>
                       ) : null}
-                      {siteVisit.status === "pending" ? (
+                      {(siteVisit.status === "pending" || siteVisit.status === "approved") ? (
                         <button
                           className="btn btn-sm btn-gray-500"
                           onClick={() => cancelSiteVisit(siteVisit.id)} // Add onClick event listener

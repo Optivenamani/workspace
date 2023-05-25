@@ -616,101 +616,150 @@ module.exports = (pool, io) => {
     }
   );
   // Cancel a site visit request
-  router.patch(
-    "/cancel-site-visit/:id",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const { id } = req.params;
+  router.patch("/cancel-site-visit/:id", authenticateJWT, async (req, res) => {
+    try {
+      const { id } = req.params;
 
-        const updateSiteVisitStatusQuery = `
-        UPDATE site_visits
-        SET status = 'cancelled'
-        WHERE id = ? AND status IN ('pending')
-      `;
+      const updateSiteVisitStatusQuery = `
+      UPDATE site_visits
+      SET status = 'cancelled'
+      WHERE id = ? AND (status = 'pending' OR status = 'approved')
+    `;
+      pool.query(updateSiteVisitStatusQuery, [id], (err, result) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+          return;
+        }
 
-        pool.query(updateSiteVisitStatusQuery, [id], (err, result) => {
-          if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-          }
+        if (result.affectedRows > 0) {
+          const getUserIdQuery = "SELECT marketer_id FROM site_visits WHERE id = ?";
+          pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
+            if (err) {
+              res.status(500).json({ error: err.message });
+              return;
+            }
 
-          if (result.affectedRows > 0) {
-            res
-              .status(200)
-              .json({ message: "Site visit request cancelled successfully." });
-          } else {
-            res.status(400).json({
-              message:
-                "Invalid site visit ID or the site visit has already been completed or cancelled.",
-            });
-          }
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    }
-  );
-  // Reject site visit request (with remarks)
-  router.patch(
-    "/reject-site-visit/:id",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const id = req.params.id;
-        const { remarks } = req.body;
-        const query =
-          "UPDATE site_visits SET status = 'rejected', remarks = ?, vehicle_id = null, driver_id = null WHERE id = ?";
-        pool.query(query, [remarks, id], async (err, result) => {
-          if (err) throw err;
-          if (result.affectedRows > 0) {
-            // Get the user_id from the site_visits table
-            const getUserIdQuery =
-              "SELECT marketer_id FROM site_visits WHERE id = ?";
-            pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
-              if (err) throw err;
-              if (userIdResult.length > 0) {
-                const userId = userIdResult[0].marketer_id;
-                // Insert a record into the notifications table
-                const notificationQuery = `
-                INSERT INTO notifications (user_id, type, message, remarks)
-                VALUES (?, 'rejected', 'Your site visit request has been rejected :(', ?);
-              `;
-                pool.query(
-                  notificationQuery,
-                  [userId, remarks],
-                  (err, result) => {
-                    if (err) res.status(500).json({ error: err.message });
-                    // Emit the notification via Socket.IO
-                    io.emit("siteVisitRejected", {
-                      id: req.params.id,
-                      message: "Site visit request rejected",
-                    });
-                    // Fetch the email of the marketer from the users table
-                    const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
-                    pool.query(getEmailQuery, [userId], async (err, emailResult) => {
-                      if (err) res.status(500).json({ error: err.message });
-                      if (emailResult.length > 0) {
-                        const userEmail = emailResult[0].email;
-                        // Send an email to the marketer
-                        await sendEmail(userEmail, 'Site Visit Request Rejected', 'Greetings,\n\nYour site visit request has been rejected. 😔 \n Please check your notifications in the app for more details. \n\n Kind regards,\nOptiven ICT Department');
-                      }
-                    });
+            if (userIdResult.length > 0) {
+              const userId = userIdResult[0].marketer_id;
+
+              const notificationQuery = `
+              INSERT INTO notifications (user_id, type, message, remarks, site_visit_id)
+              VALUES (?, 'cancelled', 'Your site visit request has been cancelled.', 'Cancelled', ?)
+            `;
+              pool.query(notificationQuery, [userId, id], (err, result) => {
+                if (err) {
+                  res.status(500).json({ error: err.message });
+                  return;
+                }
+
+                // Emit the notification via Socket.IO
+                io.emit("siteVisitCancelled", {
+                  id: req.params.id,
+                  message: "Site visit request cancelled",
+                });
+
+                const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                pool.query(getEmailQuery, [userId], async (err, emailResult) => {
+                  if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
                   }
-                );
-              }
-            });
 
-            res.status(200).json({ message: "Site visit request rejected." });
-          } else {
-            res.status(404).json({ message: "Site visit request not found." });
-          }
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+                  if (emailResult.length > 0) {
+                    const userEmail = emailResult[0].email;
+                    const subject = "Site Visit Request Cancelled";
+                    const message = `Greetings,\n\nYour site visit request has been cancelled. 😔\nPlease check your notifications in the app for more details.\n\nKind regards,\nOptiven ICT Department`;
+                    sendEmail(userEmail, subject, message)
+                      .then(() => {
+                        res.status(200).json({
+                          message: "Site visit request cancelled successfully. An email notification has been sent.",
+                        });
+                      })
+                      .catch((error) => {
+                        res.status(500).json({ error: error.message });
+                      });
+                  } else {
+                    res.status(404).json({ message: "User not found." });
+                  }
+                });
+              });
+            }
+          });
+        } else {
+          res.status(400).json({
+            message:
+              "Invalid site visit ID or the site visit has already been completed or cancelled.",
+          });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
+  // Reject site visit request (with remarks)
+  router.patch("/reject-site-visit/:id", authenticateJWT, async (req, res) => {
+    try {
+      const id = req.params.id;
+      const { remarks } = req.body;
+
+      const updateQuery =
+        "UPDATE site_visits SET status = 'rejected', remarks = ?, vehicle_id = null, driver_id = null WHERE id = ?";
+      pool.query(updateQuery, [remarks, id], async (err, result) => {
+        if (err) throw err;
+
+        if (result.affectedRows > 0) {
+          const getUserIdQuery =
+            "SELECT marketer_id FROM site_visits WHERE id = ?";
+          pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
+            if (err) throw err;
+
+            if (userIdResult.length > 0) {
+              const userId = userIdResult[0].marketer_id;
+
+              const notificationQuery = `
+              INSERT INTO notifications (user_id, type, message, remarks)
+              VALUES (?, 'rejected', 'Your site visit request has been rejected :(', ?)
+            `;
+              pool.query(notificationQuery, [userId, remarks], (err, result) => {
+                if (err) {
+                  return res.status(500).json({ error: err.message });
+                }
+
+                // Emit the notification via Socket.IO
+                io.emit("siteVisitRejected", {
+                  id: req.params.id,
+                  message: "Site visit request rejected",
+                });
+
+                const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                pool.query(getEmailQuery, [userId], async (err, emailResult) => {
+                  if (err) {
+                    return res.status(500).json({ error: err.message });
+                  }
+
+                  if (emailResult.length > 0) {
+                    const userEmail = emailResult[0].email;
+                    // Send an email to the marketer
+                    await sendEmail(
+                      userEmail,
+                      "Site Visit Request Rejected",
+                      "Greetings,\n\nYour site visit request has been rejected. 😔 \nPlease check your notifications in the app for more details. \n\nKind regards,\nOptiven ICT Department"
+                    );
+                  }
+                });
+              });
+            }
+          });
+
+          return res.status(200).json({ message: "Site visit request rejected." });
+        } else {
+          return res.status(404).json({ message: "Site visit request not found." });
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  });
   // View, edit and approve the site visit request
   router.patch(
     "/pending-site-visits/:id",

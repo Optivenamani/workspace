@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import {
   fetchNotifications,
   setNotifications as updateNotifications,
-  addNotification
+  addNotification,
 } from "../redux/features/notifications/notificationsSlice";
 import huh from "../assets/app-illustrations/Shrug-bro.png";
 
@@ -51,8 +51,7 @@ const Notifications = () => {
               )
             )
           );
-          console.log(`Notification of ID ${notificationId} has been marked as read`);
-
+          // console.log(`Notification of ID ${notificationId} has been marked as read`);
         } else {
           console.error("Error marking notification as read:", response.status);
         }
@@ -152,14 +151,30 @@ const Notifications = () => {
       );
     };
 
+    const handleSiteVisitCancelled = (notification) => {
+      // Update the notifications state
+      dispatch(
+        addNotification({
+          type: "cancelled",
+          message: "A site visit has been cancelled. Please fill the survey",
+          site_visit_id: notification.site_visit_id,
+          timestamp: new Date(notification.timestamp),
+          isRead: false,
+        })
+      );
+    };
+
     socket.on("siteVisitRejected", handleSiteVisitRejected);
     socket.on("siteVisitApproved", handleSiteVisitApproved);
     socket.on("siteVisitCompleted", handleSiteVisitCompleted);
+    socket.on("siteVisitCancelled", handleSiteVisitCancelled);
 
     return () => {
       socket.off("siteVisitRejected", handleSiteVisitRejected);
       socket.off("siteVisitApproved", handleSiteVisitApproved);
       socket.off("siteVisitCompleted", handleSiteVisitCompleted);
+      socket.off("siteVisitCancelled", handleSiteVisitCancelled);
+
       // Disconnect the socket
       socket.disconnect();
     };
@@ -193,7 +208,7 @@ const Notifications = () => {
         strokeWidth="1.5"
         stroke="currentColor"
         className="h-9 w-9 mr-2"
-        color="green"
+        color="blue"
       >
         <path
           strokeLinecap="round"
@@ -219,6 +234,18 @@ const Notifications = () => {
         />
       </svg>
     ),
+    cancelled: (
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-9 w-9 mr-2">
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <circle cx="12" cy="12" r="9" stroke="gray" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></circle>
+          <path d="M12 8V13" stroke="gray" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
+          <path d="M12 16V16.0001" stroke="gray" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
+        </g>
+      </svg>
+
+    ),
   };
 
   return (
@@ -226,70 +253,75 @@ const Notifications = () => {
       <Sidebar>
         <div className="flex flex-col mb-10">
           <div className="mt-6 mb-6 flex justify-center">
-            <h1 className="text-2xl font-bold text-gray-800 uppercase">Notifications</h1>
+            <h1 className="text-2xl font-bold text-gray-800 uppercase">
+              Notifications
+            </h1>
           </div>
           <div className="flex flex-col items-center justify-center px-3">
-            {Array.isArray(notificationsArray) ? (<div className="flex flex-col space-y-4">
-              {notificationsArray && notificationsArray.length > 0 ? (
-                notificationsArray.map((notification, index) => (
-                  <div
-                    key={index}
-                    className={`bg-white shadow-lg rounded-md p-4 flex items-center justify-between ${!notification.isRead ? "bg-blue-100" : ""
-                      }`}
-                  >
-                    <div className="flex items-center">
-                      {notificationIcons[notification.type]}
-                      <div>
-                        <p className="text-gray-800 font-medium">
-                          {notification.message}
-                        </p>
-                        <div className="text-gray-500 text-sm flex justify-between">
-                          <p className="text-sm">
-                            Remarks: {notification.remarks}
+            {Array.isArray(notificationsArray) ? (
+              <div className="flex flex-col space-y-4">
+                {notificationsArray && notificationsArray.length > 0 ? (
+                  notificationsArray.map((notification, index) => (
+                    <div
+                      key={index}
+                      className={`bg-white shadow-lg rounded-md p-4 flex items-center justify-between ${!notification.isRead ? "bg-blue-100" : ""
+                        }`}
+                    >
+                      <div className="flex items-center">
+                        {notificationIcons[notification.type]}
+                        <div>
+                          <p className="text-gray-800 font-medium">
+                            {notification.message}
                           </p>
-                        </div>
-                        <p className="text-sm italic">
-                          {notification.timestamp && (
-                            <>
-                              {formatDistanceToNowStrict(
-                                new Date(notification.timestamp)
-                              )} ago
-                            </>
+                          <div className="text-gray-500 text-sm flex justify-between">
+                            <p className="text-sm">
+                              Remarks: {notification.remarks}
+                            </p>
+                          </div>
+                          <p className="text-sm italic">
+                            {notification.timestamp && (
+                              <>
+                                {formatDistanceToNowStrict(
+                                  new Date(notification.timestamp)
+                                )}{" "}
+                                ago
+                              </>
+                            )}
+                          </p>
+
+                          {notification.type === "completed" && (
+                            <Link
+                              to={`/survey/${notification.site_visit_id}`}
+                              className="text-primary underline text-sm mt-2"
+                            >
+                              Complete the survey
+                            </Link>
                           )}
-                        </p>
 
-                        {notification.type === "completed" && (
-                          <Link
-                            to={`/survey/${notification.site_visit_id}`}
-                            className="text-primary underline text-sm mt-2"
-                          >
-                            Complete the survey
-                          </Link>
-                        )}
-
-                        {notification.type === "approved" && (
-                          <Link
-                            to={`/sv-details/${notification.site_visit_id}`}
-                            className="text-secondary underline text-sm mt-2"
-                          >
-                            View site visit details
-                          </Link>
-                        )}
+                          {notification.type === "approved" && (
+                            <Link
+                              to={`/sv-details/${notification.site_visit_id}`}
+                              className="text-secondary underline text-sm mt-2"
+                            >
+                              View site visit details
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="flex justify-center">
+                    <div className="flex flex-col items-center mt-20">
+                      <img src={huh} alt="huh" className="lg:w-96" />
+                      <h1 className="font-bold text-center">
+                        No notifications. Check back later.
+                      </h1>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <div className="flex justify-center">
-                  <div className="flex flex-col items-center mt-20">
-                    <img src={huh} alt="huh" className="lg:w-96" />
-                    <h1 className="font-bold text-center">
-                      No notifications. Check back later.
-                    </h1>
-                  </div>
-                </div>
-              )}
-            </div>) : (
+                )}
+              </div>
+            ) : (
               <div className="flex justify-center">
                 <div className="flex flex-col items-center mt-20">
                   <img src={huh} alt="huh" className="lg:w-96" />
