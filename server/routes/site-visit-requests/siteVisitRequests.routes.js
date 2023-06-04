@@ -827,14 +827,37 @@ module.exports = (pool, io) => {
                   });
 
                   // Send WhatsApp message to the client
-                  const getClientPhoneNumberQuery = 'SELECT phone_number FROM site_visit_clients WHERE site_visit_id = ?';
-                  pool.query(getClientPhoneNumberQuery, [id], async (err, phoneNumberResult) => {
+                  const getWhatsAppMessageSiteVisitDetailsQuery =
+                    `SELECT 
+                      site_visit_clients.phone_number, 
+                      site_visit_clients.name,
+                      Projects.name AS site_name,
+                      users.fullnames AS marketer_name
+                    FROM site_visit_clients
+                    INNER JOIN site_visits ON site_visit_clients.site_visit_id = site_visits.id
+                    LEFT JOIN Projects ON site_visits.project_id = Projects.project_id
+                    LEFT JOIN users ON site_visits.marketer_id = users.user_id
+                    WHERE site_visit_clients.site_visit_id = ?
+                    `;
+
+                  pool.query(getWhatsAppMessageSiteVisitDetailsQuery, [id], async (err, WhatsAppMessageDetails) => {
                     if (err) res.status(500).json({ error: err.message });
-                    if (phoneNumberResult.length > 0) {
-                      const clientPhoneNumber = phoneNumberResult[0].phone_number;
-                      const surveyLink = 'https://example.com/survey';
-                      const templateName = 'site_visit_approved';
-                      const parameters = [{ name: 'survey_link', value: surveyLink }];
+                    if (WhatsAppMessageDetails.length > 0) {
+                      const clientPhoneNumber = WhatsAppMessageDetails[0].phone_number;
+                      const clientName = WhatsAppMessageDetails[0].name;
+                      const siteLocation = WhatsAppMessageDetails[0].site_name;
+                      const marketerName = WhatsAppMessageDetails[0].marketer_name; const pickupTime = req.body.pickup_time;
+                      const pickupDate = req.body.pickup_date;
+                      const pickupLocation = req.body.pickup_location;
+                      const templateName = 'sv_approved';
+                      const parameters = [
+                        { name: 'client_name', value: clientName },
+                        { name: 'site_location', value: siteLocation },
+                        { name: 'marketer_name', value: marketerName },
+                        { name: 'pickup_time', value: pickupTime },
+                        { name: 'pickup_date', value: pickupDate },
+                        { name: 'pickup_location', value: pickupLocation },
+                      ];
                       const broadcastName = 'test_broadcast';
 
                       try {

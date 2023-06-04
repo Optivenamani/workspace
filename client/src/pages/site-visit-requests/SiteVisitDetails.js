@@ -382,7 +382,6 @@ const SiteVisitDetails = () => {
                         <option value="">Select a Vehicle</option>
                         {vehicles.map((v) => (
                           <option key={crypto.randomUUID()} value={v.id}>
-                            {v.make} {v.model} • {v.number_of_seats} seats •{" "}
                             {v.vehicle_registration}
                           </option>
                         ))}

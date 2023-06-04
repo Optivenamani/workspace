@@ -55,7 +55,7 @@ const SiteVisitRequests = () => {
       case "complete":
         return "bg-primary";
       case "in_progress":
-        return "bg-secondary";
+        return "bg-purple-500";
       case "reviewed":
         return "bg-primary";
       case "cancelled":
@@ -91,7 +91,7 @@ const SiteVisitRequests = () => {
               <div className="badge badge-primary text-white font-bold mr-1">
                 Completed
               </div>
-              <div className="badge badge-secondary text-white font-bold mr-1">
+              <div className="badge bg-purple-500 border-none text-white font-bold mr-1">
                 In Progress
               </div>
             </div>
