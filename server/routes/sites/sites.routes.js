@@ -9,7 +9,7 @@ module.exports = (pool) => {
     authenticateJWT,
     async (req, res) => {
       try {
-        pool.query("SELECT * FROM Projects", (err, results) => {
+        pool.query("SELECT * FROM Projects ORDER BY name ASC", (err, results) => {
           if (err) throw err;
           res.json(results);
         });
@@ -20,6 +20,6 @@ module.exports = (pool) => {
       }
     }
   );
-  
+
   return router;
 };
