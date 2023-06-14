@@ -111,7 +111,7 @@ const App = () => {
         <Routes>
           {/* Login */}
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<PrivateRoutes />}>
+          <Route path="/" exact element={<PrivateRoutes />}>
             {/* App Menu */}
             <Route path="/app-menu" element={<AppMenu />} />
             {/* Home */}

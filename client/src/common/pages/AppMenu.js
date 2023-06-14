@@ -2,10 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const AppMenu = ({ onAppSelect }) => {
-  const handleAppSelect = (appName) => {
-    // Perform any necessary actions before selecting the app
-    // For example, you might want to store the selected app in state or localStorage
-    // Then, call onAppSelect to set selectedApp to true and render the selected application
+  const handleAppSelect = (appName, event) => {
     onAppSelect(appName);
   };
 
@@ -36,24 +33,6 @@ const AppMenu = ({ onAppSelect }) => {
               <Link
                 // to="#"
                 className="block overflow-hidden group"
-                onClick={() => handleAppSelect("Visitor Management")}
-              >
-                <img
-                  src="https://images.pexels.com/photos/7564257/pexels-photo-7564257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                  alt=""
-                  className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
-                />
-                <div className="relative pt-3 bg-white">
-                  <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Visitors Management
-                  </h3>
-                </div>
-              </Link>
-            </li>
-            <li>
-              <Link
-                // to="#"
-                className="block overflow-hidden group"
                 onClick={handleAppSelect}
               >
                 <img
@@ -64,6 +43,24 @@ const AppMenu = ({ onAppSelect }) => {
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
                     Workplan
+                  </h3>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                // to="#"
+                className="block overflow-hidden group"
+                onClick={() => handleAppSelect("Visitor Management")}
+              >
+                <img
+                  src="https://images.pexels.com/photos/7564257/pexels-photo-7564257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  alt=""
+                  className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                />
+                <div className="relative pt-3 bg-white">
+                  <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                    Visitors Management
                   </h3>
                 </div>
               </Link>

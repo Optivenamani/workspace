@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchActiveSiteVisits } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
 import { fetchActiveVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
 import "./Sidebar.css";
+import { Link } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
   const accessRole = useSelector((state) => state.user.accessRole);
@@ -62,16 +63,16 @@ const Sidebar = ({ children }) => {
           <ul className="menu p-4 w-80 bg-base-100 text-base-content">
             {/* Home */}
             <li>
-              <a href="/logistics-home" className="font-bold my-1">
+              <Link to="/logistics-home" className="font-bold my-1">
                 Home
-              </a>
+              </Link>
             </li>
             {/* Dashboard */}
             {(isRachel || isJoe || isAdmin || isHOL || isAnalyst || isOperations) && (
               <li>
-                <a href="/dashboard" className="font-bold my-1">
+                <Link to="/dashboard" className="font-bold my-1">
                   Dashboard
-                </a>
+                </Link>
               </li>
             )}
             {/* Reports */}
@@ -81,24 +82,24 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-title font-bold">Reports</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isRachel || isJoe || isAdmin || isHOL || isAnalyst || isOperations) && (
-                    <a href="/approved-site-visit-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
+                    <Link to="/approved-site-visit-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
                       Approved Site Visits
-                    </a>
+                    </Link>
                   )}
                   {(isRachel || isJoe || isAdmin || isHOL || isAnalyst || isOperations) && (
-                    <a href="/site-visits-summary-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
+                    <Link to="/site-visits-summary-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
                       Site Visits Summary
-                    </a>
+                    </Link>
                   )}
                   {(isRachel || isJoe || isAdmin || isHOL || isAnalyst || isOperations) && (
-                    <a href="/most-booked-sites-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
+                    <Link to="/most-booked-sites-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
                       Most Booked Sites
-                    </a>
+                    </Link>
                   )}
                   {(isRachel || isJoe || isAdmin || isHOL || isAnalyst || isOperations) && (
-                    <a href="/marketers-feedback-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
+                    <Link to="/marketers-feedback-reports" className="font-sans mt-1 hover:bg-base-200 rounded p-2">
                       Marketers Feedback
-                    </a>
+                    </Link>
                   )}
                 </div>
               </div>
@@ -110,52 +111,52 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-title font-bold">Site Visits</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
-                    <a
-                      href="/book-site-visit"
+                    <Link
+                      to="/book-site-visit"
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     >
                       Book a Site Visit
-                    </a>
+                    </Link>
                   )}
                   {(isMarketer || isAdmin) && (
-                    <a
+                    <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      href="/my-site-visits"
+                      to="/my-site-visits"
                     >
                       My Site Visits
-                    </a>
+                    </Link>
                   )}
                   {(isAdmin || isDriver) && (
-                    <a
+                    <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      href="/assigned-site-visits"
+                      to="/assigned-site-visits"
                     >
                       Assigned Site Visits
-                    </a>
+                    </Link>
                   )}
                   {(isRachel || isJoe || isAdmin || isOperations || isHOL) && (
-                    <a
+                    <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      href="/approved-site-visits"
+                      to="/approved-site-visits"
                     >
                       Approved Site Visits
-                    </a>
+                    </Link>
                   )}
                   {(isAdmin || isHOL) && (
-                    <a
+                    <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      href="/site-visit-requests"
+                      to="/site-visit-requests"
                     >
                       Site Visit Requests
-                    </a>
+                    </Link>
                   )}
                   {(isRachel || isJoe || isAdmin || isOperations || isHOL) && (
-                    <a
+                    <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      href="/all-site-visits"
+                      to="/all-site-visits"
                     >
                       All Site Visit Bookings
-                    </a>
+                    </Link>
                   )}
                 </div>
               </div>
@@ -166,12 +167,12 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Sites</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  <a
+                  <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    href="/view-sites"
+                    to="/view-sites"
                   >
                     View Sites
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}
@@ -180,51 +181,51 @@ const Sidebar = ({ children }) => {
               <input type="checkbox" className="peer" />
               <div className="collapse-title font-bold">Vehicles</div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                <a
-                  href="/request-vehicle"
+                <Link
+                  to="/request-vehicle"
                   className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                 >
                   Request For A Vehicle
-                </a>
+                </Link>
                 {(isAdmin || isHOL) && (
-                  <a
-                    href="/vehicle-requests"
+                  <Link
+                    to="/vehicle-requests"
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                   >
                     Vehicle Requests
-                  </a>
+                  </Link>
                 )}
-                <a
-                  href="/past-vehicle-requests"
+                <Link
+                  to="/past-vehicle-requests"
                   className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                 >
                   My Past Vehicle Requests
-                </a>
+                </Link>
                 {(isAdmin || isOperations || isHOL) && (
                   <>
                     {(isAdmin || isOperations || isHOL) && (
-                      <a
+                      <Link
                         className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                        href="/create-vehicle"
+                        to="/create-vehicle"
                       >
                         Add Vehicle
-                      </a>
+                      </Link>
                     )}
-                    <a
+                    <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      href="/vehicles"
+                      to="/vehicles"
                     >
                       View Vehicles
-                    </a>
+                    </Link>
                   </>
                 )}
                 {(isAdmin || isDriver) && (
-                  <a
+                  <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    href="/assigned-vehicle-requests"
+                    to="/assigned-vehicle-requests"
                   >
                     Assigned Vehicle Requests
-                  </a>
+                  </Link>
                 )}
               </div>
             </div>
@@ -236,22 +237,22 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
                     <>
-                      <a
+                      <Link
                         className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                        href="/my-clients-contacts"
+                        to="/my-clients-contacts"
                       >
                         My Clients' Contacts
-                      </a>
+                      </Link>
                     </>
                   )}
                   {(isRachel || isJoe || isAdmin || isHOL || isOperations) && (
                     <>
-                      <a
+                      <Link
                         className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                        href="/all-clients-contacts"
+                        to="/all-clients-contacts"
                       >
                         All Clients' Contacts
-                      </a>
+                      </Link>
                     </>
                   )}
                 </div>
@@ -263,21 +264,21 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Drivers</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  <a
+                  <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    href="/drivers"
+                    to="/drivers"
                   >
                     View Drivers
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}
             {/* Users */}
             {(isAdmin || isHOL) && (
               <li>
-                <a href="/users" className="font-bold my-1">
+                <Link to="/users" className="font-bold my-1">
                   Users
-                </a>
+                </Link>
               </li>
             )}
           </ul>
