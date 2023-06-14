@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import formatTime from "../../utils/formatTime";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import huh from "../../assets/app-illustrations/Shrug-bro.png";
+import huh from "../../../assets/app-illustrations/Shrug-bro.png";
+import formatTime from "../../../utils/formatTime";
 
-const AssignedBookings = () => {
-  const [siteVisits, setSiteVisits] = useState([]);
+const AssignedVehicleRequests = () => {
+  const [vehicleRequests, setVehicleRequests] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const response = await fetch(
-          "https://workspace.optiven.co.ke/api/drivers/assigned-site-visits",
+          "https://workspace.optiven.co.ke/api/drivers/assigned-vehicle-requests",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -22,20 +22,20 @@ const AssignedBookings = () => {
           }
         );
         const data = await response.json();
-        setSiteVisits(data);
+        console.log(data);
+        setVehicleRequests(data);
       } catch (error) {
-        console.error("Error fetching site visits:", error);
+        console.error("Error fetching vehicle requests:", error);
       }
     };
-    
+
     fetchTrips();
   }, [token]);
-  console.log(siteVisits)
 
   const startTrip = async (id) => {
     try {
       const response = await fetch(
-        `https://workspace.optiven.co.ke/api/site-visits/start-trip/${id}`,
+        `https://workspace.optiven.co.ke/api/vehicle-requests/start-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -45,10 +45,10 @@ const AssignedBookings = () => {
       );
 
       if (response.ok) {
-        const updatedSiteVisits = siteVisits.map((sv) =>
-          sv.id === id ? { ...sv, status: "in_progress" } : sv
+        const updatedVehicleRequests = vehicleRequests.map((vr) =>
+          vr.id === id ? { ...vr, status: "in_progress" } : vr
         );
-        setSiteVisits(updatedSiteVisits);
+        setVehicleRequests(updatedVehicleRequests);
         toast.success("Trip set to in progress.", {
           position: "top-center",
           closeOnClick: true,
@@ -82,7 +82,7 @@ const AssignedBookings = () => {
   const endTrip = async (id) => {
     try {
       const response = await fetch(
-        `https://workspace.optiven.co.ke/api/site-visits/end-trip/${id}`,
+        `https://workspace.optiven.co.ke/api/vehicle-requests/end-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -92,8 +92,10 @@ const AssignedBookings = () => {
       );
 
       if (response.ok) {
-        const updatedSiteVisits = siteVisits.filter((sv) => sv.id !== id);
-        setSiteVisits(updatedSiteVisits);
+        const updatedVehicleRequests = vehicleRequests.filter(
+          (vr) => vr.id !== id
+        );
+        setVehicleRequests(updatedVehicleRequests);
         toast.success("Trip set to complete.", {
           position: "top-center",
           closeOnClick: true,
@@ -129,11 +131,11 @@ const AssignedBookings = () => {
       <Sidebar>
         <div className="flex justify-center">
           <div className="container px-4 py-6">
-            {siteVisits.length > 0 ? (
+            {vehicleRequests.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {siteVisits.map((sv, i) => (
+                {vehicleRequests.map((vr, i) => (
                   <div
-                    key={sv.id}
+                    key={vr.id}
                     className="relative block overflow-hidden rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8"
                   >
                     <span className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"></span>
@@ -141,59 +143,54 @@ const AssignedBookings = () => {
                     <div className="sm:flex sm:justify-between sm:gap-4">
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
-                          {sv.pickup_location}
+                          {vr.pickup_location}
                         </h3>
                         <p className="mt-1 text-xs font-medium text-gray-600">
-                          <span className="font-bold">Site Name: </span>{" "}
-                          {sv.site_name}
+                          <span className="font-bold">Requester: </span>{" "}
+                          {vr.requester}
                         </p>
                         <p className="mt-1 text-xs font-medium text-gray-600">
-                          <span className="font-bold">Marketer Name: </span>{" "}
-                          {sv.marketer_name}
+                          <span className="font-bold">Destination: </span>{" "}
+                          {vr.destination_location}
+                        </p>
+                        <p className="mt-1 text-xs font-medium text-gray-600">
+                          <span className="font-bold">Number of Passengers: </span>{" "}
+                          {vr.number_of_passengers}
                         </p>
                         <p className="mt-1 text-xs font-medium text-gray-600">
                           <span className="font-bold">Vehicle Registration: </span>{" "}
-                          {sv.reg}
+                          {vr.vehicle_registration}
                         </p>
                       </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <p className="max-w-[40ch] text-sm">
-                        <span className="font-bold">Passengers: </span>
-                        {sv.total_passengers}
-                      </p>
                     </div>
 
                     <dl className="mt-6 flex gap-4 sm:gap-6">
                       <div className="flex flex-col-reverse">
                         <dt className="text-sm font-medium text-gray-600">
-                          {new Date(sv.pickup_date).toLocaleDateString("en-GB")}
+                          {new Date(vr.pickup_date).toLocaleDateString("en-GB")}
                         </dt>
                         <dd className="text-xs font-bold">Pickup Date</dd>
                       </div>
 
                       <div className="flex flex-col-reverse">
                         <dt className="text-sm font-medium text-gray-600">
-                          {formatTime(sv.pickup_time)}
+                          {formatTime(vr.pickup_time)}
                         </dt>
                         <dd className="text-xs font-bold">Pickup Time</dd>
                       </div>
-
                       <div className="flex flex-col-reverse">
                         <button
-                          className={`btn ${
-                            sv.status === "in_progress"
-                              ? "btn-error"
-                              : "btn-primary"
-                          } text-white`}
+                          className={`btn ${vr.status === "in_progress"
+                            ? "btn-error"
+                            : "btn-primary"
+                            } text-white`}
                           onClick={() =>
-                            sv.status === "in_progress"
-                              ? endTrip(sv.id)
-                              : startTrip(sv.id)
+                            vr.status === "in_progress"
+                              ? endTrip(vr.id)
+                              : startTrip(vr.id)
                           }
                         >
-                          {sv.status === "in_progress"
+                          {vr.status === "in_progress"
                             ? "End Trip"
                             : "Start Trip"}
                         </button>
@@ -207,7 +204,8 @@ const AssignedBookings = () => {
                 <div className="flex flex-col items-center mt-20">
                   <img src={huh} alt="huh" className="lg:w-96" />
                   <h1 className="font-bold text-center">
-                    No assigned site visit trips available. Check back later.
+                    No assigned vehicle requests' trips available. Check back
+                    later.
                   </h1>
                 </div>
               </div>
@@ -218,5 +216,4 @@ const AssignedBookings = () => {
     </>
   );
 };
-
-export default AssignedBookings;
+export default AssignedVehicleRequests;

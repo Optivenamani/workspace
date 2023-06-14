@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import formatTime from "../../utils/formatTime";
+import formatTime from "../../../utils/formatTime";
 
 const ConfirmInfo = ({ onSubmitForm, formData }) => {
   const [isChecked, setIsChecked] = useState(false);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import huh from "../../assets/app-illustrations/Shrug-bro.png";
+import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 
 const ViewVehicles = () => {
   const [query, setQuery] = useState("");

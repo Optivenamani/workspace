@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logo from "../assets/optiven-logo-full.png";
+import logo from "../../assets/optiven-logo-full.png";
 import { ToastContainer, toast } from "react-toastify";
 // redux
 import { useDispatch } from "react-redux";
@@ -9,7 +9,7 @@ import {
   setUser,
   setToken,
   setAccessRole,
-} from "../redux/features/user/userSlice";
+} from "../../redux/logistics/features/user/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Login = () => {
       dispatch(setToken(response.data.token));
       dispatch(setAccessRole(response.data.user["Accessrole"]));
       // redirect to home page
-      navigate("/");
+      navigate("/app-menu");
     } catch (error) {
       console.error(error.response.data);
       // Check if the error is a validation error
@@ -101,10 +101,10 @@ const Login = () => {
         <button
           type="submit"
           id="submit"
-          className="btn btn-primary w-full max-w-xs mt-4"
+          className="btn btn-primary w-full max-w-xs mt-4 text-white"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Submitting..." : "Login"}
         </button>
         <label htmlFor="password" className="label">
           <a href="https://www.portal.optiven.co.ke/Auth/forgotpass.php" className="label-text font-bold text-green-600 italic hover:underline">Forgot Password?</a>

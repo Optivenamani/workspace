@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../components/Sidebar";
-import formatTime from "../../utils/formatTime";
+import formatTime from "../../../utils/formatTime";
 
 const MySiteVisits = () => {
   const [startDate, setStartDate] = useState("");

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchActiveSiteVisits } from "../redux/features/siteVisit/siteVisitSlice";
-import { fetchActiveVehicleRequests } from "../redux/features/vehicleRequest/vehicleRequestSlice";
+import { fetchActiveSiteVisits } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
+import { fetchActiveVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
 import "./Sidebar.css";
 
 const Sidebar = ({ children }) => {
@@ -62,7 +62,7 @@ const Sidebar = ({ children }) => {
           <ul className="menu p-4 w-80 bg-base-100 text-base-content">
             {/* Home */}
             <li>
-              <a href="/" className="font-bold my-1">
+              <a href="/logistics-home" className="font-bold my-1">
                 Home
               </a>
             </li>

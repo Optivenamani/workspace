@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 // assets
-import logo from "../../assets/optiven-logo-full.png";
-import userAvatar from "../../assets/gifs/user.gif";
+import logo from "../../../assets/optiven-logo-full.png";
+import userAvatar from "../../../assets/gifs/user.gif";
 // css
 import "./styles/Navbar.css";
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/features/user/userSlice";
+import { logout } from "../../../redux/logistics/features/user/userSlice";
 
 const selectNotifications = state => state.notifications.notifications.notifications;
 
@@ -55,7 +55,7 @@ const Navbar = ({ fullName, email }) => {
             </svg>
           </label>
         </div>
-        <Link className="btn btn-ghost normal-case text-xl" to="/">
+        <Link className="btn btn-ghost normal-case text-xl" to="/logistics-home">
           <img src={logo} alt="logo" className="w-40" />
         </Link>
       </div>

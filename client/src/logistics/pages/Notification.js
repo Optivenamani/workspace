@@ -9,8 +9,8 @@ import {
   fetchNotifications,
   setNotifications as updateNotifications,
   addNotification,
-} from "../redux/features/notifications/notificationsSlice";
-import huh from "../assets/app-illustrations/Shrug-bro.png";
+} from "../../redux/logistics/features/notifications/notificationsSlice";
+import huh from "../../assets/app-illustrations/Shrug-bro.png";
 
 const Notifications = () => {
   const notificationsArray = useSelector(

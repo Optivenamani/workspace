@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
-import formatTime from "../../utils/formatTime";
+import formatTime from "../../../utils/formatTime";
 
-const ApprovedBookings = () => {
+const AllSiteVisits = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteVisits, setSiteVisits] = useState([]);
-
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
@@ -28,11 +27,23 @@ const ApprovedBookings = () => {
     fetchSiteVisits();
   }, [token]);
 
-  const approvedSiteBookings = siteVisits.filter(
-    (siteVisit) => siteVisit.status !== "rejected"
-  );
+  console.log(siteVisits);
 
-  console.log(approvedSiteBookings);
+  const filteredSiteVisits = siteVisits.filter((visit) => {
+    const visitDate = new Date(visit.pickup_date);
+    const startDateObj = startDate && new Date(startDate);
+    const endDateObj = endDate && new Date(endDate);
+
+    if (startDateObj && endDateObj) {
+      return visitDate >= startDateObj && visitDate <= endDateObj;
+    } else if (startDate) {
+      return visitDate >= startDateObj;
+    } else if (endDateObj) {
+      return visitDate <= endDateObj;
+    } else {
+      return true;
+    }
+  });
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -41,22 +52,6 @@ const ApprovedBookings = () => {
   const handleEndDateChange = (e) => {
     setEndDate(e.target.value);
   };
-
-  const filteredBookings = approvedSiteBookings.filter((item) => {
-    const itemDate = new Date(item.date);
-    const startDateObj = startDate && new Date(startDate);
-    const endDateObj = endDate && new Date(endDate);
-
-    if (startDateObj && endDateObj) {
-      return itemDate >= startDateObj && itemDate <= endDateObj;
-    } else if (startDate) {
-      return itemDate >= startDateObj;
-    } else if (endDateObj) {
-      return itemDate <= endDateObj;
-    } else {
-      return true;
-    }
-  });
 
   return (
     <>
@@ -78,34 +73,51 @@ const ApprovedBookings = () => {
             />
           </div>
         </div>
-        <div className="px-4 mt-4 flex justify-center pb-10">
+        <div className="px-4 mt-4 flex justify-center mb-10">
           <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
             <table className="table table-zebra w-full">
               {/* head */}
               <thead>
                 <tr>
                   <th>Index</th>
-                  <th>Site</th>
-                  <th>Pickup Location</th>
+                  <th>Marketer</th>
+                  <th>Site Visited</th>
+                  <th>Location</th>
                   <th>Date</th>
                   <th>Time</th>
                   <th>Number of Clients</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredBookings.map((item, i) => (
-                  <tr key={item.id}>
-                    <th>{i + 1}</th>
-                    <td>{item.site_name}</td>
-                    <td>{item.pickup_location}</td>
+                {/* rows */}
+                {filteredSiteVisits.map((siteVisit, index) => (
+                  <tr key={index}>
+                    <th>{index + 1}</th>
+                    <td>{siteVisit.marketer_name.toUpperCase()}</td>
+                    <td>{siteVisit.site_name}</td>
+                    <td>{siteVisit.pickup_location}</td>
                     <td>
-                      {new Date(item.pickup_date).toLocaleDateString("en-GB")}
+                      {new Date(siteVisit.pickup_date).toLocaleDateString(
+                        "en-GB"
+                      )}
                     </td>
-                    <td>{formatTime(item.pickup_time)}</td>
-                    <td className="text-center">{item.num_clients}</td>
+
+                    <td>{formatTime(siteVisit.pickup_time)}</td>
+                    <td>{siteVisit.num_clients}</td>
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <th>Index</th>
+                  <th>Marketer ID</th>
+                  <th>Site Visited</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Number of Clients</th>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
@@ -114,4 +126,4 @@ const ApprovedBookings = () => {
   );
 };
 
-export default ApprovedBookings;
+export default AllSiteVisits;

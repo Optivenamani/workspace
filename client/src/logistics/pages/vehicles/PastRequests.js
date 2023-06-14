@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Sidebar from "../../components/Sidebar";
-import formatTime from "../../utils/formatTime";
+import formatTime from "../../../utils/formatTime";
 
 const PastRequests = () => {
   const [startDate, setStartDate] = useState("");
