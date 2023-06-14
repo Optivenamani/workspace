@@ -32,7 +32,7 @@ const Navbar = ({ fullName, email }) => {
     navigate("/login");
   };
 
-  const isAppMenuPage = location.pathname === "/app-menu";
+  const isAppMenuPage = location.pathname === "/";
 
   return (
     <div className="navbar bg-primary">
@@ -63,7 +63,7 @@ const Navbar = ({ fullName, email }) => {
             </label>
           </div>
         )}
-        <Link className="btn btn-ghost normal-case text-xl" to="/app-menu">
+        <Link className="btn btn-ghost normal-case text-xl" to="/">
           <img src={logo} alt="logo" className="w-40" />
         </Link>
       </div>
@@ -110,7 +110,7 @@ const Navbar = ({ fullName, email }) => {
             )}
             {isAppMenuPage ? null : (
               <li>
-                <Link className="justify-between font-bold" to="/app-menu">
+                <Link className="justify-between font-bold" to="/">
                   Menu
                   <span className="badge badge-sm badge-neutral font-bold">
                     New

@@ -113,7 +113,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/" exact element={<PrivateRoutes />}>
             {/* App Menu */}
-            <Route path="/app-menu" element={<AppMenu />} />
+            <Route path="/" element={<AppMenu />} />
             {/* Home */}
             <Route path="/logistics-home" element={<Home />} />
             {/* Dashboard */}

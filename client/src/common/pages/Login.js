@@ -35,7 +35,7 @@ const Login = () => {
       dispatch(setToken(response.data.token));
       dispatch(setAccessRole(response.data.user["Accessrole"]));
       // redirect to home page
-      navigate("/app-menu");
+      navigate("/");
     } catch (error) {
       console.error(error.response.data);
       // Check if the error is a validation error
