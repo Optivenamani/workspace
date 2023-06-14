@@ -4,7 +4,7 @@ const express = require("express");
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const pdfMakePrinter = require('pdfmake/src/printer');
-const authenticateJWT = require("../../middleware/authenticateJWT");
+const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
 // Nodemailer helper function to send email

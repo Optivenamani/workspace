@@ -1,6 +1,6 @@
 const express = require("express");
 const nodemailer = require('nodemailer');
-const authenticateJWT = require("../../middleware/authenticateJWT");
+const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
 // Nodemailer helper function to send email

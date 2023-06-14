@@ -2,7 +2,7 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require('axios');
-const authenticateJWT = require("../../middleware/authenticateJWT");
+const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
 const WATI_TOKEN = process.env.WATI_TOKEN;

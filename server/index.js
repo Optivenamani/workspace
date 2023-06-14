@@ -53,14 +53,14 @@ const login = require("./routes/auth/login.routes");
 const logout = require("./routes/auth/logout.routes");
 const users = require("./routes/auth/user.routes");
 // Import other routes
-const sites = require("./routes/sites/sites.routes");
-const vehicles = require("./routes/vehicles/vehicles.routes");
-const siteVisitRequests = require("./routes/site-visit-requests/siteVisitRequests.routes");
-const siteVisits = require("./routes/site-visits/siteVisit.routes");
-const drivers = require("./routes/drivers/drivers.routes");
-const vehicleRequests = require("./routes/vehicle-requests/vehicleRequests.routes");
-const clients = require("./routes/clients/clients.routes");
-const notifications = require("./routes/notifications/notifications.routes");
+const sites = require("./routes/logistics/sites/sites.routes");
+const vehicles = require("./routes/logistics/vehicles/vehicles.routes");
+const siteVisitRequests = require("./routes/logistics/site-visit-requests/siteVisitRequests.routes");
+const siteVisits = require("./routes/logistics/site-visits/siteVisit.routes");
+const drivers = require("./routes/logistics/drivers/drivers.routes");
+const vehicleRequests = require("./routes/logistics/vehicle-requests/vehicleRequests.routes");
+const clients = require("./routes/logistics/clients/clients.routes");
+const notifications = require("./routes/logistics/notifications/notifications.routes");
 
 // Configure CORS options
 const corsOptions = {
