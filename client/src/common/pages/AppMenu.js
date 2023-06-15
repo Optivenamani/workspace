@@ -42,7 +42,7 @@ const AppMenu = ({ onAppSelect }) => {
                 />
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Workplan
+                    Workplan (Coming Soon 😃)
                   </h3>
                 </div>
               </Link>
@@ -60,7 +60,7 @@ const AppMenu = ({ onAppSelect }) => {
                 />
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Visitors Management
+                    Visitors Management (Coming Soon 😃)
                   </h3>
                 </div>
               </Link>
@@ -78,7 +78,7 @@ const AppMenu = ({ onAppSelect }) => {
                 />
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Coming Soon
+                    Coming Soon 👀
                   </h3>
                 </div>
               </Link>
