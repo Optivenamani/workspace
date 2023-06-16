@@ -37,6 +37,7 @@ const visitorManagementPool = mysql.createPool({
   connectTimeout: 30000,
 });
 
+
 // Check database connection
 pool.getConnection((err, connection) => {
   if (err) {
@@ -89,6 +90,8 @@ const vehicleRequests = require("./routes/logistics/vehicle-requests/vehicleRequ
 const clients = require("./routes/logistics/clients/clients.routes");
 const notifications = require("./routes/logistics/notifications/notifications.routes");
 const visitors = require("./routes/visitors-management/visitors/visitors.routes");
+const parking = require("./routes/visitors-management/parking_information/parking.routes");
+
 
 // Configure CORS options
 const corsOptions = {
@@ -119,6 +122,7 @@ app.use("/api/vehicle-requests", vehicleRequests(pool));
 app.use("/api/clients", clients(pool));
 app.use("/api/notifications", notifications(pool));
 app.use("/api/visitors", visitors(visitorManagementPool));
+app.use("/api/parking", parking(visitorManagementPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
