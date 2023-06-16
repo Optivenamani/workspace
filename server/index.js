@@ -22,15 +22,42 @@ const pool = mysql.createPool({
   queueLimit: 0,
   connectTimeout: 30000,
 });
+
+// Set up the Express app and database connection pool
+const visitorManagementPool = mysql.createPool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: 'visitors_management',
+  ssl: { rejectUnauthorized: false },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 30000,
+});
+
+
 // Check database connection
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error("Error connecting to the database:", err.message);
+    console.error("Error connecting to the logistics database:", err.message);
   } else {
-    console.log("Connected to the database");
+    console.log("Connected to the logistics database");
     connection.release();
   }
 });
+
+// Check database connection
+visitorManagementPool.getConnection((err, connection) => {
+  if (err) {
+    console.error("Error connecting to the visitors management database:", err.message);
+  } else {
+    console.log("Connected to the visitors management database");
+    connection.release();
+  }
+});
+
 // Create an HTTP server instance and attach the Express app to it
 const server = http.createServer(app);
 // Initialize a Socket.IO instance and attach it to the HTTP server
@@ -48,6 +75,7 @@ const io = socketIO(server, {
     credentials: true,
   },
 });
+
 // Import auth routes
 const login = require("./routes/auth/login.routes");
 const logout = require("./routes/auth/logout.routes");
@@ -61,6 +89,9 @@ const drivers = require("./routes/logistics/drivers/drivers.routes");
 const vehicleRequests = require("./routes/logistics/vehicle-requests/vehicleRequests.routes");
 const clients = require("./routes/logistics/clients/clients.routes");
 const notifications = require("./routes/logistics/notifications/notifications.routes");
+const visitors = require("./routes/visitors-management/visitors/visitors.routes");
+const parking = require("./routes/visitors-management/parking_information/parking.routes");
+
 
 // Configure CORS options
 const corsOptions = {
@@ -90,6 +121,9 @@ app.use("/api/drivers", drivers(pool));
 app.use("/api/vehicle-requests", vehicleRequests(pool));
 app.use("/api/clients", clients(pool));
 app.use("/api/notifications", notifications(pool));
+app.use("/api/visitors", visitors(visitorManagementPool));
+app.use("/api/parking", parking(visitorManagementPool));
+
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
   console.log("Connected");
