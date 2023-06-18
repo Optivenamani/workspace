@@ -74,7 +74,7 @@ const Dashboard = () => {
         const data = await response.json();
         // Updating state with fetched data
         setVehicleRequests(data);
-        console.log(data)
+        console.log(data);
       } catch (error) {
         // Logging error in case of failure
         console.error("Error fetching vehicle requests:", error);
@@ -87,7 +87,6 @@ const Dashboard = () => {
     fetchSiteVisits();
     // Call the function to fetch vehicle requests
     fetchVehicleRequests();
-
   }, [token]);
 
   const countVisits = () => {
@@ -124,11 +123,13 @@ const Dashboard = () => {
   const countVisitsPerDay = () => {
     const counts = {};
     sitesData.forEach((visit) => {
-      const date = visit.pickup_date.split("T")[0];
-      if (date in counts) {
-        counts[date]++;
-      } else {
-        counts[date] = 1;
+      if (visit.pickup_date) {
+        const date = visit.pickup_date.split("T")[0];
+        if (date in counts) {
+          counts[date]++;
+        } else {
+          counts[date] = 1;
+        }
       }
     });
 
@@ -185,7 +186,7 @@ const Dashboard = () => {
                         onLoad: { duration: 1000 },
                       }}
                       labelComponent={<VictoryTooltip />}
-                    // padAngle={({ datum }) => datum.count}
+                      // padAngle={({ datum }) => datum.count}
                     />
                   </div>
                 </div>
@@ -221,7 +222,7 @@ const Dashboard = () => {
                           { length: maxVisits + 1 },
                           (_, index) => index
                         )}
-                        tickCount='5'
+                        tickCount={5}
                       />
                       <VictoryBar
                         data={siteCounts}
@@ -261,8 +262,11 @@ const Dashboard = () => {
                       />
                       <div className="font-bold text-7xl text-center">
                         {
-                          sitesData.filter((sv) => sv.status === "complete" || sv.status === "reviewed")
-                            .length
+                          sitesData.filter(
+                            (sv) =>
+                              sv.status === "complete" ||
+                              sv.status === "reviewed"
+                          ).length
                         }
                       </div>
                     </div>
@@ -341,8 +345,9 @@ const Dashboard = () => {
                       />
                       <div className="font-bold text-7xl text-center">
                         {
-                          vehicleRequests.filter((vr) => vr.status === "completed")
-                            .length
+                          vehicleRequests.filter(
+                            (vr) => vr.status === "completed"
+                          ).length
                         }
                       </div>
                     </div>
@@ -358,8 +363,7 @@ const Dashboard = () => {
                       <div className="font-bold text-7xl text-center">
                         {
                           vehicleRequests.filter(
-                            (vr) =>
-                              vr.status === "rejected"
+                            (vr) => vr.status === "rejected"
                           ).length
                         }
                       </div>

@@ -264,7 +264,7 @@ const Notifications = () => {
                   notificationsArray.map((notification, index) => (
                     <div
                       key={index}
-                      className={`bg-white shadow-lg rounded-md p-4 flex items-center justify-between ${!notification.isRead ? "bg-blue-100" : ""
+                      className={`bg-white shadow-lg rounded-3xl p-4 flex items-center justify-between ${!notification.isRead ? "bg-blue-100" : ""
                         }`}
                     >
                       <div className="flex items-center">

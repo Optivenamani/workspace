@@ -42,14 +42,14 @@ const AppMenu = ({ onAppSelect }) => {
                 />
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Workplan (Coming Soon 😃)
+                    Workplan (Coming Soon)
                   </h3>
                 </div>
               </Link>
             </li>
             <li>
               <Link
-                // to="#"
+                // to="/visitors-management"
                 className="block overflow-hidden group"
                 onClick={() => handleAppSelect("Visitor Management")}
               >
@@ -60,7 +60,7 @@ const AppMenu = ({ onAppSelect }) => {
                 />
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Visitors Management (Coming Soon 😃)
+                    Visitors Management (Coming Soon)
                   </h3>
                 </div>
               </Link>

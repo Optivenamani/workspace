@@ -44,7 +44,10 @@ import {
   ViewDrivers,
   ViewSites,
   ViewVehicles,
+  RegisterVisitor,
 } from "./utils/index";
+import ViewVisitors from "./visitors-management/pages/ViewVisitors";
+import VisitorsManagementHome from "./visitors-management/pages/VisitorsManagementHome";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -189,6 +192,9 @@ const App = () => {
               path="/marketers-feedback-reports"
               element={<MarketersFeedback />}
             />
+            <Route path="/visitors-management" element={<VisitorsManagementHome />} />
+            <Route path="/register-visitor" element={<RegisterVisitor />} />
+            <Route path="/view-visitors" element={<ViewVisitors />} />
           </Route>
         </Routes>
       </Router>

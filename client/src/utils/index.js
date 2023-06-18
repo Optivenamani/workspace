@@ -31,3 +31,4 @@ export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleR
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";
+export { default as RegisterVisitor } from "../visitors-management/pages/RegisterVisitor";
