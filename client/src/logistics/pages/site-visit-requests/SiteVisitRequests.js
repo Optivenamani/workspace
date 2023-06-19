@@ -6,9 +6,20 @@ import { useNavigate } from "react-router-dom";
 import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 
 const SiteVisitRequests = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
   const [pending, setPending] = useState([]);
   const token = useSelector((state) => state.user.token);
+
+  // Calculate the range of items to be displayed on the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = siteVisitRequests.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(siteVisitRequests.length / itemsPerPage);
 
   const navigate = useNavigate();
 
@@ -44,6 +55,10 @@ const SiteVisitRequests = () => {
     navigate(`/site-visit-requests/${id}`);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const getRowColor = (status) => {
     switch (status) {
       case "pending":
@@ -65,6 +80,80 @@ const SiteVisitRequests = () => {
     }
   };
 
+  const renderPaginationButtons = () => {
+    const pageNumbers = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 3; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push("...");
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push("...");
+        for (let i = totalPages - 2; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push("...");
+        pageNumbers.push(currentPage - 1);
+        pageNumbers.push(currentPage);
+        pageNumbers.push(currentPage + 1);
+        pageNumbers.push("...");
+        pageNumbers.push(totalPages);
+      }
+    }
+
+    return (
+      <div className="join">
+        <button
+          className="join-item btn mr-3 w-20"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          «
+        </button>
+        {pageNumbers.map((pageNumber, index) => {
+          if (pageNumber === "...") {
+            return (
+              <button key={index} className="join-item btn btn-disabled">
+                {pageNumber}
+              </button>
+            );
+          }
+          return (
+            <button
+              key={index}
+              onClick={() => handlePageChange(pageNumber)}
+              className={`join-item btn ${
+                pageNumber === currentPage
+                  ? "btn-active btn-success"
+                  : "btn-success"
+              }`}
+              disabled={pageNumber === currentPage}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
+        <button
+          className="join-item btn ml-3 w-20"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          »
+        </button>
+      </div>
+    );
+  };
+
   return (
     <>
       <Sidebar>
@@ -76,22 +165,21 @@ const SiteVisitRequests = () => {
               {pending.length > 1 || pending.length === 0 ? "s" : ""}
             </h1>
             <div>
-              <div className="badge badge-warning text-white font-bold mr-1">
+              <div className="btn btn-outline font-bold mr-1">All</div>
+              <div className="btn btn-warning text-white font-bold mr-1">
                 Pending
               </div>
-              <div className="badge bg-gray-500 border-none text-white font-bold mr-1">
+              <div className="btn bg-gray-500 border-none text-white font-bold mr-1">
                 Cancelled
               </div>
-              <div className="badge badge-info text-white font-bold">
-                Approved
-              </div>
-              <div className="badge badge-error text-white font-bold mx-1">
+              <div className="btn btn-info text-white font-bold">Approved</div>
+              <div className="btn btn-error text-white font-bold mx-1">
                 Rejected
               </div>
-              <div className="badge badge-primary text-white font-bold mr-1">
+              <div className="btn btn-primary text-white font-bold mr-1">
                 Completed
               </div>
-              <div className="badge bg-purple-500 border-none text-white font-bold mr-1">
+              <div className="btn bg-purple-500 border-none text-white font-bold mr-1">
                 In Progress
               </div>
             </div>
@@ -101,7 +189,7 @@ const SiteVisitRequests = () => {
               <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="text-center bg-gray-500 text-secondary-content">
+                    <tr className="text-center bg-gray-700 text-secondary-content">
                       <th className="border border-secondary-content px-2">
                         #
                       </th>
@@ -135,7 +223,7 @@ const SiteVisitRequests = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {siteVisitRequests.map((svr, index) => (
+                    {currentItems.map((svr, index) => (
                       <tr
                         key={svr.id}
                         className={`text-secondary-content text-center hover:bg-neutral cursor-pointer ${getRowColor(
@@ -179,7 +267,7 @@ const SiteVisitRequests = () => {
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="text-center bg-gray-500 text-secondary-content">
+                    <tr className="text-center bg-gray-700 text-secondary-content">
                       <th className="border border-secondary-content px-2">
                         #
                       </th>
@@ -224,6 +312,9 @@ const SiteVisitRequests = () => {
                 </div>
               </div>
             )}
+          </div>
+          <div className="flex justify-center mb-10">
+            <div className="join">{renderPaginationButtons()}</div>
           </div>
         </div>
       </Sidebar>
