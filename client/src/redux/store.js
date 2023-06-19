@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userSlice from "./features/user/userSlice";
-import siteVisitSlice from "./features/siteVisit/siteVisitSlice";
-import vehicleRequestSlice from "./features/vehicleRequest/vehicleRequestSlice";
-import notificationsReducer from "./features/notifications/notificationsSlice";
+import userSlice from "./logistics/features/user/userSlice";
+import siteVisitSlice from "./logistics/features/siteVisit/siteVisitSlice";
+import vehicleRequestSlice from "./logistics/features/vehicleRequest/vehicleRequestSlice";
+import notificationsReducer from "./logistics/features/notifications/notificationsSlice";
 
 const persistConfig = {
   key: "root",
