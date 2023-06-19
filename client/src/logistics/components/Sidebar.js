@@ -26,7 +26,7 @@ const Sidebar = ({ children }) => {
   const isAnalyst = accessRole === `112#420#69`;
   const isAdmin =
     accessRole === `112#700#117#116` ||
-    accessRole === `112#305#117#116#113#770` ||
+    accessRole === `112#305#117#116#113#770#DR777DR007#120#211` ||
     accessRole === `112#114#700`;
   const isOperations =
     accessRole === `112#116#303#305` ||
