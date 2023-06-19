@@ -13,4 +13,16 @@ const AccessRoles = {
   isAnalyst: "112#420#69"
 };
 
+AccessRoles.separateAccessRoles = function (accessRole) {
+  return accessRole.trim().split("#");
+};
+
+AccessRoles.checkAccess = function (accessRole, targetRole) {
+  const separatedRoles = AccessRoles.separateAccessRoles(accessRole);
+  const targetRoles = AccessRoles.separateAccessRoles(targetRole);
+  return targetRoles.every((role) => separatedRoles.includes(role));
+};
+
+
+
 module.exports = AccessRoles;

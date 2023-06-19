@@ -1,8 +1,11 @@
+const AccessRoles = require('./accessRoles');
+
 const checkPermissions = (allowedRoles) => {
   return (req, res, next) => {
     const userAccessRole = req.user.Accessrole;
+    const separatedRoles = AccessRoles.separateAccessRoles(userAccessRole);
 
-    if (allowedRoles.some((role) => userAccessRole.includes(role))) {
+    if (allowedRoles.some((role) => separatedRoles.includes(role))) {
       next();
     } else {
       res.status(403).json({

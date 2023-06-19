@@ -18,7 +18,10 @@ const Sidebar = ({ children }) => {
   // console.log("Active Site Visits:", activeVisits ? activeVisits.length : 'undefined');
   // console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
 
-  const isMarketer = accessRole === `113`;
+
+ 
+
+  /*const isMarketer = accessRole === `113`;
   const isRachel = (accessRole === `113#114`);
   const isJoe = (accessRole === `113#115`);
   const isDriver = (accessRole === `driver69`);
@@ -38,7 +41,36 @@ const Sidebar = ({ children }) => {
   useEffect(() => {
     dispatch(fetchActiveSiteVisits());
     dispatch(fetchActiveVehicleRequests());
+  }, [dispatch]); */
+
+
+  const checkAccessRole = (roles) => {
+    const roleArray = accessRole.split("#");
+    return roles.every((role) => roleArray.includes(role));
+  };
+
+  const isMarketer = checkAccessRole(["113"]);
+  const isRachel = checkAccessRole(["113", "114"]);
+  const isJoe = checkAccessRole(["113", "115"]);
+  const isDriver = accessRole === "driver69";
+  const isHOL = accessRole === "headOfLogistics";
+  const isAnalyst = accessRole === "112#420#69";
+  const isAdmin =
+    accessRole === "112#700#117#116" ||
+    accessRole === "112#305#117#116#113#770" ||
+    accessRole === "112#114#700";
+  const isOperations =
+    accessRole === "112#116#303#305" ||
+    accessRole === "112#304" ||
+    accessRole === "112#305";
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchActiveSiteVisits());
+    dispatch(fetchActiveVehicleRequests());
   }, [dispatch]);
+
 
   // const canRequestVehicle = () => {
   //   if (vehicleRequestStatus === "loading") {
