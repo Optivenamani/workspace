@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 
 const SiteVisitRequests = () => {
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
@@ -38,9 +39,21 @@ const SiteVisitRequests = () => {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        const filtered = data.filter((item) => item.status === "pending");
+
+        // Sort the data by date in descending order
+        const sortedData = data.sort((a, b) => {
+          return new Date(b.pickup_date) - new Date(a.pickup_date);
+        });
+
+        const filtered = sortedData.filter((item) => {
+          if (selectedStatus === "all") {
+            return true;
+          } else {
+            return item.status === selectedStatus;
+          }
+        });
         setPending(filtered);
-        setSiteVisitRequests(data);
+        setSiteVisitRequests(filtered);
         console.log(data);
       } catch (error) {
         console.error("Error fetching site visits:", error);
@@ -49,7 +62,7 @@ const SiteVisitRequests = () => {
 
     fetchSiteVisitRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, selectedStatus]);
 
   const handleView = (id) => {
     navigate(`/site-visit-requests/${id}`);
@@ -154,37 +167,104 @@ const SiteVisitRequests = () => {
     );
   };
 
+  let statusText = "";
+  switch (selectedStatus) {
+    case "all":
+      statusText = "Total Site Visit Requests";
+      break;
+    case "pending":
+      statusText = "Pending Site Visit Requests";
+      break;
+    case "cancelled":
+      statusText = "Cancelled Site Visit Requests";
+      break;
+    case "approved":
+      statusText = "Approved Site Visit Requests";
+      break;
+    case "rejected":
+      statusText = "Rejected Site Visit Requests";
+      break;
+    case "complete":
+      statusText = "Complete Site Visits";
+      break;
+    case "in_progress":
+      statusText = "Site Visits In Progress";
+      break;
+    default:
+      statusText = "Site Visit Requests";
+      break;
+  }
+
   return (
     <>
       <Sidebar>
         <div className="flex flex-col">
           <div className="mt-6 mb-6 flex justify-between mx-4">
-            <h1 className="text-2xl font-bold text-gray-800 uppercase">
+            <h1 className="text-3xl font-bold text-gray-800 uppercase items-center">
               <span className="text-primary font-bold">{pending.length}</span>{" "}
-              Pending Site Visit Request
-              {pending.length > 1 || pending.length === 0 ? "s" : ""}
+              {statusText}
+              {/* {pending.length > 1 || pending.length === 0 ? "s" : ""} */}
             </h1>
             <div>
-              <div className="btn btn-outline font-bold mr-1">All</div>
-              <div className="btn btn-warning text-white font-bold mr-1">
+              <div
+                className={`btn btn-outline font-bold mr-1 ${
+                  selectedStatus === "all" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("all")}
+              >
+                All
+              </div>
+              <div
+                className={`btn btn-warning text-white font-bold mr-1 ${
+                  selectedStatus === "pending" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("pending")}
+              >
                 Pending
               </div>
-              <div className="btn bg-gray-500 border-none text-white font-bold mr-1">
+              <div
+                className={`btn bg-gray-500 text-white font-bold mr-1 border-none ${
+                  selectedStatus === "cancelled" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("cancelled")}
+              >
                 Cancelled
               </div>
-              <div className="btn btn-info text-white font-bold">Approved</div>
-              <div className="btn btn-error text-white font-bold mx-1">
+              <div
+                className={`btn btn-info text-white font-bold ${
+                  selectedStatus === "approved" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("approved")}
+              >
+                Approved
+              </div>
+              <div
+                className={`btn btn-error text-white font-bold mx-1 ${
+                  selectedStatus === "rejected" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("rejected")}
+              >
                 Rejected
               </div>
-              <div className="btn btn-primary text-white font-bold mr-1">
-                Completed
+              <div
+                className={`btn btn-primary text-white font-bold mr-1 ${
+                  selectedStatus === "complete" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("complete")}
+              >
+                Complete
               </div>
-              <div className="btn bg-purple-500 border-none text-white font-bold mr-1">
+              <div
+                className={`btn bg-purple-500 border-none text-white font-bold ${
+                  selectedStatus === "in_progress" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("in_progress")}
+              >
                 In Progress
               </div>
             </div>
           </div>
-          <div className="px-4 mt-2 flex justify-center mb-10">
+          <div className="px-4 mt-2 flex justify-center mb-5">
             {siteVisitRequests.length > 0 ? (
               <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
                 <table className="w-full border-collapse">
