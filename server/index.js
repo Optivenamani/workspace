@@ -149,6 +149,8 @@ app.use("/api/clients", clients(pool));
 app.use("/api/notifications", notifications(pool));
 app.use("/api/visitors", visitors(visitorManagementPool));
 app.use("/api/parking", parking(visitorManagementPool));
+app.use("/api/workplan", workplan(workplanPool));
+app.use("/api/task", task(workplanPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {

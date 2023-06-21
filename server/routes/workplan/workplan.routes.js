@@ -4,13 +4,13 @@ const router = express.Router();
 
 module.exports = (pool) => {
   // Create a new workplan
-  router.post("/", authenticateJWT, async (req, res) => {
+  router.post("/", authenticateJWT,  async (req, res) => {
     const { user_id, title, created_at } = req.body;
 
     try {
       pool.query(
-        "INSERT INTO workplan (user_id, title, created_at) VALUES (?, ?, ?)",
-        [user_id, title, created_at],
+        "INSERT INTO workplan (user_id, title) VALUES (?, ?)",
+        [user_id, title],
         (err, result) => {
           if (err) throw err;
 

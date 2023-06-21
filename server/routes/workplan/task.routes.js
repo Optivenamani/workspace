@@ -4,7 +4,7 @@ const router = express.Router();
 
 module.exports = (pool) => {
   // Create a new task
-  router.post("/", authenticateJWT, async (req, res) => {
+  router.post("/",  async (req, res) => {
     const { workplan_id, title, description, due_date, status, remarks } = req.body;
 
     try {
@@ -26,7 +26,7 @@ module.exports = (pool) => {
   });
 
   // Retrieve all tasks
-  router.get("/", authenticateJWT, async (req, res) => {
+  router.get("/",  async (req, res) => {
     try {
       pool.query("SELECT * FROM tasks", (err, results) => {
         if (err) throw err;
@@ -41,7 +41,7 @@ module.exports = (pool) => {
   });
 
   // Retrieve a single task by id
-  router.get("/:id", authenticateJWT, async (req, res) => {
+  router.get("/:id",  async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -66,7 +66,7 @@ module.exports = (pool) => {
   });
 
   // Delete a task
-  router.delete("/:id", authenticateJWT, async (req, res) => {
+  router.delete("/:id",  async (req, res) => {
     const { id } = req.params;
 
     try {
