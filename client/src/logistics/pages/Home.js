@@ -1,7 +1,12 @@
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import bus from "../../assets/media/home.jpg";
+import {
+  fetchActiveSiteVisits,
+  selectActiveSiteVisits,
+} from "../../redux/logistics/features/siteVisit/siteVisitSlice";
+import { useEffect } from "react";
 
 const Home = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -31,6 +36,17 @@ const Home = () => {
     accessRole === `112#770#303#304#305#116` ||
     accessRole === `112#114#700`;
 
+  const activeVisits = useSelector(selectActiveSiteVisits);
+  const siteVisitStatus = useSelector((state) => state.siteVisit.status);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchActiveSiteVisits());
+  }, [dispatch]);
+
+  const hasActiveSiteVisit =
+    siteVisitStatus === "succeeded" && activeVisits.length > 0;
   return (
     <>
       <Sidebar>
@@ -50,12 +66,25 @@ const Home = () => {
                   </span>
                 </h2>
                 {(isMarketer || isAdmin) && (
-                  <button
-                    onClick={() => navigate("/book-site-visit")}
-                    className="mt-4 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white"
-                  >
-                    Book a Site Visit
-                  </button>
+                  <>
+                    <button
+                      onClick={() => navigate("/book-site-visit")}
+                      disabled={hasActiveSiteVisit} // Disable the button if there is an active site visit
+                      className={`mt-4 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white ${
+                        hasActiveSiteVisit
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`} // Add conditional styling to indicate that the button is disabled
+                    >
+                      Book a Site Visit
+                    </button>
+                    {hasActiveSiteVisit && (
+                      <p className="mt-2 text-red-600 font-bold italic">
+                        You have to COMPLETE YOUR CURRENT SITE VISIT and FILL
+                        THE SURVEY to be able to book a new site visit.
+                      </p>
+                    )}
+                  </>
                 )}
                 <button
                   onClick={() => navigate("/request-vehicle")}
