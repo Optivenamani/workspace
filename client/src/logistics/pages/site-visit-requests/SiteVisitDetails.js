@@ -227,7 +227,7 @@ const SiteVisitDetails = () => {
                 className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
               >
                 <div className="max-w-xl lg:max-w-3xl">
-                  <div action="#" className=" grid grid-cols-6 gap-1">
+                  <div action="#" className="grid grid-cols-6 gap-1">
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="siteName" className="label font-bold">
                         Site
@@ -235,7 +235,7 @@ const SiteVisitDetails = () => {
                       <input
                         type="text"
                         id="siteName"
-                        name="first_name"
+                        name="siteName"
                         value={siteVisitData.site_name}
                         className="input input-bordered"
                         disabled
@@ -251,7 +251,7 @@ const SiteVisitDetails = () => {
                       <input
                         type="text"
                         id="pickupLocation"
-                        name="last_name"
+                        name="pickupLocation"
                         className="input input-bordered"
                         value={
                           pickupLocation ||
@@ -259,9 +259,12 @@ const SiteVisitDetails = () => {
                         }
                         onChange={(e) => setPickupLocation(e.target.value)}
                         disabled={
-                          siteVisitData &&
-                          siteVisitData.status !== "pending" &&
-                          siteVisitData.status !== "approved"
+                          (siteVisitData &&
+                            siteVisitData.status !== "pending" &&
+                            siteVisitData.status !== "approved") ||
+                          (siteVisitData &&
+                            siteVisitData.pickup_location.toLowerCase() ===
+                              "self drive")
                         }
                       />
                     </div>
@@ -272,7 +275,7 @@ const SiteVisitDetails = () => {
                       <input
                         type="date"
                         id="pickupDate"
-                        name="email"
+                        name="pickupDate"
                         className="input input-bordered"
                         value={
                           date ||
@@ -347,6 +350,13 @@ const SiteVisitDetails = () => {
                           setDriver(event.target.value);
                         }}
                         className="select select-bordered"
+                        // disabled={
+                        //   (siteVisitData &&
+                        //     siteVisitData.status !== "pending" &&
+                        //     siteVisitData.status !== "approved") ||
+                        //   (siteVisitData &&
+                        //     siteVisitData.pickup_location === "Self Drive")
+                        // }
                         disabled={
                           siteVisitData &&
                           siteVisitData.status !== "pending" &&
@@ -373,6 +383,13 @@ const SiteVisitDetails = () => {
                         value={vehicle}
                         onChange={(event) => setVehicle(event.target.value)}
                         className="select select-bordered"
+                        // disabled={
+                        //   (siteVisitData &&
+                        //     siteVisitData.status !== "pending" &&
+                        //     siteVisitData.status !== "approved") ||
+                        //   (siteVisitData &&
+                        //     siteVisitData.pickup_location === "Self Drive")
+                        // }
                         disabled={
                           siteVisitData &&
                           siteVisitData.status !== "pending" &&
@@ -408,10 +425,10 @@ const SiteVisitDetails = () => {
 
                     <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                       {siteVisitData &&
-                        siteVisitData.status !== "reviewed" &&
-                        siteVisitData.status !== "complete" &&
-                        siteVisitData.status !== "rejected" &&
-                        siteVisitData.status !== "in_progress" ? (
+                      siteVisitData.status !== "reviewed" &&
+                      siteVisitData.status !== "complete" &&
+                      siteVisitData.status !== "rejected" &&
+                      siteVisitData.status !== "in_progress" ? (
                         <>
                           <button
                             className="btn btn-primary text-white"

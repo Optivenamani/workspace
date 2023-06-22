@@ -34,9 +34,9 @@ const Form = () => {
     const token = localStorage.getItem("token");
 
     // Prepare the form data, adjusting phone numbers as necessary.
-    const clientsWithAdjustedPhoneNumbers = formData.clients.map(client => {
+    const clientsWithAdjustedPhoneNumbers = formData.clients.map((client) => {
       let phoneNumber = client.phone_number;
-      if (phoneNumber.charAt(0) === '+') {
+      if (phoneNumber.charAt(0) === "+") {
         phoneNumber = phoneNumber.substring(1);
       }
       return {
@@ -74,7 +74,7 @@ const Form = () => {
         draggable: true,
         progress: undefined,
       });
-      navigate("/");
+      navigate("/logistics-home");
     } catch (error) {
       // Display an error message
       toast.error("Error creating site visit request. Please try again.", {
