@@ -18,11 +18,14 @@ const MySiteVisits = () => {
   useEffect(() => {
     const fetchSiteVisits = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/site-visit-requests", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://workspace.optiven.co.ke/api/site-visit-requests",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setSiteVisits(data);
       } catch (error) {
@@ -63,7 +66,7 @@ const MySiteVisits = () => {
           progress: undefined,
         });
       } else {
-        toast.error((data.message || "Error cancelling site visit."), {
+        toast.error(data.message || "Error cancelling site visit.", {
           position: "top-center",
           closeOnClick: true,
           pauseOnHover: true,
@@ -73,7 +76,7 @@ const MySiteVisits = () => {
       }
     } catch (error) {
       console.error("Error cancelling site visit:", error);
-      toast.error((error.message || "Error cancelling site visit."), {
+      toast.error(error.message || "Error cancelling site visit.", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
@@ -110,6 +113,99 @@ const MySiteVisits = () => {
       return true;
     }
   });
+
+  const startTrip = async (id) => {
+    try {
+      const response = await fetch(
+        `https://workspace.optiven.co.ke/api/site-visits/start-trip/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const updatedSiteVisits = siteVisits.map((sv) =>
+          sv.id === id ? { ...sv, status: "in_progress" } : sv
+        );
+        setSiteVisits(updatedSiteVisits);
+        toast.success("Trip set to in progress.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        const data = await response.json();
+        toast.error("An error occurred while attempting to start trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        console.error("Error starting trip:", data.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred while attempting to start trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.error("Error starting trip:", error);
+    }
+  };
+
+  const endTrip = async (id) => {
+    try {
+      const response = await fetch(
+        `https://workspace.optiven.co.ke/api/site-visits/end-trip/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const updatedSiteVisits = siteVisits.filter((sv) => sv.id !== id);
+        setSiteVisits(updatedSiteVisits);
+        toast.success("Trip set to complete.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/logistics-home");
+      } else {
+        const data = await response.json();
+        toast.error("An error occurred while attempting to end trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        console.error("Error ending trip:", data.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred while attempting to end trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.error("Error ending trip:", error);
+    }
+  };
 
   return (
     <Sidebar>
@@ -168,8 +264,8 @@ const MySiteVisits = () => {
                           siteVisit.status === "rejected"
                             ? "red"
                             : siteVisit.status === "complete"
-                              ? "green"
-                              : "black",
+                            ? "green"
+                            : "black",
                       }}
                     >
                       {siteVisit.status}
@@ -178,17 +274,43 @@ const MySiteVisits = () => {
                       {siteVisit.status === "pending" ? (
                         <button
                           className="btn btn-sm btn-outline btn-warning mr-2"
-                          onClick={() => navigate(`/edit-site-visit/${siteVisit.id}`)} // Add onClick event listener
+                          onClick={() =>
+                            navigate(`/edit-site-visit/${siteVisit.id}`)
+                          }
                         >
                           Edit
                         </button>
                       ) : null}
-                      {(siteVisit.status === "pending" || siteVisit.status === "approved") ? (
+                      {siteVisit.status === "pending" ||
+                      siteVisit.status === "approved" ? (
                         <button
-                          className="btn btn-sm btn-gray-500"
-                          onClick={() => cancelSiteVisit(siteVisit.id)} // Add onClick event listener
+                          className="btn btn-sm btn-gray-500 mr-1"
+                          onClick={() => cancelSiteVisit(siteVisit.id)}
                         >
                           Cancel
+                        </button>
+                      ) : null}
+                      {siteVisit.pickup_location.toLowerCase() ===
+                        "self drive" &&
+                      (siteVisit.status === "approved" ||
+                        siteVisit.status === "in_progress") &&
+                      siteVisit.driver_name === "Own Means" &&
+                      siteVisit.vehicle_id === 23 ? (
+                        <button
+                          className={`btn btn-sm ${
+                            siteVisit.status === "in_progress"
+                              ? "btn-error"
+                              : "btn-primary"
+                          } text-white`}
+                          onClick={() =>
+                            siteVisit.status === "in_progress"
+                              ? endTrip(siteVisit.id)
+                              : startTrip(siteVisit.id)
+                          }
+                        >
+                          {siteVisit.status === "in_progress"
+                            ? "End Trip"
+                            : "Start Trip"}
                         </button>
                       ) : null}
                     </td>

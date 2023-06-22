@@ -21,11 +21,11 @@ const Sidebar = ({ children }) => {
   const isMarketer = accessRole === `113`;
   const isRachel = accessRole === `113#114`;
   const isJoe = accessRole === `113#115`;
-  const isDriver = accessRole === `driver69`;
+  const isDriver = accessRole === `driver`;
   const isHOL = accessRole === `headOfLogistics`;
-  const isAnalyst = accessRole === `112#420#69`;
+  const isAnalyst = accessRole === `112#analyst`;
   const isAdmin =
-    accessRole === `112#700#117#116` ||
+    accessRole === `112#700#117#116#777A` ||
     accessRole === `112#305#117#116#113#770#DR777DR007#120#211` ||
     accessRole === `112#114#700`;
   const isOperations =

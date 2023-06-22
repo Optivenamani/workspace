@@ -73,7 +73,7 @@ const Survey = () => {
         draggable: true,
         progress: undefined,
       });
-      navigate("/");
+      navigate("/logistics-home");
     } catch (error) {
       toast.error(
         "An error occurred while submitting the survey. It is possible that you might have already filled the survey",

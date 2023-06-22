@@ -1,5 +1,5 @@
 const express = require("express");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
@@ -11,8 +11,8 @@ async function sendEmail(userEmail, subject, text) {
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'notify@optiven.co.ke', // your domain email account
-      pass: 'Peace@6t4r#!', // your domain email password
+      user: "notify@optiven.co.ke", // your domain email account
+      pass: "Peace@6t4r#!", // your domain email password
     },
   });
 
@@ -62,12 +62,9 @@ module.exports = (pool) => {
     }
   });
   // Get all pending vehicle requests
-  router.get(
-    "/pending-vehicle-requests",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const query = `
+  router.get("/pending-vehicle-requests", authenticateJWT, async (req, res) => {
+    try {
+      const query = `
         SELECT 
           vehicle_requests.*,
           users.fullnames AS requester_name
@@ -77,15 +74,14 @@ module.exports = (pool) => {
         WHERE vehicle_requests.status = 'pending'
         ORDER BY vehicle_requests.created_at ASC
       `;
-        pool.query(query, (err, results) => {
-          if (err) throw err;
-          res.status(200).json(results);
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+      pool.query(query, (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   // Get a single vehicle request
   router.get(
     "/pending-vehicle-requests/:id",
@@ -145,12 +141,9 @@ module.exports = (pool) => {
     }
   );
   // Get all vehicle requests
-  router.get(
-    "/all-vehicle-requests",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const query = `
+  router.get("/all-vehicle-requests", authenticateJWT, async (req, res) => {
+    try {
+      const query = `
         SELECT 
           vehicle_requests.*,
           users.fullnames AS requester_name,
@@ -168,15 +161,14 @@ module.exports = (pool) => {
           ON vehicle_requests.driver_id = driver.user_id
         ORDER BY vehicle_requests.created_at ASC
       `;
-        pool.query(query, (err, results) => {
-          if (err) throw err;
-          res.status(200).json(results);
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+      pool.query(query, (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   // Get active vehicle requests by a user
   router.get("/active/active", authenticateJWT, async (req, res) => {
     try {
@@ -251,41 +243,49 @@ module.exports = (pool) => {
             }
 
             // Send an email to the requester
-            const getEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
-            pool.query(getEmailQuery, [req.user.id], async (err, emailResult) => {
-              if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-              }
+            const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+            pool.query(
+              getEmailQuery,
+              [req.user.id],
+              async (err, emailResult) => {
+                if (err) {
+                  res.status(500).json({ error: err.message });
+                  return;
+                }
 
-              if (emailResult.length > 0) {
-                const userEmail = emailResult[0].email;
-                await sendEmail(
-                  userEmail,
-                  'Vehicle Request Approved',
-                  'Greetings,\n\nYour vehicle request has been approved!😃\nPlease check the app for more details.\n\nKind regards,\nOptiven ICT Team'
-                );
+                if (emailResult.length > 0) {
+                  const userEmail = emailResult[0].email;
+                  await sendEmail(
+                    userEmail,
+                    "Vehicle Request Approved",
+                    "Greetings,\n\nYour vehicle request has been approved!😃\nPlease check the app for more details.\n\nKind regards,\nOptiven ICT Team"
+                  );
+                }
               }
-            });
+            );
 
             // Send an email to the driver
-            const getDriverEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
-            pool.query(getDriverEmailQuery, [driver_id], async (err, driverEmailResult) => {
-              if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-              }
+            const getDriverEmailQuery =
+              "SELECT email FROM users WHERE user_id = ?";
+            pool.query(
+              getDriverEmailQuery,
+              [driver_id],
+              async (err, driverEmailResult) => {
+                if (err) {
+                  res.status(500).json({ error: err.message });
+                  return;
+                }
 
-              if (driverEmailResult.length > 0) {
-                const driverEmail = driverEmailResult[0].email;
-                await sendEmail(
-                  driverEmail,
-                  'Vehicle Request Assignment',
-                  'Greetings,\n\nYou have been assigned to a vehicle request.\nPlease check the app for more details.\n\nKind regards,\nOptiven ICT Team'
-                );
+                if (driverEmailResult.length > 0) {
+                  const driverEmail = driverEmailResult[0].email;
+                  await sendEmail(
+                    driverEmail,
+                    "Vehicle Request Assignment",
+                    "Greetings,\n\nYou have been assigned to a vehicle request.\nPlease check the app for more details.\n\nKind regards,\nOptiven ICT Team"
+                  );
+                }
               }
-            });
-
+            );
 
             // New SELECT query to get the updated vehicle request
             const updatedVehicleRequestQuery = `
@@ -344,22 +344,26 @@ module.exports = (pool) => {
 
           if (result.affectedRows > 0) {
             // Send an email to the requester
-            const getEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
-            pool.query(getEmailQuery, [req.user.id], async (err, emailResult) => {
-              if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-              }
+            const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+            pool.query(
+              getEmailQuery,
+              [req.user.id],
+              async (err, emailResult) => {
+                if (err) {
+                  res.status(500).json({ error: err.message });
+                  return;
+                }
 
-              if (emailResult.length > 0) {
-                const userEmail = emailResult[0].email;
-                await sendEmail(
-                  userEmail,
-                  'Vehicle Request Rejected',
-                  'Greetings,\n\nYour vehicle request has been rejected. 😔 \n Please check the app for more details. \n\n Kind regards,\nOptiven ICT Department'
-                );
+                if (emailResult.length > 0) {
+                  const userEmail = emailResult[0].email;
+                  await sendEmail(
+                    userEmail,
+                    "Vehicle Request Rejected",
+                    "Greetings,\n\nYour vehicle request has been rejected. 😔 \n Please check the app for more details. \n\n Kind regards,\nOptiven ICT Department"
+                  );
+                }
               }
-            });
+            );
 
             res.status(200).json({ message: "Vehicle request rejected." });
           } else {
@@ -372,81 +376,72 @@ module.exports = (pool) => {
     }
   );
   // Start a trip
-  router.patch(
-    "/start-trip/:id",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const requestId = req.params.id;
-        const query =
-          "UPDATE vehicle_requests SET status = 'in_progress' WHERE id = ?";
+  router.patch("/start-trip/:id", authenticateJWT, async (req, res) => {
+    try {
+      const requestId = req.params.id;
+      const query =
+        "UPDATE vehicle_requests SET status = 'in_progress' WHERE id = ?";
 
-        pool.query(query, [requestId], (err, results) => {
-          if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-          }
-          res.status(200).json({ message: "Trip started." });
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+      pool.query(query, [requestId], (err, results) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+          return;
+        }
+        res.status(200).json({ message: "Trip started." });
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   // End a trip
-  router.patch(
-    "/end-trip/:id",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const requestId = req.params.id;
-        const updateRequestQuery =
-          "UPDATE vehicle_requests SET status = 'completed' WHERE id = ?";
-        const getRequestInfoQuery =
-          "SELECT driver_id, vehicle_id FROM vehicle_requests WHERE id = ?";
+  router.patch("/end-trip/:id", authenticateJWT, async (req, res) => {
+    try {
+      const requestId = req.params.id;
+      const updateRequestQuery =
+        "UPDATE vehicle_requests SET status = 'completed' WHERE id = ?";
+      const getRequestInfoQuery =
+        "SELECT driver_id, vehicle_id FROM vehicle_requests WHERE id = ?";
 
-        pool.query(getRequestInfoQuery, [requestId], (err, results) => {
+      pool.query(getRequestInfoQuery, [requestId], (err, results) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+          return;
+        }
+        const driverId = results[0].driver_id;
+        const vehicleId = results[0].vehicle_id;
+
+        pool.query(updateRequestQuery, [requestId], (err) => {
           if (err) {
             res.status(500).json({ error: err.message });
             return;
           }
-          const driverId = results[0].driver_id;
-          const vehicleId = results[0].vehicle_id;
 
-          pool.query(updateRequestQuery, [requestId], (err) => {
+          const makeDriverAvailableQuery =
+            "UPDATE users SET is_available = 1 WHERE user_id = ?";
+          pool.query(makeDriverAvailableQuery, [driverId], (err) => {
             if (err) {
               res.status(500).json({ error: err.message });
               return;
             }
 
-            const makeDriverAvailableQuery =
-              "UPDATE users SET is_available = 1 WHERE user_id = ?";
-            pool.query(makeDriverAvailableQuery, [driverId], (err) => {
+            // Make the vehicle available again
+            const makeVehicleAvailableQuery =
+              "UPDATE vehicles SET status = 'available' WHERE id = ?";
+            pool.query(makeVehicleAvailableQuery, [vehicleId], (err) => {
               if (err) {
                 res.status(500).json({ error: err.message });
                 return;
               }
-
-              // Make the vehicle available again
-              const makeVehicleAvailableQuery =
-                "UPDATE vehicles SET status = 'available' WHERE id = ?";
-              pool.query(makeVehicleAvailableQuery, [vehicleId], (err) => {
-                if (err) {
-                  res.status(500).json({ error: err.message });
-                  return;
-                }
-                res.status(200).json({
-                  message:
-                    "Trip ended, driver and vehicle made available again.",
-                });
+              res.status(200).json({
+                message: "Trip ended, driver and vehicle made available again.",
               });
             });
           });
         });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   return router;
 };

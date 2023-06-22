@@ -3,16 +3,20 @@ import { useSelector } from "react-redux";
 
 const SiteVisitInfo = ({ formData, setFormData }) => {
   const [sites, setSites] = useState([]);
+  const [selfDrive, setSelfDrive] = useState(false);
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/sites", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://workspace.optiven.co.ke/api/sites",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setSites(data);
       } catch (error) {
@@ -22,6 +26,17 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
 
     fetchSites();
   }, [token]);
+
+  const handleSelfDriveChange = (e) => {
+    const isChecked = e.target.checked;
+    setSelfDrive(isChecked);
+
+    if (isChecked) {
+      setFormData({ ...formData, pickup_location: "Self Drive" });
+    } else {
+      setFormData({ ...formData, pickup_location: "" });
+    }
+  };
 
   return (
     <>
@@ -63,13 +78,25 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
         <input
           type="text"
           name="pickupLocation"
-          value={formData.pickup_location}
+          value={selfDrive ? "Self Drive" : formData.pickup_location}
           onChange={(e) =>
             setFormData({ ...formData, pickup_location: e.target.value })
           }
           placeholder="eg. ABSA Towers"
           className="input input-bordered w-full"
+          disabled={selfDrive}
         />
+        <div className="flex my-2 items-center">
+          <input
+            type="checkbox"
+            className="checkbox"
+            onChange={handleSelfDriveChange}
+          />
+          <p className="text-sm font-bold italic ml-1">
+            My client opted for self drive
+          </p>
+        </div>
+
         <label className="label">
           <span className="label-text font-bold">Pickup Date</span>
         </label>

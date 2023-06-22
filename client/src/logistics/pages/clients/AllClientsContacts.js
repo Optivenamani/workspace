@@ -3,37 +3,37 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 
 const AllClientsContacts = () => {
-    const [clients, setClients] = useState([]);
-    const [query, setQuery] = useState("");
-    const token = useSelector((state) => state.user.token);
-    const userId = useSelector((state) => state.user.user.user_id);
-  
-    useEffect(() => {
-      const fetchClients = async () => {
-        try {
-          const response = await fetch(
-            `https://workspace.optiven.co.ke/api/clients/all`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const data = await response.json();
-          setClients(data);
-        } catch (error) {
-          console.error("Error fetching site visits:", error);
-        }
-      };
-  
-      fetchClients();
-    }, [token, userId]);
-  
-    console.log(clients);
-  
-    const filteredClients = clients.filter((client) => {
-      return client.name.toLowerCase().includes(query.toLowerCase());
-    });
+  const [clients, setClients] = useState([]);
+  const [query, setQuery] = useState("");
+  const token = useSelector((state) => state.user.token);
+  const userId = useSelector((state) => state.user.user.user_id);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await fetch(
+          `https://workspace.optiven.co.ke/api/clients/all`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        setClients(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchClients();
+  }, [token, userId]);
+
+  console.log(clients);
+
+  const filteredClients = clients.filter((client) => {
+    return client.name.toLowerCase().includes(query.toLowerCase());
+  });
   return (
     <Sidebar>
       <div className="flex justify-center items-center mt-2 mb-2">

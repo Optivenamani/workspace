@@ -10,11 +10,14 @@ const ViewDrivers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://workspace.optiven.co.ke/api/users",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -25,7 +28,12 @@ const ViewDrivers = () => {
     fetchUsers();
   }, [token]);
 
-  const drivers = users.filter((user) => user.Accessrole === "driver69" || user.Accessrole === "112#114#700");
+  const drivers = users.filter(
+    (user) =>
+      user.Accessrole === "driver" ||
+      user.Accessrole === "112#114#700" ||
+      user.Accessrole === "112#700#117#116#777A"
+  );
 
   console.log(drivers);
 

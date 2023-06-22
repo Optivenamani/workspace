@@ -53,7 +53,7 @@ const RequestVehicle = () => {
         draggable: true,
         progress: undefined,
       });
-      navigate("/");
+      navigate("/logistics-home");
     } catch (error) {
       console.error(error);
       setLoading(false);
