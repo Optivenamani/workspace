@@ -65,7 +65,7 @@ module.exports = (pool) => {
     try {
       const query = `
           SELECT * FROM users
-          WHERE (users.Accessrole = 'driver' || users.Accessrole = '112#114#700' || users.Accessrole = '112#700#117#116#777A')
+          WHERE users.Accessrole = 'driver' OR users.Accessrole = '112#114#700' OR users.Accessrole = '112#700#117#116#777A'
           `;
       pool.query(query, async (err, results) => {
         if (err) throw err;
