@@ -1,9 +1,9 @@
 // Load required modules and environment variables
 require("dotenv").config();
 const express = require("express");
-const axios = require('axios');
-const nodemailer = require('nodemailer');
-const pdfMakePrinter = require('pdfmake/src/printer');
+const axios = require("axios");
+const nodemailer = require("nodemailer");
+const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
@@ -33,7 +33,12 @@ const WATI_TOKEN = process.env.WATI_TOKEN;
 const WATI_BASE_URL = process.env.WATI_BASE_URL;
 
 // WATI Helper function to send the WhatsApp msg
-const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadcastName) => {
+const sendWhatsAppMessage = async (
+  phoneNumber,
+  templateName,
+  parameters,
+  broadcastName
+) => {
   const config = {
     headers: {
       Authorization: `Bearer ${WATI_TOKEN}`,
@@ -45,10 +50,14 @@ const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadc
     broadcast_name: broadcastName,
   };
   try {
-    const response = await axios.post(`${WATI_BASE_URL}/api/v1/sendTemplateMessage?whatsappNumber=${phoneNumber}`, bodyData, config);
+    const response = await axios.post(
+      `${WATI_BASE_URL}/api/v1/sendTemplateMessage?whatsappNumber=${phoneNumber}`,
+      bodyData,
+      config
+    );
     return response.data;
   } catch (error) {
-    console.error('Failed to send WhatsApp message:', error.message);
+    console.error("Failed to send WhatsApp message:", error.message);
     throw error;
   }
 };
@@ -56,11 +65,12 @@ const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadc
 // Define your fonts
 var fonts = {
   Roboto: {
-    normal: 'node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf',
-    bold: 'node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf',
-    italic: 'node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf',
-    bolditalics: 'node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf'
-  }
+    normal: "node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf",
+    bold: "node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf",
+    italic: "node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf",
+    bolditalics:
+      "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
+  },
 };
 
 // Create a new printer with the fonts
@@ -70,19 +80,21 @@ var printer = new pdfMakePrinter(fonts);
 function dataToPdfRows(data) {
   return data.map((item, index) => {
     const date = new Date(item.pickup_date);
-    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const formattedDate = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
     return [
-      { text: index + 1 ?? '', style: 'tableCell' },
-      { text: formattedDate ?? '', style: 'tableCell' },
-      { text: item.marketer_name ?? '', style: 'tableCell' },
-      { text: item.num_clients ?? '', style: 'tableCell' },
-      { text: item.site_name ?? '', style: 'tableCell' },
-      { text: item.driver_name ?? '', style: 'tableCell' },
-      { text: item.pickup_time ?? '', style: 'tableCell' },
-      { text: item.vehicle_name ?? '', style: 'tableCell' },
-      { text: item.pickup_location ?? '', style: 'tableCell' },
-      { text: item.remarks ?? '', style: 'tableCell' },
-    ]
+      { text: index + 1 ?? "", style: "tableCell" },
+      { text: formattedDate ?? "", style: "tableCell" },
+      { text: item.marketer_name ?? "", style: "tableCell" },
+      { text: item.num_clients ?? "", style: "tableCell" },
+      { text: item.site_name ?? "", style: "tableCell" },
+      { text: item.driver_name ?? "", style: "tableCell" },
+      { text: item.pickup_time ?? "", style: "tableCell" },
+      { text: item.vehicle_name ?? "", style: "tableCell" },
+      { text: item.pickup_location ?? "", style: "tableCell" },
+      { text: item.remarks ?? "", style: "tableCell" },
+    ];
   });
 }
 
@@ -90,27 +102,26 @@ function dataToPdfRows(data) {
 function dataToPdfRows2(results) {
   return results.map((result, index) => {
     const date = new Date(result.date);
-    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const formattedDate = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
 
     return [
-      { text: index + 1, style: 'tableCell' },
-      { text: formattedDate, style: 'tableCell' },
-      { text: result.successful, style: 'tableCell' },
-      { text: result.cancelled, style: 'tableCell' },
-      { text: result.rejected, style: 'tableCell' },
-      { text: result.total, style: 'tableCell' },
+      { text: index + 1, style: "tableCell" },
+      { text: formattedDate, style: "tableCell" },
+      { text: result.successful, style: "tableCell" },
+      { text: result.cancelled, style: "tableCell" },
+      { text: result.rejected, style: "tableCell" },
+      { text: result.total, style: "tableCell" },
     ];
   });
 }
 
 module.exports = (pool, io) => {
   // Get single site visit with driver, vehicle info, and all associated clients
-  router.get(
-    "/:id",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const siteVisitQuery = `
+  router.get("/:id", authenticateJWT, async (req, res) => {
+    try {
+      const siteVisitQuery = `
         SELECT 
           site_visits.*,
           Projects.name AS site_name,
@@ -129,11 +140,11 @@ module.exports = (pool, io) => {
         WHERE site_visits.id = ?
         ORDER BY site_visits.created_at DESC;
       `;
-        pool.query(siteVisitQuery, [req.params.id], async (err, results) => {
-          if (err) throw err;
-          if (results.length > 0) {
-            const siteVisit = results[0];
-            const clientsQuery = `
+      pool.query(siteVisitQuery, [req.params.id], async (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+          const siteVisit = results[0];
+          const clientsQuery = `
             SELECT 
               site_visit_clients.name as client_name,
               site_visit_clients.email as client_email,
@@ -141,27 +152,23 @@ module.exports = (pool, io) => {
             FROM site_visit_clients
             WHERE site_visit_clients.site_visit_id = ?
           `;
-            pool.query(clientsQuery, [req.params.id], (err, results) => {
-              if (err) throw err;
-              siteVisit.clients = results;
-              res.status(200).json(siteVisit);
-            });
-          } else {
-            res.status(404).json({ message: "Site visit not found" });
-          }
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+          pool.query(clientsQuery, [req.params.id], (err, results) => {
+            if (err) throw err;
+            siteVisit.clients = results;
+            res.status(200).json(siteVisit);
+          });
+        } else {
+          res.status(404).json({ message: "Site visit not found" });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   // Get all site visits with driver and vehicle info
-  router.get(
-    "/",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const query = `
+  router.get("/", authenticateJWT, async (req, res) => {
+    try {
+      const query = `
       SELECT 
         site_visits.*,
         Projects.name AS site_name,
@@ -183,15 +190,14 @@ module.exports = (pool, io) => {
       GROUP BY site_visits.id
       ORDER BY site_visits.created_at DESC;
     `;
-        pool.query(query, (err, results) => {
-          if (err) throw err;
-          res.status(200).json(results);
-        });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+      pool.query(query, (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   // Download the approved site visits info in a pdf
   router.get(
     "/download-pdf/approved-site-visits",
@@ -227,25 +233,76 @@ module.exports = (pool, io) => {
         pool.query(query, [startDate, endDate], (err, results) => {
           if (err) throw err;
           const docDefinition = {
-            pageSize: 'A4',
-            pageOrientation: 'landscape',
+            pageSize: "A4",
+            pageOrientation: "landscape",
             content: [
               {
                 table: {
                   headerRows: 1,
-                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  widths: [
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                  ],
                   body: [
                     [
-                      { text: 'Index', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Pickup Date', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Converter', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Number of Clients', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Site', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Driver', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Pickup Time', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Vehicle Reg No', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Pickup Location', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Admin Remarks', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      {
+                        text: "Index",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Pickup Date",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Converter",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Number of Clients",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Site",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Driver",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Pickup Time",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Vehicle Reg No",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Pickup Location",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Admin Remarks",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
                     ],
                   ],
                 },
@@ -257,7 +314,7 @@ module.exports = (pool, io) => {
                     return 0;
                   },
                   fillColor: function (rowIndex, node, columnIndex) {
-                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                    return rowIndex % 2 === 0 ? "#D3D3D3" : null;
                   },
                 },
               },
@@ -266,7 +323,7 @@ module.exports = (pool, io) => {
               tableHeader: {
                 bold: true,
                 fontSize: 13,
-                color: 'white',
+                color: "white",
               },
               tableBody: {
                 italic: true,
@@ -277,7 +334,7 @@ module.exports = (pool, io) => {
           docDefinition.content[0].table.body.push(...dataToPdfRows(results));
           // Create the PDF and send it as a response
           const pdfDoc = printer.createPdfKitDocument(docDefinition);
-          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader("Content-Type", "application/pdf");
           pdfDoc.pipe(res);
           pdfDoc.end();
         });
@@ -315,27 +372,51 @@ module.exports = (pool, io) => {
           if (err) throw err;
 
           const docDefinition = {
-            pageSize: 'A4',
-            pageOrientation: 'landscape',
+            pageSize: "A4",
+            pageOrientation: "landscape",
             content: [
               {
                 text: `Site Visit Summary from ${startDate} to ${endDate} for convertors in ${office}`,
                 fontSize: 20,
-                alignment: 'center',
-                margin: [0, 0, 0, 20]
+                alignment: "center",
+                margin: [0, 0, 0, 20],
               },
               {
                 table: {
                   headerRows: 1,
-                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  widths: ["auto", "auto", "auto", "auto", "auto", "auto"],
                   body: [
                     [
-                      { text: 'Index', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Date', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Successful Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Cancelled Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Rejected Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Total Site Visits', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      {
+                        text: "Index",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Date",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Successful Site Visits",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Cancelled Site Visits",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Rejected Site Visits",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Total Site Visits",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
                     ],
                   ],
                 },
@@ -347,17 +428,16 @@ module.exports = (pool, io) => {
                     return 0;
                   },
                   fillColor: function (rowIndex, node, columnIndex) {
-                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                    return rowIndex % 2 === 0 ? "#D3D3D3" : null;
                   },
                 },
-              }
-
+              },
             ],
             styles: {
               tableHeader: {
                 bold: true,
                 fontSize: 13,
-                color: 'white',
+                color: "white",
               },
               tableBody: {
                 italic: true,
@@ -370,7 +450,7 @@ module.exports = (pool, io) => {
 
           // Create the PDF and send it as a response
           const pdfDoc = printer.createPdfKitDocument(docDefinition);
-          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader("Content-Type", "application/pdf");
           pdfDoc.pipe(res);
           pdfDoc.end();
         });
@@ -402,28 +482,36 @@ module.exports = (pool, io) => {
           if (err) throw err;
 
           const docDefinition = {
-            pageSize: 'A4',
-            pageOrientation: 'landscape',
+            pageSize: "A4",
+            pageOrientation: "landscape",
             content: [
               {
                 text: `Most Booked Sites from ${startDate} to ${endDate}`,
                 fontSize: 20,
-                alignment: 'center',
-                margin: [0, 0, 0, 20]
+                alignment: "center",
+                margin: [0, 0, 0, 20],
               },
               {
                 table: {
                   headerRows: 1,
-                  widths: ['auto', 'auto'],
+                  widths: ["auto", "auto"],
                   body: [
                     [
-                      { text: 'Site Name', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Total Bookings', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      {
+                        text: "Site Name",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Total Bookings",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
                     ],
                     ...results.map((result, index) => [
-                      { text: result.site_name, style: 'tableCell' },
-                      { text: result.total_bookings, style: 'tableCell' },
-                    ])
+                      { text: result.site_name, style: "tableCell" },
+                      { text: result.total_bookings, style: "tableCell" },
+                    ]),
                   ],
                 },
                 layout: {
@@ -434,7 +522,7 @@ module.exports = (pool, io) => {
                     return 0;
                   },
                   fillColor: function (rowIndex, node, columnIndex) {
-                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                    return rowIndex % 2 === 0 ? "#D3D3D3" : null;
                   },
                 },
               },
@@ -443,7 +531,7 @@ module.exports = (pool, io) => {
               tableHeader: {
                 bold: true,
                 fontSize: 13,
-                color: 'white',
+                color: "white",
               },
               tableCell: {
                 fontSize: 12,
@@ -453,7 +541,7 @@ module.exports = (pool, io) => {
 
           // Create the PDF and send it as a response
           const pdfDoc = printer.createPdfKitDocument(docDefinition);
-          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader("Content-Type", "application/pdf");
           pdfDoc.pipe(res);
           pdfDoc.end();
         });
@@ -487,40 +575,87 @@ module.exports = (pool, io) => {
           if (err) throw err;
 
           const docDefinition = {
-            pageSize: 'A4',
-            pageOrientation: 'landscape',
+            pageSize: "A4",
+            pageOrientation: "landscape",
             content: [
               {
                 text: `Marketer Feedback`,
                 fontSize: 20,
-                alignment: 'center',
-                margin: [0, 0, 0, 20]
+                alignment: "center",
+                margin: [0, 0, 0, 20],
               },
               {
                 table: {
                   headerRows: 1,
-                  widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                  widths: [
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                    "auto",
+                  ],
                   body: [
                     [
-                      { text: 'Index', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Site Name', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Marketer', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Amount Reserved By Client(Ksh)', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Did the Client Book the Plot?', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Reason the Client did not Visit', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Reason the Client did not Book the Plot', fillColor: '#BBD4E1', style: 'tableHeader' },
-                      { text: 'Did the Client Visit the Plot?', fillColor: '#BBD4E1', style: 'tableHeader' },
+                      {
+                        text: "Index",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Site Name",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Marketer",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Amount Reserved By Client(Ksh)",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Did the Client Book the Plot?",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Reason the Client did not Visit",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Reason the Client did not Book the Plot",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Did the Client Visit the Plot?",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
                     ],
                     ...results.map((result, index) => [
-                      { text: index + 1, style: 'tableCell' },
-                      { text: result.site_name, style: 'tableCell' },
-                      { text: result.marketer, style: 'tableCell' },
-                      { text: result.amount_reserved, style: 'tableCell' },
-                      { text: result.booked, style: 'tableCell' },
-                      { text: result.reason_not_visited || 'N/A', style: 'tableCell' },
-                      { text: result.reason_not_booked || 'N/A', style: 'tableCell' },
-                      { text: result.visited, style: 'tableCell' },
-                    ])
+                      { text: index + 1, style: "tableCell" },
+                      { text: result.site_name, style: "tableCell" },
+                      { text: result.marketer, style: "tableCell" },
+                      { text: result.amount_reserved, style: "tableCell" },
+                      { text: result.booked, style: "tableCell" },
+                      {
+                        text: result.reason_not_visited || "N/A",
+                        style: "tableCell",
+                      },
+                      {
+                        text: result.reason_not_booked || "N/A",
+                        style: "tableCell",
+                      },
+                      { text: result.visited, style: "tableCell" },
+                    ]),
                   ],
                 },
                 layout: {
@@ -531,7 +666,7 @@ module.exports = (pool, io) => {
                     return 0;
                   },
                   fillColor: function (rowIndex, node, columnIndex) {
-                    return (rowIndex % 2 === 0) ? '#D3D3D3' : null;
+                    return rowIndex % 2 === 0 ? "#D3D3D3" : null;
                   },
                 },
               },
@@ -540,7 +675,7 @@ module.exports = (pool, io) => {
               tableHeader: {
                 bold: true,
                 fontSize: 13,
-                color: 'white',
+                color: "white",
               },
               tableCell: {
                 fontSize: 12,
@@ -550,7 +685,7 @@ module.exports = (pool, io) => {
 
           // Create the PDF and send it as a response
           const pdfDoc = printer.createPdfKitDocument(docDefinition);
-          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader("Content-Type", "application/pdf");
           pdfDoc.pipe(res);
           pdfDoc.end();
         });
@@ -569,7 +704,7 @@ module.exports = (pool, io) => {
           users.fullnames as marketer_name
         FROM site_visits
         JOIN users ON site_visits.marketer_id = users.user_id
-        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'complete' AND site_visits.status != 'rejected' AND site_visits.status != 'cancelled' AND site_visits.status != 'pending');
+        WHERE site_visits.marketer_id = ? AND (site_visits.status != 'reviewed' AND site_visits.status != 'rejected' AND site_visits.status != 'cancelled' AND site_visits.status != 'pending');
         `;
       pool.query(query, [userId], (err, results) => {
         if (err) throw err;
@@ -580,12 +715,9 @@ module.exports = (pool, io) => {
     }
   });
   // Get a single pending site visit request
-  router.get(
-    "/pending-site-visits/:id",
-    authenticateJWT,
-    async (req, res) => {
-      const id = req.params.id;
-      const query = `
+  router.get("/pending-site-visits/:id", authenticateJWT, async (req, res) => {
+    const id = req.params.id;
+    const query = `
       SELECT 
         site_visits.*,
         Projects.name AS site_name,
@@ -605,16 +737,15 @@ module.exports = (pool, io) => {
       GROUP BY site_visits.id
       ORDER BY site_visits.created_at ASC;
     `;
-      pool.query(query, [id], (err, results) => {
-        if (err) throw err;
-        if (results.length > 0) {
-          res.status(200).json(results[0]);
-        } else {
-          res.status(404).json({ message: "Site visit request not found." });
-        }
-      });
-    }
-  );
+    pool.query(query, [id], (err, results) => {
+      if (err) throw err;
+      if (results.length > 0) {
+        res.status(200).json(results[0]);
+      } else {
+        res.status(404).json({ message: "Site visit request not found." });
+      }
+    });
+  });
   // Cancel a site visit request
   router.patch("/cancel-site-visit/:id", authenticateJWT, async (req, res) => {
     try {
@@ -632,7 +763,8 @@ module.exports = (pool, io) => {
         }
 
         if (result.affectedRows > 0) {
-          const getUserIdQuery = "SELECT marketer_id FROM site_visits WHERE id = ?";
+          const getUserIdQuery =
+            "SELECT marketer_id FROM site_visits WHERE id = ?";
           pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
             if (err) {
               res.status(500).json({ error: err.message });
@@ -658,30 +790,36 @@ module.exports = (pool, io) => {
                   message: "Site visit request cancelled",
                 });
 
-                const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
-                pool.query(getEmailQuery, [userId], async (err, emailResult) => {
-                  if (err) {
-                    res.status(500).json({ error: err.message });
-                    return;
-                  }
+                const getEmailQuery =
+                  "SELECT email FROM users WHERE user_id = ?";
+                pool.query(
+                  getEmailQuery,
+                  [userId],
+                  async (err, emailResult) => {
+                    if (err) {
+                      res.status(500).json({ error: err.message });
+                      return;
+                    }
 
-                  if (emailResult.length > 0) {
-                    const userEmail = emailResult[0].email;
-                    const subject = "Site Visit Request Cancelled";
-                    const message = `Greetings,\n\nYour site visit request has been cancelled. 😔\nPlease check your notifications in the app for more details.\n\nKind regards,\nOptiven ICT Department`;
-                    sendEmail(userEmail, subject, message)
-                      .then(() => {
-                        res.status(200).json({
-                          message: "Site visit request cancelled successfully. An email notification has been sent.",
+                    if (emailResult.length > 0) {
+                      const userEmail = emailResult[0].email;
+                      const subject = "Site Visit Request Cancelled";
+                      const message = `Greetings,\n\nYour site visit request has been cancelled. 😔\nPlease check your notifications in the app for more details.\n\nKind regards,\nOptiven ICT Department`;
+                      sendEmail(userEmail, subject, message)
+                        .then(() => {
+                          res.status(200).json({
+                            message:
+                              "Site visit request cancelled successfully. An email notification has been sent.",
+                          });
+                        })
+                        .catch((error) => {
+                          res.status(500).json({ error: error.message });
                         });
-                      })
-                      .catch((error) => {
-                        res.status(500).json({ error: error.message });
-                      });
-                  } else {
-                    res.status(404).json({ message: "User not found." });
+                    } else {
+                      res.status(404).json({ message: "User not found." });
+                    }
                   }
-                });
+                );
               });
             }
           });
@@ -720,40 +858,53 @@ module.exports = (pool, io) => {
               INSERT INTO notifications (user_id, type, message, remarks)
               VALUES (?, 'rejected', 'Your site visit request has been rejected :(', ?)
             `;
-              pool.query(notificationQuery, [userId, remarks], (err, result) => {
-                if (err) {
-                  return res.status(500).json({ error: err.message });
-                }
-
-                // Emit the notification via Socket.IO
-                io.emit("siteVisitRejected", {
-                  id: req.params.id,
-                  message: "Site visit request rejected",
-                });
-
-                const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
-                pool.query(getEmailQuery, [userId], async (err, emailResult) => {
+              pool.query(
+                notificationQuery,
+                [userId, remarks],
+                (err, result) => {
                   if (err) {
                     return res.status(500).json({ error: err.message });
                   }
 
-                  if (emailResult.length > 0) {
-                    const userEmail = emailResult[0].email;
-                    // Send an email to the marketer
-                    await sendEmail(
-                      userEmail,
-                      "Site Visit Request Rejected",
-                      "Greetings,\n\nYour site visit request has been rejected. 😔 \nPlease check your notifications in the app for more details. \n\nKind regards,\nOptiven ICT Department"
-                    );
-                  }
-                });
-              });
+                  // Emit the notification via Socket.IO
+                  io.emit("siteVisitRejected", {
+                    id: req.params.id,
+                    message: "Site visit request rejected",
+                  });
+
+                  const getEmailQuery =
+                    "SELECT email FROM users WHERE user_id = ?";
+                  pool.query(
+                    getEmailQuery,
+                    [userId],
+                    async (err, emailResult) => {
+                      if (err) {
+                        return res.status(500).json({ error: err.message });
+                      }
+
+                      if (emailResult.length > 0) {
+                        const userEmail = emailResult[0].email;
+                        // Send an email to the marketer
+                        await sendEmail(
+                          userEmail,
+                          "Site Visit Request Rejected",
+                          "Greetings,\n\nYour site visit request has been rejected. 😔 \nPlease check your notifications in the app for more details. \n\nKind regards,\nOptiven ICT Department"
+                        );
+                      }
+                    }
+                  );
+                }
+              );
             }
           });
 
-          return res.status(200).json({ message: "Site visit request rejected." });
+          return res
+            .status(200)
+            .json({ message: "Site visit request rejected." });
         } else {
-          return res.status(404).json({ message: "Site visit request not found." });
+          return res
+            .status(404)
+            .json({ message: "Site visit request not found." });
         }
       });
     } catch (error) {
@@ -778,9 +929,10 @@ module.exports = (pool, io) => {
         } = req.body;
 
         const updateAndSendNotification = async () => {
-          if (status === 'approved') {
+          if (status === "approved") {
             // Get the user_id from the site_visits table
-            const getUserIdQuery = 'SELECT marketer_id FROM site_visits WHERE id = ?';
+            const getUserIdQuery =
+              "SELECT marketer_id FROM site_visits WHERE id = ?";
             pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
               if (err) throw err;
               if (userIdResult.length > 0) {
@@ -791,44 +943,56 @@ module.exports = (pool, io) => {
                     (user_id, type, message, remarks, site_visit_id)
                   VALUES (?, 'approved', 'Your site visit request has been approved!', ?, ?);
                 `;
-                pool.query(notificationQuery, [userId, remarks, id], (err, result) => {
-                  if (err) res.status(500).json({ error: err.message });
-
-                  // Send an email to the marketer
-                  const getEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
-                  pool.query(getEmailQuery, [userId], async (err, emailResult) => {
+                pool.query(
+                  notificationQuery,
+                  [userId, remarks, id],
+                  (err, result) => {
                     if (err) res.status(500).json({ error: err.message });
-                    if (emailResult.length > 0) {
-                      const userEmail = emailResult[0].email;
-                      await sendEmail(
-                        userEmail,
-                        'Site Visit Request Approved',
-                        'Greetings,\n\nYour site visit request has been approved!😃 \n Please check your notifications in the app for more details.\n\n Kind regards,\nOptiven ICT Department'
-                      );
-                    }
-                  });
 
-                  // Send an email to the driver
-                  const getDriverEmailQuery = 'SELECT email FROM users WHERE user_id = ?';
-                  pool.query(getDriverEmailQuery, [driver_id], async (err, driverEmailResult) => {
-                    if (err) {
-                      res.status(500).json({ error: err.message });
-                      return;
-                    }
+                    // Send an email to the marketer
+                    const getEmailQuery =
+                      "SELECT email FROM users WHERE user_id = ?";
+                    pool.query(
+                      getEmailQuery,
+                      [userId],
+                      async (err, emailResult) => {
+                        if (err) res.status(500).json({ error: err.message });
+                        if (emailResult.length > 0) {
+                          const userEmail = emailResult[0].email;
+                          await sendEmail(
+                            userEmail,
+                            "Site Visit Request Approved",
+                            "Greetings,\n\nYour site visit request has been approved!😃 \n Please check your notifications in the app for more details.\n\n Kind regards,\nOptiven ICT Department"
+                          );
+                        }
+                      }
+                    );
 
-                    if (driverEmailResult.length > 0) {
-                      const driverEmail = driverEmailResult[0].email;
-                      await sendEmail(
-                        driverEmail,
-                        'Site Visit Assignment',
-                        `Greetings,\n\nYou have been assigned to a site visit.\nPlease check the app for more details.\n\n Kind regards,\nOptiven ICT Department`
-                      );
-                    }
-                  });
+                    // Send an email to the driver
+                    const getDriverEmailQuery =
+                      "SELECT email FROM users WHERE user_id = ?";
+                    pool.query(
+                      getDriverEmailQuery,
+                      [driver_id],
+                      async (err, driverEmailResult) => {
+                        if (err) {
+                          res.status(500).json({ error: err.message });
+                          return;
+                        }
 
-                  // Send WhatsApp message to the client
-                  const getWhatsAppMessageSiteVisitDetailsQuery =
-                    `SELECT 
+                        if (driverEmailResult.length > 0) {
+                          const driverEmail = driverEmailResult[0].email;
+                          await sendEmail(
+                            driverEmail,
+                            "Site Visit Assignment",
+                            `Greetings,\n\nYou have been assigned to a site visit.\nPlease check the app for more details.\n\n Kind regards,\nOptiven ICT Department`
+                          );
+                        }
+                      }
+                    );
+
+                    // Send WhatsApp message to the client
+                    const getWhatsAppMessageSiteVisitDetailsQuery = `SELECT 
                       site_visit_clients.phone_number, 
                       site_visit_clients.name,
                       Projects.name AS site_name,
@@ -840,41 +1004,58 @@ module.exports = (pool, io) => {
                     WHERE site_visit_clients.site_visit_id = ?
                     `;
 
-                  pool.query(getWhatsAppMessageSiteVisitDetailsQuery, [id], async (err, WhatsAppMessageDetails) => {
-                    if (err) res.status(500).json({ error: err.message });
-                    if (WhatsAppMessageDetails.length > 0) {
-                      const clientPhoneNumber = WhatsAppMessageDetails[0].phone_number;
-                      const clientName = WhatsAppMessageDetails[0].name;
-                      const siteLocation = WhatsAppMessageDetails[0].site_name;
-                      const marketerName = WhatsAppMessageDetails[0].marketer_name; const pickupTime = req.body.pickup_time;
-                      const pickupDate = req.body.pickup_date;
-                      const pickupLocation = req.body.pickup_location;
-                      const templateName = 'sv_approved';
-                      const parameters = [
-                        { name: 'client_name', value: clientName },
-                        { name: 'site_location', value: siteLocation },
-                        { name: 'marketer_name', value: marketerName },
-                        { name: 'pickup_time', value: pickupTime },
-                        { name: 'pickup_date', value: pickupDate },
-                        { name: 'pickup_location', value: pickupLocation },
-                      ];
-                      const broadcastName = 'test_broadcast';
+                    pool.query(
+                      getWhatsAppMessageSiteVisitDetailsQuery,
+                      [id],
+                      async (err, WhatsAppMessageDetails) => {
+                        if (err) res.status(500).json({ error: err.message });
+                        if (WhatsAppMessageDetails.length > 0) {
+                          const clientPhoneNumber =
+                            WhatsAppMessageDetails[0].phone_number;
+                          const clientName = WhatsAppMessageDetails[0].name;
+                          const siteLocation =
+                            WhatsAppMessageDetails[0].site_name;
+                          const marketerName =
+                            WhatsAppMessageDetails[0].marketer_name;
+                          const pickupTime = req.body.pickup_time;
+                          const pickupDate = req.body.pickup_date;
+                          const pickupLocation = req.body.pickup_location;
+                          const templateName = "sv_approved";
+                          const parameters = [
+                            { name: "client_name", value: clientName },
+                            { name: "site_location", value: siteLocation },
+                            { name: "marketer_name", value: marketerName },
+                            { name: "pickup_time", value: pickupTime },
+                            { name: "pickup_date", value: pickupDate },
+                            { name: "pickup_location", value: pickupLocation },
+                          ];
+                          const broadcastName = "test_broadcast";
 
-                      try {
-                        await sendWhatsAppMessage(clientPhoneNumber, templateName, parameters, broadcastName);
-                      } catch (error) {
-                        // Handle any errors that occur during message sending
-                        console.error('Failed to send WhatsApp message:', error);
+                          try {
+                            await sendWhatsAppMessage(
+                              clientPhoneNumber,
+                              templateName,
+                              parameters,
+                              broadcastName
+                            );
+                          } catch (error) {
+                            // Handle any errors that occur during message sending
+                            console.error(
+                              "Failed to send WhatsApp message:",
+                              error
+                            );
+                          }
+                        }
                       }
-                    }
-                  });
+                    );
 
-                  // Emit the notification via Socket.IO
-                  io.emit('siteVisitApproved', {
-                    id: req.params.id,
-                    message: 'Site visit request approved',
-                  });
-                });
+                    // Emit the notification via Socket.IO
+                    io.emit("siteVisitApproved", {
+                      id: req.params.id,
+                      message: "Site visit request approved",
+                    });
+                  }
+                );
               }
             });
           }
@@ -1038,34 +1219,28 @@ module.exports = (pool, io) => {
     }
   );
   // Submit a survey for a completed site visit
-  router.post(
-    "/submit-survey/:id",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        const siteVisitId = req.params.id;
-        const userId = req.user.id;
-        const {
-          amount_reserved,
-          booked,
-          plot_details,
-          reason_not_visited,
-          reason_not_booked,
-          visited,
-        } = req.body;
+  router.post("/submit-survey/:id", authenticateJWT, async (req, res) => {
+    try {
+      const siteVisitId = req.params.id;
+      const userId = req.user.id;
+      const {
+        amount_reserved,
+        booked,
+        plot_details,
+        reason_not_visited,
+        reason_not_booked,
+        visited,
+      } = req.body;
 
-        const checkSiteVisitQuery = `
+      const checkSiteVisitQuery = `
         SELECT *
         FROM site_visits
         WHERE id = ? AND status = 'complete' AND marketer_id = ?
       `;
-        pool.query(
-          checkSiteVisitQuery,
-          [siteVisitId, userId],
-          (err, results) => {
-            if (err) throw err;
-            if (results.length > 0) {
-              const insertSurveyQuery = `
+      pool.query(checkSiteVisitQuery, [siteVisitId, userId], (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+          const insertSurveyQuery = `
             INSERT INTO site_visit_surveys (
               site_visit_id, 
               amount_reserved,
@@ -1076,47 +1251,45 @@ module.exports = (pool, io) => {
               visited
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
           `;
-              pool.query(
-                insertSurveyQuery,
-                [
-                  siteVisitId,
-                  amount_reserved,
-                  booked,
-                  plot_details,
-                  reason_not_visited,
-                  reason_not_booked,
-                  visited,
-                ],
-                (err, result) => {
-                  if (err) throw err;
+          pool.query(
+            insertSurveyQuery,
+            [
+              siteVisitId,
+              amount_reserved,
+              booked,
+              plot_details,
+              reason_not_visited,
+              reason_not_booked,
+              visited,
+            ],
+            (err, result) => {
+              if (err) throw err;
 
-                  // Update the site visit status to 'reviewed'
-                  const updateSiteVisitStatusQuery = `
+              // Update the site visit status to 'reviewed'
+              const updateSiteVisitStatusQuery = `
                 UPDATE site_visits
                 SET status = 'reviewed'
                 WHERE id = ?
               `;
-                  pool.query(
-                    updateSiteVisitStatusQuery,
-                    [siteVisitId],
-                    (err, result) => {
-                      if (err) throw err;
-                      res
-                        .status(201)
-                        .json({ message: "Survey submitted successfully." });
-                    }
-                  );
+              pool.query(
+                updateSiteVisitStatusQuery,
+                [siteVisitId],
+                (err, result) => {
+                  if (err) throw err;
+                  res
+                    .status(201)
+                    .json({ message: "Survey submitted successfully." });
                 }
               );
-            } else {
-              res.status(400).json({ message: "Invalid site visit or user." });
             }
-          }
-        );
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
+          );
+        } else {
+          res.status(400).json({ message: "Invalid site visit or user." });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-  );
+  });
   return router;
 };

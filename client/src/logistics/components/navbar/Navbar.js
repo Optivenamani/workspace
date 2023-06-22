@@ -113,9 +113,6 @@ const Navbar = ({ fullName, email }) => {
               <li>
                 <Link className="justify-between font-bold" to="/">
                   Menu
-                  <span className="badge badge-sm badge-neutral font-bold">
-                    New
-                  </span>{" "}
                 </Link>
               </li>
             )}

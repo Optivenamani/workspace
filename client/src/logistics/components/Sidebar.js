@@ -1,57 +1,41 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchActiveSiteVisits } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
-import { fetchActiveVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
+import {
+  fetchActiveSiteVisits,
+  selectActiveSiteVisits,
+} from "../../redux/logistics/features/siteVisit/siteVisitSlice";
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
   const accessRole = useSelector((state) => state.user.accessRole).trim();
 
-  // const activeVehicleRequests = useSelector(
-  //   (state) => state.vehicleRequest.activeRequests
-  // );
-  // const vehicleRequestStatus = useSelector(
-  //   (state) => state.vehicleRequest.status
-  // );
+  const activeVisits = useSelector(selectActiveSiteVisits);
+  const siteVisitStatus = useSelector((state) => state.siteVisit.status);
 
-  // console.log("Active Site Visits:", activeVisits ? activeVisits.length : 'undefined');
-  // console.log("Active Vehicle Requests", activeVehicleRequests ? activeVehicleRequests.length : 'undefined')
-
-  const isMarketer = accessRole === `113`;
-  const isRachel = accessRole === `113#114`;
-  const isJoe = accessRole === `113#115`;
-  const isDriver = accessRole === `driver`;
-  const isHOL = accessRole === `headOfLogistics`;
-  const isAnalyst = accessRole === `112#analyst`;
+  const isMarketer = accessRole === "113";
+  const isRachel = accessRole === "113#114";
+  const isJoe = accessRole === "113#115";
+  const isDriver = accessRole === "driver";
+  const isHOL = accessRole === "headOfLogistics";
+  const isAnalyst = accessRole === "112#analyst";
   const isAdmin =
-    accessRole === `112#700#117#116#777A` ||
-    accessRole === `112#305#117#116#113#770#DR777DR007#120#211` ||
-    accessRole === `112#114#700`;
+    accessRole === "112#700#117#116#777A" ||
+    accessRole === "112#305#117#116#113#770#DR777DR007#120#211" ||
+    accessRole === "112#114#700";
   const isOperations =
-    accessRole === `112#116#303#305` ||
-    accessRole === `112#304` ||
-    accessRole === `112#305`;
+    accessRole === "112#116#303#305" ||
+    accessRole === "112#304" ||
+    accessRole === "112#305";
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchActiveSiteVisits());
-    dispatch(fetchActiveVehicleRequests());
   }, [dispatch]);
 
-  // const canRequestVehicle = () => {
-  //   if (vehicleRequestStatus === "loading") {
-  //     return false;
-  //   }
-
-  //   if (activeVehicleRequests.length === 0) {
-  //     return true;
-  //   }
-
-  //   const latestVehicleRequest = activeVehicleRequests[0];
-  //   return latestVehicleRequest.state === "completed";
-  // };
+  const hasActiveSiteVisit =
+    siteVisitStatus === "succeeded" && activeVisits.length > 0;
 
   return (
     <>
@@ -159,8 +143,12 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
                     <Link
-                      to="/book-site-visit"
-                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                      to={hasActiveSiteVisit ? "#" : "/book-site-visit"} // Check if there is an active site visit and conditionally set the link's "to" prop
+                      className={`font-sans mt-1 hover:bg-base-200 rounded p-2 ${
+                        hasActiveSiteVisit
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`} // Add conditional styling to indicate that the link is disabled
                     >
                       Book a Site Visit
                     </Link>
