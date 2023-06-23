@@ -198,6 +198,23 @@ module.exports = (pool, io) => {
       res.status(500).json({ error: error.message });
     }
   });
+  // Get all pending site visit requests
+  router.get("/pending-site-visits/all", authenticateJWT, async (req, res) => {
+    try {
+      const query = `
+        SELECT 
+          site_visits.*
+        FROM site_visits
+        WHERE site_visits.status IN ('pending');
+      `;
+      pool.query(query, (err, results) => {
+        if (err) throw err;
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
   // Download the approved site visits info in a pdf
   router.get(
     "/download-pdf/approved-site-visits",

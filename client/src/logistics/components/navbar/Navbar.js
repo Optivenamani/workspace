@@ -64,7 +64,7 @@ const Navbar = ({ fullName, email }) => {
             </label>
           </div>
         )}
-        <Link className="btn btn-ghost normal-case text-xl" to="/">
+        <Link className="btn btn-ghost normal-case text-xl" to="#">
           <img src={logo} alt="logo" className="w-40" />
         </Link>
       </div>

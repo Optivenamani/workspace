@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchActiveSiteVisits,
   selectActiveSiteVisits,
+  fetchPendingSiteVisits,
 } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
@@ -12,6 +13,7 @@ const Sidebar = ({ children }) => {
 
   const activeVisits = useSelector(selectActiveSiteVisits);
   const siteVisitStatus = useSelector((state) => state.siteVisit.status);
+  const pendingVisits = useSelector((state) => state.siteVisit.pendingVisits);
 
   const isMarketer = accessRole === "113";
   const isRachel = accessRole === "113#114";
@@ -32,10 +34,17 @@ const Sidebar = ({ children }) => {
 
   useEffect(() => {
     dispatch(fetchActiveSiteVisits());
+    dispatch(fetchPendingSiteVisits());
   }, [dispatch]);
 
   const hasActiveSiteVisit =
     siteVisitStatus === "succeeded" && activeVisits.length > 0;
+
+  const numPendingSiteVisits =
+    Array.isArray(pendingVisits) && pendingVisits.length; // Get the number of pending site visits
+  console.log(numPendingSiteVisits);
+  const hasPendingSiteVisits = numPendingSiteVisits > 0;
+  console.log(hasPendingSiteVisits);
 
   return (
     <>
@@ -139,7 +148,18 @@ const Sidebar = ({ children }) => {
               isHOL) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
-                <div className="collapse-title font-bold">Site Visits</div>
+                <div className="collapse-title font-bold">
+                  Site Visits{" "}
+                  {(isAdmin || isHOL) && (
+                    <span
+                      className={`badge badge-warning badge-sm text-white font-bold ${
+                        hasPendingSiteVisits ? "" : "hidden"
+                      }`}
+                    >
+                      {numPendingSiteVisits}
+                    </span>
+                  )}
+                </div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
                     <Link
@@ -182,7 +202,16 @@ const Sidebar = ({ children }) => {
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/site-visit-requests"
                     >
-                      Site Visit Requests
+                      Site Visit Requests{" "}
+                      {(isAdmin || isHOL) && (
+                        <span
+                          className={`badge badge-sm badge-warning text-white font-bold ${
+                            hasPendingSiteVisits ? "" : "hidden"
+                          }`}
+                        >
+                          {numPendingSiteVisits}
+                        </span>
+                      )}
                     </Link>
                   )}
                   {(isRachel || isJoe || isAdmin || isOperations || isHOL) && (
