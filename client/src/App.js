@@ -18,12 +18,15 @@ import {
   ApprovedSiteVisitsReports,
   ApprovedSVDetails,
   AssignedBookings,
+  AssignedSpecialAssignments,
   AssignedVehicleRequests,
   ClientsFeedback,
   CreateBooking,
+  CreateSpecialAssignment,
   CreateVehicle,
   Dashboard,
   EditSiteVisit,
+  EditSpecialAssignment,
   EditVehicle,
   Home,
   Login,
@@ -33,6 +36,7 @@ import {
   MySiteVisits,
   Notifications,
   PastRequests,
+  RegisterVisitor,
   RequestVehicle,
   SiteVisitDetails,
   SiteVisitRequests,
@@ -43,8 +47,8 @@ import {
   VehicleRequests,
   ViewDrivers,
   ViewSites,
+  ViewSpecialAssignments,
   ViewVehicles,
-  RegisterVisitor,
 } from "./utils/index";
 import ViewVisitors from "./visitors-management/pages/ViewVisitors";
 import VisitorsManagementHome from "./visitors-management/pages/VisitorsManagementHome";
@@ -192,7 +196,28 @@ const App = () => {
               path="/marketers-feedback-reports"
               element={<MarketersFeedback />}
             />
-            <Route path="/visitors-management" element={<VisitorsManagementHome />} />
+            {/* Special Assignment */}
+            <Route
+              path="/assigned-special-assignments"
+              element={<AssignedSpecialAssignments />}
+            />
+            <Route
+              path="/create-special-assignment"
+              element={<CreateSpecialAssignment />}
+            />
+            <Route
+              path="/special-assignment/:id"
+              element={<EditSpecialAssignment />}
+            />
+            <Route
+              path="/view-special-assignments"
+              element={<ViewSpecialAssignments />}
+            />
+            {/* Visitor Management */}
+            <Route
+              path="/visitors-management"
+              element={<VisitorsManagementHome />}
+            />
             <Route path="/register-visitor" element={<RegisterVisitor />} />
             <Route path="/view-visitors" element={<ViewVisitors />} />
           </Route>

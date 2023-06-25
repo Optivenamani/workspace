@@ -48,10 +48,16 @@ const SiteVisitRequests = () => {
         const filtered = sortedData.filter((item) => {
           if (selectedStatus === "all") {
             return true;
+          } else if (
+            selectedStatus === "in_progress" ||
+            selectedStatus === "complete"
+          ) {
+            return item.status === "in_progress" || item.status === "complete";
           } else {
             return item.status === selectedStatus;
           }
         });
+
         setPending(filtered);
         setSiteVisitRequests(filtered);
         console.log(data);
@@ -81,7 +87,7 @@ const SiteVisitRequests = () => {
       case "rejected":
         return "bg-error";
       case "complete":
-        return "bg-primary";
+        return "bg-purple-500";
       case "in_progress":
         return "bg-purple-500";
       case "reviewed":
@@ -248,17 +254,20 @@ const SiteVisitRequests = () => {
               </div>
               <div
                 className={`btn btn-primary text-white font-bold mr-1 ${
-                  selectedStatus === "complete" ? "btn-active" : ""
+                  selectedStatus === "reviewed" ? "btn-active" : ""
                 }`}
-                onClick={() => setSelectedStatus("complete")}
+                onClick={() => setSelectedStatus("reviewed")}
               >
                 Complete
               </div>
               <div
                 className={`btn bg-purple-500 border-none text-white font-bold ${
-                  selectedStatus === "in_progress" ? "btn-active" : ""
+                  selectedStatus === "in_progress" ||
+                  selectedStatus === "complete"
+                    ? "btn-active"
+                    : ""
                 }`}
-                onClick={() => setSelectedStatus("in_progress")}
+                onClick={() => setSelectedStatus("in_progress" || "complete")}
               >
                 In Progress
               </div>
