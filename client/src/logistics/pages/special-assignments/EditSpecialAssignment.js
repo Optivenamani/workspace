@@ -89,7 +89,7 @@ const EditSpecialAssignment = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/special-assignments/${sAId}`,
+        `https://workspace.optiven.co.ke/api/special-assignments/${sAId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -131,7 +131,7 @@ const EditSpecialAssignment = () => {
     };
     try {
       const response = await fetch(
-        `http://localhost:8080/api/special-assignments/${sAId}`,
+        `https://workspace.optiven.co.ke/api/special-assignments/${sAId}`,
         {
           method: "PATCH",
           headers: {

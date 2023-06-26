@@ -15,7 +15,7 @@ const AssignedSpecialAssignments = () => {
     const fetchSpecialAssignments = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/drivers/assigned-special-assignments",
+          "https://workspace.optiven.co.ke/api/drivers/assigned-special-assignments",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -36,7 +36,7 @@ const AssignedSpecialAssignments = () => {
   const startTrip = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/special-assignments/start-trip/${id}`,
+        `https://workspace.optiven.co.ke/api/special-assignments/start-trip/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -86,7 +86,7 @@ const AssignedSpecialAssignments = () => {
   const endTrip = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/special-assignments/end-trip/${id}`,
+        `https://workspace.optiven.co.ke/api/special-assignments/end-trip/${id}`,
         {
           method: "PATCH",
           headers: {

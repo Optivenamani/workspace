@@ -28,7 +28,7 @@ const ViewSpecialAssignments = () => {
     const fetchSpecialAssignments = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/special-assignments",
+          "https://workspace.optiven.co.ke/api/special-assignments",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const ViewSpecialAssignments = () => {
   // const deleteSA = (specialAssignmentId) => {
   //   // Send a DELETE request to the server to delete the sA with the specified ID
   //   fetch(
-  //     `http://localhost:8080/api/special-assignments/${specialAssignmentId}`,
+  //     `https://workspace.optiven.co.ke/api/special-assignments/${specialAssignmentId}`,
   //     {
   //       method: "DELETE",
   //       headers: {

@@ -83,7 +83,7 @@ const CreateSpecialAssignment = () => {
     };
     try {
       const response = await fetch(
-        "http://localhost:8080/api/special-assignments",
+        "https://workspace.optiven.co.ke/api/special-assignments",
         {
           method: "POST",
           headers: {

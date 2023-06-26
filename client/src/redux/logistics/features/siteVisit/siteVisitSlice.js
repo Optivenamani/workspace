@@ -81,7 +81,7 @@ export const fetchPendingSiteVisits = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/site-visit-requests/pending-site-visits/all",
+        "https://workspace.optiven.co.ke/api/site-visit-requests/pending-site-visits/all",
         {
           headers: {
             Authorization: `Bearer ${token}`,
