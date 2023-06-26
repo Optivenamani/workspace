@@ -109,5 +109,31 @@ module.exports = (pool) => {
       }
     }
   );
+  // Get assigned special assignments
+  router.get(
+    "/assigned-special-assignments",
+    authenticateJWT,
+    async (req, res) => {
+      try {
+        const driverId = req.user.id;
+        const query = `
+        SELECT *
+        FROM special_assignment
+        WHERE (status = 'pending' OR status = 'in_progress')
+        AND driver_id = ?;
+      `;
+
+        pool.query(query, [driverId], (err, results) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+          res.status(200).json(results);
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  );
   return router;
 };

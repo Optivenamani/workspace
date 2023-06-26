@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   visits: [],
   activeVisits: [],
+  pendingVisits: [],
   status: "idle",
   error: null,
 };
@@ -73,6 +74,29 @@ export const completeSiteVisit = createAsyncThunk(
   }
 );
 
+export const fetchPendingSiteVisits = createAsyncThunk(
+  "siteVisits/fetchPendingSiteVisits",
+  async (_, { getState }) => {
+    const token = getState().user.token;
+
+    try {
+      const response = await axios.get(
+        "https://workspace.optiven.co.ke/api/site-visit-requests/pending-site-visits/all",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // console.log("Pending site visits:", response.data);
+      return response.data;
+    } catch (error) {
+      console.log("Server error:", error.response);
+      throw error;
+    }
+  }
+);
+
 const siteVisitSlice = createSlice({
   name: "siteVisit",
   initialState,
@@ -119,6 +143,17 @@ const siteVisitSlice = createSlice({
         );
       })
       .addCase(completeSiteVisit.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchPendingSiteVisits.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPendingSiteVisits.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.pendingVisits = action.payload;
+      })
+      .addCase(fetchPendingSiteVisits.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
