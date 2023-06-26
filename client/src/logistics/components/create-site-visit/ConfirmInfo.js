@@ -73,7 +73,7 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             onChange={() => setIsChecked(!isChecked)}
           />
 
-          <p>The info provided above is correct</p>
+          <p className="font-bold italic">The info provided above is correct</p>
         </div>
         <button
           className="btn btn-primary btn-outline mt-4"
