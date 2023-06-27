@@ -133,7 +133,7 @@ const SiteVisitRequests = () => {
     return (
       <div className="join">
         <button
-          className="join-item btn mr-3 w-10 lg:w-20"
+          className="join-item btn mr-1 w-10 lg:w-20"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -163,7 +163,7 @@ const SiteVisitRequests = () => {
           );
         })}
         <button
-          className="join-item btn ml-3 w-10 lg:w-20"
+          className="join-item btn ml-1 w-10 lg:w-20"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
