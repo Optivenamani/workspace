@@ -15,9 +15,10 @@ module.exports = (pool) => {
         vehicle_id,
         pickup_location,
         remarks,
+        assigned_to,
       } = req.body;
 
-      let { status } = req.body; // Change from const to let
+      let { status } = req.body;
 
       if (!status) {
         // Assuming status should have a default value if not provided
@@ -25,12 +26,11 @@ module.exports = (pool) => {
       }
 
       const query = `
-        INSERT INTO special_assignment (reservation_date, status, destination, reason, driver_id, reservation_time, vehicle_id, pickup_location, remarks)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-      `;
+      INSERT INTO special_assignment (reservation_date, destination, reason, driver_id, reservation_time, vehicle_id, pickup_location, remarks, assigned_to, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    `;
       const values = [
         reservation_date,
-        status,
         destination,
         reason,
         driver_id,
@@ -38,6 +38,8 @@ module.exports = (pool) => {
         vehicle_id,
         pickup_location,
         remarks,
+        assigned_to,
+        status,
       ];
       pool.query(query, values, (err, result) => {
         if (err) throw err;
@@ -51,10 +53,16 @@ module.exports = (pool) => {
   });
 
   // Get all special assignments
-  router.get("/", authenticateJWT, async (req, res) => {
+  router.get("/", async (req, res) => {
     try {
       const query = `
-      SELECT * FROM special_assignment;
+      SELECT 
+        special_assignment.*, 
+        users.fullnames AS driver_name, 
+        vehicles.vehicle_registration 
+      FROM special_assignment
+      INNER JOIN users ON special_assignment.driver_id = users.user_id 
+      INNER JOIN vehicles ON special_assignment.vehicle_id = vehicles.id;    
     `;
       pool.query(query, (err, result) => {
         if (err) throw err;
@@ -86,38 +94,17 @@ module.exports = (pool) => {
   });
 
   // Update a special assignment request
-  router.put("/:id", authenticateJWT, async (req, res) => {
+  router.patch("/:id", authenticateJWT, async (req, res) => {
     try {
       const id = req.params.id;
-      const {
-        reservationDate,
-        status,
-        destination,
-        reason,
-        driver_id,
-        reservationTime,
-        vehicle_id,
-        pickupLocation,
-        remarks,
-      } = req.body;
+      const updates = req.body;
 
       const query = `
-        UPDATE special_assignment
-        SET reservation_date = ?,  destination = ?, reason = ?, driver_id = ?, reservation_time = ?, vehicle_id = ?, pickup_location = ?, remarks = ?
-        WHERE id = ?;
-      `;
-      const values = [
-        reservationDate,
-        status,
-        destination,
-        reason,
-        driver_id,
-        reservationTime,
-        vehicle,
-        pickupLocation,
-        remarks,
-        id,
-      ];
+      UPDATE special_assignment
+      SET ?
+      WHERE id = ?;
+    `;
+      const values = [updates, id];
 
       pool.query(query, values, (err, result) => {
         if (err) throw err;
