@@ -204,7 +204,7 @@ const AssignedVehicleRequests = () => {
                 <div className="flex flex-col items-center mt-20">
                   <img src={huh} alt="huh" className="lg:w-96" />
                   <h1 className="font-bold text-center">
-                    No assigned vehicle requests' trips available. Check back
+                    No assigned vehicle request trips available. Check back
                     later.
                   </h1>
                 </div>

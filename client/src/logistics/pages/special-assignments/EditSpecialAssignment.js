@@ -275,7 +275,7 @@ const EditSpecialAssignment = () => {
               id="submit"
               className="btn btn-primary w-full max-w-xs mt-4 text-white"
             >
-              {loading ? "Creating..." : "Create Special Assignment"}
+              {loading ? "Updating..." : "Update Special Assignment"}
             </button>
           </form>
         </div>
