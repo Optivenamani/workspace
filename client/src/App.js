@@ -28,6 +28,7 @@ import {
   EditSiteVisit,
   EditSpecialAssignment,
   EditVehicle,
+  EditVisitor,
   Home,
   Login,
   MarketersFeedback,
@@ -220,6 +221,7 @@ const App = () => {
             />
             <Route path="/register-visitor" element={<RegisterVisitor />} />
             <Route path="/view-visitors" element={<ViewVisitors />} />
+            <Route path="/edit-visitor/:id" element={<EditVisitor />} />
           </Route>
         </Routes>
       </Router>
