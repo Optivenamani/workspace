@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 import formatTime from "../../../utils/formatTime";
 
 const ApprovedBookings = () => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);  
   const [siteVisits, setSiteVisits] = useState([]);
 
   const token = useSelector((state) => state.user.token);
@@ -28,11 +28,9 @@ const ApprovedBookings = () => {
     fetchSiteVisits();
   }, [token]);
 
-  const approvedSiteBookings = siteVisits.filter(
-    (siteVisit) => siteVisit.status !== "rejected"
+  const approvedSVRequests = siteVisits.filter(
+    (siteVisit) => siteVisit.status === "approved"
   );
-
-  console.log(approvedSiteBookings);
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
@@ -42,7 +40,7 @@ const ApprovedBookings = () => {
     setEndDate(e.target.value);
   };
 
-  const filteredBookings = approvedSiteBookings.filter((item) => {
+  const filteredBookings = approvedSVRequests.filter((item) => {
     const itemDate = new Date(item.date);
     const startDateObj = startDate && new Date(startDate);
     const endDateObj = endDate && new Date(endDate);
@@ -89,7 +87,7 @@ const ApprovedBookings = () => {
                   <th>Pickup Location</th>
                   <th>Date</th>
                   <th>Time</th>
-                  <th>Number of Clients</th>
+                  <th className="text-center">Number of Clients</th>
                 </tr>
               </thead>
               <tbody>

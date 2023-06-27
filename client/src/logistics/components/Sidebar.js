@@ -15,20 +15,16 @@ const Sidebar = ({ children }) => {
   const siteVisitStatus = useSelector((state) => state.siteVisit.status);
   const pendingVisits = useSelector((state) => state.siteVisit.pendingVisits);
 
-  const isMarketer = accessRole === "113";
-  const isRachel = accessRole === "113#114";
-  const isJoe = accessRole === "113#115";
-  const isDriver = accessRole === "driver";
-  const isHOL = accessRole === "headOfLogistics";
-  const isAnalyst = accessRole === "112#analyst";
-  const isAdmin =
-    accessRole === "112#700#117#116#777A" ||
-    accessRole === "112#305#117#116#113#770#DR777DR007#120#211" ||
-    accessRole === "112#114#700";
-  const isOperations =
-    accessRole === "112#116#303#305" ||
-    accessRole === "112#304" ||
-    accessRole === "112#305";
+  const accessRoles = accessRole.split("#");
+
+  const isMarketer = accessRoles.includes("113");
+  const isHOS = accessRoles.includes("hos");
+  const isGM = accessRoles.includes("gm");
+  const isDriver = accessRoles.includes("driver");
+  const isHOL = accessRoles.includes("headOfLogistics");
+  const isAnalyst = accessRoles.includes("dataAnalyst");
+  const isAdmin = accessRoles.includes("logisticsAdmin");
+  const isOperations = accessRoles.includes("operations");
 
   const dispatch = useDispatch();
 
@@ -59,8 +55,8 @@ const Sidebar = ({ children }) => {
               </Link>
             </li>
             {/* Dashboard */}
-            {(isRachel ||
-              isJoe ||
+            {(isHOS ||
+              isGM ||
               isAdmin ||
               isHOL ||
               isAnalyst ||
@@ -72,8 +68,8 @@ const Sidebar = ({ children }) => {
               </li>
             )}
             {/* Reports */}
-            {(isRachel ||
-              isJoe ||
+            {(isHOS ||
+              isGM ||
               isAdmin ||
               isHOL ||
               isAnalyst ||
@@ -82,8 +78,8 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Reports</div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  {(isRachel ||
-                    isJoe ||
+                  {(isHOS ||
+                    isGM ||
                     isAdmin ||
                     isHOL ||
                     isAnalyst ||
@@ -95,8 +91,8 @@ const Sidebar = ({ children }) => {
                       Approved Site Visits
                     </Link>
                   )}
-                  {(isRachel ||
-                    isJoe ||
+                  {(isHOS ||
+                    isGM ||
                     isAdmin ||
                     isHOL ||
                     isAnalyst ||
@@ -108,8 +104,8 @@ const Sidebar = ({ children }) => {
                       Site Visits Summary
                     </Link>
                   )}
-                  {(isRachel ||
-                    isJoe ||
+                  {(isHOS ||
+                    isGM ||
                     isAdmin ||
                     isHOL ||
                     isAnalyst ||
@@ -121,8 +117,8 @@ const Sidebar = ({ children }) => {
                       Most Booked Sites
                     </Link>
                   )}
-                  {(isRachel ||
-                    isJoe ||
+                  {(isHOS ||
+                    isGM ||
                     isAdmin ||
                     isHOL ||
                     isAnalyst ||
@@ -138,12 +134,7 @@ const Sidebar = ({ children }) => {
               </div>
             )}
             {/* Site Visit */}
-            {(isMarketer ||
-              isRachel ||
-              isJoe ||
-              isAdmin ||
-              isDriver ||
-              isHOL) && (
+            {(isMarketer || isHOS || isGM || isAdmin || isDriver || isHOL) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">
@@ -187,7 +178,7 @@ const Sidebar = ({ children }) => {
                       Assigned Site Visits
                     </Link>
                   )}
-                  {(isRachel || isJoe || isAdmin || isOperations || isHOL) && (
+                  {(isHOS || isGM || isAdmin || isOperations || isHOL) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/approved-site-visits"
@@ -212,7 +203,7 @@ const Sidebar = ({ children }) => {
                       )}
                     </Link>
                   )}
-                  {(isRachel || isJoe || isAdmin || isOperations || isHOL) && (
+                  {(isHOS || isGM || isAdmin || isOperations || isHOL) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/all-site-visits"
@@ -224,7 +215,7 @@ const Sidebar = ({ children }) => {
               </div>
             )}
             {/* Sites */}
-            {(isAdmin || isOperations || isHOL) && (
+            {(isAdmin || isOperations || isHOL || isAnalyst) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Sites</div>
@@ -299,12 +290,16 @@ const Sidebar = ({ children }) => {
                   Special Assignments
                 </div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/create-special-assignment"
-                  >
-                    Create Special Assignment
-                  </Link>
+                  {(isHOL || isAdmin) && (
+                    <>
+                      <Link
+                        className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                        to="/create-special-assignment"
+                      >
+                        Create Special Assignment
+                      </Link>
+                    </>
+                  )}
                   {(isHOL || isAdmin) && (
                     <>
                       <Link
@@ -330,8 +325,8 @@ const Sidebar = ({ children }) => {
             )}
             {/* Clients */}
             {(isMarketer ||
-              isRachel ||
-              isJoe ||
+              isHOS ||
+              isGM ||
               isAdmin ||
               isHOL ||
               isOperations ||
@@ -350,8 +345,8 @@ const Sidebar = ({ children }) => {
                       </Link>
                     </>
                   )}
-                  {(isRachel ||
-                    isJoe ||
+                  {(isHOS ||
+                    isGM ||
                     isAdmin ||
                     isHOL ||
                     isOperations ||

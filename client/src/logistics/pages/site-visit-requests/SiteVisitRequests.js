@@ -133,7 +133,7 @@ const SiteVisitRequests = () => {
     return (
       <div className="join">
         <button
-          className="join-item btn mr-3 w-20"
+          className="join-item btn mr-3 w-10 lg:w-20"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -163,7 +163,7 @@ const SiteVisitRequests = () => {
           );
         })}
         <button
-          className="join-item btn ml-3 w-20"
+          className="join-item btn ml-3 w-10 lg:w-20"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
@@ -205,15 +205,14 @@ const SiteVisitRequests = () => {
     <>
       <Sidebar>
         <div className="flex flex-col">
-          <div className="mt-6 mb-6 flex justify-between mx-4">
-            <h1 className="text-3xl font-bold text-gray-800 uppercase items-center">
-              <span className="text-primary font-bold">{pending.length}</span>{" "}
+          <div className="mt-6 mb-6 flex flex-col mx-4">
+            <h1 className="text-3xl font-extrabold mb-1 text-gray-800 uppercase text-center">
+              <span className="text-primary">{pending.length}</span>{" "}
               {statusText}
-              {/* {pending.length > 1 || pending.length === 0 ? "s" : ""} */}
             </h1>
-            <div>
+            <div className="grid grid-cols-3 lg:grid-cols-7 justify-center">
               <div
-                className={`btn btn-outline font-bold mr-1 ${
+                className={`btn m-1 btn-outline font-bold mr-1 ${
                   selectedStatus === "all" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("all")}
@@ -221,7 +220,7 @@ const SiteVisitRequests = () => {
                 All
               </div>
               <div
-                className={`btn btn-warning text-white font-bold mr-1 ${
+                className={`btn m-1 btn-warning text-white font-bold mr-1 ${
                   selectedStatus === "pending" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("pending")}
@@ -229,7 +228,7 @@ const SiteVisitRequests = () => {
                 Pending
               </div>
               <div
-                className={`btn bg-gray-500 text-white font-bold mr-1 border-none ${
+                className={`btn m-1 bg-gray-500 text-white font-bold mr-1 border-none ${
                   selectedStatus === "cancelled" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("cancelled")}
@@ -237,7 +236,7 @@ const SiteVisitRequests = () => {
                 Cancelled
               </div>
               <div
-                className={`btn btn-info text-white font-bold ${
+                className={`btn m-1 btn-info text-white font-bold ${
                   selectedStatus === "approved" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("approved")}
@@ -245,7 +244,7 @@ const SiteVisitRequests = () => {
                 Approved
               </div>
               <div
-                className={`btn btn-error text-white font-bold mx-1 ${
+                className={`btn m-1 btn-error text-white font-bold mx-1 ${
                   selectedStatus === "rejected" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("rejected")}
@@ -253,7 +252,7 @@ const SiteVisitRequests = () => {
                 Rejected
               </div>
               <div
-                className={`btn btn-primary text-white font-bold mr-1 ${
+                className={`btn m-1 btn-primary text-white font-bold mr-1 ${
                   selectedStatus === "reviewed" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("reviewed")}
@@ -261,7 +260,7 @@ const SiteVisitRequests = () => {
                 Complete
               </div>
               <div
-                className={`btn bg-purple-500 border-none text-white font-bold ${
+                className={`btn m-1 bg-purple-500 border-none text-white font-bold ${
                   selectedStatus === "in_progress" ||
                   selectedStatus === "complete"
                     ? "btn-active"

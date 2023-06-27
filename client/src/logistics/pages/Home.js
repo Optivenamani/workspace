@@ -30,11 +30,10 @@ const Home = () => {
 
   const accessRole = useSelector((state) => state.user.accessRole);
 
-  const isMarketer = accessRole === `113`;
-  const isAdmin =
-    accessRole === `112#700#117#116` ||
-    accessRole === `112#770#303#304#305#116` ||
-    accessRole === `112#114#700`;
+  const accessRoles = accessRole.split("#");
+
+  const isMarketer = accessRoles.includes("113");
+  const isAdmin = accessRoles.includes("logisticsAdmin");
 
   const activeVisits = useSelector(selectActiveSiteVisits);
   const siteVisitStatus = useSelector((state) => state.siteVisit.status);
