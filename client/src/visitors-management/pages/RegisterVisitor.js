@@ -260,39 +260,29 @@ const RegisterVisitor = () => {
                       className="input input-bordered w-full max-w-xs"
                       required
                     >
-                      <option value="">Select Department</option>
-                      <option value="diaspora">Diaspora</option>
-                      <option value="HR">HR & Admin</option>
-                      <option value="Registry">Registry & Documentation</option>
-                      <option value="Legal">Legal Department</option>
-                      <option value="Accounts">Accounts & Finance</option>
-                      <option value="Sales">Sales & Marketing</option>
-                      <option value="Strategy">Strategy & Operations</option>
-                      <option value="Project Department">
-                        Project Department
-                      </option>
-                      <option value="Digital Department">
-                        Digital Department
-                      </option>
-                      <option value="ICT">ICT & Systems</option>
-                      <option value="Customer Service">Customer Service</option>
-                      <option value="CEO Support">CEO Support</option>
-                      <option value="Procurement">Procurement</option>
-                      <option value="Property Management">
-                        Property Management
-                      </option>
-                      <option value="Audit">Audit & Compliance</option>
-                      <option value="Construction">Construction</option>
-                      <option value="Architecture">
-                        Architecture & Design
-                      </option>
-                      <option value="Maintenance">Maintenance</option>
-                      <option value="Landscaping">Landscaping</option>
-                      <option value="Health Safety">Health & Safety</option>
-                      <option value="Quality Assurance">
-                        Quality Assurance
-                      </option>
-                      <option value="Client Services">Client Services</option>
+                    <option value="">Select Department</option>
+                    <option value="diaspora">Diaspora</option>
+                    <option value="HR">HR & Admin</option>
+                    <option value="Registry">Registry & Documentation</option>
+                    <option value="Legal">Legal Department</option>
+                    <option value="Accounts">Accounts & Finance</option>
+                    <option value="Sales">Sales & Marketing</option>
+                    <option value="Strategy">Strategy & Operations</option>
+                    <option value="Project Department">
+                      Project Department
+                    </option>
+                    <option value="Digital Department">
+                      Digital Department
+                    </option>
+                    <option value="ICT">ICT & Systems</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="CEO Support">CEO Support</option>
+                    <option value="Internal Audit">Internal Audit</option>
+                    <option value="Compliance">
+                      Compliance
+                    </option>
+                    <option value="PR Media">PR Media </option>
+                    <option value="PR Comunication">PR Comunication</option>
                     </select>
                   </div>
 

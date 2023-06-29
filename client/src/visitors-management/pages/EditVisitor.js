@@ -223,22 +223,13 @@ const EditVisitor = () => {
                       <option value="ICT">ICT & Systems</option>
                       <option value="Customer Service">Customer Service</option>
                       <option value="CEO Support">CEO Support</option>
-                      <option value="Procurement">Procurement</option>
-                      <option value="Property Management">
-                        Property Management
+                      <option value="Internal Audit">Internal Audit</option>
+                      <option value="Compliance">
+                        Compliance
                       </option>
-                      <option value="Audit">Audit & Compliance</option>
-                      <option value="Construction">Construction</option>
-                      <option value="Architecture">
-                        Architecture & Design
-                      </option>
-                      <option value="Maintenance">Maintenance</option>
-                      <option value="Landscaping">Landscaping</option>
-                      <option value="Health Safety">Health & Safety</option>
-                      <option value="Quality Assurance">
-                        Quality Assurance
-                      </option>
-                      <option value="Client Services">Client Services</option>
+                      <option value="PR Media">PR Media </option>
+                      <option value="PR Comunication">PR Comunication</option>
+                     
                     </select>
                   </div>
                   <div className="col-span-6 sm:col-span-3">
