@@ -45,15 +45,52 @@ const ViewVisitors = () => {
     };
 
     fetchVisitors();
-  }, []);
+  }, [token]);
 
-  console.log(visitors)
+  const handleCheckOut = async (visitorId) => {
+    try {
+      const currentTime = new Date();
+      const hours = currentTime.getHours().toString().padStart(2, "0");
+      const minutes = currentTime.getMinutes().toString().padStart(2, "0");
+      const seconds = currentTime.getSeconds().toString().padStart(2, "0");
+      const currentTimeString = `${hours}:${minutes}:${seconds}`;
+
+      const response = await fetch(
+        `http://localhost:8080/api/visitors/checkout/${visitorId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ check_out_time: currentTimeString }),
+        }
+      );
+
+      if (response.ok) {
+        // Update the visitor's check-out time in the state
+        setVisitors((prevVisitors) =>
+          prevVisitors.map((visitor) =>
+            visitor.id === visitorId
+              ? { ...visitor, check_out_time: currentTimeString }
+              : visitor
+          )
+        );
+      } else {
+        console.error("Failed to check out visitor.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  console.log(visitors);
 
   return (
     <Sidebar>
       <div className="container px-4 py-6 mx-auto">
         <div className="overflow-x-auto card bg-base-100 shadow-xl">
-          <table className="table table-zebra">
+          <table className="table table-compact">
             <thead>
               <tr>
                 <th>ID</th>
@@ -63,8 +100,9 @@ const ViewVisitors = () => {
                 <th>Vehicle Registration</th>
                 <th>Purpose</th>
                 <th>Department</th>
-                <th>Check-in Date</th>
+                <th>Date</th>
                 <th>Check-in Time</th>
+                <th>Check-out Time</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -80,15 +118,32 @@ const ViewVisitors = () => {
                   <td>{visitor.purpose}</td>
                   <td>{visitor.department}</td>
                   <td>{formatDate(visitor.check_in_date)}</td>
-                  <td>{formatTime(visitor.check_in_time)}</td>
+                  <td className="text-center">
+                    {formatTime(visitor.check_in_time)}
+                  </td>
+                  <td>
+                    {visitor.check_out_time ? (
+                      formatTime(visitor.check_out_time)
+                    ) : (
+                      <button
+                        className="btn btn-outline btn-sm"
+                        onClick={() => handleCheckOut(visitor.id)}
+                        disabled={visitor.check_out_time !== null}
+                      >
+                        Check Out
+                      </button>
+                    )}
+                  </td>
                   <td>
                     <div className="flex gap-2">
-                      <Link
-                        to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
-                        className="btn btn-red"
-                      >
-                        Edit
-                      </Link>
+                      {visitor.check_out_time === null && (
+                        <Link
+                          to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
+                          className="btn btn-warning btn-sm"
+                        >
+                          Edit
+                        </Link>
+                      )}
                     </div>
                   </td>
                 </tr>
