@@ -15,6 +15,7 @@ export { default as Dashboard } from "../logistics/pages/Dashboard";
 export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests/EditSiteVisit";
 export { default as EditSpecialAssignment } from "../logistics/pages/special-assignments/EditSpecialAssignment";
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
+export { default as EditVisitor } from "../visitors-management/pages/EditVisitor"
 export { default as Home } from "../logistics/pages/Home";
 export { default as Login } from "../common/pages/Login";
 export { default as MarketersFeedback } from "../logistics/pages/reports/MarketersFeedback";
@@ -36,3 +37,4 @@ export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewSpecialAssignments } from "../logistics/pages/special-assignments/ViewSpecialAssignments";
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";
+export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
