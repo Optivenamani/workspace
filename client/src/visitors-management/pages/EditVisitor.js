@@ -173,7 +173,7 @@ const EditVisitor = () => {
                     <input
                       type="text"
                       id="vehicleRegistration"
-                      placeholder="KDP 666X"
+                      placeholder="KDP 123X"
                       value={vehicleRegistration}
                       onChange={(event) =>
                         setVehicleRegistration(event.target.value)
