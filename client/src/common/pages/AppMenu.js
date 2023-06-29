@@ -54,13 +54,13 @@ const AppMenu = ({ onAppSelect }) => {
                 onClick={() => handleAppSelect("Visitor Management")}
               >
                 <img
-                  src="https://images.pexels.com/photos/7564257/pexels-photo-7564257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  src="https://images.unsplash.com/photo-1559056961-1f4dbbf9d36a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"
                   alt=""
                   className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
                 />
                 <div className="relative pt-3 bg-white">
                   <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                    Visitors Management (Coming Soon)
+                    Visitors Management
                   </h3>
                 </div>
               </Link>
