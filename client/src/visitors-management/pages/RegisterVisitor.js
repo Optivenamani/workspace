@@ -282,7 +282,7 @@ const RegisterVisitor = () => {
                       Compliance
                     </option>
                     <option value="PR Media">PR Media </option>
-                    <option value="PR Comunication">PR Comunication</option>
+                    <option value="PR Communication">PR Communication</option>
                     </select>
                   </div>
 
