@@ -100,10 +100,10 @@ const ViewVisitors = () => {
   return (
     <Sidebar>
       <div className="container px-4 py-6 mx-auto">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-center mb-4">
           <input
             type="text"
-            className="border border-gray-300 rounded-md px-3 py-2 mr-2"
+            className="border border-gray-300 rounded-md px-3 py-2 mr-2 w-72"
             placeholder="Search"
             value={searchTerm}
             onChange={handleSearch}

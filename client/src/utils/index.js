@@ -37,3 +37,4 @@ export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewSpecialAssignments } from "../logistics/pages/special-assignments/ViewSpecialAssignments";
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";
+export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";

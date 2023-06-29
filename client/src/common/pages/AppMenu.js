@@ -49,7 +49,7 @@ const AppMenu = ({ onAppSelect }) => {
             </li>
             <li>
               <Link
-                // to="/visitors-management"
+                to="/visitors-management"
                 className="block overflow-hidden group"
                 onClick={() => handleAppSelect("Visitor Management")}
               >
