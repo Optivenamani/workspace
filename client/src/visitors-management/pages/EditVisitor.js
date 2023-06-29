@@ -133,6 +133,7 @@ const EditVisitor = () => {
                       placeholder="John Doe"
                       onChange={(event) => setName(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -146,6 +147,7 @@ const EditVisitor = () => {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -159,6 +161,7 @@ const EditVisitor = () => {
                       value={phone}
                       onChange={(event) => setPhone(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -189,6 +192,7 @@ const EditVisitor = () => {
                       value={purpose}
                       onChange={(event) => setPurpose(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -200,6 +204,7 @@ const EditVisitor = () => {
                       value={department}
                       onChange={(event) => setDepartment(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     >
                       <option value="">Select Department</option>
                       <option value="diaspora">Diaspora</option>
@@ -248,6 +253,7 @@ const EditVisitor = () => {
                       value={checkInTime}
                       onChange={(event) => setCheckInTime(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -262,6 +268,7 @@ const EditVisitor = () => {
                       value={formatDate(checkInDate)}
                       onChange={(event) => setCheckInDate(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
+                      required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">

@@ -18,6 +18,7 @@ const formatDate = (dateString) => {
 
 const ViewVisitors = () => {
   const [visitors, setVisitors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
@@ -84,11 +85,31 @@ const ViewVisitors = () => {
     }
   };
 
-  console.log(visitors);
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredVisitors = visitors.filter(
+    (visitor) =>
+      visitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      visitor.phone.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  console.log(filteredVisitors);
 
   return (
     <Sidebar>
       <div className="container px-4 py-6 mx-auto">
+        <div className="flex justify-end mb-4">
+          <input
+            type="text"
+            className="border border-gray-300 rounded-md px-3 py-2 mr-2"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <button className="btn btn-primary">Search</button>
+        </div>
         <div className="overflow-x-auto card bg-base-100 shadow-xl">
           <table className="table table-compact">
             <thead>
@@ -108,7 +129,7 @@ const ViewVisitors = () => {
             </thead>
             <tbody>
               {/* Render visitor data */}
-              {visitors.map((visitor, i) => (
+              {filteredVisitors.map((visitor, i) => (
                 <tr key={visitor.id}>
                   <td>{i + 1}</td>
                   <td>{visitor.name}</td>
