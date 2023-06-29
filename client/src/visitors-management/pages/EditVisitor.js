@@ -29,7 +29,7 @@ const EditVisitor = () => {
 
   const navigate = useNavigate();
 
-  console.log("Visitors ID: " + visitorId)
+  console.log("Visitors ID: " + visitorId);
 
   useEffect(() => {
     fetchVisitor();
@@ -89,7 +89,7 @@ const EditVisitor = () => {
         }
       );
 
-      console.log("Serialized data:", JSON.stringify(visitorData))
+      console.log("Serialized data:", JSON.stringify(visitorData));
 
       const data = await response.json();
       console.log(data);
@@ -105,138 +105,180 @@ const EditVisitor = () => {
   return (
     <>
       <Sidebar>
-        <div className="hero mt-10">
-          <form
-            onSubmit={handleSubmit}
-            className="form-control w-full max-w-xs"
-          >
-            <label htmlFor="Name" className="label">
-              <span className="label-text font-bold">Name</span>
-            </label>
-            <input
-              type="text"
-              id="Name"
-              value={name}
-              placeholder="John Doe"
-              onChange={(event) => setName(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
+        <section className="bg-white">
+          <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
+            <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
+              <img
+                alt="Pattern"
+                src="https://images.unsplash.com/photo-1638184984605-af1f05249a56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1032&q=80"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </aside>
 
-            <label htmlFor="Phone" className="label">
-              <span className="label-text font-bold">Phone</span>
-            </label>
-            <input
-              type="tel"
-              id="Phone"
-              placeholder="1234567890"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-
-            <label htmlFor="Email" className="label">
-              <span className="label-text font-bold">Email</span>
-            </label>
-            <input
-              type="email"
-              id="Email"
-              placeholder="example@example.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-
-            <label htmlFor="vehicleRegistration" className="label">
-              <span className="label-text font-bold">Vehicle Registration</span>
-            </label>
-            <input
-              type="text"
-              id="vehicleRegistration"
-              placeholder="KDP 666X"
-              value={vehicleRegistration}
-              onChange={(event) => setVehicleRegistration(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-
-            <label htmlFor="Purpose" className="label">
-              <span className="label-text font-bold">Purpose</span>
-            </label>
-            <input
-              type="text"
-              id="Purpose"
-              placeholder="Meeting"
-              value={purpose}
-              onChange={(event) => setPurpose(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-
-            <label htmlFor="Department" className="label">
-            <span className="label-text font-bold">Department</span>
-          </label>
-          <select
-            id="Department"
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
-            className="input input-bordered w-full max-w-xs"
-          >
-            <option value="">Select Department</option>
-            <option value="diaspora">Diaspora</option>
-            <option value="HR">HR & Admin</option>
-            <option value="Registry">Registry & Documentation</option>
-            <option value="Legal">Legal Department</option>
-            <option value="Accounts">Accounts & Finance</option>
-            <option value="Sales">Sales & Marketing</option>
-            <option value="Strategy">Strategy & Operations</option>
-            <option value="Project Department">Project Department</option>
-            <option value="Digital Department">Digital Department</option>
-            <option value="ICT">ICT & Systems</option>
-            <option value="Customer Service">Customer Service</option>
-            <option value="CEO Support">CEO Support</option>
-            <option value="Procurement">Procurement</option>
-            <option value="Property Management">Property Management</option>
-            <option value="Audit">Audit & Compliance</option>
-            <option value="Construction">Construction</option>
-            <option value="Architecture">Architecture & Design</option>
-            <option value="Maintenance">Maintenance</option>
-            <option value="Landscaping">Landscaping</option>
-            <option value="Health Safety">Health & Safety</option>
-            <option value="Quality Assurance">Quality Assurance</option>
-            <option value="Client Services">Client Services</option>
-          </select>
-          
-
-            <label htmlFor="checkInTime" className="label">
-              <span className="label-text font-bold">Check-in Time</span>
-            </label>
-            <input
-              type="time"
-              id="check_in_time"
-              value={checkInTime}
-              onChange={(event) => setCheckInTime(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-
-            <label htmlFor="checkInDate" className="label">
-              <span className="label-text font-bold">Check-In Date</span>
-            </label>
-            <input
-              type="date"
-              id="check_in_date"
-              value={formatDate(checkInDate)}
-              onChange={(event) => setCheckInDate(event.target.value)}
-              className="input input-bordered w-full max-w-xs"
-            />
-
-            <button
-              type="submit"
-              disabled={loading}
-              id="submit"
-              className="btn btn-primary w-full max-w-xs mt-4 text-white"
-            >
-              {loading ? "Saving..." : "Edit Visitor"}
-            </button>
-          </form>
-        </div>
+            <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+              <div className="max-w-xl lg:max-w-3xl">
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-8 grid grid-cols-6 gap-3"
+                >
+                  {" "}
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="Name" className="label">
+                      <span className="label-text font-bold">Name</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="Name"
+                      value={name}
+                      placeholder="John Doe"
+                      onChange={(event) => setName(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="Email" className="label">
+                      <span className="label-text font-bold">Email</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="Email"
+                      placeholder="example@example.com"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="Phone" className="label">
+                      <span className="label-text font-bold">Phone</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="Phone"
+                      placeholder="1234567890"
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="vehicleRegistration" className="label">
+                      <span className="label-text font-bold">
+                        Vehicle Registration
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      id="vehicleRegistration"
+                      placeholder="KDP 666X"
+                      value={vehicleRegistration}
+                      onChange={(event) =>
+                        setVehicleRegistration(event.target.value)
+                      }
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="Purpose" className="label">
+                      <span className="label-text font-bold">Purpose</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="Purpose"
+                      placeholder="Meeting"
+                      value={purpose}
+                      onChange={(event) => setPurpose(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="Department" className="label">
+                      <span className="label-text font-bold">Department</span>
+                    </label>
+                    <select
+                      id="Department"
+                      value={department}
+                      onChange={(event) => setDepartment(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    >
+                      <option value="">Select Department</option>
+                      <option value="diaspora">Diaspora</option>
+                      <option value="HR">HR & Admin</option>
+                      <option value="Registry">Registry & Documentation</option>
+                      <option value="Legal">Legal Department</option>
+                      <option value="Accounts">Accounts & Finance</option>
+                      <option value="Sales">Sales & Marketing</option>
+                      <option value="Strategy">Strategy & Operations</option>
+                      <option value="Project Department">
+                        Project Department
+                      </option>
+                      <option value="Digital Department">
+                        Digital Department
+                      </option>
+                      <option value="ICT">ICT & Systems</option>
+                      <option value="Customer Service">Customer Service</option>
+                      <option value="CEO Support">CEO Support</option>
+                      <option value="Procurement">Procurement</option>
+                      <option value="Property Management">
+                        Property Management
+                      </option>
+                      <option value="Audit">Audit & Compliance</option>
+                      <option value="Construction">Construction</option>
+                      <option value="Architecture">
+                        Architecture & Design
+                      </option>
+                      <option value="Maintenance">Maintenance</option>
+                      <option value="Landscaping">Landscaping</option>
+                      <option value="Health Safety">Health & Safety</option>
+                      <option value="Quality Assurance">
+                        Quality Assurance
+                      </option>
+                      <option value="Client Services">Client Services</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="checkInTime" className="label">
+                      <span className="label-text font-bold">
+                        Check-in Time
+                      </span>
+                    </label>
+                    <input
+                      type="time"
+                      id="check_in_time"
+                      value={checkInTime}
+                      onChange={(event) => setCheckInTime(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="checkInDate" className="label">
+                      <span className="label-text font-bold">
+                        Check-In Date
+                      </span>
+                    </label>
+                    <input
+                      type="date"
+                      id="check_in_date"
+                      value={formatDate(checkInDate)}
+                      onChange={(event) => setCheckInDate(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      id="submit"
+                      className="btn btn-primary w-full max-w-xs mt-4 text-white"
+                    >
+                      {loading ? "Saving..." : "Edit Visitor"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </main>
+          </div>
+        </section>
       </Sidebar>
     </>
   );
