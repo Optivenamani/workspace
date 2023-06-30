@@ -23,14 +23,20 @@ const VisitorsManagementHome = () => {
                 Welcome to Optiven Visitors Management Platform
               </h1>
               <div className="mt-10">
-                <Link
-                  to="/register-visitor"
-                  className="btn btn-primary text-white"
-                >
+                <Link to="/register-visitor" className="btn btn-primary text-white">
                   Register Visitor
                 </Link>
                 <Link to="/view-visitors" className="btn btn-outline ml-1">
                   View Visitors
+                </Link>
+              </div>
+              
+              <div className="mt-4">
+                <Link to="/schedule-interview" className="btn btn-primary text-white">
+                  Schedule Interview
+                </Link>
+                <Link to="/view-interviews" className="btn btn-outline ml-1">
+                  View Scheduled Interviews
                 </Link>
               </div>
             </div>

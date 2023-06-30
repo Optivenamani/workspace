@@ -107,6 +107,11 @@ const ScheduleInterview = () => {
         <section className="bg-white">
           <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
             <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
+              <img
+                src="https://images.unsplash.com/photo-1565688534245-05d6b5be184a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+                alt="Sidebar Image"
+                className="absolute top-0 left-0 h-full w-full object-cover"
+              />
               {/* Sidebar content */}
             </section>
 
