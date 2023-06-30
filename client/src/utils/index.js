@@ -12,6 +12,7 @@ export { default as CreateBooking } from "../logistics/pages/site-visit-requests
 export { default as CreateSpecialAssignment } from "../logistics/pages/special-assignments/CreateSpecialAssignment";
 export { default as CreateVehicle } from "../logistics/pages/vehicles/CreateVehicle";
 export { default as Dashboard } from "../logistics/pages/Dashboard";
+export { default as EditScheduledInterviews } from "../visitors-management/pages/EditScheduledInterviews";
 export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests/EditSiteVisit";
 export { default as EditSpecialAssignment } from "../logistics/pages/special-assignments/EditSpecialAssignment";
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
@@ -26,6 +27,7 @@ export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
 export { default as RegisterVisitor } from "../visitors-management/pages/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
+export { default as ScheduleInterview } from "../visitors-management/pages/ScheduleInterview"
 export { default as SiteVisitDetails } from "../logistics/pages/site-visit-requests/SiteVisitDetails";
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
@@ -34,6 +36,7 @@ export { default as Users } from "../logistics/pages/Users";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";
 export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleRequests";
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
+export { default as ViewScheduleInterviews } from "../visitors-management/pages/ViewScheduledInterviews"
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewSpecialAssignments } from "../logistics/pages/special-assignments/ViewSpecialAssignments";
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";

@@ -97,6 +97,7 @@ const specialAssignment = require("./routes/logistics/special-assignment/special
 
 // Import visitors management routes
 const visitors = require("./routes/visitors-management/visitors/visitors.routes");
+const interviews = require("./routes/visitors-management/interviews/interview.routes")
 
 // Configure CORS options
 const corsOptions = {
@@ -128,6 +129,7 @@ app.use("/api/clients", clients(logisticsPool));
 app.use("/api/notifications", notifications(logisticsPool));
 app.use("/api/visitors", visitors(visitorManagementPool));
 app.use("/api/special-assignments", specialAssignment(logisticsPool));
+app.use("/api/interviews", interviews(visitorManagementPool))
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
