@@ -4,23 +4,22 @@ const router = express.Router();
 
 module.exports = (pool) => {
   // Retrieve all users
-  router.get(
-    "/",
-    authenticateJWT,
-    async (req, res) => {
-      try {
-        pool.query("SELECT * FROM users", (err, results) => {
+  router.get("/", authenticateJWT, async (req, res) => {
+    try {
+      pool.query(
+        "SELECT * FROM users ORDER BY fullnames ASC",
+        (err, results) => {
           if (err) throw err;
 
           res.json(results);
-        });
-      } catch (error) {
-        res.status(500).json({
-          message: "An error occurred while fetching users.",
-        });
-      }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching users.",
+      });
     }
-  );
+  });
 
   return router;
 };
