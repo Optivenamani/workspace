@@ -24,7 +24,7 @@ const VisitorsManagementHome = () => {
               <div className="mt-5">
                 <p className="italic">
                   Access the menu from the{" "}
-                  <span className="font-bold underline">sidebar</span> on the <span className="font-bold underline">top left.</span>.
+                  <span className="font-bold underline">sidebar</span> on the <span className="font-bold underline">top left.</span> to get started.
                 </p>
                 {/* <Link to="/register-visitor" className="btn btn-sm btn-primary text-white">
                   Register Visitor
