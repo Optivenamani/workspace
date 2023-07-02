@@ -59,9 +59,10 @@ const Home = () => {
               />
 
               <div className="flex flex-col justify-center p-4 text-start sm:p-6 md:col-span-2 lg:p-8">
-                <h2 className="mt-6 font-black">
-                  <span className="text-4xl sm:text-5xl lg:text-7xl">
-                    {greeting} {firstName}.
+                <h2 className="mt-6 text-4xl sm:text-5xl lg:text-7xl lausanne font-bold">
+                  {greeting}{" "}
+                  <span className="sometimes-italic font-thin">
+                    {firstName}.
                   </span>
                 </h2>
                 {(isMarketer || isAdmin) && (

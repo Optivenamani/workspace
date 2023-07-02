@@ -91,7 +91,7 @@ const VehicleRequests = () => {
           <div className="px-4 mt-2 flex justify-center mb-10">
             {vehicleRequests.length > 0 ? (
               <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
-                <table className="w-full border-collapse">
+                <table className="w-full border-collapse table-compact">
                   <thead>
                     <tr className="text-center bg-gray-500 text-secondary-content">
                       <th className="border border-secondary-content px-2">

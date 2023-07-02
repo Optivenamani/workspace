@@ -9,7 +9,7 @@ const VisitorsManagementHome = () => {
           <aside className="relative block h-96 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
             <img
               alt="Pattern"
-              src="https://lh3.googleusercontent.com/p/AF1QipN0diuh8haESrAhd2TclRU5rQ3Qp2OlzstOU2BR=s1360-w1360-h1020"
+              src={require("../../assets/media/reception.jpg")}
               className="absolute inset-0 h-full w-full object-cover"
             />
           </aside>
