@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/sidebar/Sidebar";
 import { useSelector } from "react-redux";
-import formatTime from "../../utils/formatTime";
+import formatTime from "../../../utils/formatTime";
 import { Link } from "react-router-dom";
 
 const formatDate = (dateString) => {
@@ -160,12 +160,20 @@ const ViewVisitors = () => {
                   <td>
                     <div className="flex gap-2">
                       {visitor.check_out_time === null && (
+                        <>
                         <Link
                           to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
                           className="btn btn-warning btn-sm"
                         >
                           Edit
                         </Link>
+                        <button
+                          to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
+                          className="btn btn-error text-white btn-sm"
+                        >
+                          Delete
+                        </button>
+                        </>
                       )}
                     </div>
                   </td>

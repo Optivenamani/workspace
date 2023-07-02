@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 
 const formatDate = (dateString) => {
   if (!dateString) return null;
@@ -63,10 +62,6 @@ const ViewScheduledInterviews = () => {
     setSearchTerm(e.target.value);
   };
 
-  const handleEditInterview = (id) => {
-    navigate(`/edit-scheduled-interviews/${id}`);
-  };
-
   const filteredInterviews = interviews.filter(
     (interview) =>
       (interview.name &&
@@ -74,10 +69,32 @@ const ViewScheduledInterviews = () => {
       (interview.phone_number && interview.phone_number.includes(searchTerm))
   );
 
+  const deleteInterview = (interviewId) => {
+    // Send a DELETE request to the server to delete the vehicle with the specified ID
+    fetch(`http://localhost:8080/api/interviews/${interviewId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Remove the vehicle from the intervieww state
+        setInterviews((prevInterviews) =>
+          prevInterviews.filter((interview) => interview.id !== interviewId)
+        );
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  };
+
   return (
     <Sidebar>
-      <div className="container px-4 py-6 mx-auto">
-        <div className="flex justify-center mb-4">
+      <div className="container px-4 py-2 mx-auto">
+        <div className="flex justify-center mb-2">
           <input
             type="text"
             className="border border-gray-300 rounded-md px-3 py-2 mr-2 w-72"
@@ -116,12 +133,18 @@ const ViewScheduledInterviews = () => {
                   <td>{interview.position}</td>
                   <td>
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-warning btn-sm text-white"
                       onClick={() =>
                         navigate(`/edit-scheduled-interviews/${interview.id}`)
                       }
                     >
                       Edit
+                    </button>
+                    <button
+                      className="btn btn-sm text-white btn-error ml-1"
+                      onClick={() => deleteInterview(interview.id)}
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>

@@ -1,41 +1,28 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/sidebar/Sidebar";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
-const formatDate = (dateString) => {
-  if (!dateString) return null;
-  const date = new Date(dateString);
-  return date
-    .toLocaleDateString("en-CA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    .replace(/\//g, "-");
-};
-
-const EditVisitor = () => {
-  const { id } = useParams();
-  const visitorId = id;
+const RegisterVisitor = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [staff, setStaff] = useState("");
+  const [visitorRoom, setVisitorRoom] = useState("");
   const [vehicleRegistration, setVehicleRegistration] = useState("");
   const [purpose, setPurpose] = useState("");
   const [department, setDepartment] = useState("");
   const [checkInTime, setCheckInTime] = useState("");
   const [checkInDate, setCheckInDate] = useState("");
-  const [visitorRoom, setVisitorRoom] = useState("");
-  const [staff, setStaff] = useState("");
   const [selectedStaffId, setSelectedStaffId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [allStaff, setAllStaff] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
-
-  console.log("Visitor ID:", visitorId);
 
   const handleStaffChange = (event) => {
     const selectedStaff = allStaff.find(
@@ -50,41 +37,106 @@ const EditVisitor = () => {
     }
   };
 
-  const fetchVisitor = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      !name ||
+      !phone ||
+      !email ||
+      !purpose ||
+      !department ||
+      !checkInTime ||
+      !checkInDate ||
+      !selectedStaffId ||
+      !visitorRoom
+    ) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!isValidPhone(phone)) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
     setLoading(true);
+    setError(""); // Clear any previous errors
+    const visitorData = {
+      name,
+      phone,
+      email,
+      vehicle_registration: vehicleRegistration,
+      purpose,
+      department,
+      check_in_time: checkInTime,
+      check_in_date: checkInDate,
+      staff_id: selectedStaffId,
+      visitor_room: visitorRoom,
+    };
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/visitors/${visitorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:8080/api/visitors", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(visitorData),
+      });
+
       const data = await response.json();
-      console.log("Visitor:", data);
-      setName(data.name);
-      setPhone(data.phone);
-      setEmail(data.email);
-      setVehicleRegistration(data.vehicle_registration);
-      setPurpose(data.purpose);
-      setDepartment(data.department);
-      setCheckInTime(data.check_in_time);
-      setCheckInDate(data.check_in_date);
-      setVisitorRoom(data.visitor_room);
-      setSelectedStaffId(data.staff_id);
-      setStaff(data.staff_name);
+      console.log(data);
+      setLoading(false);
+      navigate("/view-visitors");
+
+      // Display success notification
+      toast.success("Visitor registered successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      // Reset form fields
+      setName("");
+      setPhone("");
+      setEmail("");
+      setVehicleRegistration("");
+      setPurpose("");
+      setDepartment("");
+      setCheckInTime("");
+      setCheckInDate("");
+      setStaff("");
+      setVisitorRoom("");
     } catch (error) {
       console.error(error);
-    } finally {
       setLoading(false);
+      setError("An error occurred. Please try again."); // Update error message
+
+      // Display error notification
+      toast.error("An error occurred. Please try again.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
-  useEffect(() => {
-    fetchVisitor();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const isValidEmail = (email) => {
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPhone = (phone) => {
+    // Basic phone number validation (digits and dashes)
+    const phoneRegex = /^\d+(-\d+)*$/;
+    return phoneRegex.test(phone);
+  };
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -95,7 +147,7 @@ const EditVisitor = () => {
           },
         });
         const data = await response.json();
-        console.log("Staff:", data);
+        console.log("Staff: ", data);
         setAllStaff(data);
       } catch (error) {
         console.error("Error fetching staff:", error);
@@ -105,106 +157,87 @@ const EditVisitor = () => {
     fetchStaff();
   }, [token]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const visitorData = {
-      name,
-      phone,
-      email,
-      vehicle_registration: vehicleRegistration,
-      purpose,
-      department,
-      check_in_time: checkInTime,
-      check_in_date: formatDate(checkInDate),
-      visitor_room: visitorRoom,
-      staff_id: selectedStaffId,
-    };
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/visitors/${visitorId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(visitorData),
-        }
-      );
-
-      if (response.ok) {
-        console.log("Visitor updated successfully!");
-        navigate("/view-visitors");
-      } else {
-        console.error("Failed to update visitor.");
-      }
-    } catch (error) {
-      console.error("Error updating visitor:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <>
       <Sidebar>
         <section className="bg-white">
           <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-            <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
+            <section className="relative flex h-32 items-center bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
               <img
-                alt="Pattern"
+                alt="Night"
                 src="https://images.unsplash.com/photo-1638184984605-af1f05249a56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1032&q=80"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover opacity-80"
               />
-            </aside>
-
-            <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+              <div className="hidden lg:relative lg:block lg:p-12">
+                <div className="block text-white text-4xl">🛎️</div>
+                <h2 className="mt-6 text-2xl font-extrabold text-white sm:text-3xl md:text-4xl uppercase">
+                  Optiven Visitors Management Platform
+                </h2>
+              </div>
+            </section>
+            <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-8 xl:col-span-6">
               <div className="max-w-xl lg:max-w-3xl">
+                <div className="relative -mt-16 block lg:hidden">
+                  <a
+                    className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-white text-blue-600 sm:h-20 sm:w-20"
+                    href="/"
+                  >
+                    <div className="block text-white text-4xl">🛎️</div>
+                  </a>
+                  <h2 className="mt-6 text-2xl font-extrabold sm:text-3xl md:text-4xl uppercase">
+                    Optiven Visitors Management Platform
+                  </h2>
+                </div>
+                <div className="text-sm breadcrumbs">
+                  <ul>
+                    <li>
+                      <Link to="/visitors-management">Home</Link>
+                    </li>
+                    <li>Register Visitor</li>
+                  </ul>
+                </div>
                 <form
                   onSubmit={handleSubmit}
                   className="mt-8 grid grid-cols-6 gap-3"
                 >
-                  {" "}
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="Name" className="label">
+                    <label htmlFor="name" className="label">
                       <span className="label-text font-bold">Name</span>
                     </label>
                     <input
                       type="text"
-                      id="Name"
+                      id="name"
                       value={name}
-                      placeholder="John Doe"
+                      placeholder="John Smith"
                       onChange={(event) => setName(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
                       required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="Email" className="label">
-                      <span className="label-text font-bold">Email</span>
+                    <label htmlFor="phone" className="label">
+                      <span className="label-text font-bold">Phone</span>
                     </label>
                     <input
-                      type="email"
-                      id="Email"
-                      placeholder="example@example.com"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      type="tel"
+                      id="phone"
+                      placeholder="07XXXXXXXX"
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
                       required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="Phone" className="label">
-                      <span className="label-text font-bold">Phone</span>
+                    <label htmlFor="email" className="label">
+                      <span className="label-text font-bold">Email</span>
                     </label>
                     <input
-                      type="tel"
-                      id="Phone"
-                      placeholder="1234567890"
-                      value={phone}
-                      onChange={(event) => setPhone(event.target.value)}
+                      type="email"
+                      id="email"
+                      placeholder="example@example.com"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
                       required
                     />
@@ -224,28 +257,45 @@ const EditVisitor = () => {
                         setVehicleRegistration(event.target.value)
                       }
                       className="input input-bordered w-full max-w-xs"
+                      autoComplete="off"
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="Purpose" className="label">
-                      <span className="label-text font-bold">Purpose</span>
+                    <label htmlFor="checkInDate" className="label">
+                      <span className="label-text font-bold">
+                        Check-In Date
+                      </span>
                     </label>
                     <input
-                      type="text"
-                      id="Purpose"
-                      placeholder="Meeting"
-                      value={purpose}
-                      onChange={(event) => setPurpose(event.target.value)}
+                      type="date"
+                      id="checkInDate"
+                      value={checkInDate}
+                      onChange={(event) => setCheckInDate(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
                       required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="Department" className="label">
+                    <label htmlFor="checkInTime" className="label">
+                      <span className="label-text font-bold">
+                        Check-In Time
+                      </span>
+                    </label>
+                    <input
+                      type="time"
+                      id="checkInTime"
+                      value={checkInTime}
+                      onChange={(event) => setCheckInTime(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                      required
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="department" className="label">
                       <span className="label-text font-bold">Department</span>
                     </label>
                     <select
-                      id="Department"
+                      id="department"
                       value={department}
                       onChange={(event) => setDepartment(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
@@ -275,49 +325,20 @@ const EditVisitor = () => {
                     </select>
                   </div>
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="checkInTime" className="label">
-                      <span className="label-text font-bold">
-                        Check-in Time
-                      </span>
-                    </label>
-                    <input
-                      type="time"
-                      id="check_in_time"
-                      value={checkInTime}
-                      onChange={(event) => setCheckInTime(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="checkInDate" className="label">
-                      <span className="label-text font-bold">
-                        Check-In Date
-                      </span>
-                    </label>
-                    <input
-                      type="date"
-                      id="check_in_date"
-                      value={formatDate(checkInDate)}
-                      onChange={(event) => setCheckInDate(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="visitorRoom" className="label">
-                      <span className="label-text font-bold">Visitor Room</span>
+                    <label htmlFor="purpose" className="label">
+                      <span className="label-text font-bold">Purpose</span>
                     </label>
                     <input
                       type="text"
-                      id="visitorRoom"
-                      placeholder="Room 404"
-                      value={visitorRoom}
-                      onChange={(event) => setVisitorRoom(event.target.value)}
+                      id="purpose"
+                      placeholder="Meeting"
+                      value={purpose}
+                      onChange={(event) => setPurpose(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
                       required
                     />
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="staff" className="label">
                       <span className="label-text font-bold">Staff Name</span>
@@ -341,14 +362,30 @@ const EditVisitor = () => {
                       ))}
                     </datalist>
                   </div>
+
                   <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="visitorRoom" className="label">
+                      <span className="label-text font-bold">Visitor Room</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="visitorRoom"
+                      placeholder="Room 404"
+                      value={visitorRoom}
+                      onChange={(event) => setVisitorRoom(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-span-6 sm:col-span-3">
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
                       type="submit"
-                      disabled={loading}
-                      id="submit"
                       className="btn btn-primary w-full max-w-xs text-white"
+                      disabled={loading}
                     >
-                      {loading ? "Saving..." : "Edit Visitor"}
+                      {loading ? "Loading..." : "Register Visitor"}
                     </button>
                   </div>
                 </form>
@@ -361,4 +398,4 @@ const EditVisitor = () => {
   );
 };
 
-export default EditVisitor;
+export default RegisterVisitor;

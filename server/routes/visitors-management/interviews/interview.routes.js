@@ -4,7 +4,7 @@ const router = express.Router();
 
 module.exports = (pool) => {
   // Input new interview information
-  router.post("/",  async (req, res) => {
+  router.post("/", async (req, res) => {
     const {
       name,
       email,
@@ -17,14 +17,7 @@ module.exports = (pool) => {
     try {
       pool.query(
         "INSERT INTO interviewees (name, email, phone_number, interview_date, interview_time, position) VALUES (?, ?, ?, ?, ?, ?)",
-        [
-          name,
-          email,
-          phone_number,
-          interview_date,
-          interview_time,
-          position,
-        ],
+        [name, email, phone_number, interview_date, interview_time, position],
         (err, result) => {
           if (err) throw err;
 
@@ -41,13 +34,16 @@ module.exports = (pool) => {
   });
 
   // Retrieve all interview information
-  router.get("/",  async (req, res) => {
+  router.get("/", async (req, res) => {
     try {
-      pool.query("SELECT * FROM interviewees", (err, results) => {
-        if (err) throw err;
+      pool.query(
+        "SELECT * FROM interviewees ORDER BY id DESC",
+        (err, results) => {
+          if (err) throw err;
 
-        res.json(results);
-      });
+          res.json(results);
+        }
+      );
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching interview information.",
@@ -56,7 +52,7 @@ module.exports = (pool) => {
   });
 
   // Retrieve a single interview information by id
-  router.get("/:id",  async (req, res) => {
+  router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -67,7 +63,9 @@ module.exports = (pool) => {
           if (err) throw err;
 
           if (results.length === 0) {
-            res.status(404).json({ message: "Interview information not found." });
+            res
+              .status(404)
+              .json({ message: "Interview information not found." });
           } else {
             const interview = results[0];
 
@@ -83,7 +81,7 @@ module.exports = (pool) => {
   });
 
   // Update an interview
-  router.patch("/:id",  async (req, res) => {
+  router.patch("/:id", async (req, res) => {
     const {
       name,
       email,
@@ -126,7 +124,7 @@ module.exports = (pool) => {
   });
 
   // Delete an interview
-  router.delete("/:id",  async (req, res) => {
+  router.delete("/:id", async (req, res) => {
     const { id } = req.params;
 
     try {

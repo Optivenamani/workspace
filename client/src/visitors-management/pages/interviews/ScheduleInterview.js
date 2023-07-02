@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/sidebar/Sidebar";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
@@ -20,7 +20,14 @@ const ScheduleInterview = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !email || !phone_number || !interview_date || !interview_time || !position) {
+    if (
+      !name ||
+      !email ||
+      !phone_number ||
+      !interview_date ||
+      !interview_time ||
+      !position
+    ) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -109,15 +116,25 @@ const ScheduleInterview = () => {
             <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
               <img
                 src="https://images.unsplash.com/photo-1565688534245-05d6b5be184a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
-                alt="Sidebar Image"
+                alt="interview-banner"
                 className="absolute top-0 left-0 h-full w-full object-cover"
               />
-              {/* Sidebar content */}
             </section>
 
             <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-8 xl:col-span-6">
               <div className="max-w-xl lg:max-w-3xl">
-                <form onSubmit={handleSubmit} className="mt-8 grid grid-cols-6 gap-6">
+                <div className="text-sm breadcrumbs">
+                  <ul>
+                    <li>
+                      <Link to="/visitors-management">Home</Link>
+                    </li>
+                    <li>Schedule Interview</li>
+                  </ul>
+                </div>
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-8 grid grid-cols-6 gap-6"
+                >
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="name" className="label">
                       <span className="label-text font-bold">Name</span>
@@ -165,7 +182,9 @@ const ScheduleInterview = () => {
 
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="interview_date" className="label">
-                      <span className="label-text font-bold">Interview Date</span>
+                      <span className="label-text font-bold">
+                        Interview Date
+                      </span>
                     </label>
                     <input
                       type="date"
@@ -179,7 +198,9 @@ const ScheduleInterview = () => {
 
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="interview_time" className="label">
-                      <span className="label-text font-bold">Interview Time</span>
+                      <span className="label-text font-bold">
+                        Interview Time
+                      </span>
                     </label>
                     <input
                       type="time"
