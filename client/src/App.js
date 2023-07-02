@@ -25,6 +25,7 @@ import {
   CreateSpecialAssignment,
   CreateVehicle,
   Dashboard,
+  EditScheduledInterviews,
   EditSiteVisit,
   EditSpecialAssignment,
   EditVehicle,
@@ -39,6 +40,7 @@ import {
   PastRequests,
   RegisterVisitor,
   RequestVehicle,
+  ScheduleInterview,
   SiteVisitDetails,
   SiteVisitRequests,
   SiteVisitsSummary,
@@ -47,12 +49,13 @@ import {
   VehicleRequestDetails,
   VehicleRequests,
   ViewDrivers,
+  ViewScheduleInterviews,
   ViewSites,
   ViewSpecialAssignments,
   ViewVehicles,
+  ViewVisitors,
+  VisitorsManagementHome
 } from "./utils/index";
-import ViewVisitors from "./visitors-management/pages/ViewVisitors";
-import VisitorsManagementHome from "./visitors-management/pages/VisitorsManagementHome";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -222,6 +225,11 @@ const App = () => {
             <Route path="/register-visitor" element={<RegisterVisitor />} />
             <Route path="/view-visitors" element={<ViewVisitors />} />
             <Route path="/edit-visitor/:id" element={<EditVisitor />} />
+
+            <Route path="/view-interviews" element={<ViewScheduleInterviews />} />
+            <Route path="/schedule-interview" element={<ScheduleInterview />} />
+            <Route path="/edit-scheduled-interviews/:id" element={<EditScheduledInterviews />} />
+
           </Route>
         </Routes>
       </Router>

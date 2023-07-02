@@ -15,11 +15,13 @@ module.exports = (pool) => {
       department,
       check_in_time,
       check_in_date,
+      staff_id,
+      visitor_room,
     } = req.body;
 
     try {
       pool.query(
-        "INSERT INTO visitors_information (name, phone, email, vehicle_registration, purpose, department, check_in_time, check_in_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO visitors_information (name, phone, email, vehicle_registration, purpose, department, check_in_time, check_in_date, staff_id, visitor_room) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           name,
           phone,
@@ -29,6 +31,8 @@ module.exports = (pool) => {
           department,
           check_in_time,
           check_in_date,
+          staff_id,
+          visitor_room,
         ],
         (err, result) => {
           if (err) throw err;
@@ -48,11 +52,14 @@ module.exports = (pool) => {
   // Retrieve all visitor information
   router.get("/", authenticateJWT, async (req, res) => {
     try {
-      pool.query("SELECT * FROM visitors_information", (err, results) => {
-        if (err) throw err;
+      pool.query(
+        "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id",
+        (err, results) => {
+          if (err) throw err;
 
-        res.json(results);
-      });
+          res.json(results);
+        }
+      );
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching visitor information.",
@@ -68,16 +75,10 @@ module.exports = (pool) => {
       pool.query(
         `SELECT 
         id AS visitor_id,
-        name, 
-        email, 
-        phone, 
-        purpose, 
-        vehicle_registration, 
-        department, 
-        check_in_time, 
-        check_in_date,
-        check_out_time
-      FROM visitors_information 
+        visitors_information.*,
+        users.fullnames as staff_name
+      FROM visitors_information
+      INNER JOIN defaultdb.users ON visitors_information.staff_id = users.user_id 
       WHERE id = ?`,
         [id],
         (err, results) => {
@@ -86,18 +87,7 @@ module.exports = (pool) => {
           if (results.length === 0) {
             res.status(404).json({ message: "Visitor information not found." });
           } else {
-            const visitor = {
-              visitor_id: results[0].visitor_id,
-              name: results[0].name,
-              email: results[0].email,
-              phone: results[0].phone,
-              purpose: results[0].purpose,
-              vehicle_registration: results[0].vehicle_registration,
-              department: results[0].department,
-              check_in_time: results[0].check_in_time,
-              check_in_date: results[0].check_in_date,
-              check_out_time: results[0].check_out_time,
-            };
+            const visitor = results[0];
 
             res.json(visitor);
           }
@@ -121,11 +111,14 @@ module.exports = (pool) => {
       department,
       check_in_time,
       check_in_date,
+      staff_id,
+      visitor_room,
     } = req.body;
     const { id } = req.params;
+
     try {
       pool.query(
-        "UPDATE visitors_information SET name = ?, phone = ?, email = ?, vehicle_registration = ?, purpose = ?, department = ?, check_in_time = ?, check_in_date = ? WHERE id = ?",
+        "UPDATE visitors_information SET name = ?, phone = ?, email = ?, vehicle_registration = ?, purpose = ?, department = ?, check_in_time = ?, check_in_date = ?, staff_id = ?, visitor_room = ? WHERE id = ?",
         [
           name,
           phone,
@@ -135,6 +128,8 @@ module.exports = (pool) => {
           department,
           check_in_time,
           check_in_date,
+          staff_id,
+          visitor_room,
           id,
         ],
         (err, result) => {

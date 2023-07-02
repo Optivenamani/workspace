@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import { useNavigate, useParams } from "react-router-dom";
+import Sidebar from "../../components/sidebar/Sidebar";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const formatDate = (dateString) => {
   if (!dateString) return null;
@@ -25,16 +26,29 @@ const EditVisitor = () => {
   const [department, setDepartment] = useState("");
   const [checkInTime, setCheckInTime] = useState("");
   const [checkInDate, setCheckInDate] = useState("");
+  const [visitorRoom, setVisitorRoom] = useState("");
+  const [staff, setStaff] = useState("");
+  const [selectedStaffId, setSelectedStaffId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [allStaff, setAllStaff] = useState([]);
+  const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
 
-  console.log("Visitors ID: " + visitorId);
+  console.log("Visitor ID:", visitorId);
 
-  useEffect(() => {
-    fetchVisitor();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleStaffChange = (event) => {
+    const selectedStaff = allStaff.find(
+      (staffMember) => staffMember.fullnames === event.target.value
+    );
+    if (selectedStaff) {
+      setStaff(selectedStaff.fullnames);
+      setSelectedStaffId(selectedStaff.user_id);
+    } else {
+      setStaff(event.target.value);
+      setSelectedStaffId("");
+    }
+  };
 
   const fetchVisitor = async () => {
     setLoading(true);
@@ -43,11 +57,12 @@ const EditVisitor = () => {
         `http://localhost:8080/api/visitors/${visitorId}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const data = await response.json();
+      console.log("Visitor:", data);
       setName(data.name);
       setPhone(data.phone);
       setEmail(data.email);
@@ -56,12 +71,39 @@ const EditVisitor = () => {
       setDepartment(data.department);
       setCheckInTime(data.check_in_time);
       setCheckInDate(data.check_in_date);
+      setVisitorRoom(data.visitor_room);
+      setSelectedStaffId(data.staff_id);
+      setStaff(data.staff_name);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchVisitor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        console.log("Staff:", data);
+        setAllStaff(data);
+      } catch (error) {
+        console.error("Error fetching staff:", error);
+      }
+    };
+
+    fetchStaff();
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,7 +117,10 @@ const EditVisitor = () => {
       department,
       check_in_time: checkInTime,
       check_in_date: formatDate(checkInDate),
+      visitor_room: visitorRoom,
+      staff_id: selectedStaffId,
     };
+
     try {
       const response = await fetch(
         `http://localhost:8080/api/visitors/${visitorId}`,
@@ -83,21 +128,21 @@ const EditVisitor = () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(visitorData),
         }
       );
 
-      console.log("Serialized data:", JSON.stringify(visitorData));
-
-      const data = await response.json();
-      console.log(data);
-      setLoading(false);
-      navigate("/view-visitors");
+      if (response.ok) {
+        console.log("Visitor updated successfully!");
+        navigate("/view-visitors");
+      } else {
+        console.error("Failed to update visitor.");
+      }
     } catch (error) {
-      alert(error);
-      console.error(error);
+      console.error("Error updating visitor:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -117,6 +162,17 @@ const EditVisitor = () => {
 
             <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
               <div className="max-w-xl lg:max-w-3xl">
+                <div className="text-sm breadcrumbs">
+                  <ul>
+                    <li>
+                      <Link to="/visitors-management">Home</Link>
+                    </li>
+                    <li>
+                      <Link to="/view-visitors">View Visitors</Link>
+                    </li>
+                    <li>Edit Visitor</li>
+                  </ul>
+                </div>
                 <form
                   onSubmit={handleSubmit}
                   className="mt-8 grid grid-cols-6 gap-3"
@@ -224,12 +280,9 @@ const EditVisitor = () => {
                       <option value="Customer Service">Customer Service</option>
                       <option value="CEO Support">CEO Support</option>
                       <option value="Internal Audit">Internal Audit</option>
-                      <option value="Compliance">
-                        Compliance
-                      </option>
+                      <option value="Compliance">Compliance</option>
                       <option value="PR Media">PR Media </option>
                       <option value="PR Communication">PR Communication</option>
-                     
                     </select>
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -263,11 +316,48 @@ const EditVisitor = () => {
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="visitorRoom" className="label">
+                      <span className="label-text font-bold">Visitor Room</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="visitorRoom"
+                      placeholder="Room 404"
+                      value={visitorRoom}
+                      onChange={(event) => setVisitorRoom(event.target.value)}
+                      className="input input-bordered w-full max-w-xs"
+                      required
+                    />
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label htmlFor="staff" className="label">
+                      <span className="label-text font-bold">Staff Name</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="staff"
+                      placeholder="Jane Doe"
+                      value={staff}
+                      onChange={handleStaffChange}
+                      className="input input-bordered w-full max-w-xs"
+                      required
+                      list="staff-suggestions"
+                    />
+                    <datalist id="staff-suggestions">
+                      {allStaff.map((staffMember) => (
+                        <option
+                          key={staffMember.user_id}
+                          value={staffMember.fullnames}
+                        />
+                      ))}
+                    </datalist>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
                     <button
                       type="submit"
                       disabled={loading}
                       id="submit"
-                      className="btn btn-primary w-full max-w-xs mt-4 text-white"
+                      className="btn btn-primary w-full max-w-xs text-white"
                     >
                       {loading ? "Saving..." : "Edit Visitor"}
                     </button>
