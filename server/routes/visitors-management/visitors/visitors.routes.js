@@ -1,7 +1,49 @@
 const express = require("express");
-//add correct path for authenticateJWT middleware
+const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
+
+// Define fonts
+var fonts = {
+  Roboto: {
+    normal: "node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf",
+    bold: "node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf",
+    italic: "node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf",
+    bolditalics:
+      "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
+  },
+};
+
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
+
+// function to format date to db friendly format
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+// Map data to fields that go to the pdf
+function dataToPdfRows(data) {
+  return data.map((item, index) => {
+    return [
+      { text: index + 1 ?? "", style: "tableCell" },
+      { text: item.name ?? "", style: "tableCell" },
+      { text: item.email ?? "", style: "tableCell" },
+      { text: item.phone ?? "", style: "tableCell" },
+      { text: item.purpose ?? "", style: "tableCell" },
+      { text: item.vehicle_registration ?? "", style: "tableCell" },
+      { text: item.department ?? "", style: "tableCell" },
+      { text: item.check_in_time ?? "", style: "tableCell" },
+      { text: formatDate(item.check_in_date) ?? "", style: "tableCell" },
+      { text: item.staff_name ?? "", style: "tableCell" },
+      { text: item.visitor_room ?? "", style: "tableCell" },
+    ];
+  });
+}
 
 module.exports = (pool) => {
   // Input new visitor information
@@ -178,6 +220,156 @@ module.exports = (pool) => {
       res.status(500).json({
         message: "An error occurred while updating the visitor.",
       });
+    }
+  });
+
+  // Download visitors' info
+  router.get("/download-pdf/visitors-info", async (req, res) => {
+    try {
+      // start date and end date from the client
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+
+      // Define the SQL query to fetch the visitors' information within the specified date range
+      let query = `
+      SELECT 
+        vi.*, 
+        u.fullnames as staff_name
+      FROM visitors_information vi
+      INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id
+      WHERE check_in_date BETWEEN ? AND ?;
+      `;
+
+      // Execute the SQL query
+      pool.query(query, [startDate, endDate], (err, results) => {
+        if (err) throw err;
+
+        // Define the document definition for the PDF
+        const docDefinition = {
+          pageSize: "A4",
+          pageOrientation: "landscape",
+          content: [
+            {
+              text: `Visitors Reports from ${startDate} to ${endDate}`,
+              fontSize: 20,
+              alignment: "center",
+              margin: [0, 0, 0, 20],
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: [
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                ],
+                body: [
+                  [
+                    {
+                      text: "Index",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Visitor Name",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Email",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Phone Number",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Purpose",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Vehicle Reg.",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Department",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Check-in Time",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Check-in Date",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Staff Name",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Visitor Room",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                  ],
+                ],
+              },
+              layout: {
+                hLineWidth: function (i, node) {
+                  return 0;
+                },
+                vLineWidth: function (i, node) {
+                  return 0;
+                },
+                fillColor: function (rowIndex, node, columnIndex) {
+                  return rowIndex % 2 === 0 ? "#D3D3D3" : null;
+                },
+              },
+            },
+          ],
+          styles: {
+            tableHeader: {
+              bold: true,
+              fontSize: 13,
+              color: "white",
+            },
+            tableCell: {
+              fontSize: 12,
+              margin: [0, 5],
+            },
+          },
+        };
+
+        // Populate the body array of the table with the fetched data
+        docDefinition.content[1].table.body.push(...dataToPdfRows(results));
+        // Create the PDF document using pdfmake
+        const pdfDoc = printer.createPdfKitDocument(docDefinition);
+        // Set the response headers to indicate a PDF file
+        res.setHeader("Content-Type", "application/pdf");
+        // Stream the PDF document as the response
+        pdfDoc.pipe(res);
+        pdfDoc.end();
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("An error occurred while generating the PDF.");
     }
   });
 
