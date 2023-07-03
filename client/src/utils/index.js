@@ -18,6 +18,7 @@ export { default as EditSpecialAssignment } from "../logistics/pages/special-ass
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
 export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor"
 export { default as Home } from "../logistics/pages/Home";
+export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports"
 export { default as Login } from "../common/pages/Login";
 export { default as MarketersFeedback } from "../logistics/pages/reports/MarketersFeedback";
 export { default as MostBookedSitesReports } from "../logistics/pages/reports/MostBookedSitesReports";
@@ -42,3 +43,4 @@ export { default as ViewSpecialAssignments } from "../logistics/pages/special-as
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";
 export { default as ViewVisitors } from "../visitors-management/pages/visitors/ViewVisitors";
 export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
+export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports"

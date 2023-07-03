@@ -41,6 +41,7 @@ const Sidebar = ({ children }) => {
                 </>
               </div>
             </div>
+            {/* Interviews */}
             <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
               <div className="collapse-title font-bold">Interviews</div>
@@ -59,6 +60,29 @@ const Sidebar = ({ children }) => {
                     to="/view-interviews"
                   >
                     View Interviews
+                  </Link>
+                </>
+              </div>
+            </div>
+            {/* Reports */}
+            <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+              <input type="checkbox" className="peer" />
+              <div className="collapse-title font-bold">Reports</div>
+              <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
+                <>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/visitors-reports"
+                  >
+                    Visitors Reports
+                  </Link>
+                </>
+                <>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/interviews-reports"
+                  >
+                    Interviews Reports
                   </Link>
                 </>
               </div>

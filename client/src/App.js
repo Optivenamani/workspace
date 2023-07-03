@@ -31,6 +31,7 @@ import {
   EditVehicle,
   EditVisitor,
   Home,
+  InterviewsReports,
   Login,
   MarketersFeedback,
   MostBookedSitesReports,
@@ -54,7 +55,8 @@ import {
   ViewSpecialAssignments,
   ViewVehicles,
   ViewVisitors,
-  VisitorsManagementHome
+  VisitorsManagementHome,
+  VisitorsReports,
 } from "./utils/index";
 
 const App = () => {
@@ -226,10 +228,17 @@ const App = () => {
             <Route path="/view-visitors" element={<ViewVisitors />} />
             <Route path="/edit-visitor/:id" element={<EditVisitor />} />
 
-            <Route path="/view-interviews" element={<ViewScheduleInterviews />} />
+            <Route
+              path="/view-interviews"
+              element={<ViewScheduleInterviews />}
+            />
             <Route path="/schedule-interview" element={<ScheduleInterview />} />
-            <Route path="/edit-scheduled-interviews/:id" element={<EditScheduledInterviews />} />
-
+            <Route
+              path="/edit-scheduled-interviews/:id"
+              element={<EditScheduledInterviews />}
+            />
+            <Route path="/visitors-reports" element={<VisitorsReports />} />
+            <Route path="/interviews-reports" element={<InterviewsReports />} />
           </Route>
         </Routes>
       </Router>
