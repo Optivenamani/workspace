@@ -1,7 +1,30 @@
 const express = require("express");
+const nodemailer = require("nodemailer");
 const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
+
+// Nodemailer helper function to send email
+async function sendEmail(userEmail, subject, text) {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: `notify@optiven.co.ke`, // your domain email account
+      pass: `Peace@6t4r#!`, // your domain email password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Optiven Visitors Management Platform 💂" <notify@optiven.co.ke>', // sender address
+    to: userEmail, // list of receivers
+    subject: subject, // Subject line
+    text: text, // plain text body
+  });
+}
 
 // Define fonts
 var fonts = {
@@ -189,6 +212,31 @@ module.exports = (pool) => {
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while updating the visitor.",
+      });
+    }
+  });
+
+  // Delete a visitor
+  router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      pool.query(
+        "DELETE FROM visitors_information WHERE id = ?",
+        [id],
+        (err, result) => {
+          if (err) throw err;
+
+          if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Visitor not found." });
+          } else {
+            res.json({ message: "Visitor deleted successfully." });
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while deleting the visitor.",
       });
     }
   });
