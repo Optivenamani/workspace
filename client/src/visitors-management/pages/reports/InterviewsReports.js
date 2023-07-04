@@ -1,15 +1,86 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { Link } from "react-router-dom";
 
 const InterviewsReports = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const token = useSelector((state) => state.user.token);
 
-  const handleDownload = () => {
-    // implement logic
-    alert("Data downloaded");
+  const handleDownload = async () => {
+    if (!startDate || !endDate) {
+      toast.error("Both dates must be chosen before submitting the form.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (endDate < startDate) {
+      toast.error("End date cannot be before start date.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/interviews/download-pdf/interview-reports",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            startDate,
+            endDate,
+          },
+          responseType: "blob",
+        }
+      );
+
+      const file = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const fileURL = URL.createObjectURL(file);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "interviews_report.pdf";
+      link.click();
+
+      toast.success("PDF downloaded successfully.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      toast.error(
+        "An error occurred while downloading the PDF. Please try again later.",
+        {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    }
   };
+
   return (
     <Sidebar>
       <div className="hero min-h-screen">

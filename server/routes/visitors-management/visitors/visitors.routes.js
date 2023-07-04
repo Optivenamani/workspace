@@ -223,6 +223,8 @@ module.exports = (pool) => {
     }
   });
 
+  
+
   // Download visitors' info
   router.get("/download-pdf/visitors-info", async (req, res) => {
     try {

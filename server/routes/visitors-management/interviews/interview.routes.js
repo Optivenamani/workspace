@@ -1,6 +1,47 @@
 const express = require("express");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
+const pdfMakePrinter = require("pdfmake/src/printer");
+
+
+// Define fonts
+var fonts = {
+    Roboto: {
+      normal: "node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf",
+      bold: "node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf",
+      italic: "node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf",
+      bolditalics:
+        "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
+    },
+  };
+  
+  // Create a new printer with the fonts
+  var printer = new pdfMakePrinter(fonts);
+  
+  // function to format date to db friendly format
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+  
+ // Map data to fields that go to the pdf
+function dataToPdfRows(data) {
+    return data.map((item, index) => {
+      return [
+        { text: String(index + 1) || "", style: "tableCell" },
+        { text: item.name || "", style: "tableCell" },
+        { text: item.email || "", style: "tableCell" },
+        { text: item.phone_number || "", style: "tableCell" },
+        { text: item.interview_date || "", style: "tableCell" },
+        { text: item.interview_time || "", style: "tableCell" },
+        { text: item.position || "", style: "tableCell" },
+      ];
+    });
+  }
+  
 
 module.exports = (pool) => {
   // Input new interview information
@@ -147,6 +188,126 @@ module.exports = (pool) => {
       });
     }
   });
+
+
+  // Download interview details
+router.get("/download-pdf/interview-reports", async (req, res) => {
+    try {
+      // Start date and end date from the client
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+  
+      // Define the SQL query to fetch the interview details within the specified date range
+      let query = `
+      SELECT *
+      FROM interviewees
+      WHERE interview_date BETWEEN ? AND ?;
+      `;
+  
+      // Execute the SQL query
+      pool.query(query, [startDate, endDate], (err, results) => {
+        if (err) throw err;
+  
+        // Define the document definition for the PDF
+        const docDefinition = {
+          pageSize: "A4",
+          pageOrientation: "landscape",
+          content: [
+            {
+              text: `Interviews Report from ${startDate} to ${endDate}`,
+              fontSize: 20,
+              alignment: "center",
+              margin: [0, 0, 0, 20],
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ["auto", "auto", "auto", "auto", "auto", "auto", "auto"],
+                body: [
+                  [
+                    {
+                        text: "Index",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                    {
+                      text: "Name",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Email",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Phone Number",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Interview Date",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Interview Time",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Position",
+                      fillColor: "#BBD4E1",
+                      style: "tableHeader",
+                    },
+                  ],
+                ],
+              },
+              layout: {
+                hLineWidth: function (i, node) {
+                  return 0;
+                },
+                vLineWidth: function (i, node) {
+                  return 0;
+                },
+                fillColor: function (rowIndex, node, columnIndex) {
+                  return rowIndex % 2 === 0 ? "#D3D3D3" : null;
+                },
+              },
+            },
+          ],
+          styles: {
+            tableHeader: {
+              bold: true,
+              fontSize: 13,
+              color: "white",
+            },
+            tableCell: {
+              fontSize: 12,
+              margin: [0, 5],
+            },
+          },
+        };
+  
+        // Populate the body array of the table with the fetched data
+        docDefinition.content[1].table.body.push(...dataToPdfRows(results));
+        // Create the PDF document using pdfmake
+        const pdfDoc = printer.createPdfKitDocument(docDefinition);
+        // Set the response headers to indicate a PDF file
+        res.setHeader("Content-Type", "application/pdf");
+        // Stream the PDF document as the response
+        pdfDoc.pipe(res);
+        pdfDoc.end();
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("An error occurred while generating the PDF.");
+    }
+  });
+  
+
+
+
 
   return router;
 };
