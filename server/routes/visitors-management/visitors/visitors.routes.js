@@ -99,15 +99,72 @@ module.exports = (pool) => {
           staff_id,
           visitor_room,
         ],
-        (err, result) => {
-          if (err) throw err;
+        async (err, result) => {
+          if (err) {
+            console.error(err);
+            res.status(500).json({
+              message: "An error occurred while adding the visitor information.",
+            });
+            return;
+          }
 
-          res
-            .status(201)
-            .json({ message: "Visitor information added successfully." });
+          const fetchStaffEmailQuery = "SELECT email FROM defaultdb.users WHERE user_id = ?";
+          pool.query(fetchStaffEmailQuery, [staff_id], (err, results) => {
+            if (err) {
+              console.error(err);
+              res.status(500).json({
+                message: "An error occurred while fetching the staff email.",
+              });
+              return;
+            }
+
+            const staffEmail = results[0]?.email;
+
+            if (!staffEmail) {
+              console.error("Staff email not found.");
+              res.status(500).json({
+                message: "An error occurred while fetching the staff email.",
+              });
+              return;
+            }
+
+            const subject = "Urgent: Visitor Arrival - Immediate Attention Required";
+            const text = `Dear Sir/Madam,
+
+            I hope this email finds you well. We have a visitor waiting in reception who requires immediate assistance. Please attend to them as soon as possible.
+
+            **Visitor Details:**
+            Name: ${name}
+            Phone: ${phone}
+            Email: ${email}
+            Purpose: ${purpose}
+            Room: ${visitor_room}
+
+            Please make it a priority to personally greet the visitor and provide any necessary assistance or guidance. Kindly ensure that they are made to feel welcome and comfortable during their stay with us.
+
+            Please provide a warm welcome and ensure their needs are met. If you're unavailable, please inform me so I can arrange for someone else to assist.
+
+            Thank you for your prompt attention.
+
+            Best regards.`;
+
+            sendEmail(staffEmail, subject, text)
+              .then(() => {
+                res.status(201).json({
+                  message: "Visitor information added successfully.",
+                });
+              })
+              .catch((error) => {
+                console.error("Error sending email:", error);
+                res.status(500).json({
+                  message: "An error occurred while sending the email to the staff.",
+                });
+              });
+          });
         }
       );
     } catch (error) {
+      console.error("Error adding visitor information:", error);
       res.status(500).json({
         message: "An error occurred while adding the visitor information.",
       });
