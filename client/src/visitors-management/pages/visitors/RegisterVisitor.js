@@ -6,19 +6,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const RegisterVisitor = () => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [staff, setStaff] = useState("");
-  const [visitorRoom, setVisitorRoom] = useState("");
-  const [vehicleRegistration, setVehicleRegistration] = useState("");
-  const [purpose, setPurpose] = useState("");
-  const [department, setDepartment] = useState("");
-  const [checkInTime, setCheckInTime] = useState("");
-  const [checkInDate, setCheckInDate] = useState("");
-  const [selectedStaffId, setSelectedStaffId] = useState("");
+  const [name, setName] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [staff, setStaff] = useState(null);
+  const [visitorRoom, setVisitorRoom] = useState(null);
+  const [vehicleRegistration, setVehicleRegistration] = useState(null);
+  const [purpose, setPurpose] = useState(null);
+  const [department, setDepartment] = useState(null);
+  const [checkInTime, setCheckInTime] = useState(null);
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [allStaff, setAllStaff] = useState([]);
   const token = useSelector((state) => state.user.token);
 
@@ -31,9 +31,11 @@ const RegisterVisitor = () => {
     if (selectedStaff) {
       setStaff(selectedStaff.fullnames);
       setSelectedStaffId(selectedStaff.user_id);
+      setError("");
     } else {
       setStaff(event.target.value);
       setSelectedStaffId("");
+      setError("Invalid staff member selected.");
     }
   };
 
@@ -42,7 +44,6 @@ const RegisterVisitor = () => {
     if (
       !name ||
       !phone ||
-      !email ||
       !purpose ||
       !department ||
       !checkInTime ||
@@ -53,10 +54,7 @@ const RegisterVisitor = () => {
       setError("Please fill in all required fields.");
       return;
     }
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
+
     if (!isValidPhone(phone)) {
       setError("Please enter a valid phone number.");
       return;
@@ -126,11 +124,11 @@ const RegisterVisitor = () => {
     }
   };
 
-  const isValidEmail = (email) => {
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  // const isValidEmail = (email) => {
+  //   // Basic email validation
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(email);
+  // };
 
   const isValidPhone = (phone) => {
     // Basic phone number validation (digits and dashes)
@@ -239,7 +237,7 @@ const RegisterVisitor = () => {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -361,6 +359,9 @@ const RegisterVisitor = () => {
                         />
                       ))}
                     </datalist>
+                    <span className="mt-1 font-bold text-xs text-red-600">
+                      {error}
+                    </span>
                   </div>
 
                   <div className="col-span-6 sm:col-span-3">
@@ -383,7 +384,7 @@ const RegisterVisitor = () => {
                     <button
                       type="submit"
                       className="btn btn-primary w-full max-w-xs text-white"
-                      disabled={loading}
+                      disabled={loading || !selectedStaffId} // Disable the button if loading or no valid staff member is selected
                     >
                       {loading ? "Loading..." : "Register Visitor"}
                     </button>
