@@ -24,6 +24,7 @@ import {
   CreateBooking,
   CreateSpecialAssignment,
   CreateVehicle,
+  CreateWorkPlan,
   Dashboard,
   EditScheduledInterviews,
   EditSiteVisit,
@@ -55,8 +56,10 @@ import {
   ViewSpecialAssignments,
   ViewVehicles,
   ViewVisitors,
+  ViewWorkPlans,
   VisitorsManagementHome,
   VisitorsReports,
+  WorkPlanHome,
 } from "./utils/index";
 
 const App = () => {
@@ -239,6 +242,10 @@ const App = () => {
             />
             <Route path="/visitors-reports" element={<VisitorsReports />} />
             <Route path="/interviews-reports" element={<InterviewsReports />} />
+            {/* Workplan */}
+            <Route path="/workplan-home" element={<WorkPlanHome />} />
+            <Route path="/create-workplan" element={<CreateWorkPlan />} />
+            <Route path="/view-workplans" element={<ViewWorkPlans />} />
           </Route>
         </Routes>
       </Router>
