@@ -172,7 +172,7 @@ const ViewScheduledInterviews = () => {
                   <td>{formatDate(interview.interview_date)}</td>
                   <td>{formatTime(interview.interview_time)}</td>
                   <td>{interview.position}</td>
-                  <td>{interview.report_time}</td>
+                  <td>{formatTime(interview.report_time)}</td>
                   <td>
                   {!interview.report_time && (
                     <div>
