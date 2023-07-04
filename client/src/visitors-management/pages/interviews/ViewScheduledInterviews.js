@@ -69,8 +69,48 @@ const ViewScheduledInterviews = () => {
       (interview.phone_number && interview.phone_number.includes(searchTerm))
   );
 
+  const handleAdmit = async (interviewId) => {
+     try {
+       const currentTime = new Date();
+      const hours = currentTime.getHours().toString().padStart(2, "0");
+      const minutes = currentTime.getMinutes().toString().padStart(2, "0");
+      const seconds = currentTime.getSeconds().toString().padStart(2, "0");
+      const currentTimeString = `${hours}:${minutes}:${seconds}`;
+  
+      const response = await fetch(
+        `http://localhost:8080/api/interviews/admit/${interviewId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ report_time: currentTimeString }),
+        }
+      );
+
+      console.log(interviewId)
+  
+      if (response.ok) {
+       // Update the interviews admit time in the state
+        setInterviews((prevInterviews) =>
+          prevInterviews.map((interviews) =>
+            interviews.id === interviewId
+              ? { ...interviews, report_time: currentTimeString }
+              : interviews
+          )
+        );
+      } else {
+        console.error("Failed to admit interviews.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    console.log("id:",interviewId)
+  };
+
   const deleteInterview = (interviewId) => {
-    // Send a DELETE request to the server to delete the vehicle with the specified ID
+   // Send a DELETE request to the server to delete the vehicle with the specified ID
     fetch(`http://localhost:8080/api/interviews/${interviewId}`, {
       method: "DELETE",
       headers: {
@@ -81,7 +121,7 @@ const ViewScheduledInterviews = () => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        // Remove the vehicle from the intervieww state
+       // Remove the candidate from the interview state
         setInterviews((prevInterviews) =>
           prevInterviews.filter((interview) => interview.id !== interviewId)
         );
@@ -117,6 +157,7 @@ const ViewScheduledInterviews = () => {
                 <th>Interview Date</th>
                 <th>Interview Time</th>
                 <th>Position</th>
+                <th>Report Time</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -131,21 +172,33 @@ const ViewScheduledInterviews = () => {
                   <td>{formatDate(interview.interview_date)}</td>
                   <td>{formatTime(interview.interview_time)}</td>
                   <td>{interview.position}</td>
+                  <td>{interview.report_time}</td>
                   <td>
+                  {!interview.report_time && (
+                    <div>
                     <button
-                      className="btn btn-warning btn-sm text-white"
-                      onClick={() =>
-                        navigate(`/edit-scheduled-interviews/${interview.id}`)
-                      }
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-sm text-white btn-error ml-1"
-                      onClick={() => deleteInterview(interview.id)}
-                    >
-                      Delete
-                    </button>
+                    className="btn btn-warning btn-sm text-white"
+                    onClick={() =>
+                      navigate(`/edit-scheduled-interviews/${interview.id}`)
+                    }
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-sm text-white btn-error ml-1"
+                    onClick={() => deleteInterview(interview.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                  className="btn btn-outline btn-sm ml-1"
+                  onClick={() => handleAdmit(interview.id)}
+                  //disabled={interviews.report_time !== null}
+                >
+                 Admit
+                </button></div>
+                  ) }
+
                   </td>
                 </tr>
               ))}
