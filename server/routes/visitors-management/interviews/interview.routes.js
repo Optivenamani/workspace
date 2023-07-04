@@ -190,6 +190,37 @@ module.exports = (pool) => {
   });
 
 
+  // Admit a candidate
+  router.patch("/admit/:id", async (req, res) => {
+    const { id } = req.params;
+    const { report_time } = req.body;
+
+    try {
+      if (report_time) {
+        pool.query(
+          "UPDATE interviewees SET report_time = ? WHERE id = ?",
+          [report_time, id],
+          (err, result) => {
+            if (err) throw err;
+
+            if (result.affectedRows === 0) {
+              res.status(404).json({ message: "Candidate not found." });
+            } else {
+              res.json({ message: "Candidate admitted successfully." });
+            }
+          }
+        );
+      } else {
+        res.status(400).json({ message: "Missing report time." });
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while admitting the candidate.",
+      });
+    }
+  });
+
+
   // Download interview details
 router.get("/download-pdf/interview-reports", async (req, res) => {
     try {
