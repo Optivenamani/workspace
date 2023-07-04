@@ -31,6 +31,7 @@ const EditVisitor = () => {
   const [selectedStaffId, setSelectedStaffId] = useState("");
   const [loading, setLoading] = useState(false);
   const [allStaff, setAllStaff] = useState([]);
+  const [error, setError] = useState("");
   const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
@@ -44,9 +45,11 @@ const EditVisitor = () => {
     if (selectedStaff) {
       setStaff(selectedStaff.fullnames);
       setSelectedStaffId(selectedStaff.user_id);
+      setError("");
     } else {
       setStaff(event.target.value);
       setSelectedStaffId("");
+      setError("Invalid staff member selected.");
     }
   };
 
@@ -351,6 +354,7 @@ const EditVisitor = () => {
                         />
                       ))}
                     </datalist>
+                    <span className="mt-1 font-bold text-xs text-red-600">{error}</span>
                   </div>
                   <div className="col-span-6 sm:col-span-3">
                     <button

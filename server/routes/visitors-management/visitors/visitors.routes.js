@@ -193,6 +193,31 @@ module.exports = (pool) => {
     }
   });
 
+  // Delete a visitor
+  router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      pool.query(
+        "DELETE FROM visitors_information WHERE id = ?",
+        [id],
+        (err, result) => {
+          if (err) throw err;
+
+          if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Visitor not found." });
+          } else {
+            res.json({ message: "Visitor deleted successfully." });
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while deleting the visitor.",
+      });
+    }
+  });
+
   // Checkout a visitor
   router.patch("/checkout/:id", authenticateJWT, async (req, res) => {
     const { id } = req.params;

@@ -85,6 +85,28 @@ const ViewVisitors = () => {
     }
   };
 
+  const deleteVisitor = (visitorId) => {
+    // Send a DELETE request to the server to delete the vehicle with the specified ID
+    fetch(`http://localhost:8080/api/visitors/${visitorId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Remove the vehicle from the visitors state
+        setVisitors((prevVisitors) =>
+          prevVisitors.filter((visitor) => visitor.id !== visitorId)
+        );
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  };
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -161,18 +183,18 @@ const ViewVisitors = () => {
                     <div className="flex gap-2">
                       {visitor.check_out_time === null && (
                         <>
-                        <Link
-                          to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
-                          className="btn btn-warning btn-sm"
-                        >
-                          Edit
-                        </Link>
-                        <button
-                          to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
-                          className="btn btn-error text-white btn-sm"
-                        >
-                          Delete
-                        </button>
+                          <Link
+                            to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
+                            className="btn btn-warning btn-sm"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => deleteVisitor(visitor.id)}
+                            className="btn btn-error text-white btn-sm"
+                          >
+                            Delete
+                          </button>
                         </>
                       )}
                     </div>
