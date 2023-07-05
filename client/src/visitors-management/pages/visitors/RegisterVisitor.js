@@ -55,10 +55,10 @@ const RegisterVisitor = () => {
       return;
     }
 
-    if (!isValidPhone(phone)) {
-      setError("Please enter a valid phone number.");
-      return;
-    }
+    // if (!isValidPhone(phone)) {
+    //   setError("Please enter a valid phone number.");
+    //   return;
+    // }
     setLoading(true);
     setError(""); // Clear any previous errors
     const visitorData = {
@@ -130,11 +130,11 @@ const RegisterVisitor = () => {
   //   return emailRegex.test(email);
   // };
 
-  const isValidPhone = (phone) => {
-    // Basic phone number validation (digits and dashes)
-    const phoneRegex = /^\d+(-\d+)*$/;
-    return phoneRegex.test(phone);
-  };
+  // const isValidPhone = (phone) => {
+  //   // Basic phone number validation (digits and dashes)
+  //   const phoneRegex = /^\d+(-\d+)*$/;
+  //   return phoneRegex.test(phone);
+  // };
 
   useEffect(() => {
     const fetchStaff = async () => {
