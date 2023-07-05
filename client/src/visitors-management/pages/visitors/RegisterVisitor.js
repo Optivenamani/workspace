@@ -61,9 +61,12 @@ const RegisterVisitor = () => {
     // }
     setLoading(true);
     setError(""); // Clear any previous errors
+    // Remove the "+" symbol from the phone number
+    const cleanedPhone = phone.replace("+", "");
+
     const visitorData = {
       name,
-      phone,
+      phone: cleanedPhone,
       email,
       vehicle_registration: vehicleRegistration,
       purpose,
