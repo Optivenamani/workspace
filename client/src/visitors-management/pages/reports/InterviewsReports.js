@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Sidebar from "../../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
+import Sidebar from "../../components/sidebar/Sidebar";
+import { Link } from "react-router-dom";
 
-const MostBookedSitesReports = () => {
+const InterviewsReports = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  // Get the token from local storage
-  const token = localStorage.getItem("token");
+  const token = useSelector((state) => state.user.token);
 
   const handleDownload = async () => {
     if (!startDate || !endDate) {
@@ -35,7 +36,7 @@ const MostBookedSitesReports = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/most-booked-sites",
+        "https://workspace.optiven.co.ke/api/interviews/download-pdf/interview-reports",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,16 +49,14 @@ const MostBookedSitesReports = () => {
         }
       );
 
-      // Create a blob from the PDF stream
       const file = new Blob([response.data], {
         type: "application/pdf",
       });
 
-      // Create a link and click it to trigger the download
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "most_booked_sites.pdf";
+      link.download = "interviews_report.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -86,8 +85,15 @@ const MostBookedSitesReports = () => {
     <Sidebar>
       <div className="hero min-h-screen">
         <div className="form-control w-full max-w-xs">
+          <div className="text-sm breadcrumbs">
+            <ul>
+              <li>
+                <Link to="/visitors-management">Home</Link>
+              </li>
+              <li>Interviews Reports</li>
+            </ul>
+          </div>
           <div className="flex flex-col justify-center">
-            <h1 className="font-bold text-lg">MOST BOOKED SITES REPORTS</h1>
             <label className="label">
               <span className="label-text font-bold">Start Date</span>
             </label>
@@ -116,4 +122,4 @@ const MostBookedSitesReports = () => {
   );
 };
 
-export default MostBookedSitesReports;
+export default InterviewsReports;

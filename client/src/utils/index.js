@@ -12,10 +12,13 @@ export { default as CreateBooking } from "../logistics/pages/site-visit-requests
 export { default as CreateSpecialAssignment } from "../logistics/pages/special-assignments/CreateSpecialAssignment";
 export { default as CreateVehicle } from "../logistics/pages/vehicles/CreateVehicle";
 export { default as Dashboard } from "../logistics/pages/Dashboard";
+export { default as EditScheduledInterviews } from "../visitors-management/pages/interviews/EditScheduledInterviews";
 export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests/EditSiteVisit";
 export { default as EditSpecialAssignment } from "../logistics/pages/special-assignments/EditSpecialAssignment";
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
+export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor"
 export { default as Home } from "../logistics/pages/Home";
+export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports"
 export { default as Login } from "../common/pages/Login";
 export { default as MarketersFeedback } from "../logistics/pages/reports/MarketersFeedback";
 export { default as MostBookedSitesReports } from "../logistics/pages/reports/MostBookedSitesReports";
@@ -23,8 +26,9 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
-export { default as RegisterVisitor } from "../visitors-management/pages/RegisterVisitor";
+export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
+export { default as ScheduleInterview } from "../visitors-management/pages/interviews/ScheduleInterview"
 export { default as SiteVisitDetails } from "../logistics/pages/site-visit-requests/SiteVisitDetails";
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
@@ -33,6 +37,10 @@ export { default as Users } from "../logistics/pages/Users";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";
 export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleRequests";
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
+export { default as ViewScheduleInterviews } from "../visitors-management/pages/interviews/ViewScheduledInterviews"
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewSpecialAssignments } from "../logistics/pages/special-assignments/ViewSpecialAssignments";
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";
+export { default as ViewVisitors } from "../visitors-management/pages/visitors/ViewVisitors";
+export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
+export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports"

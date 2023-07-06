@@ -33,7 +33,13 @@ const Navbar = ({ fullName, email }) => {
   };
 
   const isAppMenuPage = location.pathname === "/";
-  const isRegisterVisitorPage = location.pathname === "/visitors-management";
+  const isVisitorsHomePage = location.pathname === "/visitors-management";
+  const isRegisterVisitorPage = location.pathname === "/register-visitor";
+  const isViewVisitorsPage = location.pathname === "/view-visitors";
+  const isEditVisitorPage = location.pathname === "/edit-visitor/:id";
+  const isScheduleInterviewPage = location.pathname === "/schedule-interview";
+  const isViewInterviewsPage = location.pathname === "/view-interviews";
+  const isEditInterviewPage = location.pathname === "/edit-interview/:id";
 
   return (
     <div className="navbar bg-primary">
@@ -93,7 +99,14 @@ const Navbar = ({ fullName, email }) => {
             tabIndex={0}
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
-            {isAppMenuPage || isRegisterVisitorPage ? null : (
+            {isAppMenuPage ||
+            isVisitorsHomePage ||
+            isRegisterVisitorPage ||
+            isViewVisitorsPage ||
+            isEditVisitorPage ||
+            isScheduleInterviewPage ||
+            isViewInterviewsPage ||
+            isEditInterviewPage ? null : (
               <li>
                 <Link className="justify-between font-bold" to="/notifications">
                   Notifications
