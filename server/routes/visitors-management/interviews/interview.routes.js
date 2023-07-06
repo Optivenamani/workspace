@@ -1,7 +1,32 @@
 const express = require("express");
+const nodemailer = require("nodemailer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 const pdfMakePrinter = require("pdfmake/src/printer");
+
+
+
+// Nodemailer helper function to send email
+async function sendEmail(userEmail, subject, text) {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: `notify@optiven.co.ke`, // your domain email account
+      pass: `Peace@6t4r#!`, // your domain email password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Optiven Visitors Management Platform 💂" <notify@optiven.co.ke>', // sender address
+    to: userEmail, // list of receivers
+    subject: subject, // Subject line
+    text: text, // plain text body
+  });
+}
 
 
 // Define fonts
@@ -44,35 +69,66 @@ function dataToPdfRows(data) {
   
 
 module.exports = (pool) => {
-  // Input new interview information
-  router.post("/", async (req, res) => {
-    const {
-      name,
-      email,
-      phone_number,
-      interview_date,
-      interview_time,
-      position,
-    } = req.body;
+// Input new interview information
+router.post("/", async (req, res) => {
+  const {
+    name,
+    email,
+    phone_number,
+    interview_date,
+    interview_time,
+    position,
+  } = req.body;
 
-    try {
-      pool.query(
-        "INSERT INTO interviewees (name, email, phone_number, interview_date, interview_time, position) VALUES (?, ?, ?, ?, ?, ?)",
-        [name, email, phone_number, interview_date, interview_time, position],
-        (err, result) => {
-          if (err) throw err;
-
-          res
-            .status(201)
-            .json({ message: "Interview information added successfully." });
+  try {
+    pool.query(
+      "INSERT INTO interviewees (name, email, phone_number, interview_date, interview_time, position) VALUES (?, ?, ?, ?, ?, ?)",
+      [name, email, phone_number, interview_date, interview_time, position],
+      async (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({
+            message: "An error occurred while adding the interview information.",
+          });
+          return;
         }
-      );
-    } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while adding the interview information.",
-      });
-    }
-  });
+
+        const subject = "Interview Scheduled - Important Information";
+        const text = `Dear ${name},
+
+I hope this message finds you well. We have scheduled an interview with you and find attached below the interview details. We look forward to meeting you.
+
+        **Interview Details:**
+        Date: ${interview_date}
+        Time: ${interview_time}
+        Position: ${position}
+
+If you have any questions or need to reschedule, please contact us at 0790300300.
+
+        Best regards;
+        ${name}.`;
+
+        sendEmail(email, subject, text)
+          .then(() => {
+            res.status(201).json({
+              message: "Interview information added successfully.",
+            });
+          })
+          .catch((error) => {
+            console.error("Error sending email:", error);
+            res.status(500).json({
+              message: "An error occurred while sending the email to the interviewee.",
+            });
+          });
+      }
+    );
+  } catch (error) {
+    console.error("Error adding interview information:", error);
+    res.status(500).json({
+      message: "An error occurred while adding the interview information.",
+    });
+  }
+});
 
   // Retrieve all interview information
   router.get("/", async (req, res) => {

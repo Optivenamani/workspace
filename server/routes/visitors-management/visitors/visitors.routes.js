@@ -1,6 +1,8 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const pdfMakePrinter = require("pdfmake/src/printer");
+const moment = require('moment');
+const schedule = require('node-schedule');
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
@@ -26,6 +28,41 @@ async function sendEmail(userEmail, subject, text) {
   });
 }
 
+
+// async function performAutoCheckout(pool) {
+//   try {
+//     // Get the current date and time
+//     const currentDate = moment().format('YYYY-MM-DD');
+//     const currentTime = moment().format('HH:mm:ss');
+
+//     // Query the database for visitors who have not been checked out
+//     const query = `
+//       SELECT *
+//       FROM visitors_information
+//       WHERE check_in_date = ? AND check_out_time IS NULL
+//     `;
+//     const visitors = await pool.query(query, [currentDate]);
+
+//     // Perform auto-checkout for each visitor
+//     for (const visitor of visitors) {
+//       // Update the checkout time for the visitor
+//       const updateQuery = `
+//         UPDATE visitors_information
+//         SET check_out_time = ?
+//         WHERE id = ?
+//       `;
+//       await pool.query(updateQuery, [currentTime, visitor.id]);
+
+//       // Additional logic for sending email or performing any other actions related to auto-checkout
+//       sendAutoCheckoutEmail(visitor.email);
+//     }
+
+//     console.log('Auto-checkout completed successfully.');
+//   } catch (error) {
+//     console.error('Error during auto-checkout:', error);
+//   }
+// }
+
 // Define fonts
 var fonts = {
   Roboto: {
@@ -49,6 +86,9 @@ function formatDate(dateString) {
   return `${year}-${month}-${day}`;
 }
 
+
+
+
 // Map data to fields that go to the pdf
 function dataToPdfRows(data) {
   return data.map((item, index) => {
@@ -69,6 +109,42 @@ function dataToPdfRows(data) {
 }
 
 module.exports = (pool) => {
+  const autoCheckoutJob = schedule.scheduleJob('00 18 * * *', () => {
+    performAutoCheckout(pool);
+  });
+
+  async function performAutoCheckout(pool) {
+    try {
+      // Get the current date and time
+      const currentDate = moment().format('YYYY-MM-DD');
+      const currentTime = moment().format('HH:mm:ss');
+
+      // Query the database for visitors who have not been checked out
+      const query = `
+        UPDATE visitors_information
+        SET check_out_time = ?
+        WHERE check_out_time IS NULL
+          AND check_in_date <= ?
+      `;
+
+      pool.query(query, [currentTime, currentDate], (error, result) => {
+        if (error) {
+          console.error('Error during auto-checkout:', error);
+          return;
+        }
+
+        const affectedRows = result.affectedRows;
+
+        if (affectedRows === 0) {
+          console.log('No visitors to auto-checkout.');
+        } else {
+          console.log('Auto-checkout completed successfully. Checked out', affectedRows, 'visitors.');
+        }
+      });
+    } catch (error) {
+      console.error('Error during auto-checkout:', error);
+    }
+  }
   // Input new visitor information
   router.post("/", authenticateJWT, async (req, res) => {
     const {
