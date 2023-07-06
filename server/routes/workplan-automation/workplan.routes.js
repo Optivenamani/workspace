@@ -4,7 +4,7 @@ const router = express.Router();
 
 module.exports = (pool) => {
   // GET all workplans
-  router.get("/", authenticateJWT, (req, res) => {
+  router.get("/",  (req, res) => {
     pool.query("SELECT * FROM workplans", (err, results) => {
       if (err) {
         console.error(err);
@@ -16,7 +16,7 @@ module.exports = (pool) => {
   });
 
   // GET a specific workplan
-  router.get("/:id", authenticateJWT, (req, res) => {
+  router.get("/:id",  (req, res) => {
     const { id } = req.params;
     const query = "SELECT * FROM workplans WHERE id = ?";
     pool.query(query, [id], (err, workplan) => {
@@ -32,7 +32,7 @@ module.exports = (pool) => {
   });
 
   // CREATE a new workplan
-  router.post("/", authenticateJWT, (req, res) => {
+  router.post("/",  (req, res) => {
     const { title, user_id } = req.body;
     const query = "INSERT INTO workplans (title, user_id) VALUES (?, ?)";
     pool.query(query, [title, user_id], (err) => {
@@ -46,7 +46,7 @@ module.exports = (pool) => {
   });
 
   // UPDATE an existing workplan
-  router.put("/:id", authenticateJWT, (req, res) => {
+  router.put("/:id",  (req, res) => {
     const { id } = req.params;
     const { title } = req.body;
     const query = "UPDATE workplans SET title = ? WHERE id = ?";
@@ -63,7 +63,7 @@ module.exports = (pool) => {
   });
 
   // DELETE a workplan
-  router.delete("/:id", authenticateJWT, (req, res) => {
+  router.delete("/:id",  (req, res) => {
     const { id } = req.params;
     const query = "DELETE FROM workplans WHERE id = ?";
     pool.query(query, [id], (err, result) => {
