@@ -41,6 +41,7 @@ import {
   Notifications,
   PastRequests,
   RegisterVisitor,
+  ReserveParking,
   RequestVehicle,
   ScheduleInterview,
   SiteVisitDetails,
@@ -51,6 +52,7 @@ import {
   VehicleRequestDetails,
   VehicleRequests,
   ViewDrivers,
+  ViewReservedParking,
   ViewScheduleInterviews,
   ViewSites,
   ViewSpecialAssignments,
@@ -242,6 +244,10 @@ const App = () => {
             />
             <Route path="/visitors-reports" element={<VisitorsReports />} />
             <Route path="/interviews-reports" element={<InterviewsReports />} />
+
+            {/* Parking */}
+            <Route path="/reserve-parking" element={<ReserveParking />} />
+            <Route path="/view-reserved-parking" element={<ViewReservedParking />} />
             {/* Workplan */}
             <Route path="/workplan-home" element={<WorkPlanHome />} />
             <Route path="/create-workplan" element={<CreateWorkPlan />} />

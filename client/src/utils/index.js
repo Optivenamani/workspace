@@ -27,6 +27,7 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
+export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
 export { default as ScheduleInterview } from "../visitors-management/pages/interviews/ScheduleInterview";
@@ -38,6 +39,7 @@ export { default as Users } from "../logistics/pages/Users";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";
 export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleRequests";
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
+export { default as ViewReservedParking } from "../visitors-management/pages/parking/ViewReservedParking";
 export { default as ViewScheduleInterviews } from "../visitors-management/pages/interviews/ViewScheduledInterviews";
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewSpecialAssignments } from "../logistics/pages/special-assignments/ViewSpecialAssignments";

@@ -29,39 +29,6 @@ async function sendEmail(userEmail, subject, text) {
 }
 
 
-// async function performAutoCheckout(pool) {
-//   try {
-//     // Get the current date and time
-//     const currentDate = moment().format('YYYY-MM-DD');
-//     const currentTime = moment().format('HH:mm:ss');
-
-//     // Query the database for visitors who have not been checked out
-//     const query = `
-//       SELECT *
-//       FROM visitors_information
-//       WHERE check_in_date = ? AND check_out_time IS NULL
-//     `;
-//     const visitors = await pool.query(query, [currentDate]);
-
-//     // Perform auto-checkout for each visitor
-//     for (const visitor of visitors) {
-//       // Update the checkout time for the visitor
-//       const updateQuery = `
-//         UPDATE visitors_information
-//         SET check_out_time = ?
-//         WHERE id = ?
-//       `;
-//       await pool.query(updateQuery, [currentTime, visitor.id]);
-
-//       // Additional logic for sending email or performing any other actions related to auto-checkout
-//       sendAutoCheckoutEmail(visitor.email);
-//     }
-
-//     console.log('Auto-checkout completed successfully.');
-//   } catch (error) {
-//     console.error('Error during auto-checkout:', error);
-//   }
-// }
 
 // Define fonts
 var fonts = {
