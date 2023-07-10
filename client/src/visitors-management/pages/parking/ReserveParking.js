@@ -163,7 +163,7 @@ const ReserveParking = () => {
                       type="text"
                       id="vehicle_registration"
                       placeholder="ABC 123"
-                      value={vehicleRegistration}
+                      value={vehicle_registration}
                       onChange={(event) =>
                         setVehicleRegistration(event.target.value)
                       }
@@ -180,8 +180,8 @@ const ReserveParking = () => {
                     </label>
                     <input
                       type="time"
-                      id="estimated_arrival_time"
-                      value={estimatedArrivalTime}
+                      id="arrival_time"
+                      value={arrival_time}
                       onChange={(event) =>
                         setEstimatedArrivalTime(event.target.value)
                       }
