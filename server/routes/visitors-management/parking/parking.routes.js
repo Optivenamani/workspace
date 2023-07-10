@@ -14,8 +14,8 @@ let reservedParking = [
 ];
 
 // Route: Reserve parking
-router.post("/reserve-parking", authenticateJWT, (req, res) => {
-  const { name, vehicleRegistration, estimatedArrivalTime } = req.body;
+router.post("/",  (req, res) => {
+  const { name, vehicle_registration, arrival_time } = req.body;
 
   // Generate a unique ID for the new reservation
   const id = reservedParking.length + 1;
@@ -24,8 +24,8 @@ router.post("/reserve-parking", authenticateJWT, (req, res) => {
   const newReservation = {
     id,
     name,
-    vehicleRegistration,
-    estimatedArrivalTime,
+    vehicle_registration,
+    arrival_time,
   };
 
   // Add the new reservation to the list
@@ -35,12 +35,12 @@ router.post("/reserve-parking", authenticateJWT, (req, res) => {
 });
 
 // Route: View all parking reservations
-router.get("/view-reserved-parking", authenticateJWT, (req, res) => {
+router.get("/",  (req, res) => {
   res.status(200).json(reservedParking);
 });
 
 // Route: Get a single parking reservation by ID
-router.get("/view-reserved-parking/:id", authenticateJWT, (req, res) => {
+router.get("/:id",  (req, res) => {
   const id = parseInt(req.params.id);
 
   // Find the reservation with the matching ID
@@ -54,9 +54,9 @@ router.get("/view-reserved-parking/:id", authenticateJWT, (req, res) => {
 });
 
 // Route: Update a parking reservation by ID
-router.put("/update/:id", authenticateJWT, (req, res) => {
+router.put("/:id",  (req, res) => {
   const id = parseInt(req.params.id);
-  const { name, vehicleRegistration, estimatedArrivalTime } = req.body;
+  const { name, vehicle_registration, arrival_time } = req.body;
 
   // Find the reservation with the matching ID
   const reservation = reservedParking.find((parking) => parking.id === id);
@@ -64,8 +64,8 @@ router.put("/update/:id", authenticateJWT, (req, res) => {
   if (reservation) {
     // Update the reservation details
     reservation.name = name;
-    reservation.vehicleRegistration = vehicleRegistration;
-    reservation.estimatedArrivalTime = estimatedArrivalTime;
+    reservation.vehicleRegistration = vehicle_registration;
+    reservation.estimatedArrivalTime = arrival_time;
 
     res.status(200).json({ message: "Parking reservation updated successfully." });
   } else {
@@ -74,7 +74,7 @@ router.put("/update/:id", authenticateJWT, (req, res) => {
 });
 
 // Route: Download parking information as a file
-router.get("/download", authenticateJWT, (req, res) => {
+router.get("/download",  (req, res) => {
   const parkingData = JSON.stringify(reservedParking, null, 2);
 
   res.setHeader("Content-Type", "application/json");

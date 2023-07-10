@@ -8,8 +8,8 @@ import jsPDF from "jspdf";
 
 const ReserveParking = () => {
   const [name, setName] = useState("");
-  const [vehicleRegistration, setVehicleRegistration] = useState("");
-  const [estimatedArrivalTime, setEstimatedArrivalTime] = useState("");
+  const [vehicle_registration, setVehicleRegistration] = useState("");
+  const [arrival_time, setEstimatedArrivalTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const token = useSelector((state) => state.user.token);
@@ -18,7 +18,7 @@ const ReserveParking = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !vehicleRegistration || !estimatedArrivalTime) {
+    if (!name || !vehicle_registration || !arrival_time) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -26,8 +26,8 @@ const ReserveParking = () => {
     setError(""); // Clear any previous errors
     const parkingData = {
       name,
-      vehicleRegistration,
-      estimatedArrivalTime,
+      vehicle_registration,
+      arrival_time,
     };
     try {
       const response = await fetch(
@@ -80,7 +80,7 @@ const ReserveParking = () => {
   };
 
   const generateDownloadableForm = (parkingData) => {
-    const { name, vehicleRegistration, estimatedArrivalTime } = parkingData;
+    const { name, vehicle_registration, arrival_time } = parkingData;
     
     // Create a new PDF document
     const doc = new jsPDF();
@@ -88,8 +88,8 @@ const ReserveParking = () => {
     // Define the content of the form
     const formContent = [
       { label: "Name:", value: name },
-      { label: "Vehicle Registration:", value: vehicleRegistration },
-      { label: "Estimated Arrival Time:", value: estimatedArrivalTime },
+      { label: "Vehicle Registration:", value: vehicle_registration },
+      { label: "Estimated Arrival Time:", value: arrival_time },
     ];
 
     // Set the document properties
