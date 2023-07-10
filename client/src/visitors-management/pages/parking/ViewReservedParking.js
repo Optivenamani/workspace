@@ -3,16 +3,17 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const formatDate = (dateString) => {
-  if (!dateString) return null;
-  const date = new Date(dateString);
-  return date
-    .toLocaleDateString("en-CA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    .replace(/\//g, "-");
+const formatDate = (dateTimeString) => {
+  if (!dateTimeString) return null;
+  const dateTime = new Date(dateTimeString);
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "numeric",
+  };
+  return dateTime.toLocaleDateString("en-CA", options).replace(/\//g, "-");
 };
 
 const ViewReservedParking = () => {
@@ -52,7 +53,7 @@ const ViewReservedParking = () => {
   const filteredReservedParking = reservedParking.filter(
     (parking) =>
       parking.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      parking.vehicleRegistration.toLowerCase().includes(searchTerm.toLowerCase())
+      parking.vehicle_registration.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -84,8 +85,8 @@ const ViewReservedParking = () => {
                 <tr key={parking.id}>
                   <td>{i + 1}</td>
                   <td>{parking.name}</td>
-                  <td>{parking.vehicleRegistration}</td>
-                  <td>{parking.estimatedArrivalTime}</td>
+                  <td>{parking.vehicle_registration}</td>
+                  <td>{formatDate(parking.arrival_time)}</td>
                   <td>
                     <div className="flex gap-2">
                       {/* Add your actions buttons here */}

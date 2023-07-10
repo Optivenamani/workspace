@@ -30,22 +30,21 @@ const ReserveParking = () => {
       arrival_time,
     };
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/reserve-parking",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(parkingData),
-        }
-      );
+      const response = await fetch("http://localhost:8080/api/reserve-parking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(parkingData),
+      });
 
-      const data = await response.json();
-      console.log(data);
+      if (!response.ok) {
+        throw new Error("An error occurred while adding parking information.");
+      }
+
       setLoading(false);
-      navigate("/view-reserved-parking");
+      navigate("/reserved-parking");
 
       // Display success notification
       toast.success("Parking reserved successfully!", {
@@ -64,7 +63,7 @@ const ReserveParking = () => {
       setVehicleRegistration("");
       setEstimatedArrivalTime("");
     } catch (error) {
-      console.error(error);
+      console.error("Error adding parking information:", error);
       setLoading(false);
       setError("An error occurred. Please try again."); // Update error message
 
@@ -81,7 +80,7 @@ const ReserveParking = () => {
 
   const generateDownloadableForm = (parkingData) => {
     const { name, vehicle_registration, arrival_time } = parkingData;
-    
+
     // Create a new PDF document
     const doc = new jsPDF();
 
@@ -173,7 +172,7 @@ const ReserveParking = () => {
                   </div>
 
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="estimated_arrival_time" className="label">
+                    <label htmlFor="arrival_time" className="label">
                       <span className="label-text font-bold">
                         Estimated Arrival Time
                       </span>

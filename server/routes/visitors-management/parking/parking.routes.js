@@ -1,85 +1,150 @@
 const express = require("express");
 const router = express.Router();
-const authenticateJWT = require("../../../middleware/authenticateJWT");
 
-// Sample data for reserved parking
-let reservedParking = [
-  {
-    id: 1,
-    name: "John Doe",
-    vehicleRegistration: "ABC123",
-    estimatedArrivalTime: "2023-07-10T10:00:00Z",
-  },
-  // Add more reserved parking data as needed
-];
+module.exports = (pool) => {
+  // Input new parking information
+  router.post("/", async (req, res) => {
+    const { name, vehicle_registration, arrival_time } = req.body;
 
-// Route: Reserve parking
-router.post("/",  (req, res) => {
-  const { name, vehicle_registration, arrival_time } = req.body;
+    try {
+      if (!name || !vehicle_registration || !arrival_time) {
+        return res.status(400).json({
+          message: "Please provide all required information.",
+        });
+      }
 
-  // Generate a unique ID for the new reservation
-  const id = reservedParking.length + 1;
+      // Format arrival_time value using the current date
+      const formattedArrivalTime = new Date().toISOString().slice(0, 10) + " " + arrival_time;
 
-  // Create a new reservation object
-  const newReservation = {
-    id,
-    name,
-    vehicle_registration,
-    arrival_time,
-  };
+      pool.query(
+        "INSERT INTO parking (name, vehicle_registration, arrival_time) VALUES (?, ?, ?)",
+        [name, vehicle_registration, formattedArrivalTime],
+        (err, result) => {
+          if (err) {
+            console.error("Error adding parking information:", err);
+            return res.status(500).json({
+              message: "An error occurred while adding parking information.",
+            });
+          }
 
-  // Add the new reservation to the list
-  reservedParking.push(newReservation);
+          res.status(201).json({
+            message: "Parking information added successfully.",
+          });
+        }
+      );
+    } catch (error) {
+      console.error("Error adding parking information:", error);
+      res.status(500).json({
+        message: "An error occurred while adding parking information.",
+      });
+    }
+  });
 
-  res.status(200).json({ message: "Parking reserved successfully." });
-});
+  // Retrieve all parking information
+  router.get("/", async (req, res) => {
+    try {
+      pool.query("SELECT * FROM parking ORDER BY id DESC", (err, results) => {
+        if (err) throw err;
 
-// Route: View all parking reservations
-router.get("/",  (req, res) => {
-  res.status(200).json(reservedParking);
-});
+        res.json(results);
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching parking information.",
+      });
+    }
+  });
 
-// Route: Get a single parking reservation by ID
-router.get("/:id",  (req, res) => {
-  const id = parseInt(req.params.id);
+  // Retrieve a single parking information by id
+  router.get("/:id", async (req, res) => {
+    const { id } = req.params;
 
-  // Find the reservation with the matching ID
-  const reservation = reservedParking.find((parking) => parking.id === id);
+    try {
+      pool.query(
+        "SELECT * FROM parking WHERE id = ?",
+        [id],
+        (err, results) => {
+          if (err) throw err;
 
-  if (reservation) {
-    res.status(200).json(reservation);
-  } else {
-    res.status(404).json({ message: "Parking reservation not found." });
-  }
-});
+          if (results.length === 0) {
+            res
+              .status(404)
+              .json({ message: "Parking information not found." });
+          } else {
+            const parkingInfo = results[0];
 
-// Route: Update a parking reservation by ID
-router.put("/:id",  (req, res) => {
-  const id = parseInt(req.params.id);
-  const { name, vehicle_registration, arrival_time } = req.body;
+            res.json(parkingInfo);
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching the parking information.",
+      });
+    }
+  });
 
-  // Find the reservation with the matching ID
-  const reservation = reservedParking.find((parking) => parking.id === id);
+  // Update parking information
+  router.patch("/:id", async (req, res) => {
+    const {
+      name,
+      vehicle_registration,
+      arrival_time
+    } = req.body;
+    const { id } = req.params;
 
-  if (reservation) {
-    // Update the reservation details
-    reservation.name = name;
-    reservation.vehicleRegistration = vehicle_registration;
-    reservation.estimatedArrivalTime = arrival_time;
+    try {
+      pool.query(
+        "UPDATE parking SET name = ?, vehicle_registration = ?, arrival_time = ? WHERE id = ?",
+        [
+          name,
+          vehicle_registration,
+          arrival_time,
+          id
+        ],
+        (err, result) => {
+          if (err) throw err;
 
-    res.status(200).json({ message: "Parking reservation updated successfully." });
-  } else {
-    res.status(404).json({ message: "Parking reservation not found." });
-  }
-});
+          if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Parking information not found." });
+          } else {
+            res.json({
+              message: "Parking information updated successfully.",
+            });
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while updating the parking information.",
+      });
+    }
+  });
 
-// Route: Download parking information as a file
-router.get("/download",  (req, res) => {
-  const parkingData = JSON.stringify(reservedParking, null, 2);
+  // Delete parking information
+  router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
 
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Content-Disposition", "attachment; filename=parking_data.json");
-  res.send(parkingData);
-});
+    try {
+      pool.query(
+        "DELETE FROM parking WHERE id = ?",
+        [id],
+        (err, result) => {
+          if (err) throw err;
 
-module.exports = router;
+          if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Parking information not found." });
+          } else {
+            res.json({ message: "Parking information deleted successfully." });
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while deleting the parking information.",
+      });
+    }
+  });
+
+  return router;
+};

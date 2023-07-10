@@ -87,7 +87,7 @@ const Sidebar = ({ children }) => {
                 </Link>
                 <Link
                   className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                  to="/view-reserved-parking"
+                  to="/reserved-parking"
                 >
                   View Reserved Parking
                 </Link>

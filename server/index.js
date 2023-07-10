@@ -125,6 +125,7 @@ const specialAssignment = require("./routes/logistics/special-assignment/special
 // Import visitors management routes
 const visitors = require("./routes/visitors-management/visitors/visitors.routes");
 const interviews = require("./routes/visitors-management/interviews/interview.routes");
+const parking = require("../server/routes/visitors-management/parking/parking.routes")
 
 // Import workplan automation routes
 const workplan = require("./routes/workplan-automation/workplan.routes");
@@ -163,6 +164,8 @@ app.use("/api/special-assignments", specialAssignment(logisticsPool));
 app.use("/api/interviews", interviews(visitorManagementPool));
 app.use("/api/workplans", workplan(workplanAutomationPool));
 app.use("/api/tasks", tasks(workplanAutomationPool));
+app.use("/api/reserve-parking", parking(visitorManagementPool));
+app.use("/api/reserved-parking", parking(visitorManagementPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {

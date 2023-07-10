@@ -247,7 +247,7 @@ const App = () => {
 
             {/* Parking */}
             <Route path="/reserve-parking" element={<ReserveParking />} />
-            <Route path="/view-reserved-parking" element={<ViewReservedParking />} />
+            <Route path="/reserved-parking" element={<ViewReservedParking />} />
             {/* Workplan */}
             <Route path="/workplan-home" element={<WorkPlanHome />} />
             <Route path="/create-workplan" element={<CreateWorkPlan />} />
