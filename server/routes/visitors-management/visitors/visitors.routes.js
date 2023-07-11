@@ -2,6 +2,8 @@ const express = require("express");
 const axios = require("axios")
 const nodemailer = require("nodemailer");
 const pdfMakePrinter = require("pdfmake/src/printer");
+const moment = require('moment');
+const schedule = require('node-schedule');
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 require("dotenv").config();
@@ -85,6 +87,9 @@ function formatDate(dateString) {
   return `${year}-${month}-${day}`;
 }
 
+
+
+
 // Map data to fields that go to the pdf
 function dataToPdfRows(data) {
   return data.map((item, index) => {
@@ -105,6 +110,42 @@ function dataToPdfRows(data) {
 }
 
 module.exports = (pool) => {
+  const autoCheckoutJob = schedule.scheduleJob('00 18 * * *', () => {
+    performAutoCheckout(pool);
+  });
+
+  async function performAutoCheckout(pool) {
+    try {
+      // Get the current date and time
+      const currentDate = moment().format('YYYY-MM-DD');
+      const currentTime = moment().format('HH:mm:ss');
+
+      // Query the database for visitors who have not been checked out
+      const query = `
+        UPDATE visitors_information
+        SET check_out_time = ?
+        WHERE check_out_time IS NULL
+          AND check_in_date <= ?
+      `;
+
+      pool.query(query, [currentTime, currentDate], (error, result) => {
+        if (error) {
+          console.error('Error during auto-checkout:', error);
+          return;
+        }
+
+        const affectedRows = result.affectedRows;
+
+        if (affectedRows === 0) {
+          console.log('No visitors to auto-checkout.');
+        } else {
+          console.log('Auto-checkout completed successfully. Checked out', affectedRows, 'visitors.');
+        }
+      });
+    } catch (error) {
+      console.error('Error during auto-checkout:', error);
+    }
+  }
   // Input new visitor information
   router.post("/", authenticateJWT, async (req, res) => {
     const {
@@ -370,7 +411,7 @@ module.exports = (pool) => {
                     if (visitorDetails.length > 0) {
                       const visitorName = visitorDetails[0].name;
                       const visitorPhoneNumber = visitorDetails[0].phone;
-                      const templateName = "visitor_check_out";
+                      const templateName = "visit_checkout_link";
                       const parameters = [{ name: "name", value: visitorName }];
                       const broadcastName = "test_broadcast";
 

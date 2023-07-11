@@ -6,49 +6,62 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const ScheduleInterview = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone_number, setPhoneNumber] = useState("");
-  const [interview_date, setInterviewDate] = useState("");
-  const [interview_time, setInterviewTime] = useState("");
-  const [position, setPosition] = useState("");
+  const [interviewees, setInterviewees] = useState([
+    {
+      name: "",
+      email: "",
+      phone_number: "",
+      interview_date: "",
+      interview_time: "",
+      position: "",
+    },
+  ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
 
+  const handleInputChange = (event, intervieweeIndex, field) => {
+    const { value } = event.target;
+    setInterviewees(prevInterviewees => {
+      const updatedInterviewees = [...prevInterviewees];
+      updatedInterviewees[intervieweeIndex] = {
+        ...updatedInterviewees[intervieweeIndex],
+        [field]: value
+      };
+      return updatedInterviewees;
+    });
+  };
+  const handleAddInterviewee = () => {
+    setInterviewees([
+      ...interviewees,
+      {
+        name: "",
+        email: "",
+        phone_number: "",
+        interview_date: "",
+        interview_time: "",
+        position: "",
+      },
+    ]);
+  };
+
+  const handleRemoveInterviewee = (index) => {
+    const intervieweesCopy = [...interviewees];
+    intervieweesCopy.splice(index, 1);
+    setInterviewees(intervieweesCopy);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !name ||
-      !email ||
-      !phone_number ||
-      !interview_date ||
-      !interview_time ||
-      !position
-    ) {
-      setError("Please fill in all required fields.");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!isValidPhone(phone_number)) {
-      setError("Please enter a valid phone number.");
+    const isValid = validateInterviewees();
+    if (!isValid) {
       return;
     }
     setLoading(true);
     setError(""); // Clear any previous errors
-    const interviewData = {
-      name,
-      email,
-      phone_number,
-      interview_date,
-      interview_time,
-      position,
-    };
+
     try {
       const response = await fetch("https://workspace.optiven.co.ke/api/interviews", {
         method: "POST",
@@ -56,7 +69,7 @@ const ScheduleInterview = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(interviewData),
+        body: JSON.stringify(interviewees),
       });
 
       const data = await response.json();
@@ -65,7 +78,7 @@ const ScheduleInterview = () => {
       navigate("/view-interviews");
 
       // Display success notification
-      toast.success("Interview scheduled successfully!", {
+      toast.success("Interview(s) scheduled successfully!", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
@@ -74,12 +87,16 @@ const ScheduleInterview = () => {
       });
 
       // Reset form fields
-      setName("");
-      setEmail("");
-      setPhoneNumber("");
-      setInterviewDate("");
-      setInterviewTime("");
-      setPosition("");
+      setInterviewees([
+        {
+          name: "",
+          email: "",
+          phone_number: "",
+          interview_date: "",
+          interview_time: "",
+          position: "",
+        },
+      ]);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -94,6 +111,32 @@ const ScheduleInterview = () => {
         progress: undefined,
       });
     }
+  };
+
+  const validateInterviewees = () => {
+    for (const interviewee of interviewees) {
+      if (
+        !interviewee.name ||
+        !interviewee.email ||
+        !interviewee.phone_number ||
+        !interviewee.interview_date ||
+        !interviewee.interview_time ||
+        !interviewee.position
+      ) {
+        setError("Please fill in all required fields.");
+        return false;
+      }
+      if (!isValidEmail(interviewee.email)) {
+        setError("Please enter a valid email address.");
+        return false;
+      }
+      if (!isValidPhone(interviewee.phone_number)) {
+        setError("Please enter a valid phone number.");
+        return false;
+      }
+    }
+    setError("");
+    return true;
   };
 
   const isValidEmail = (email) => {
@@ -115,7 +158,7 @@ const ScheduleInterview = () => {
           <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
             <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
               <img
-                src="https://images.unsplash.com/photo-1565688534245-05d6b5be184a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+                src="https://images.unsplash.com/photo-1618565917118-723caea78e02?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80"
                 alt="interview-banner"
                 className="absolute top-0 left-0 h-full w-full object-cover"
               />
@@ -131,102 +174,116 @@ const ScheduleInterview = () => {
                     <li>Schedule Interview</li>
                   </ul>
                 </div>
-                <form
-                  onSubmit={handleSubmit}
-                  className="mt-8 grid grid-cols-6 gap-6"
-                >
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="name" className="label">
-                      <span className="label-text font-bold">Name</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={name}
-                      placeholder="John Smith"
-                      onChange={(event) => setName(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
+                <form onSubmit={handleSubmit} className="mt-8 grid grid-cols-6 gap-6">
+                  {interviewees.map((interviewee, index) => (
+                    <div key={index} className="col-span-6">
+                      <div className="grid grid-cols-6 gap-6">
+                        <div className="col-span-6 sm:col-span-3">
+                          <label htmlFor={`name_${index}`} className="label">
+                            <span className="label-text font-bold">Name</span>
+                          </label>
+                          <input
+                          type="text"
+                          id={`name_${index}`}
+                          name={`interviewee_${index}_name`}
+                          value={interviewee.name}
+                          onChange={(event) => handleInputChange(event, index, "name")}
+                          className="input input-bordered w-full max-w-xs"
+                          required
+                        />
+                        </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="email" className="label">
-                      <span className="label-text font-bold">Email</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      placeholder="example@example.com"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label htmlFor={`email_${index}`} className="label">
+                            <span className="label-text font-bold">Email</span>
+                          </label>
+                          <input
+                            type="email"
+                            id={`email_${index}`}
+                            name={`interviewee_${index}_email`}
+                            value={interviewee.email}
+                            onChange={(event) => handleInputChange(event, index, "email")}
+                            className="input input-bordered w-full max-w-xs"
+                            required
+                          />
+                        </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="phone_number" className="label">
-                      <span className="label-text font-bold">Phone</span>
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone_number"
-                      placeholder="07XXXXXXXX"
-                      value={phone_number}
-                      onChange={(event) => setPhoneNumber(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label htmlFor={`phone_number_${index}`} className="label">
+                            <span className="label-text font-bold">Phone</span>
+                          </label>
+                          <input
+                            type="tel"
+                            id={`phone_number_${index}`}
+                            name={`interviewee_${index}_phone_number`}
+                            value={interviewee.phone_number}
+                            onChange={(event) => handleInputChange(event, index, "phone_number")}
+                            className="input input-bordered w-full max-w-xs"
+                            required
+                          />
+                        </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="interview_date" className="label">
-                      <span className="label-text font-bold">
-                        Interview Date
-                      </span>
-                    </label>
-                    <input
-                      type="date"
-                      id="interview_date"
-                      value={interview_date}
-                      onChange={(event) => setInterviewDate(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label htmlFor={`interview_date_${index}`} className="label">
+                            <span className="label-text font-bold">Interview Date</span>
+                          </label>
+                          
+                          <input
+                          type="date"
+                          id={`interview_date_${index}`}
+                          name={`interviewee_${index}_interview_date`}
+                          value={interviewee.interview_date}
+                          onChange={(event) => handleInputChange(event, index, "interview_date")}
+                          className="input input-bordered w-full max-w-xs"
+                          required
+                          />
+                        </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="interview_time" className="label">
-                      <span className="label-text font-bold">
-                        Interview Time
-                      </span>
-                    </label>
-                    <input
-                      type="time"
-                      id="interview_time"
-                      value={interview_time}
-                      onChange={(event) => setInterviewTime(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label htmlFor={`interview_time_${index}`} className="label">
+                            <span className="label-text font-bold">Interview Time</span>
+                          </label>
+                          <input
+                            type="time"
+                            id={`interview_time_${index}`}
+                            name={`interviewee_${index}_interview_time`}
+                            value={interviewee.interview_time}
+                            onChange={(event) => handleInputChange(event, index, "interview_time")}
+                            className="input input-bordered w-full max-w-xs"
+                            required
+                          />
+                        </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="position" className="label">
-                      <span className="label-text font-bold">Position</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="position"
-                      placeholder="Job position"
-                      value={position}
-                      onChange={(event) => setPosition(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      required
-                    />
-                  </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label htmlFor={`position_${index}`} className="label">
+                            <span className="label-text font-bold">Position</span>
+                          </label>
+                          <input
+                            type="text"
+                            id={`position_${index}`}
+                            name={`interviewee_${index}_position`}
+                            value={interviewee.position}
+                            onChange={(event) => handleInputChange(event, index, "position")}
+                            className="input input-bordered w-full max-w-xs"
+                            required
+                          />
+                        </div>
 
+                        {interviewees.length > 1 && (
+                          <div className="col-span-6 sm:col-span-3 mt-4">
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveInterviewee(index)}
+                              className="btn btn-error"
+                            >
+                              Delete Interviewee
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
                   <div className="col-span-6 sm:col-span-3">
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
@@ -238,6 +295,12 @@ const ScheduleInterview = () => {
                     </button>
                   </div>
                 </form>
+                <button
+                  onClick={handleAddInterviewee}
+                  className="btn btn-primary btn-outline mx-2 my-4 lg:max-w-xs"
+                >
+                  Add Another Interviewee
+                </button>
               </div>
             </main>
           </div>

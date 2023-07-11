@@ -31,7 +31,7 @@ const AppMenu = ({ onAppSelect }) => {
             </li>
             <li>
               <Link
-                // to="#"
+                to="/workplan-home"
                 className="block overflow-hidden group"
                 onClick={handleAppSelect}
               >
