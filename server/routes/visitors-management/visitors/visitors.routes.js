@@ -257,7 +257,7 @@ module.exports = (pool) => {
   router.get("/", authenticateJWT, async (req, res) => {
     try {
       pool.query(
-        "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id",
+        "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id ORDER BY id DESC",
         (err, results) => {
           if (err) throw err;
 
@@ -412,7 +412,7 @@ module.exports = (pool) => {
                     if (visitorDetails.length > 0) {
                       const visitorName = visitorDetails[0].name;
                       const visitorPhoneNumber = visitorDetails[0].phone;
-                      const templateName = "visitors_checkout_link";
+                      const templateName = "visitors_check_out_link";
                       const parameters = [{ name: "name", value: visitorName }];
                       const broadcastName = "test_broadcast";
 
