@@ -55,16 +55,12 @@ const sendWhatsAppMessage = async (
       bodyData,
       config
     );
-
-    console.log("WhatsApp API Response:", response.data);
-
     return response.data;
   } catch (error) {
     console.error("Failed to send WhatsApp message:", error.message);
     throw error;
   }
 };
-
 
 // Define fonts
 var fonts = {
@@ -360,10 +356,7 @@ module.exports = (pool) => {
             } else {
               // Send WhatsApp message to the visitor
               const sendThankYouNote = (visitorId) => {
-                const getVisitorDetailsQuery = `
-                SELECT name, phone
-                FROM visitors_information
-                WHERE id = ?`;
+                const getVisitorDetailsQuery = `SELECT name, phone FROM visitors_information WHERE id = ?`;
 
                 pool.query(
                   getVisitorDetailsQuery,
@@ -388,7 +381,6 @@ module.exports = (pool) => {
                           parameters,
                           broadcastName
                         );
-                        console.log("Thank you note sent successfully!");
                       } catch (error) {
                         console.error("Failed to send thank you note:", error);
                       }
