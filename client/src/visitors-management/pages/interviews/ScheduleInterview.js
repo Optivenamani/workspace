@@ -63,7 +63,7 @@ const ScheduleInterview = () => {
     setError(""); // Clear any previous errors
 
     try {
-      const response = await fetch("http://localhost:8080/api/interviews", {
+      const response = await fetch("https://workspace.optiven.co.ke/api/interviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

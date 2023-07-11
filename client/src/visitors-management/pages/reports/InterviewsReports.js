@@ -36,7 +36,7 @@ const InterviewsReports = () => {
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/interviews/download-pdf/interview-reports",
+        "https://workspace.optiven.co.ke/api/interviews/download-pdf/interview-reports",
         {
           headers: {
             Authorization: `Bearer ${token}`,

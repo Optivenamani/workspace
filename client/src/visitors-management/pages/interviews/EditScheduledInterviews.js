@@ -38,7 +38,7 @@ const EditScheduledInterviews = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/interviews/${interviewId}`,
+        `https://workspace.optiven.co.ke/api/interviews/${interviewId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -72,7 +72,7 @@ const EditScheduledInterviews = () => {
     };
     try {
       const response = await fetch(
-        `http://localhost:8080/api/interviews/${interviewId}`,
+        `https://workspace.optiven.co.ke/api/interviews/${interviewId}`,
         {
           method: "PATCH",
           headers: {

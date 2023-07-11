@@ -25,7 +25,7 @@ const ViewVisitors = () => {
     // Fetch visitor data from the server
     const fetchVisitors = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/visitors", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/visitors", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -57,7 +57,7 @@ const ViewVisitors = () => {
       const currentTimeString = `${hours}:${minutes}:${seconds}`;
 
       const response = await fetch(
-        `http://localhost:8080/api/visitors/checkout/${visitorId}`,
+        `https://workspace.optiven.co.ke/api/visitors/checkout/${visitorId}`,
         {
           method: "PATCH",
           headers: {
@@ -87,7 +87,7 @@ const ViewVisitors = () => {
 
   const deleteVisitor = (visitorId) => {
     // Send a DELETE request to the server to delete the vehicle with the specified ID
-    fetch(`http://localhost:8080/api/visitors/${visitorId}`, {
+    fetch(`https://workspace.optiven.co.ke/api/visitors/${visitorId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
