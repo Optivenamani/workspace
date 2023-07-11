@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 
 const formatDate = (dateTimeString) => {
   if (!dateTimeString) return null;
@@ -24,11 +23,14 @@ const ViewReservedParking = () => {
   useEffect(() => {
     const fetchReservedParking = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/reserved-parking", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://localhost:8080/api/reserved-parking",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = await response.json();
         console.log("Reserved Parking:", data);
@@ -53,7 +55,9 @@ const ViewReservedParking = () => {
   const filteredReservedParking = reservedParking.filter(
     (parking) =>
       parking.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      parking.vehicle_registration.toLowerCase().includes(searchTerm.toLowerCase())
+      parking.vehicle_registration
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -74,23 +78,21 @@ const ViewReservedParking = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Vehicle Registration</th>
-                <th>Estimated Arrival Time</th>
-                <th>Actions</th>
+                <th className="text-center">Name</th>
+                <th className="text-center">Vehicle Registration</th>
+                <th className="text-center">Estimated Arrival Time</th>
               </tr>
             </thead>
             <tbody>
               {filteredReservedParking.map((parking, i) => (
                 <tr key={parking.id}>
                   <td>{i + 1}</td>
-                  <td>{parking.name}</td>
-                  <td>{parking.vehicle_registration}</td>
-                  <td>{formatDate(parking.arrival_time)}</td>
-                  <td>
-                    <div className="flex gap-2">
-                      {/* Add your actions buttons here */}
-                    </div>
+                  <td className="text-center">{parking.name}</td>
+                  <td className="text-center">
+                    {parking.vehicle_registration}
+                  </td>
+                  <td className="text-center">
+                    {formatDate(parking.arrival_time)}
                   </td>
                 </tr>
               ))}

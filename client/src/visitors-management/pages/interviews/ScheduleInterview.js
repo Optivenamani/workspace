@@ -24,11 +24,11 @@ const ScheduleInterview = () => {
 
   const handleInputChange = (event, intervieweeIndex, field) => {
     const { value } = event.target;
-    setInterviewees(prevInterviewees => {
+    setInterviewees((prevInterviewees) => {
       const updatedInterviewees = [...prevInterviewees];
       updatedInterviewees[intervieweeIndex] = {
         ...updatedInterviewees[intervieweeIndex],
-        [field]: value
+        [field]: value,
       };
       return updatedInterviewees;
     });
@@ -63,14 +63,17 @@ const ScheduleInterview = () => {
     setError(""); // Clear any previous errors
 
     try {
-      const response = await fetch("https://workspace.optiven.co.ke/api/interviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(interviewees),
-      });
+      const response = await fetch(
+        "https://workspace.optiven.co.ke/api/interviews",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(interviewees),
+        }
+      );
 
       const data = await response.json();
       console.log(data);
@@ -174,7 +177,10 @@ const ScheduleInterview = () => {
                     <li>Schedule Interview</li>
                   </ul>
                 </div>
-                <form onSubmit={handleSubmit} className="mt-8 grid grid-cols-6 gap-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-8 grid grid-cols-6 gap-6"
+                >
                   {interviewees.map((interviewee, index) => (
                     <div key={index} className="col-span-6">
                       <div className="grid grid-cols-6 gap-6">
@@ -183,14 +189,16 @@ const ScheduleInterview = () => {
                             <span className="label-text font-bold">Name</span>
                           </label>
                           <input
-                          type="text"
-                          id={`name_${index}`}
-                          name={`interviewee_${index}_name`}
-                          value={interviewee.name}
-                          onChange={(event) => handleInputChange(event, index, "name")}
-                          className="input input-bordered w-full max-w-xs"
-                          required
-                        />
+                            type="text"
+                            id={`name_${index}`}
+                            name={`interviewee_${index}_name`}
+                            value={interviewee.name}
+                            onChange={(event) =>
+                              handleInputChange(event, index, "name")
+                            }
+                            className="input input-bordered w-full max-w-xs"
+                            required
+                          />
                         </div>
 
                         <div className="col-span-6 sm:col-span-3">
@@ -202,14 +210,19 @@ const ScheduleInterview = () => {
                             id={`email_${index}`}
                             name={`interviewee_${index}_email`}
                             value={interviewee.email}
-                            onChange={(event) => handleInputChange(event, index, "email")}
+                            onChange={(event) =>
+                              handleInputChange(event, index, "email")
+                            }
                             className="input input-bordered w-full max-w-xs"
                             required
                           />
                         </div>
 
                         <div className="col-span-6 sm:col-span-3">
-                          <label htmlFor={`phone_number_${index}`} className="label">
+                          <label
+                            htmlFor={`phone_number_${index}`}
+                            className="label"
+                          >
                             <span className="label-text font-bold">Phone</span>
                           </label>
                           <input
@@ -217,53 +230,76 @@ const ScheduleInterview = () => {
                             id={`phone_number_${index}`}
                             name={`interviewee_${index}_phone_number`}
                             value={interviewee.phone_number}
-                            onChange={(event) => handleInputChange(event, index, "phone_number")}
+                            onChange={(event) =>
+                              handleInputChange(event, index, "phone_number")
+                            }
                             className="input input-bordered w-full max-w-xs"
                             required
                           />
                         </div>
 
                         <div className="col-span-6 sm:col-span-3">
-                          <label htmlFor={`interview_date_${index}`} className="label">
-                            <span className="label-text font-bold">Interview Date</span>
+                          <label
+                            htmlFor={`interview_date_${index}`}
+                            className="label"
+                          >
+                            <span className="label-text font-bold">
+                              Interview Date
+                            </span>
                           </label>
-                          
+
                           <input
-                          type="date"
-                          id={`interview_date_${index}`}
-                          name={`interviewee_${index}_interview_date`}
-                          value={interviewee.interview_date}
-                          onChange={(event) => handleInputChange(event, index, "interview_date")}
-                          className="input input-bordered w-full max-w-xs"
-                          required
+                            type="date"
+                            id={`interview_date_${index}`}
+                            name={`interviewee_${index}_interview_date`}
+                            value={interviewee.interview_date}
+                            onChange={(event) =>
+                              handleInputChange(event, index, "interview_date")
+                            }
+                            className="input input-bordered w-full max-w-xs"
+                            required
                           />
                         </div>
 
                         <div className="col-span-6 sm:col-span-3">
-                          <label htmlFor={`interview_time_${index}`} className="label">
-                            <span className="label-text font-bold">Interview Time</span>
+                          <label
+                            htmlFor={`interview_time_${index}`}
+                            className="label"
+                          >
+                            <span className="label-text font-bold">
+                              Interview Time
+                            </span>
                           </label>
                           <input
                             type="time"
                             id={`interview_time_${index}`}
                             name={`interviewee_${index}_interview_time`}
                             value={interviewee.interview_time}
-                            onChange={(event) => handleInputChange(event, index, "interview_time")}
+                            onChange={(event) =>
+                              handleInputChange(event, index, "interview_time")
+                            }
                             className="input input-bordered w-full max-w-xs"
                             required
                           />
                         </div>
 
                         <div className="col-span-6 sm:col-span-3">
-                          <label htmlFor={`position_${index}`} className="label">
-                            <span className="label-text font-bold">Position</span>
+                          <label
+                            htmlFor={`position_${index}`}
+                            className="label"
+                          >
+                            <span className="label-text font-bold">
+                              Position
+                            </span>
                           </label>
                           <input
                             type="text"
                             id={`position_${index}`}
                             name={`interviewee_${index}_position`}
                             value={interviewee.position}
-                            onChange={(event) => handleInputChange(event, index, "position")}
+                            onChange={(event) =>
+                              handleInputChange(event, index, "position")
+                            }
                             className="input input-bordered w-full max-w-xs"
                             required
                           />
@@ -283,8 +319,16 @@ const ScheduleInterview = () => {
                       </div>
                     </div>
                   ))}
-                  
-                  <div className="col-span-6 sm:col-span-3">
+
+                  <div className="col-span-3 sm:col-span-3">
+                    <button
+                      onClick={handleAddInterviewee}
+                      className="btn btn-primary btn-outline my-4 lg:max-w-xs"
+                    >
+                      Add Another Interviewee
+                    </button>
+                  </div>
+                  <div className="col-span-3 sm:col-span-3">
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
                       type="submit"
@@ -295,12 +339,6 @@ const ScheduleInterview = () => {
                     </button>
                   </div>
                 </form>
-                <button
-                  onClick={handleAddInterviewee}
-                  className="btn btn-primary btn-outline mx-2 my-4 lg:max-w-xs"
-                >
-                  Add Another Interviewee
-                </button>
               </div>
             </main>
           </div>
