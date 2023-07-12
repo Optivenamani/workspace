@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formatDate = (dateString) => {
   if (!dateString) return null;
@@ -31,12 +33,10 @@ const EditVisitor = () => {
   const [selectedStaffId, setSelectedStaffId] = useState("");
   const [loading, setLoading] = useState(false);
   const [allStaff, setAllStaff] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
-
-  console.log("Visitor ID:", visitorId);
 
   const handleStaffChange = (event) => {
     const selectedStaff = allStaff.find(
@@ -65,7 +65,6 @@ const EditVisitor = () => {
         }
       );
       const data = await response.json();
-      console.log("Visitor:", data);
       setName(data.name);
       setPhone(data.phone);
       setEmail(data.email);
@@ -92,11 +91,14 @@ const EditVisitor = () => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://workspace.optiven.co.ke/api/users",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         console.log("Staff:", data);
         setAllStaff(data);
@@ -136,14 +138,34 @@ const EditVisitor = () => {
           body: JSON.stringify(visitorData),
         }
       );
-
+      const data = await response.json();
       if (response.ok) {
-        console.log("Visitor updated successfully!");
+        toast.success("Visitor updated successfully.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         navigate("/view-visitors");
       } else {
-        console.error("Failed to update visitor.");
+        toast.error("Failed to update visitor.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        console.error("Error updating visitor:", data.message);
       }
     } catch (error) {
+      toast.error("An error occurred while updating the visitor.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       console.error("Error updating visitor:", error);
     } finally {
       setLoading(false);
@@ -262,7 +284,7 @@ const EditVisitor = () => {
                       id="Department"
                       value={department}
                       onChange={(event) => setDepartment(event.target.value)}
-                      className="input input-bordered w-full max-w-xs"
+                      className="select select-bordered w-full max-w-xs"
                       required
                     >
                       <option value="">Select Department</option>
@@ -354,9 +376,12 @@ const EditVisitor = () => {
                         />
                       ))}
                     </datalist>
-                    <span className="mt-1 font-bold text-xs text-red-600">{error}</span>
+                    <span className="mt-1 font-bold text-xs text-red-600">
+                      {error}
+                    </span>
                   </div>
                   <div className="col-span-6 sm:col-span-3">
+                    {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
                       type="submit"
                       disabled={loading}

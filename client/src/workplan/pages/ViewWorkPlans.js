@@ -23,7 +23,8 @@ const ViewWorkPlans = () => {
     // Fetch tasks data from the server
     const fetchTasks = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/tasks", {
+        const response = await fetch("http://localhost:8080/api/tasks", {
+
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -1,7 +1,9 @@
 const express = require("express");
-const axios = require("axios")
+const axios = require("axios");
 const nodemailer = require("nodemailer");
 const pdfMakePrinter = require("pdfmake/src/printer");
+const moment = require("moment");
+const schedule = require("node-schedule");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 require("dotenv").config();
@@ -55,16 +57,12 @@ const sendWhatsAppMessage = async (
       bodyData,
       config
     );
-
-    console.log("WhatsApp API Response:", response.data);
-
     return response.data;
   } catch (error) {
     console.error("Failed to send WhatsApp message:", error.message);
     throw error;
   }
 };
-
 
 // Define fonts
 var fonts = {
@@ -109,6 +107,46 @@ function dataToPdfRows(data) {
 }
 
 module.exports = (pool) => {
+  const autoCheckoutJob = schedule.scheduleJob("00 18 * * *", () => {
+    performAutoCheckout(pool);
+  });
+
+  async function performAutoCheckout(pool) {
+    try {
+      // Get the current date and time
+      const currentDate = moment().format("YYYY-MM-DD");
+      const currentTime = moment().format("HH:mm:ss");
+
+      // Query the database for visitors who have not been checked out
+      const query = `
+        UPDATE visitors_information
+        SET check_out_time = ?
+        WHERE check_out_time IS NULL
+          AND check_in_date <= ?
+      `;
+
+      pool.query(query, [currentTime, currentDate], (error, result) => {
+        if (error) {
+          console.error("Error during auto-checkout:", error);
+          return;
+        }
+
+        const affectedRows = result.affectedRows;
+
+        if (affectedRows === 0) {
+          console.log("No visitors to auto-checkout.");
+        } else {
+          console.log(
+            "Auto-checkout completed successfully. Checked out",
+            affectedRows,
+            "visitors."
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Error during auto-checkout:", error);
+    }
+  }
   // Input new visitor information
   router.post("/", authenticateJWT, async (req, res) => {
     const {
@@ -219,7 +257,7 @@ module.exports = (pool) => {
   router.get("/", authenticateJWT, async (req, res) => {
     try {
       pool.query(
-        "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id",
+        "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id ORDER BY id DESC",
         (err, results) => {
           if (err) throw err;
 
@@ -360,10 +398,7 @@ module.exports = (pool) => {
             } else {
               // Send WhatsApp message to the visitor
               const sendThankYouNote = (visitorId) => {
-                const getVisitorDetailsQuery = `
-                SELECT name, phone
-                FROM visitors_information
-                WHERE id = ?`;
+                const getVisitorDetailsQuery = `SELECT name, phone FROM visitors_information WHERE id = ?`;
 
                 pool.query(
                   getVisitorDetailsQuery,
@@ -377,7 +412,7 @@ module.exports = (pool) => {
                     if (visitorDetails.length > 0) {
                       const visitorName = visitorDetails[0].name;
                       const visitorPhoneNumber = visitorDetails[0].phone;
-                      const templateName = "visitor_check_out";
+                      const templateName = "visitors_check_out_link";
                       const parameters = [{ name: "name", value: visitorName }];
                       const broadcastName = "test_broadcast";
 
@@ -388,7 +423,6 @@ module.exports = (pool) => {
                           parameters,
                           broadcastName
                         );
-                        console.log("Thank you note sent successfully!");
                       } catch (error) {
                         console.error("Failed to send thank you note:", error);
                       }

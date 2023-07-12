@@ -7,16 +7,20 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SiteVisitDetails = () => {
-  const [siteVisitData, setSiteVisitData] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const [vehicle, setVehicle] = useState("");
-  const [, setIsApproved] = useState(false);
   const [pickupLocation, setPickupLocation] = useState("");
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
   const [remarks, setRemarks] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [driver, setDriver] = useState("");
+  const [site, setSite] = useState(null);
+  const [pickupTime, setPickupTime] = useState(null);
+  const [pickupDate, setPickupDate] = useState(null);
+  const [numClients, setNumClients] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [marketerName, setMarketerName] = useState(null);
+  const [sites, setSites] = useState([]);
   const token = useSelector((state) => state.user.token);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -24,6 +28,7 @@ const SiteVisitDetails = () => {
   // fetch the current site visit request
   useEffect(() => {
     const fetchSiteVisitRequest = async (id) => {
+      setLoading(true);
       try {
         const response = await fetch(
           `https://workspace.optiven.co.ke/api/site-visit-requests/pending-site-visits/${id}`,
@@ -35,8 +40,16 @@ const SiteVisitDetails = () => {
         );
         const data = await response.json();
         console.log("Site Visit Request details: ", data);
-        setSiteVisitData(data);
-        setIsApproved(data.status === "approved");
+        setSite(data.project_id);
+        setPickupLocation(data.pickup_location);
+        setPickupDate(data.pickup_date);
+        setNumClients(data.num_clients);
+        setPickupTime(data.pickup_time);
+        setMarketerName(data.marketer_name);
+        setRemarks(data.remarks);
+        setDriver(data.driver_id);
+        setVehicle(data.vehicle_id);
+        setStatus(data.status);
       } catch (error) {
         console.error("Error fetching site visit request:", error);
       }
@@ -45,7 +58,7 @@ const SiteVisitDetails = () => {
     fetchSiteVisitRequest(id);
   }, [id, token]);
 
-  // fetch *available vehicles
+  // fetch vehicles
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -68,7 +81,27 @@ const SiteVisitDetails = () => {
     fetchVehicles();
   }, [token]);
 
-  // fetch *available drivers
+  // fetch sites
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/sites", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        console.log("Sites: ", data);
+        setSites(data);
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      }
+    };
+
+    fetchSites();
+  }, [token]);
+
+  // fetch drivers
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
@@ -91,31 +124,21 @@ const SiteVisitDetails = () => {
     fetchDrivers();
   }, [token]);
 
-  // fetch site visit data
-  useEffect(() => {
-    if (siteVisitData) {
-      setVehicle(siteVisitData.vehicle_id);
-      setPickupLocation(siteVisitData.pickup_location);
-      setDate(formatDate(siteVisitData.pickup_date));
-      setTime(siteVisitData.pickup_time);
-      setRemarks(siteVisitData.remarks);
-      setDriver(siteVisitData.driver_id);
-    }
-  }, [siteVisitData]);
-
   // approve/edit site visit
   const approveSiteVisit = async () => {
     try {
       const requestBody = {
         ...(vehicle !== null && { vehicle_id: parseInt(vehicle) }),
         ...(pickupLocation !== null && { pickup_location: pickupLocation }),
-        ...(date !== null && { pickup_date: date }),
-        ...(time !== null && { pickup_time: time }),
+        ...(pickupDate !== null && { pickup_date: formatDate(pickupDate) }),
+        ...(pickupTime !== null && { pickup_time: pickupTime }),
         ...(remarks !== null && { remarks: remarks }),
         ...(driver !== null && { driver_id: driver }),
+        ...(site !== null && { project_id: parseInt(site) }),
         status: "approved",
       };
 
+      console.log("Request body:", requestBody);
       const response = await fetch(
         `https://workspace.optiven.co.ke/api/site-visit-requests/pending-site-visits/${id}`,
         {
@@ -127,6 +150,7 @@ const SiteVisitDetails = () => {
           body: JSON.stringify(requestBody),
         }
       );
+
       const data = await response.json();
       if (response.ok) {
         toast.success("Site visit updated successfully.", {
@@ -211,7 +235,7 @@ const SiteVisitDetails = () => {
   return (
     <>
       <Sidebar>
-        {siteVisitData ? (
+        {loading && (
           <div>
             <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
               <div className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
@@ -221,7 +245,6 @@ const SiteVisitDetails = () => {
                   className="absolute inset-0 h-full w-full object-cover opacity-80"
                 />
               </div>
-
               <main
                 aria-label="Main"
                 className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
@@ -232,14 +255,26 @@ const SiteVisitDetails = () => {
                       <label htmlFor="siteName" className="label font-bold">
                         Site
                       </label>
-                      <input
-                        type="text"
-                        id="siteName"
-                        name="siteName"
-                        value={siteVisitData.site_name}
-                        className="input input-bordered"
-                        disabled
-                      />
+                      <select
+                        id="site"
+                        as="select"
+                        value={site}
+                        onChange={(event) => {
+                          setSite(event.target.value);
+                        }}
+                        className="select select-bordered lg:w-4/5"
+                        required
+                      >
+                        <option value="">Pick a site</option>
+                        {sites.map((site) => (
+                          <option
+                            key={crypto.randomUUID()}
+                            value={site.project_id}
+                          >
+                            {site.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
@@ -253,18 +288,11 @@ const SiteVisitDetails = () => {
                         id="pickupLocation"
                         name="pickupLocation"
                         className="input input-bordered"
-                        value={
-                          pickupLocation ||
-                          (siteVisitData && siteVisitData.pickup_location)
-                        }
+                        value={pickupLocation}
                         onChange={(e) => setPickupLocation(e.target.value)}
                         disabled={
-                          (siteVisitData &&
-                            siteVisitData.status !== "pending" &&
-                            siteVisitData.status !== "approved") ||
-                          (siteVisitData &&
-                            siteVisitData.pickup_location.toLowerCase() ===
-                              "self drive")
+                          (status !== "pending" && status !== "approved") ||
+                          pickupLocation.toLowerCase() === "self drive"
                         }
                       />
                     </div>
@@ -277,17 +305,9 @@ const SiteVisitDetails = () => {
                         id="pickupDate"
                         name="pickupDate"
                         className="input input-bordered"
-                        value={
-                          date ||
-                          (siteVisitData &&
-                            formatDate(siteVisitData.pickup_date))
-                        }
-                        onChange={(e) => setDate(e.target.value)}
-                        disabled={
-                          siteVisitData &&
-                          siteVisitData.status !== "pending" &&
-                          siteVisitData.status !== "approved"
-                        }
+                        value={formatDate(pickupDate)}
+                        onChange={(e) => setPickupDate(e.target.value)}
+                        disabled={status !== "pending" && status !== "approved"}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -299,7 +319,7 @@ const SiteVisitDetails = () => {
                         id="numberOfClients"
                         name="numberOfClients"
                         className="input input-bordered"
-                        value={siteVisitData.num_clients}
+                        value={numClients}
                         disabled
                       />
                     </div>
@@ -312,18 +332,11 @@ const SiteVisitDetails = () => {
                         id="pickupTime"
                         name="pickupTime"
                         className="input input-bordered"
-                        value={
-                          time || (siteVisitData && siteVisitData.pickup_time)
-                        }
-                        onChange={(e) => setTime(e.target.value)}
-                        disabled={
-                          siteVisitData &&
-                          siteVisitData.status !== "pending" &&
-                          siteVisitData.status !== "approved"
-                        }
+                        value={pickupTime}
+                        onChange={(e) => setPickupTime(e.target.value)}
+                        disabled={status !== "pending" && status !== "approved"}
                       />
                     </div>
-
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="siteName" className="label font-bold">
                         Marketer
@@ -332,17 +345,17 @@ const SiteVisitDetails = () => {
                         type="text"
                         id="siteName"
                         name="first_name"
-                        value={siteVisitData.marketer_name}
+                        value={marketerName}
                         className="input input-bordered"
                         disabled
                       />
                     </div>
-
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="driver" className="label font-bold">
                         Assign a Driver
                       </label>
                       <select
+                        required
                         id="driver"
                         as="select"
                         value={driver}
@@ -350,18 +363,7 @@ const SiteVisitDetails = () => {
                           setDriver(event.target.value);
                         }}
                         className="select select-bordered"
-                        // disabled={
-                        //   (siteVisitData &&
-                        //     siteVisitData.status !== "pending" &&
-                        //     siteVisitData.status !== "approved") ||
-                        //   (siteVisitData &&
-                        //     siteVisitData.pickup_location === "Self Drive")
-                        // }
-                        disabled={
-                          siteVisitData &&
-                          siteVisitData.status !== "pending" &&
-                          siteVisitData.status !== "approved"
-                        }
+                        disabled={status !== "pending" && status !== "approved"}
                       >
                         <option value="">Select a driver</option>
                         {drivers.map((driver) => (
@@ -374,27 +376,16 @@ const SiteVisitDetails = () => {
                         ))}
                       </select>
                     </div>
-
                     <div className="col-span-6 sm:col-span-3">
                       <label className="label font-bold">Assign Vehicle</label>
                       <select
+                        required
                         id="vehicle"
                         as="select"
                         value={vehicle}
                         onChange={(event) => setVehicle(event.target.value)}
                         className="select select-bordered"
-                        // disabled={
-                        //   (siteVisitData &&
-                        //     siteVisitData.status !== "pending" &&
-                        //     siteVisitData.status !== "approved") ||
-                        //   (siteVisitData &&
-                        //     siteVisitData.pickup_location === "Self Drive")
-                        // }
-                        disabled={
-                          siteVisitData &&
-                          siteVisitData.status !== "pending" &&
-                          siteVisitData.status !== "approved"
-                        }
+                        disabled={status !== "pending" && status !== "approved"}
                       >
                         <option value="">Select a Vehicle</option>
                         {vehicles.map((v) => (
@@ -404,31 +395,25 @@ const SiteVisitDetails = () => {
                         ))}
                       </select>
                     </div>
-
                     <div className="col-span-6">
                       <label htmlFor="remarks" className="label font-bold">
                         Remarks
                       </label>
                       <textarea
+                        required
                         id="remarks"
                         name="remarks"
                         className="input input-bordered h-24 w-full p-2"
                         value={remarks || ""}
                         onChange={(e) => setRemarks(e.target.value)}
-                        disabled={
-                          siteVisitData &&
-                          siteVisitData.status !== "pending" &&
-                          siteVisitData.status !== "approved"
-                        }
+                        disabled={status !== "pending" && status !== "approved"}
                       />
                     </div>
-
                     <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                      {siteVisitData &&
-                      siteVisitData.status !== "reviewed" &&
-                      siteVisitData.status !== "complete" &&
-                      siteVisitData.status !== "rejected" &&
-                      siteVisitData.status !== "in_progress" ? (
+                      {status !== "reviewed" &&
+                      status !== "complete" &&
+                      status !== "rejected" &&
+                      status !== "in_progress" ? (
                         <>
                           <button
                             className="btn btn-primary text-white"
@@ -456,8 +441,6 @@ const SiteVisitDetails = () => {
               </main>
             </div>
           </div>
-        ) : (
-          <p>Loading site visit data...</p>
         )}
       </Sidebar>
     </>

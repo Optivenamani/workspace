@@ -63,10 +63,8 @@ module.exports = (pool) => {
   // Get all drivers
   router.get("/all-drivers", authenticateJWT, async (req, res) => {
     try {
-      const query = `
-          SELECT * FROM users
-          WHERE users.Accessrole = 'driver' OR users.Accessrole = '112#114#700' OR users.Accessrole = '112#700#117#116#777A'
-          `;
+      const query = `SELECT * FROM users WHERE Accessrole = 'driver'`;
+
       pool.query(query, async (err, results) => {
         if (err) throw err;
         const drivers = results;

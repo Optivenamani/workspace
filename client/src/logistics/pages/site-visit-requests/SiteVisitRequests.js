@@ -8,7 +8,7 @@ import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 const SiteVisitRequests = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
   const [pending, setPending] = useState([]);
   const token = useSelector((state) => state.user.token);
@@ -74,6 +74,11 @@ const SiteVisitRequests = () => {
     navigate(`/site-visit-requests/${id}`);
   };
 
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(1);
+  };
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -133,7 +138,7 @@ const SiteVisitRequests = () => {
     return (
       <div className="join">
         <button
-          className="join-item btn mr-1 w-10 lg:w-20"
+          className="join-item btn btn-sm mr-1 w-10 lg:w-20"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -142,7 +147,7 @@ const SiteVisitRequests = () => {
         {pageNumbers.map((pageNumber, index) => {
           if (pageNumber === "...") {
             return (
-              <button key={index} className="join-item btn btn-disabled">
+              <button key={index} className="join-item btn btn-sm btn-disabled">
                 {pageNumber}
               </button>
             );
@@ -151,7 +156,7 @@ const SiteVisitRequests = () => {
             <button
               key={index}
               onClick={() => handlePageChange(pageNumber)}
-              className={`join-item btn ${
+              className={`join-item btn btn-sm ${
                 pageNumber === currentPage
                   ? "btn-active btn-success"
                   : "btn-success"
@@ -163,7 +168,7 @@ const SiteVisitRequests = () => {
           );
         })}
         <button
-          className="join-item btn ml-1 w-10 lg:w-20"
+          className="join-item btn btn-sm ml-1 w-10 lg:w-20"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
@@ -278,34 +283,34 @@ const SiteVisitRequests = () => {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="text-center bg-gray-700 text-secondary-content">
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         #
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Date
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Marketer
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Clients
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Site Name
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Driver
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Pickup Time
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Vehicle
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Pickup Location
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Remarks
                       </th>
                     </tr>
@@ -319,36 +324,36 @@ const SiteVisitRequests = () => {
                         )}`}
                         onClick={() => handleView(svr.id)}
                       >
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {index + 1}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {new Date(svr.pickup_date).toLocaleDateString(
                             "en-GB"
                           )}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.marketer_name.toUpperCase()}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.num_clients}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.site_name}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.driver_name}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {formatTime(svr.pickup_time)}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.vehicle_name}
                         </td>
-                        <td className="border border-secondary-content px-2">
+                        <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.pickup_location}
                         </td>
-                        <td className="border border-secondary-content px-2 max-w-sm">
+                        <td className="border border-secondary-content px-2 py-2 font-bold max-w-sm">
                           {svr.remarks}
                         </td>
                       </tr>
@@ -403,6 +408,12 @@ const SiteVisitRequests = () => {
           </div>
           <div className="flex justify-center mb-10">
             <div className="join">{renderPaginationButtons()}</div>
+            <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="select select-bordered select-sm mx-2">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
           </div>
         </div>
       </Sidebar>

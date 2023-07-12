@@ -217,12 +217,12 @@ const RegisterVisitor = () => {
                   </div>
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="phone" className="label">
-                      <span className="label-text font-bold">Phone</span>
+                      <span className="label-text font-bold">Phone Number(with country code)</span>
                     </label>
                     <input
                       type="tel"
                       id="phone"
-                      placeholder="07XXXXXXXX"
+                      placeholder="+2547XXXXXXXX"
                       value={phone}
                       onChange={(event) => setPhone(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
