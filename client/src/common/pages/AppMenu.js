@@ -34,7 +34,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </div>
               </Link>
             </li>
-            {(department === "ICT" || department === "Marketing") && (
+            {department === "ICT" && (
               <li>
                 <Link
                   to="/workplan-home"
@@ -54,7 +54,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
-            {(department === "ICT" || department === "Customer Exp")  && (
+            {(department === "ICT" || department === "Customer Exp") && (
               <li>
                 <Link
                   to="/visitors-management"

@@ -2,34 +2,32 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const CreateWorkPlan = () => {
   const [title, setTitle] = useState("");
-  const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e, setter) => {
-    setter(e.target.value);
-  };
+  const token = useSelector((state) => state.user.token);
+  const userId = useSelector((state) => state.user.user.user_id);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     setLoading(true);
-
     const data = { title, user_id: userId };
 
     fetch("http://localhost:8080/api/workplans", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
         setLoading(false);
-        setTitle("");
-        setUserId("");
         toast.success("Work plan created successfully!", {
           position: "top-center",
           closeOnClick: true,
@@ -64,10 +62,18 @@ const CreateWorkPlan = () => {
           </section>
           <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-8 xl:col-span-6">
             <div className="max-w-xl lg:max-w-3xl">
-              <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
-                <h2 className="text-2xl font-semibold mb-6">Create Work Plan</h2>
+              <form
+                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                onSubmit={handleSubmit}
+              >
+                <h2 className="text-2xl font-semibold mb-6">
+                  Create Work Plan
+                </h2>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="title"
+                  >
                     Title
                   </label>
                   <input
@@ -76,20 +82,7 @@ const CreateWorkPlan = () => {
                     type="text"
                     placeholder="Enter title"
                     value={title}
-                    onChange={(e) => handleInputChange(e, setTitle)}
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm fontbold mb-2" htmlFor="userId">
-                    User ID
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="userId"
-                    type="text"
-                    placeholder="Enter user ID"
-                    value={userId}
-                    onChange={(e) => handleInputChange(e, setUserId)}
+                    onChange={(event) => setTitle(event.target.value)}
                   />
                 </div>
                 <div className="flex items-center justify-between">
