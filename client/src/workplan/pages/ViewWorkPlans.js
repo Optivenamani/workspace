@@ -24,7 +24,6 @@ const ViewWorkPlans = () => {
     const fetchTasks = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/tasks", {
-
           headers: {
             Authorization: `Bearer ${token}`,
           },
