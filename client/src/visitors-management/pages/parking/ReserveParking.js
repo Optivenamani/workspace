@@ -30,7 +30,7 @@ const ReserveParking = () => {
       arrival_time,
     };
     try {
-      const response = await fetch("http://localhost:8080/api/reserve-parking", {
+      const response = await fetch("https://workspace.optiven.co.ke/api/reserve-parking", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
