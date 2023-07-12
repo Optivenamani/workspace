@@ -7,6 +7,23 @@ const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
+
+// Define your fonts
+var fonts = {
+  Roboto: {
+    normal: "node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf",
+    bold: "node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf",
+    italic: "node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf",
+    bolditalics:
+      "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
+  },
+};
+
+const WATI_TOKEN = process.env.WATI_TOKEN;
+const WATI_BASE_URL = process.env.WATI_BASE_URL;
+
 // Nodemailer helper function to send email
 async function sendEmail(userEmail, subject, text) {
   // create reusable transporter object using the default SMTP transport
@@ -29,16 +46,8 @@ async function sendEmail(userEmail, subject, text) {
   });
 }
 
-const WATI_TOKEN = process.env.WATI_TOKEN;
-const WATI_BASE_URL = process.env.WATI_BASE_URL;
-
 // WATI Helper function to send the WhatsApp msg
-const sendWhatsAppMessage = async (
-  phoneNumber,
-  templateName,
-  parameters,
-  broadcastName
-) => {
+const sendWhatsAppMessage = async ( phoneNumber, templateName, parameters, broadcastName ) => {
   const config = {
     headers: {
       Authorization: `Bearer ${WATI_TOKEN}`,
@@ -62,19 +71,6 @@ const sendWhatsAppMessage = async (
   }
 };
 
-// Define your fonts
-var fonts = {
-  Roboto: {
-    normal: "node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf",
-    bold: "node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf",
-    italic: "node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf",
-    bolditalics:
-      "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
-  },
-};
-
-// Create a new printer with the fonts
-var printer = new pdfMakePrinter(fonts);
 
 // Define your dataToPdfRows function
 function dataToPdfRows(data) {
@@ -943,6 +939,7 @@ module.exports = (pool, io) => {
           remarks,
           status,
           driver_id,
+          project_id,
         } = req.body;
 
         const updateAndSendNotification = async () => {
@@ -967,8 +964,7 @@ module.exports = (pool, io) => {
                     if (err) res.status(500).json({ error: err.message });
 
                     // Send an email to the marketer
-                    const getEmailQuery =
-                      "SELECT email FROM users WHERE user_id = ?";
+                    const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
                     pool.query(
                       getEmailQuery,
                       [userId],
@@ -986,8 +982,7 @@ module.exports = (pool, io) => {
                     );
 
                     // Send an email to the driver
-                    const getDriverEmailQuery =
-                      "SELECT email FROM users WHERE user_id = ?";
+                    const getDriverEmailQuery = "SELECT email FROM users WHERE user_id = ?";
                     pool.query(
                       getDriverEmailQuery,
                       [driver_id],
@@ -1020,7 +1015,6 @@ module.exports = (pool, io) => {
                     LEFT JOIN users ON site_visits.marketer_id = users.user_id
                     WHERE site_visit_clients.site_visit_id = ?
                     `;
-
                     pool.query(
                       getWhatsAppMessageSiteVisitDetailsQuery,
                       [id],
@@ -1080,11 +1074,7 @@ module.exports = (pool, io) => {
 
         if (vehicle_id) {
           // Check if the vehicle is available and has enough seats
-          const checkVehicleQuery = `SELECT 
-            number_of_seats, 
-            passengers_assigned 
-          FROM vehicles 
-          WHERE id = ? AND status = 'available'`;
+          const checkVehicleQuery = `SELECT number_of_seats, passengers_assigned FROM vehicles WHERE id = ? AND status = 'available'`;
           pool.query(checkVehicleQuery, [vehicle_id], (err, vehicleResults) => {
             if (err) throw err;
             if (vehicleResults.length > 0) {
