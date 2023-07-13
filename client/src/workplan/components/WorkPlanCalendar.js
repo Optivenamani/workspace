@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -9,6 +9,25 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 
 const WorkPlanCalendar = ({ tasks }) => {
   // const navigate = useNavigate();
+
+  const calendarRef = useRef(null);
+
+  useEffect(() => {
+    const calendarApi = calendarRef.current.getApi();
+
+    calendarApi.setOption("eventDidMount", function (info) {
+      if (info.event.extendedProps.status === "complete") {
+        // Change background color of row
+        info.el.style.backgroundColor = "red";
+
+        // Change color of dot marker
+        const dotEl = info.el.getElementsByClassName("fc-event-dot")[0];
+        if (dotEl) {
+          dotEl.style.backgroundColor = "white";
+        }
+      }
+    });
+  }, []);
 
   const handleDateClick = (arg) => {
     const date = arg.dateStr;
@@ -39,9 +58,9 @@ const WorkPlanCalendar = ({ tasks }) => {
         headerToolbar={{
           left: "prev,next today",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
+          right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
         }}
-        initialView="dayGridMonth"
+        initialView="listWeek"
         events={eventSources}
         dateClick={handleDateClick}
         eventClick={handleEventClick}
@@ -51,6 +70,7 @@ const WorkPlanCalendar = ({ tasks }) => {
         selectable
         selectMirror
         dayMaxEvents={3} // the number indicates the number of max events displayed before showing "+ y more.."
+        ref={calendarRef}
         // eventAdd={function () {}}
         // eventChange={function () {}}
         // eventRemove={function () {}}
