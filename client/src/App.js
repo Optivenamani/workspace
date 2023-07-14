@@ -11,6 +11,7 @@ import {
 import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
 import {
+  AddTasks,
   AllClientsContacts,
   AllSiteVisits,
   AppMenu,
@@ -61,6 +62,7 @@ import {
   ViewWorkPlans,
   VisitorsManagementHome,
   VisitorsReports,
+  Workplans,
   WorkPlanHome,
 } from "./utils/index";
 
@@ -252,6 +254,8 @@ const App = () => {
             <Route path="/workplan-home" element={<WorkPlanHome />} />
             <Route path="/create-workplan" element={<CreateWorkPlan />} />
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
+            <Route path="/add-tasks/:id" element={<AddTasks />} />
+            <Route path="/workplans" element={<Workplans />} />
           </Route>
         </Routes>
       </Router>

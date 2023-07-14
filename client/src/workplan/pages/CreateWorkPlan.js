@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const CreateWorkPlan = () => {
   const [title, setTitle] = useState("");
@@ -10,6 +11,8 @@ const CreateWorkPlan = () => {
 
   const token = useSelector((state) => state.user.token);
   const userId = useSelector((state) => state.user.user.user_id);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,6 +38,7 @@ const CreateWorkPlan = () => {
           draggable: true,
           progress: undefined,
         });
+        navigate("/workplans");
       })
       .catch((error) => {
         console.error(error);

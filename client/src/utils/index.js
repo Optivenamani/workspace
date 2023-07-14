@@ -1,3 +1,4 @@
+export { default as AddTasks } from "../workplan/pages/AddTasks";
 export { default as AllClientsContacts } from "../logistics/pages/clients/AllClientsContacts";
 export { default as AllSiteVisits } from "../logistics/pages/site-visit-requests/AllSiteVisits";
 export { default as AppMenu } from "../common/pages/AppMenu";
@@ -49,3 +50,4 @@ export { default as VisitorsManagementHome } from "../visitors-management/pages/
 export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports";
 export { default as ViewWorkPlans } from "../workplan/pages/ViewWorkPlans";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
+export { default as Workplans } from "../workplan/pages/Workplans";

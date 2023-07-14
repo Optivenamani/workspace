@@ -31,25 +31,63 @@ module.exports = (pool) => {
     });
   });
 
-  // CREATE a new task
-  router.post("/", authenticateJWT, (req, res) => {
-    const { workplan_id, title, description, time, date, expected_output } =
-      req.body;
-    const query =
-      "INSERT INTO tasks (workplan_id, title, description, time, date, expected_output) VALUES (?, ?, ?, ?, ?, ?)";
-    pool.query(
-      query,
-      [workplan_id, title, description, time, date, expected_output],
-      (err) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ message: "Server Error" });
-        } else {
-          res.json({ message: "Task created successfully" });
-        }
-      }
-    );
-  });
+router.post("/", authenticateJWT, async (req, res) => {
+  const tasks = req.body;
+
+  try {
+    const insertPromises = tasks.map((task) => {
+      const {
+        workplan_id,
+        title,
+        description,
+        time,
+        date,
+        expected_output,
+        status,
+      } = task; // Use task[0] to extract the properties
+
+      return new Promise((resolve, reject) => {
+        pool.query(
+          "INSERT INTO tasks (workplan_id, title, description, time, date, expected_output, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [
+            workplan_id,
+            title,
+            description,
+            time,
+            date,
+            expected_output,
+            status,
+          ],
+          (err, result) => {
+            if (err) {
+              console.error(err);
+              reject(err);
+            } else {
+              resolve();
+            }
+          }
+        );
+      });
+    });
+
+    Promise.all(insertPromises)
+      .then(() => {
+        res.status(201).json({ message: "Tasks created successfully." });
+      })
+      .catch((error) => {
+        console.error("Error creating tasks:", error);
+        res
+          .status(500)
+          .json({ message: "An error occurred while creating tasks." });
+      });
+  } catch (error) {
+    console.error("Error creating tasks:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while creating tasks." });
+  }
+});
+
 
   // UPDATE an existing task
   router.patch("/:id", authenticateJWT, (req, res) => {
@@ -61,6 +99,7 @@ module.exports = (pool) => {
       time,
       date,
       expected_output,
+      status,
       actual_output,
       remarks,
     } = req.body;
@@ -75,6 +114,7 @@ module.exports = (pool) => {
         time,
         date,
         expected_output,
+        status,
         actual_output,
         remarks,
         id,
