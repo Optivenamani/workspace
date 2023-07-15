@@ -47,5 +47,5 @@ export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicle
 export { default as ViewVisitors } from "../visitors-management/pages/visitors/ViewVisitors";
 export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
 export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports";
-export { default as ViewWorkPlans } from "../workplan/pages/ViewWorkPlans";
+export { default as ViewActivities } from "../workplan/pages/ViewActivities";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";

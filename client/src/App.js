@@ -58,7 +58,7 @@ import {
   ViewSpecialAssignments,
   ViewVehicles,
   ViewVisitors,
-  ViewWorkPlans,
+  ViewActivities,
   VisitorsManagementHome,
   VisitorsReports,
   WorkPlanHome,
@@ -251,7 +251,7 @@ const App = () => {
             {/* Workplan */}
             <Route path="/workplan-home" element={<WorkPlanHome />} />
             <Route path="/create-workplan" element={<CreateWorkPlan />} />
-            <Route path="/view-workplans" element={<ViewWorkPlans />} />
+            <Route path="/view-activities" element={<ViewActivities />} />
           </Route>
         </Routes>
       </Router>
