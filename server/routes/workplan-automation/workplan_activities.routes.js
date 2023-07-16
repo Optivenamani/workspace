@@ -33,43 +33,48 @@ module.exports = (pool) => {
 
   // CREATE a new workplan activity
   router.post("/", authenticateJWT, (req, res) => {
-    const {
-      workplan_id,
-      date,
-      time,
-      title,
-      expected_output,
-      target,
-      measurable_achievement,
-      variance,
-      comments,
-      remarks,
-    } = req.body;
+    const activities = req.body;
     const query =
-      "INSERT INTO workplan_activities (workplan_id, date, time, title, expected_output, target, measurable_achievement, variance, comments, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    pool.query(
-      query,
-      [
-        workplan_id,
-        date,
-        time,
-        title,
-        expected_output,
-        target,
-        measurable_achievement,
-        variance,
-        comments,
-        remarks,
-      ],
-      (err) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ message: "Server Error" });
-        } else {
-          res.json({ message: "Workplan activity created successfully" });
+      "INSERT INTO workplan_activities (workplan_id, date, time, title, expected_output, target) VALUES (?, ?, ?, ?, ?, ?)";
+
+    // Array to store the results of each INSERT query
+    const results = [];
+
+    // Iterate over the activities and execute the INSERT query for each activity
+    activities.forEach((activity) => {
+      const { workplan_id, date, time, title, expected_output, target } =
+        activity;
+
+      pool.query(
+        query,
+        [workplan_id, date, time, title, expected_output, target],
+        (err, result) => {
+          if (err) {
+            console.error(err);
+            results.push({
+              error: true,
+              message: "Error creating workplan activity",
+            });
+          } else {
+            results.push({
+              error: false,
+              message: "Workplan activity created successfully",
+            });
+          }
+
+          // Check if all queries have completed
+          if (results.length === activities.length) {
+            // Check if any errors occurred during the queries
+            const hasErrors = results.some((result) => result.error);
+            if (hasErrors) {
+              res.status(500).json({ message: "Server Error" });
+            } else {
+              res.json({ message: "Workplan activities created successfully" });
+            }
+          }
         }
-      }
-    );
+      );
+    });
   });
 
   // UPDATE an existing workplan activity

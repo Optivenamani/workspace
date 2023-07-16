@@ -48,14 +48,6 @@ const Sidebar = ({ children }) => {
                 <>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/create-activity"
-                  >
-                    Create Activity
-                  </Link>
-                </>
-                <>
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-activities"
                   >
                     View Activities

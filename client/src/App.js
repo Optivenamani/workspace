@@ -62,6 +62,8 @@ import {
   VisitorsManagementHome,
   VisitorsReports,
   WorkPlanHome,
+  CreateActivity,
+  ViewWorkPlans,
 } from "./utils/index";
 
 const App = () => {
@@ -251,7 +253,9 @@ const App = () => {
             {/* Workplan */}
             <Route path="/workplan-home" element={<WorkPlanHome />} />
             <Route path="/create-workplan" element={<CreateWorkPlan />} />
+            <Route path="/view-workplans/:id" element={<CreateActivity />} />
             <Route path="/view-activities" element={<ViewActivities />} />
+            <Route path="/view-workplans" element={<ViewWorkPlans />} />
           </Route>
         </Routes>
       </Router>

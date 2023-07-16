@@ -10,6 +10,7 @@ export { default as AssignedVehicleRequests } from "../logistics/pages/vehicles/
 export { default as ClientsFeedback } from "../logistics/pages/clients/ClientsFeedback";
 export { default as CreateBooking } from "../logistics/pages/site-visit-requests/CreateBooking";
 export { default as CreateSpecialAssignment } from "../logistics/pages/special-assignments/CreateSpecialAssignment";
+export { default as CreateActivity } from "../workplan/pages/CreateActivity";
 export { default as CreateVehicle } from "../logistics/pages/vehicles/CreateVehicle";
 export { default as CreateWorkPlan } from "../workplan/pages/CreateWorkPlan";
 export { default as Dashboard } from "../logistics/pages/Dashboard";
@@ -48,4 +49,5 @@ export { default as ViewVisitors } from "../visitors-management/pages/visitors/V
 export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
 export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports";
 export { default as ViewActivities } from "../workplan/pages/ViewActivities";
+export { default as ViewWorkPlans } from "../workplan/pages/ViewWorkPlans";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
