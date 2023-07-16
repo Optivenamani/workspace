@@ -99,100 +99,129 @@ const CreateActivity = () => {
 
   return (
     <Sidebar>
-      <div>
-        <div>
-          <ul>
-            <li>
-              <Link to="/workplan-home">Home</Link>
-            </li>
-            <li>
-              <Link to="/view-workplans">View Workplans</Link>
-            </li>
-            <li>Create Task</li>
-          </ul>
+      <div className="mb-10">
+        <div className="mx-10">
+          <div className="text-sm breadcrumbs">
+            <ul>
+              <li>
+                <Link to="/workplan-home">Home</Link>
+              </li>
+              <li>
+                <Link to="/view-workplans">View Workplans</Link>
+              </li>
+              <li>Add Activities</li>
+            </ul>
+          </div>
         </div>
         <form onSubmit={handleSubmit}>
-          {activities.map((activity, index) => (
-            <div key={index}>
-              <div>
-                <label>Title</label>
-                <select
-                  name="title"
-                  value={activity.title}
-                  onChange={(e) =>
-                    handleActivityChange(index, "title", e.target.value)
-                  }
-                  required
-                >
-                  <option value="">Select Activity</option>
-                  <option key={1} value="test 1">
-                    Test
-                  </option>
-                </select>
+          <div className="mx-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {activities.map((activity, index) => (
+              <div key={index} className="card bg-base-100 shadow-xl p-4">
                 <div>
-                  <div>
-                    <label>Date</label>
-                    <input
-                      type="date"
-                      name="date"
-                      value={activity.date}
-                      onChange={(e) =>
-                        handleActivityChange(index, "date", e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label>Time</label>
-                    <input
-                      type="time"
-                      name="time"
-                      value={activity.time}
-                      onChange={(e) =>
-                        handleActivityChange(index, "time", e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <label>Expected Output</label>
-                <textarea
-                  name="expected_output"
-                  value={activity.expected_output}
-                  onChange={(e) =>
-                    handleActivityChange(
-                      index,
-                      "expected_output",
-                      e.target.value
-                    )
-                  }
-                  required
-                />
-                <label>Target</label>
-                <textarea
-                  type="text"
-                  name="target"
-                  value={activity.target}
-                  onChange={(e) =>
-                    handleActivityChange(index, "target", e.target.value)
-                  }
-                  required
-                />
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeActivityField(index)}
+                  <label className="label font-bold text-xs">Title</label>
+                  <select
+                    name="title"
+                    value={activity.title}
+                    onChange={(e) =>
+                      handleActivityChange(index, "title", e.target.value)
+                    }
+                    required
+                    className="select select-bordered w-full"
                   >
-                    Remove
-                  </button>
-                )}
+                    <option value="">Select Activity</option>
+                    <option value="cold calls">Cold Calls</option>
+                    <option value="follow up calls">Follow Up Calls</option>
+                    <option value="social media engagements">
+                      Social Media Engagements
+                    </option>
+                    <option value="emails">Send Emails</option>
+                    <option value="meetings">Meetings</option>
+                    <option value="site visits">Site Visits</option>
+                    <option value="generate leads">Generate Leads</option>
+                    <option value="bookings">Bookings</option>
+                    <option value="sales">Sales</option>
+                  </select>
+
+                  <div>
+                    <div>
+                      <label className="label font-bold text-xs">Date</label>
+                      <input
+                        className="input input-bordered w-full"
+                        type="date"
+                        name="date"
+                        value={activity.date}
+                        onChange={(e) =>
+                          handleActivityChange(index, "date", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="label font-bold text-xs">Time</label>
+                      <input
+                        className="input input-bordered w-full"
+                        type="time"
+                        name="time"
+                        value={activity.time}
+                        onChange={(e) =>
+                          handleActivityChange(index, "time", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
+                  </div>
+                  <label className="label font-bold text-xs">
+                    Expected Output
+                  </label>
+                  <textarea
+                    className="textarea textarea-bordered w-full"
+                    name="expected_output"
+                    value={activity.expected_output}
+                    onChange={(e) =>
+                      handleActivityChange(
+                        index,
+                        "expected_output",
+                        e.target.value
+                      )
+                    }
+                    required
+                  />
+                  <label className="label font-bold text-xs">Target</label>
+                  <textarea
+                    className="textarea textarea-bordered w-full"
+                    type="text"
+                    name="target"
+                    value={activity.target}
+                    onChange={(e) =>
+                      handleActivityChange(index, "target", e.target.value)
+                    }
+                    required
+                  />
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => removeActivityField(index)}
+                      className="btn btn-error btn-circle text-white"
+                    >
+                      —
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-          <button type="submit">{loading ? "Creating" : "Create"}</button>
-          <button type="button" onClick={addActivityField}>
-            Add Activity
-          </button>
+            ))}
+          </div>
+          <div className="flex justify-center mt-4">
+            <button
+              type="button"
+              onClick={addActivityField}
+              className="btn btn-primary text-white"
+            >
+              Add Another Activity
+            </button>
+            <button type="submit" className="btn btn-outline ml-4">
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+          </div>
         </form>
       </div>
     </Sidebar>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import formatDate from "../../utils/formatDate";
 
 const ViewWorkPlans = () => {
   const [workplans, setWorkplans] = useState([]);
@@ -45,13 +46,38 @@ const ViewWorkPlans = () => {
 
   return (
     <Sidebar>
-      <div>ViewWorkPlans</div>
-      <div>
-        {workplans.map((workplan) => (
-          <div id={workplan.id} onClick={() => handleClick(workplan.id)}>
-            {workplan.start_date}
+      <div className="mb-10">
+        <div className="mx-10">
+          <div className="text-sm breadcrumbs">
+            <ul>
+              <li>
+                <Link to="/workplan-home">Home</Link>
+              </li>
+              <li>View Workplans</li>
+            </ul>
           </div>
-        ))}
+        </div>
+        <div className="mx-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {workplans.map((workplan) => (
+            <div
+              id={workplan.id}
+              onClick={() => handleClick(workplan.id)}
+              className="card bg-base-100 shadow-xl p-4 cursor-pointer"
+            >
+              <div className="card-body">
+                <label className="label font-bold text-xs">Start Date</label>
+                <span className="font-bold text-primary">
+                  {formatDate(workplan.start_date)}
+                </span>
+                <label className="label font-bold text-xs">End Date</label>
+                <span className="font-bold text-error">
+                  {formatDate(workplan.end_date)}
+                </span>
+                <button className="btn btn-primary">Open</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </Sidebar>
   );

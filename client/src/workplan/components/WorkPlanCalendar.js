@@ -9,7 +9,7 @@ import { formatDate } from "@fullcalendar/core";
 import { formatIsoTimeString } from "@fullcalendar/core/internal";
 
 const WorkPlanCalendar = ({ activities, editactivity }) => {
-  const [aO, setAO] = useState(null);
+  const [measurableAchievement, setMeasurableAchievement] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -61,6 +61,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
       target: activity.target,
       variance: activity.variance,
       comments: activity.comments,
+      workplanId: activity.workplan_id,
     },
   }));
 
@@ -96,7 +97,10 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
         {selectedEvent && (
           <form
             onSubmit={() =>
-              handleEditactivity(selectedEvent.extendedProps.id, aO)
+              handleEditactivity(
+                selectedEvent.extendedProps.id,
+                measurableAchievement
+              )
             }
           >
             <button
@@ -139,7 +143,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                 <textarea
                   className="textarea textarea-bordered h-32 w-full"
                   required
-                  onChange={(e) => setAO(e.target.value)}
+                  onChange={(e) => setMeasurableAchievement(e.target.value)}
                 />
               </div>
             )}

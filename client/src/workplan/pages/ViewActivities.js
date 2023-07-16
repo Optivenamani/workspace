@@ -4,6 +4,13 @@ import Sidebar from "../components/Sidebar";
 import WorkPlanCalendar from "../components/WorkPlanCalendar";
 import { useSelector } from "react-redux";
 
+const formatTime = (timeStr) => {
+  if (!timeStr) return "";
+  const [hours, minutes] = timeStr.split(":");
+  const formattedHours = hours % 12 || 12;
+  return `${formattedHours}:${minutes}:00`;
+};
+
 const formatDate = (dateString) => {
   if (!dateString) return null;
   const date = new Date(dateString);
@@ -39,6 +46,7 @@ const ViewActivities = () => {
         // Format activities and update state
         const formattedActivities = data.map((activity) => ({
           id: activity.id,
+          workplan_id: activity.workplan_id,
           title: activity.title,
           time: `${formatDate(activity.date)}T${activity.time}`,
           date: activity.date,
@@ -61,9 +69,14 @@ const ViewActivities = () => {
   const date = new Date().getDate();
   console.log(date);
 
-  const handleEditactivity = async (activityId, actualOutput) => {
+  const handleEditactivity = async (activityId, measurableAchievement) => {
     try {
-      // Update the activity with the new actual output
+      // Find the activity based on the activityId
+      const activity = activities.find(
+        (activity) => activity.id === activityId
+      );
+
+      // Update the activity with the new measurable achievement
       const response = await fetch(
         `http://localhost:8080/api/workplan-activities/${activityId}`,
         {
@@ -73,24 +86,26 @@ const ViewActivities = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            actual_output: actualOutput,
-            // end_date: currentDate,
+            ...activity,
+            measurable_achievement: measurableAchievement,
+            date: formatDate(activity.date),
+            time: formatTime(activity.time),
           }),
         }
       );
 
       if (response.ok) {
         // Activity updated successfully, update the activities state in the parent component
-        const updatedactivities = activities.map((activity) => {
+        const updatedActivities = activities.map((activity) => {
           if (activity.id === activityId) {
             return {
               ...activity,
-              actual_output: actualOutput,
+              measurable_achievement: measurableAchievement,
             };
           }
           return activity;
         });
-        setActivities(updatedactivities);
+        setActivities(updatedActivities);
       } else {
         // Handle error response
         alert("Failed to update activity");
