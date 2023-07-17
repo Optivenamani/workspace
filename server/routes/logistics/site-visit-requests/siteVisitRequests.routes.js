@@ -7,9 +7,6 @@ const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
-// Create a new printer with the fonts
-var printer = new pdfMakePrinter(fonts);
-
 // Define your fonts
 var fonts = {
   Roboto: {
@@ -20,6 +17,9 @@ var fonts = {
       "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
   },
 };
+
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
 
 const WATI_TOKEN = process.env.WATI_TOKEN;
 const WATI_BASE_URL = process.env.WATI_BASE_URL;
@@ -47,7 +47,12 @@ async function sendEmail(userEmail, subject, text) {
 }
 
 // WATI Helper function to send the WhatsApp msg
-const sendWhatsAppMessage = async ( phoneNumber, templateName, parameters, broadcastName ) => {
+const sendWhatsAppMessage = async (
+  phoneNumber,
+  templateName,
+  parameters,
+  broadcastName
+) => {
   const config = {
     headers: {
       Authorization: `Bearer ${WATI_TOKEN}`,
@@ -70,7 +75,6 @@ const sendWhatsAppMessage = async ( phoneNumber, templateName, parameters, broad
     throw error;
   }
 };
-
 
 // Define your dataToPdfRows function
 function dataToPdfRows(data) {
@@ -964,7 +968,8 @@ module.exports = (pool, io) => {
                     if (err) res.status(500).json({ error: err.message });
 
                     // Send an email to the marketer
-                    const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                    const getEmailQuery =
+                      "SELECT email FROM users WHERE user_id = ?";
                     pool.query(
                       getEmailQuery,
                       [userId],
@@ -982,7 +987,8 @@ module.exports = (pool, io) => {
                     );
 
                     // Send an email to the driver
-                    const getDriverEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                    const getDriverEmailQuery =
+                      "SELECT email FROM users WHERE user_id = ?";
                     pool.query(
                       getDriverEmailQuery,
                       [driver_id],
