@@ -69,7 +69,11 @@ const ViewActivities = () => {
   const date = new Date().getDate();
   console.log(date);
 
-  const handleEditactivity = async (activityId, measurableAchievement) => {
+  const handleEditactivity = async (
+    activityId,
+    measurableAchievement,
+    variance
+  ) => {
     try {
       // Find the activity based on the activityId
       const activity = activities.find(
@@ -88,6 +92,7 @@ const ViewActivities = () => {
           body: JSON.stringify({
             ...activity,
             measurable_achievement: measurableAchievement,
+            variance: variance,
             date: formatDate(activity.date),
             time: formatTime(activity.time),
           }),
@@ -101,6 +106,7 @@ const ViewActivities = () => {
             return {
               ...activity,
               measurable_achievement: measurableAchievement,
+              variance: variance,
             };
           }
           return activity;

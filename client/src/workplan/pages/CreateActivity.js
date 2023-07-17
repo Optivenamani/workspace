@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateActivity = () => {
   const { id } = useParams();
@@ -87,13 +89,23 @@ const CreateActivity = () => {
       navigate("/view-activities");
 
       // Display success notification
-      alert("Activities added successfully!");
+      toast.success("Activities added successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      alert(error);
-      setLoading(false);
-
       // Display error notification
-      alert("An error occurred. Please try again.");
+      toast.error(error, {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setLoading(false);
     }
   };
 
@@ -129,17 +141,18 @@ const CreateActivity = () => {
                     className="select select-bordered w-full"
                   >
                     <option value="">Select Activity</option>
-                    <option value="cold calls">Cold Calls</option>
-                    <option value="follow up calls">Follow Up Calls</option>
-                    <option value="social media engagements">
+                    <option value="Activation">Activation</option>
+                    <option value="Make Cold Calls">Make Cold Calls</option>
+                    <option value="Make Follow Up Calls">
+                      Make Follow Up Calls
+                    </option>
+                    <option value="Generate Leads">Generate Leads</option>
+                    <option value="Social Media Engagements">
                       Social Media Engagements
                     </option>
-                    <option value="emails">Send Emails</option>
-                    <option value="meetings">Meetings</option>
-                    <option value="site visits">Site Visits</option>
-                    <option value="generate leads">Generate Leads</option>
-                    <option value="bookings">Bookings</option>
-                    <option value="sales">Sales</option>
+                    <option value="Send Emails">Send Emails</option>
+                    <option value="Meeting">Meetings</option>
+                    <option value="Site Visit">Site Visits</option>
                   </select>
 
                   <div>

@@ -62,7 +62,7 @@ const ViewWorkPlans = () => {
             <div
               id={workplan.id}
               onClick={() => handleClick(workplan.id)}
-              className="card bg-base-100 shadow-xl p-4 cursor-pointer"
+              className="card shadow-xl cursor-pointer"
             >
               <div className="card-body">
                 <label className="label font-bold text-xs">Start Date</label>
@@ -73,7 +73,7 @@ const ViewWorkPlans = () => {
                 <span className="font-bold text-error">
                   {formatDate(workplan.end_date)}
                 </span>
-                <button className="btn btn-primary">Open</button>
+                <button className="btn">Open</button>
               </div>
             </div>
           ))}

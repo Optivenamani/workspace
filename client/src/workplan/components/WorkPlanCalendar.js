@@ -10,6 +10,8 @@ import { formatIsoTimeString } from "@fullcalendar/core/internal";
 
 const WorkPlanCalendar = ({ activities, editactivity }) => {
   const [measurableAchievement, setMeasurableAchievement] = useState(null);
+  const [variance, setVariance] = useState(null);
+
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -45,8 +47,12 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
   };
 
   // Modify the editactivity function to use the editactivity prop
-  const handleEditactivity = async (activityId, measurableAchievement) => {
-    await editactivity(activityId, measurableAchievement);
+  const handleEditactivity = async (
+    activityId,
+    measurableAchievement,
+    variance
+  ) => {
+    await editactivity(activityId, measurableAchievement, variance);
     setIsModalOpen(true);
   };
 
@@ -99,7 +105,8 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
             onSubmit={() =>
               handleEditactivity(
                 selectedEvent.extendedProps.id,
-                measurableAchievement
+                measurableAchievement,
+                variance
               )
             }
           >
@@ -139,7 +146,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               </div>
             ) : (
               <div>
-                <h1 className="label font-bold">Actual Output</h1>
+                <h1 className="label font-bold">Measurable Achievement</h1>
                 <textarea
                   className="textarea textarea-bordered h-32 w-full"
                   required
@@ -147,7 +154,25 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                 />
               </div>
             )}
-            {selectedEvent.extendedProps.measurableAchievement === null && (
+            {selectedEvent.extendedProps.variance !== null ? (
+              <div>
+                <h1 className="label font-bold">Variance</h1>
+                <p className="text-sm italic ml-1">
+                  {selectedEvent.extendedProps.variance}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <h1 className="label font-bold">Variance</h1>
+                <textarea
+                  className="textarea textarea-bordered h-32 w-full"
+                  required
+                  onChange={(e) => setVariance(e.target.value)}
+                />
+              </div>
+            )}
+            {(selectedEvent.extendedProps.measurableAchievement === null ||
+              selectedEvent.extendedProps.variance === null) && (
               <button className="btn btn-outline w-full mt-1" type="submit">
                 Mark as Done
               </button>
