@@ -6,10 +6,6 @@ const nodemailer = require("nodemailer");
 const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
-
-// Create a new printer with the fonts
-var printer = new pdfMakePrinter(fonts);
-
 // Define your fonts
 var fonts = {
   Roboto: {
@@ -20,6 +16,10 @@ var fonts = {
       "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
   },
 };
+
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
+
 
 const WATI_TOKEN = process.env.WATI_TOKEN;
 const WATI_BASE_URL = process.env.WATI_BASE_URL;
@@ -83,7 +83,8 @@ function dataToPdfRows(data) {
       { text: index + 1 ?? "", style: "tableCell" },
       { text: formattedDate ?? "", style: "tableCell" },
       { text: item.marketer_name ?? "", style: "tableCell" },
-      { text: item.num_clients ?? "", style: "tableCell" },
+      { text: item.client_name ?? "", style: "tableCell" },
+      { text: item.client_phone ?? "", style: "tableCell" },
       { text: item.site_name ?? "", style: "tableCell" },
       { text: item.driver_name ?? "", style: "tableCell" },
       { text: item.pickup_time ?? "", style: "tableCell" },
@@ -115,7 +116,7 @@ function dataToPdfRows2(results) {
 
 module.exports = (pool, io) => {
   // Get single site visit with driver, vehicle info, and all associated clients
-  router.get("/:id", authenticateJWT, async (req, res) => {
+  router.get("/:id",  async (req, res) => {
     try {
       const siteVisitQuery = `
         SELECT 
@@ -162,7 +163,7 @@ module.exports = (pool, io) => {
     }
   });
   // Get all site visits with driver and vehicle info
-  router.get("/", authenticateJWT, async (req, res) => {
+  router.get("/",  async (req, res) => {
     try {
       const query = `
       SELECT 
@@ -195,7 +196,7 @@ module.exports = (pool, io) => {
     }
   });
   // Get all pending site visit requests
-  router.get("/pending-site-visits/all", authenticateJWT, async (req, res) => {
+  router.get("/pending-site-visits/all",  async (req, res) => {
     try {
       const query = `
         SELECT 
@@ -214,7 +215,7 @@ module.exports = (pool, io) => {
   // Download the approved site visits info in a pdf
   router.get(
     "/download-pdf/approved-site-visits",
-    authenticateJWT,
+    
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -223,7 +224,8 @@ module.exports = (pool, io) => {
           SELECT 
             site_visits.*,
             Projects.name AS site_name,
-            COUNT(site_visit_clients.id) as num_clients,
+            site_visit_clients.name as client_name,
+            site_visit_clients.phone_number as client_phone,
             users.fullnames as marketer_name,
             drivers.fullnames as driver_name,
             vehicles.vehicle_registration as vehicle_name
@@ -240,7 +242,7 @@ module.exports = (pool, io) => {
             ON site_visits.vehicle_id = vehicles.id
           WHERE site_visits.status = 'approved'
             AND site_visits.pickup_date BETWEEN ? AND ?
-          GROUP BY site_visits.id
+          
           ORDER BY site_visits.created_at DESC;
         `;
         pool.query(query, [startDate, endDate], (err, results) => {
@@ -263,6 +265,7 @@ module.exports = (pool, io) => {
                     "auto",
                     "auto",
                     "auto",
+                    "auto"
                   ],
                   body: [
                     [
@@ -282,7 +285,12 @@ module.exports = (pool, io) => {
                         style: "tableHeader",
                       },
                       {
-                        text: "Number of Clients",
+                        text: "Client Name",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Client Contact",
                         fillColor: "#BBD4E1",
                         style: "tableHeader",
                       },
@@ -350,6 +358,7 @@ module.exports = (pool, io) => {
           res.setHeader("Content-Type", "application/pdf");
           pdfDoc.pipe(res);
           pdfDoc.end();
+          console.log("results", results)
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -359,7 +368,7 @@ module.exports = (pool, io) => {
   // Download the site visits summary into pdf
   router.get(
     "/download-pdf/site-visit-summary",
-    authenticateJWT,
+    
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -475,7 +484,7 @@ module.exports = (pool, io) => {
   // Download most booked sites within a certain date range
   router.get(
     "/download-pdf/most-booked-sites",
-    authenticateJWT,
+    
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -566,7 +575,7 @@ module.exports = (pool, io) => {
   // Downloadable PDF for marketer feedback
   router.get(
     "/download-pdf/marketer-feedback",
-    authenticateJWT,
+    
     async (req, res) => {
       try {
         const query = `
@@ -708,7 +717,7 @@ module.exports = (pool, io) => {
     }
   );
   // Get info on the user, to see if he's booked any active site-visits
-  router.get("/active/active", authenticateJWT, async (req, res) => {
+  router.get("/active/active",  async (req, res) => {
     try {
       const userId = req.user.id;
       const query = `
@@ -728,7 +737,7 @@ module.exports = (pool, io) => {
     }
   });
   // Get a single pending site visit request
-  router.get("/pending-site-visits/:id", authenticateJWT, async (req, res) => {
+  router.get("/pending-site-visits/:id",  async (req, res) => {
     const id = req.params.id;
     const query = `
       SELECT 
@@ -760,7 +769,7 @@ module.exports = (pool, io) => {
     });
   });
   // Cancel a site visit request
-  router.patch("/cancel-site-visit/:id", authenticateJWT, async (req, res) => {
+  router.patch("/cancel-site-visit/:id",  async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -848,7 +857,7 @@ module.exports = (pool, io) => {
     }
   });
   // Reject site visit request (with remarks)
-  router.patch("/reject-site-visit/:id", authenticateJWT, async (req, res) => {
+  router.patch("/reject-site-visit/:id",  async (req, res) => {
     try {
       const id = req.params.id;
       const { remarks } = req.body;
@@ -927,7 +936,7 @@ module.exports = (pool, io) => {
   // View, edit and approve the site visit request
   router.patch(
     "/pending-site-visits/:id",
-    authenticateJWT,
+    
     async (req, res) => {
       try {
         const { id } = req.params;
@@ -1226,7 +1235,7 @@ module.exports = (pool, io) => {
     }
   );
   // Submit a survey for a completed site visit
-  router.post("/submit-survey/:id", authenticateJWT, async (req, res) => {
+  router.post("/submit-survey/:id",  async (req, res) => {
     try {
       const siteVisitId = req.params.id;
       const userId = req.user.id;
