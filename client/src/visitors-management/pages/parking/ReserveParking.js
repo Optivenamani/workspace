@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import jsPDF from "jspdf";
+import logo from "../../../assets/optiven-logo-full.png";
 
 const ReserveParking = () => {
   const [name, setName] = useState("");
@@ -80,36 +81,62 @@ const ReserveParking = () => {
 
   const generateDownloadableForm = (parkingData) => {
     const { name, vehicle_registration, arrival_time } = parkingData;
-
+  
     // Create a new PDF document
     const doc = new jsPDF();
-
-    // Define the content of the form
-    const formContent = [
-      { label: "Name:", value: name },
-      { label: "Vehicle Registration:", value: vehicle_registration },
-      { label: "Estimated Arrival Time:", value: arrival_time },
-    ];
-
+  
     // Set the document properties
     doc.setProperties({
       title: "Parking Reservation Form",
     });
-
-    // Set the font style for the form content
+  
+    
+    const logoWidth = 100; 
+    const logoHeight = 50; 
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const logoX = (pageWidth - logoWidth) / 2;
+    doc.addImage(logo, "PNG", logoX, 20, logoWidth, logoHeight);
+  
+    // Set the font style for the ticket content
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
-
-    // Add the form content to the PDF document
-    formContent.forEach((field, index) => {
-      const { label, value } = field;
-      doc.text(20, 20 + index * 10, `${label} ${value}`);
-    });
-
+  
+    // Define the content of the form
+    const currentDate = new Date().toLocaleDateString(); // Get the current date
+    const ticketContent = `
+  ${currentDate}
+  
+  TO:
+  PROPERTY MANAGER
+  GIMCO LIMITED
+  BARCLAYS BANK
+  P.O BOX 30120-00100
+  NAIROBI
+  
+  Attn: Kinyua
+  
+  Dear Sir,
+  
+  RE: PARKING
+  
+  We trust that you are well. Kindly reserve this parking.
+  
+  Vehicle Registration: ${vehicle_registration}
+  
+  Thank you.
+  
+  Yours faithfully,
+  
+  Jane Karimi
+  Administration
+  Optiven Limited`;
+  
+    // Add the ticket content below the logo
+    doc.text(20, 90, ticketContent);
+  
     // Save the PDF document as a file
     doc.save("parking_reservation_form.pdf");
   };
-
   return (
     <>
       <Sidebar>
