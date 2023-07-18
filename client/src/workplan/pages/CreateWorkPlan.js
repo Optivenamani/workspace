@@ -3,30 +3,41 @@ import Sidebar from "../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const CreateWorkPlan = () => {
-  const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
   const token = useSelector((state) => state.user.token);
-  const userId = useSelector((state) => state.user.user.user_id);
+  const marketerId = useSelector((state) => state.user.user.user_id);
+
+  const [workplan, setWorkplan] = useState({
+    start_date: "",
+    end_date: "",
+    marketer_id: marketerId,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setWorkplan((prevWorkplan) => ({
+      ...prevWorkplan,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    const data = { title, user_id: userId };
-
-    fetch("http://localhost:8080/api/workplans", {
+    fetch("https://workspace.optiven.co.ke/api/workplans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(workplan),
     })
       .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
+      .then((data) => {
+        console.log(data);
         setLoading(false);
         toast.success("Work plan created successfully!", {
           position: "top-center",
@@ -51,56 +62,45 @@ const CreateWorkPlan = () => {
 
   return (
     <Sidebar>
-      <section className="bg-white">
-        <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-          <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
-            <img
-              src="https://images.unsplash.com/photo-1593062096033-9a26b09da705?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80"
-              alt="interview-banner"
-              className="absolute top-0 left-0 h-full w-full object-cover"
-            />
-          </section>
-          <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-8 xl:col-span-6">
-            <div className="max-w-xl lg:max-w-3xl">
-              <form
-                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                onSubmit={handleSubmit}
-              >
-                <h2 className="text-2xl font-semibold mb-6">
-                  Create Work Plan
-                </h2>
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="title"
-                  >
-                    Title
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="title"
-                    type="text"
-                    placeholder="Enter title"
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <button
-                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-                      loading ? "cursor-not-allowed opacity-50" : ""
-                    }`}
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {loading ? "Creating..." : "Create"}
-                  </button>
-                </div>
-              </form>
+      <form onSubmit={handleSubmit}>
+        <div className="hero min-h-screen">
+          <div className="form-control w-full max-w-xs">
+            <div className="text-sm breadcrumbs">
+              <ul>
+                <li>
+                  <Link to="/workplan-home">Home</Link>
+                </li>
+                <li>Create Workplan</li>
+              </ul>
             </div>
-          </main>
+            <div>
+              <label className="label font-bold text-sm">Start Date:</label>
+              <input
+                type="date"
+                name="start_date"
+                value={workplan.start_date}
+                onChange={handleChange}
+                required
+                className="input input-bordered w-full max-w-xs"
+              />
+            </div>
+            <div>
+              <label className="label font-bold text-sm">End Date:</label>
+              <input
+                type="date"
+                name="end_date"
+                value={workplan.end_date}
+                onChange={handleChange}
+                required
+                className="input input-bordered w-full max-w-xs mb-4"
+              />
+            </div>
+            <button type="submit" className="btn btn-outline">
+              {loading ? "Submitting..." : "Create Workplan"}
+            </button>
+          </div>
         </div>
-      </section>
+      </form>
     </Sidebar>
   );
 };

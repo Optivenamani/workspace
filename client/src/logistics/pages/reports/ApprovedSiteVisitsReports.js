@@ -87,7 +87,7 @@ const ApprovedSiteVisitsReports = () => {
       <div className="hero min-h-screen">
         <div className="form-control w-full max-w-xs">
           <div className="flex flex-col justify-center">
-            <h1 className="font-bold text-lg">APPROVED SITE VISITS REPORTS</h1>
+            <h1 className="font-bold text-lg">DRIVER ITINERARY | APPROVED SITE VISITS REPORTS</h1>
             <label className="label">
               <span className="label-text font-bold">Start Date</span>
             </label>

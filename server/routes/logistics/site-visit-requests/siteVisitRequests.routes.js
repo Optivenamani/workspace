@@ -368,7 +368,6 @@ module.exports = (pool, io) => {
       try {
         const startDate = req.query.startDate;
         const endDate = req.query.endDate;
-        const office = req.query.office;
 
         const query = `
           SELECT 
@@ -380,12 +379,11 @@ module.exports = (pool, io) => {
           FROM site_visits
           JOIN users ON site_visits.marketer_id = users.user_id
           WHERE site_visits.pickup_date BETWEEN ? AND ?
-            AND users.office = ?
           GROUP BY DATE(site_visits.pickup_date)
           ORDER BY DATE(site_visits.pickup_date);
         `;
 
-        pool.query(query, [startDate, endDate, office], (err, results) => {
+        pool.query(query, [startDate, endDate], (err, results) => {
           if (err) throw err;
 
           const docDefinition = {
@@ -393,7 +391,7 @@ module.exports = (pool, io) => {
             pageOrientation: "landscape",
             content: [
               {
-                text: `Site Visit Summary from ${startDate} to ${endDate} for convertors in ${office}`,
+                text: `Site Visit Summary from ${startDate} to ${endDate}`,
                 fontSize: 20,
                 alignment: "center",
                 margin: [0, 0, 0, 20],
@@ -1105,7 +1103,8 @@ module.exports = (pool, io) => {
                         pickup_time = ?, 
                         remarks = ?, 
                         status = ?, 
-                        driver_id = ?
+                        driver_id = ?,
+                        project_id = ?
                       WHERE id = ?
                     `;
 
@@ -1119,6 +1118,7 @@ module.exports = (pool, io) => {
                       remarks,
                       status === "pending" ? "approved" : status,
                       driver_id,
+                      project_id,
                       id,
                     ],
                     async (err, results) => {
@@ -1197,7 +1197,8 @@ module.exports = (pool, io) => {
             pickup_time = ?, 
             remarks = ?, 
             status = ?, 
-            driver_id = ?
+            driver_id = ?,
+            project_id = ?,
           WHERE id = ?
         `;
           pool.query(
@@ -1210,6 +1211,7 @@ module.exports = (pool, io) => {
               remarks,
               status === "pending" ? "approved" : status,
               driver_id,
+              project_id,
               id,
             ],
             async (err, results) => {

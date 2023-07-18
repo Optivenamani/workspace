@@ -129,7 +129,7 @@ const parking = require("../server/routes/visitors-management/parking/parking.ro
 
 // Import workplan automation routes
 const workplan = require("./routes/workplan-automation/workplan.routes");
-const tasks = require("./routes/workplan-automation/tasks.routes");
+const workplanActivities = require("./routes/workplan-automation/workplan_activities.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -163,7 +163,7 @@ app.use("/api/visitors", visitors(visitorManagementPool));
 app.use("/api/special-assignments", specialAssignment(logisticsPool));
 app.use("/api/interviews", interviews(visitorManagementPool));
 app.use("/api/workplans", workplan(workplanAutomationPool));
-app.use("/api/tasks", tasks(workplanAutomationPool));
+app.use("/api/workplan-activities", workplanActivities(workplanAutomationPool));
 app.use("/api/reserve-parking", parking(visitorManagementPool));
 app.use("/api/reserved-parking", parking(visitorManagementPool));
 
