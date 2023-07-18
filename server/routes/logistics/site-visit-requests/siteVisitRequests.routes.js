@@ -87,7 +87,8 @@ function dataToPdfRows(data) {
       { text: index + 1 ?? "", style: "tableCell" },
       { text: formattedDate ?? "", style: "tableCell" },
       { text: item.marketer_name ?? "", style: "tableCell" },
-      { text: item.num_clients ?? "", style: "tableCell" },
+      { text: item.client_name ?? "", style: "tableCell" },
+      { text: item.client_phone ?? "", style: "tableCell" },
       { text: item.site_name ?? "", style: "tableCell" },
       { text: item.driver_name ?? "", style: "tableCell" },
       { text: item.pickup_time ?? "", style: "tableCell" },
@@ -227,7 +228,8 @@ module.exports = (pool, io) => {
           SELECT 
             site_visits.*,
             Projects.name AS site_name,
-            COUNT(site_visit_clients.id) as num_clients,
+            site_visit_clients.name as client_name,
+            site_visit_clients.phone_number as client_phone,
             users.fullnames as marketer_name,
             drivers.fullnames as driver_name,
             vehicles.vehicle_registration as vehicle_name
@@ -244,7 +246,6 @@ module.exports = (pool, io) => {
             ON site_visits.vehicle_id = vehicles.id
           WHERE site_visits.status = 'approved'
             AND site_visits.pickup_date BETWEEN ? AND ?
-          GROUP BY site_visits.id
           ORDER BY site_visits.created_at DESC;
         `;
         pool.query(query, [startDate, endDate], (err, results) => {
@@ -257,6 +258,7 @@ module.exports = (pool, io) => {
                 table: {
                   headerRows: 1,
                   widths: [
+                    "auto",
                     "auto",
                     "auto",
                     "auto",
@@ -286,7 +288,12 @@ module.exports = (pool, io) => {
                         style: "tableHeader",
                       },
                       {
-                        text: "Number of Clients",
+                        text: "Client Name",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Client Contact",
                         fillColor: "#BBD4E1",
                         style: "tableHeader",
                       },
