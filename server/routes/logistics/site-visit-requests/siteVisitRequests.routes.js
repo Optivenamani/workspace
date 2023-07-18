@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
+
 // Define your fonts
 var fonts = {
   Roboto: {
@@ -16,6 +17,9 @@ var fonts = {
       "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
   },
 };
+
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
 
 // Create a new printer with the fonts
 var printer = new pdfMakePrinter(fonts);
@@ -47,7 +51,12 @@ async function sendEmail(userEmail, subject, text) {
 }
 
 // WATI Helper function to send the WhatsApp msg
-const sendWhatsAppMessage = async ( phoneNumber, templateName, parameters, broadcastName ) => {
+const sendWhatsAppMessage = async (
+  phoneNumber,
+  templateName,
+  parameters,
+  broadcastName
+) => {
   const config = {
     headers: {
       Authorization: `Bearer ${WATI_TOKEN}`,
@@ -71,7 +80,6 @@ const sendWhatsAppMessage = async ( phoneNumber, templateName, parameters, broad
   }
 };
 
-
 // Define your dataToPdfRows function
 function dataToPdfRows(data) {
   return data.map((item, index) => {
@@ -83,6 +91,8 @@ function dataToPdfRows(data) {
       { text: index + 1 ?? "", style: "tableCell" },
       { text: formattedDate ?? "", style: "tableCell" },
       { text: item.marketer_name ?? "", style: "tableCell" },
+      { text: item.client_name ?? "", style: "tableCell" },
+      { text: item.client_phone ?? "", style: "tableCell" },
       { text: item.client_name ?? "", style: "tableCell" },
       { text: item.client_phone ?? "", style: "tableCell" },
       { text: item.site_name ?? "", style: "tableCell" },
@@ -116,7 +126,7 @@ function dataToPdfRows2(results) {
 
 module.exports = (pool, io) => {
   // Get single site visit with driver, vehicle info, and all associated clients
-  router.get("/:id",  async (req, res) => {
+  router.get("/:id", async (req, res) => {
     try {
       const siteVisitQuery = `
         SELECT 
@@ -163,7 +173,7 @@ module.exports = (pool, io) => {
     }
   });
   // Get all site visits with driver and vehicle info
-  router.get("/",  async (req, res) => {
+  router.get("/", async (req, res) => {
     try {
       const query = `
       SELECT 
@@ -196,7 +206,7 @@ module.exports = (pool, io) => {
     }
   });
   // Get all pending site visit requests
-  router.get("/pending-site-visits/all",  async (req, res) => {
+  router.get("/pending-site-visits/all", async (req, res) => {
     try {
       const query = `
         SELECT 
@@ -215,7 +225,7 @@ module.exports = (pool, io) => {
   // Download the approved site visits info in a pdf
   router.get(
     "/download-pdf/approved-site-visits",
-    
+
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -265,7 +275,7 @@ module.exports = (pool, io) => {
                     "auto",
                     "auto",
                     "auto",
-                    "auto"
+                    "auto",
                   ],
                   body: [
                     [
@@ -285,6 +295,12 @@ module.exports = (pool, io) => {
                         style: "tableHeader",
                       },
                       {
+                        text: "Client Name",
+                        fillColor: "#BBD4E1",
+                        style: "tableHeader",
+                      },
+                      {
+                        text: "Client Contact",
                         text: "Client Name",
                         fillColor: "#BBD4E1",
                         style: "tableHeader",
@@ -358,7 +374,7 @@ module.exports = (pool, io) => {
           res.setHeader("Content-Type", "application/pdf");
           pdfDoc.pipe(res);
           pdfDoc.end();
-          console.log("results", results)
+          console.log("results", results);
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -368,12 +384,11 @@ module.exports = (pool, io) => {
   // Download the site visits summary into pdf
   router.get(
     "/download-pdf/site-visit-summary",
-    
+
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
         const endDate = req.query.endDate;
-        const office = req.query.office;
 
         const query = `
           SELECT 
@@ -385,12 +400,11 @@ module.exports = (pool, io) => {
           FROM site_visits
           JOIN users ON site_visits.marketer_id = users.user_id
           WHERE site_visits.pickup_date BETWEEN ? AND ?
-            AND users.office = ?
           GROUP BY DATE(site_visits.pickup_date)
           ORDER BY DATE(site_visits.pickup_date);
         `;
 
-        pool.query(query, [startDate, endDate, office], (err, results) => {
+        pool.query(query, [startDate, endDate], (err, results) => {
           if (err) throw err;
 
           const docDefinition = {
@@ -398,7 +412,7 @@ module.exports = (pool, io) => {
             pageOrientation: "landscape",
             content: [
               {
-                text: `Site Visit Summary from ${startDate} to ${endDate} for convertors in ${office}`,
+                text: `Site Visit Summary from ${startDate} to ${endDate}`,
                 fontSize: 20,
                 alignment: "center",
                 margin: [0, 0, 0, 20],
@@ -484,7 +498,7 @@ module.exports = (pool, io) => {
   // Download most booked sites within a certain date range
   router.get(
     "/download-pdf/most-booked-sites",
-    
+
     async (req, res) => {
       try {
         const startDate = req.query.startDate;
@@ -575,7 +589,7 @@ module.exports = (pool, io) => {
   // Downloadable PDF for marketer feedback
   router.get(
     "/download-pdf/marketer-feedback",
-    
+
     async (req, res) => {
       try {
         const query = `
@@ -717,7 +731,7 @@ module.exports = (pool, io) => {
     }
   );
   // Get info on the user, to see if he's booked any active site-visits
-  router.get("/active/active",  async (req, res) => {
+  router.get("/active/active", async (req, res) => {
     try {
       const userId = req.user.id;
       const query = `
@@ -737,7 +751,7 @@ module.exports = (pool, io) => {
     }
   });
   // Get a single pending site visit request
-  router.get("/pending-site-visits/:id",  async (req, res) => {
+  router.get("/pending-site-visits/:id", async (req, res) => {
     const id = req.params.id;
     const query = `
       SELECT 
@@ -769,7 +783,7 @@ module.exports = (pool, io) => {
     });
   });
   // Cancel a site visit request
-  router.patch("/cancel-site-visit/:id",  async (req, res) => {
+  router.patch("/cancel-site-visit/:id", async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -857,7 +871,7 @@ module.exports = (pool, io) => {
     }
   });
   // Reject site visit request (with remarks)
-  router.patch("/reject-site-visit/:id",  async (req, res) => {
+  router.patch("/reject-site-visit/:id", async (req, res) => {
     try {
       const id = req.params.id;
       const { remarks } = req.body;
@@ -936,7 +950,7 @@ module.exports = (pool, io) => {
   // View, edit and approve the site visit request
   router.patch(
     "/pending-site-visits/:id",
-    
+
     async (req, res) => {
       try {
         const { id } = req.params;
@@ -973,7 +987,8 @@ module.exports = (pool, io) => {
                     if (err) res.status(500).json({ error: err.message });
 
                     // Send an email to the marketer
-                    const getEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                    const getEmailQuery =
+                      "SELECT email FROM users WHERE user_id = ?";
                     pool.query(
                       getEmailQuery,
                       [userId],
@@ -991,7 +1006,8 @@ module.exports = (pool, io) => {
                     );
 
                     // Send an email to the driver
-                    const getDriverEmailQuery = "SELECT email FROM users WHERE user_id = ?";
+                    const getDriverEmailQuery =
+                      "SELECT email FROM users WHERE user_id = ?";
                     pool.query(
                       getDriverEmailQuery,
                       [driver_id],
@@ -1108,7 +1124,8 @@ module.exports = (pool, io) => {
                         pickup_time = ?, 
                         remarks = ?, 
                         status = ?, 
-                        driver_id = ?
+                        driver_id = ?,
+                        project_id = ?
                       WHERE id = ?
                     `;
 
@@ -1122,6 +1139,7 @@ module.exports = (pool, io) => {
                       remarks,
                       status === "pending" ? "approved" : status,
                       driver_id,
+                      project_id,
                       id,
                     ],
                     async (err, results) => {
@@ -1200,7 +1218,8 @@ module.exports = (pool, io) => {
             pickup_time = ?, 
             remarks = ?, 
             status = ?, 
-            driver_id = ?
+            driver_id = ?,
+            project_id = ?,
           WHERE id = ?
         `;
           pool.query(
@@ -1213,6 +1232,7 @@ module.exports = (pool, io) => {
               remarks,
               status === "pending" ? "approved" : status,
               driver_id,
+              project_id,
               id,
             ],
             async (err, results) => {
@@ -1235,7 +1255,7 @@ module.exports = (pool, io) => {
     }
   );
   // Submit a survey for a completed site visit
-  router.post("/submit-survey/:id",  async (req, res) => {
+  router.post("/submit-survey/:id", async (req, res) => {
     try {
       const siteVisitId = req.params.id;
       const userId = req.user.id;

@@ -24,7 +24,7 @@ const ViewReservedParking = () => {
     const fetchReservedParking = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/reserved-parking",
+          "https://workspace.optiven.co.ke/api/reserved-parking",
           {
             headers: {
               Authorization: `Bearer ${token}`,

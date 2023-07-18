@@ -10,7 +10,7 @@ const AccessRoles = {
   isOperations3: "112#305",
   isDriver: "driver",
   isHOL: "headOfLogistics",
-  isAnalyst: "112#analyst",
+  isAnalyst: "112#dataAnalyst",
 };
 
 module.exports = AccessRoles;
