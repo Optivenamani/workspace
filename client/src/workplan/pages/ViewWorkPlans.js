@@ -24,7 +24,6 @@ const ViewWorkPlans = () => {
         );
 
         const data = await response.json();
-        console.log("Workplans:", data); // Debugging statement
 
         // Update visitors state only if the response data is an array
         if (Array.isArray(data)) {
@@ -47,7 +46,7 @@ const ViewWorkPlans = () => {
   return (
     <Sidebar>
       <div className="mb-10">
-        <div className="mx-10">
+        <div className="mx-10 my-5">
           <div className="text-sm breadcrumbs">
             <ul>
               <li>

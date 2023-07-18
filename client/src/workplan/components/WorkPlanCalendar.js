@@ -90,6 +90,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
         selectMirror
         dayMaxEvents={3}
         ref={calendarRef}
+        // updateSize
         // eventAdd={function () {}}
         // eventChange={function () {}}
         // eventRemove={function () {}}
@@ -135,6 +136,12 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               <h1 className="label font-bold">Expectated Output</h1>
               <p className="text-sm italic ml-1">
                 {selectedEvent.extendedProps.expectedOutput}
+              </p>
+            </div>
+            <div>
+              <h1 className="label font-bold">Target</h1>
+              <p className="text-sm italic ml-1">
+                {selectedEvent.extendedProps.target}
               </p>
             </div>
             {selectedEvent.extendedProps.measurableAchievement !== null ? (

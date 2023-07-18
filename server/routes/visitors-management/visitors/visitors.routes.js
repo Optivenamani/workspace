@@ -412,7 +412,7 @@ module.exports = (pool) => {
                     if (visitorDetails.length > 0) {
                       const visitorName = visitorDetails[0].name;
                       const visitorPhoneNumber = visitorDetails[0].phone;
-                      const templateName = "visitors_check_out_link";
+                      const templateName = "visitors_checkout";
                       const parameters = [{ name: "name", value: visitorName }];
                       const broadcastName = "test_broadcast";
 

@@ -112,7 +112,7 @@ const CreateActivity = () => {
   return (
     <Sidebar>
       <div className="mb-10">
-        <div className="mx-10">
+        <div className="mx-10 my-5">
           <div className="text-sm breadcrumbs">
             <ul>
               <li>

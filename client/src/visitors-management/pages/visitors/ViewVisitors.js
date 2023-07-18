@@ -25,11 +25,14 @@ const ViewVisitors = () => {
     // Fetch visitor data from the server
     const fetchVisitors = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/visitors", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://workspace.optiven.co.ke/api/visitors",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = await response.json();
         console.log("Visitors:", data); // Debugging statement
