@@ -32,7 +32,7 @@ const ViewActivities = () => {
     const fetchActivities = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/workplan-activities",
+          "https://workspace.optiven.co.ke/api/workplan-activities",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ const ViewActivities = () => {
 
       // Update the activity with the new measurable achievement
       const response = await fetch(
-        `http://localhost:8080/api/workplan-activities/${activityId}`,
+        `https://workspace.optiven.co.ke/api/workplan-activities/${activityId}`,
         {
           method: "PATCH",
           headers: {

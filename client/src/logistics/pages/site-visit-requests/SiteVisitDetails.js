@@ -84,7 +84,7 @@ const SiteVisitDetails = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/sites", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/sites", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

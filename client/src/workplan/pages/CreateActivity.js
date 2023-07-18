@@ -70,7 +70,7 @@ const CreateActivity = () => {
       console.log(JSON.stringify(activityData));
 
       const response = await fetch(
-        "http://localhost:8080/api/workplan-activities",
+        "https://workspace.optiven.co.ke/api/workplan-activities",
         {
           method: "POST",
           headers: {
