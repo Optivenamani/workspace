@@ -1105,7 +1105,8 @@ module.exports = (pool, io) => {
                         pickup_time = ?, 
                         remarks = ?, 
                         status = ?, 
-                        driver_id = ?
+                        driver_id = ?,
+                        project_id = ?
                       WHERE id = ?
                     `;
 
@@ -1119,6 +1120,7 @@ module.exports = (pool, io) => {
                       remarks,
                       status === "pending" ? "approved" : status,
                       driver_id,
+                      project_id,
                       id,
                     ],
                     async (err, results) => {
@@ -1197,7 +1199,8 @@ module.exports = (pool, io) => {
             pickup_time = ?, 
             remarks = ?, 
             status = ?, 
-            driver_id = ?
+            driver_id = ?,
+            project_id = ?,
           WHERE id = ?
         `;
           pool.query(
@@ -1210,6 +1213,7 @@ module.exports = (pool, io) => {
               remarks,
               status === "pending" ? "approved" : status,
               driver_id,
+              project_id,
               id,
             ],
             async (err, results) => {

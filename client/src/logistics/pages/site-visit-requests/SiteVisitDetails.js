@@ -13,13 +13,13 @@ const SiteVisitDetails = () => {
   const [remarks, setRemarks] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [driver, setDriver] = useState("");
-  const [site, setSite] = useState(null);
-  const [pickupTime, setPickupTime] = useState(null);
-  const [pickupDate, setPickupDate] = useState(null);
-  const [numClients, setNumClients] = useState(null);
+  const [site, setSite] = useState("");
+  const [pickupTime, setPickupTime] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [numClients, setNumClients] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [marketerName, setMarketerName] = useState(null);
+  const [status, setStatus] = useState("pending");
+  const [marketerName, setMarketerName] = useState("");
   const [sites, setSites] = useState([]);
   const token = useSelector((state) => state.user.token);
   const navigate = useNavigate();
@@ -71,7 +71,6 @@ const SiteVisitDetails = () => {
           }
         );
         const data = await response.json();
-        console.log("Vehicles: ", data);
         setVehicles(data);
       } catch (error) {
         console.error("Error fetching vehicles:", error);
@@ -114,7 +113,6 @@ const SiteVisitDetails = () => {
           }
         );
         const data = await response.json();
-        console.log("Drivers: ", data);
         setDrivers(data.map((driver) => ({ ...driver, id: driver.driver_id })));
       } catch (error) {
         console.error("Error fetching drivers:", error);
