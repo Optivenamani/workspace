@@ -1,5 +1,5 @@
 import Sidebar from "../components/Sidebar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import bus from "../../assets/media/home.jpg";
 import {
@@ -80,8 +80,8 @@ const Home = () => {
                     </button>
                     {hasActiveSiteVisit && (
                       <p className="mt-2 text-red-600 font-bold italic">
-                        You have to COMPLETE YOUR CURRENT SITE VISIT and FILL
-                        THE SURVEY to be able to book a new site visit.
+                        You have to COMPLETE YOUR CURRENT SITE VISIT and <Link to="/notifications" className="underline text-green-400">FILL
+                        THE SURVEY</Link> to be able to book a new site visit.
                       </p>
                     )}
                   </>

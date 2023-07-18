@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 import formatTime from "../../../utils/formatTime";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 
 const SiteVisitRequests = () => {
@@ -215,7 +215,7 @@ const SiteVisitRequests = () => {
               <span className="text-primary">{pending.length}</span>{" "}
               {statusText}
             </h1>
-            <div className="grid grid-cols-3 lg:grid-cols-7 justify-center">
+            <div className="grid grid-cols-3 lg:grid-cols-8 justify-center">
               <div
                 className={`btn m-1 btn-outline font-bold mr-1 ${
                   selectedStatus === "all" ? "btn-active" : ""
@@ -275,6 +275,12 @@ const SiteVisitRequests = () => {
               >
                 In Progress
               </div>
+              <Link
+                to="/approved-site-visit-reports"
+                className="btn btn-outline m-1 font-bold"
+              >
+                Driver Itinerary
+              </Link>
             </div>
           </div>
           <div className="px-4 mt-2 flex justify-center mb-5">
@@ -408,7 +414,11 @@ const SiteVisitRequests = () => {
           </div>
           <div className="flex justify-center mb-10">
             <div className="join">{renderPaginationButtons()}</div>
-            <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="select select-bordered select-sm mx-2">
+            <select
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              className="select select-bordered select-sm mx-2"
+            >
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
