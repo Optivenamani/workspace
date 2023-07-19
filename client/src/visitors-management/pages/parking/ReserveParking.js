@@ -31,14 +31,17 @@ const ReserveParking = () => {
       arrival_time,
     };
     try {
-      const response = await fetch("https://workspace.optiven.co.ke/api/reserve-parking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(parkingData),
-      });
+      const response = await fetch(
+        "https://workspace.optiven.co.ke/api/reserve-parking",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(parkingData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("An error occurred while adding parking information.");
@@ -80,38 +83,37 @@ const ReserveParking = () => {
   };
 
   const generateDownloadableForm = (parkingData) => {
-    const { name, vehicle_registration, arrival_time } = parkingData;
-  
+    const { vehicle_registration } = parkingData;
+
     // Create a new PDF document
     const doc = new jsPDF();
-  
+
     // Set the document properties
     doc.setProperties({
       title: "Parking Reservation Form",
     });
-  
-    
-    const logoWidth = 100; 
-    const logoHeight = 50; 
+
+    const logoWidth = 100;
+    const logoHeight = 50;
     const pageWidth = doc.internal.pageSize.getWidth();
     const logoX = (pageWidth - logoWidth) / 2;
     doc.addImage(logo, "PNG", logoX, 20, logoWidth, logoHeight);
-  
+
     // Set the font style for the ticket content
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
-  
+
     // Define the content of the form
     const currentDate = new Date().toLocaleDateString(); // Get the current date
     const ticketContent = `
   ${currentDate}
   
   TO:
-  PROPERTY MANAGER
-  GIMCO LIMITED
-  BARCLAYS BANK
-  P.O BOX 30120-00100
-  NAIROBI
+  PROPERTY MANAGER,
+  GIMCO LIMITED,
+  BARCLAYS BANK,
+  P.O BOX 30120-00100,
+  NAIROBI.
   
   Attn: Kinyua
   
@@ -130,10 +132,10 @@ const ReserveParking = () => {
   Jane Karimi
   Administration
   Optiven Limited`;
-  
+
     // Add the ticket content below the logo
     doc.text(20, 90, ticketContent);
-  
+
     // Save the PDF document as a file
     doc.save("parking_reservation_form.pdf");
   };
