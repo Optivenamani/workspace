@@ -4,7 +4,7 @@ import Sidebar from "../../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const SiteVisitsSummary = () => {
+const DriverItinerary = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   // Get the token from local storage
@@ -35,7 +35,7 @@ const SiteVisitsSummary = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/site-visit-summary",
+        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/driver-itenirary",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,8 +48,6 @@ const SiteVisitsSummary = () => {
         }
       );
 
-      console.log(startDate, endDate);
-
       // Create a blob from the PDF stream
       const file = new Blob([response.data], {
         type: "application/pdf",
@@ -59,7 +57,7 @@ const SiteVisitsSummary = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = `Site Visit Summary ${startDate} - ${endDate}.pdf`;
+      link.download = "driver_itinerary.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -89,7 +87,7 @@ const SiteVisitsSummary = () => {
       <div className="hero min-h-screen">
         <div className="form-control w-full max-w-xs">
           <div className="flex flex-col justify-center">
-            <h1 className="font-bold text-lg">SITE VISITS SUMMARY REPORTS</h1>
+            <h1 className="font-bold text-lg">DRIVER ITINERARY</h1>
             <label className="label">
               <span className="label-text font-bold">Start Date</span>
             </label>
@@ -108,8 +106,8 @@ const SiteVisitsSummary = () => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
-            <button className="btn btn-outline mt-3" onClick={handleDownload}>
-              Download PDF Report
+            <button className="btn btn-outline" onClick={handleDownload}>
+              Download PDF
             </button>
           </div>
         </div>
@@ -118,4 +116,4 @@ const SiteVisitsSummary = () => {
   );
 };
 
-export default SiteVisitsSummary;
+export default DriverItinerary;

@@ -130,6 +130,19 @@ const Sidebar = ({ children }) => {
                       Marketers Feedback
                     </Link>
                   )}
+                  {(isHOS ||
+                    isGM ||
+                    isAdmin ||
+                    isHOL ||
+                    isAnalyst ||
+                    isOperations) && (
+                    <Link
+                      to="/driver-itinerary"
+                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    >
+                      Driver Itinerary
+                    </Link>
+                  )}
                 </div>
               </div>
             )}

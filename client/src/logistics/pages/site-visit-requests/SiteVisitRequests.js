@@ -276,7 +276,7 @@ const SiteVisitRequests = () => {
                 In Progress
               </div>
               <Link
-                to="/approved-site-visit-reports"
+                to="/driver-itinerary"
                 className="btn btn-outline m-1 font-bold"
               >
                 Driver Itinerary

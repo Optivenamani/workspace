@@ -3,13 +3,14 @@ import Sidebar from "../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateWorkPlan = () => {
   const [loading, setLoading] = useState(false);
 
   const token = useSelector((state) => state.user.token);
   const marketerId = useSelector((state) => state.user.user.user_id);
+  const navigate = useNavigate();
 
   const [workplan, setWorkplan] = useState({
     start_date: "",
@@ -39,6 +40,7 @@ const CreateWorkPlan = () => {
       .then((data) => {
         console.log(data);
         setLoading(false);
+        navigate("/view-workplans");
         toast.success("Work plan created successfully!", {
           position: "top-center",
           closeOnClick: true,

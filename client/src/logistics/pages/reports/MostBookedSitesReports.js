@@ -70,7 +70,7 @@ const MostBookedSitesReports = () => {
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
-        "An error occurred while downloading the PDF. Please try again later.",
+        "An error occurred while downloading the PDF. Please try again.",
         {
           position: "top-center",
           closeOnClick: true,

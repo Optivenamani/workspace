@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import WorkPlanCalendar from "../components/WorkPlanCalendar";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formatTime = (timeStr) => {
   if (!timeStr) return "";
-  const [hours, minutes] = timeStr.split(":");
-  const formattedHours = hours % 12 || 12;
-  return `${formattedHours}:${minutes}:00`;
+  return timeStr.slice(11, 19);
 };
 
 const formatDate = (dateString) => {
@@ -51,7 +51,6 @@ const ViewActivities = () => {
           time: `${formatDate(activity.date)}T${activity.time}`,
           date: activity.date,
           expected_output: activity.expected_output,
-          target: activity.target,
           measurable_achievement: activity.measurable_achievement,
           variance: activity.variance,
           comments: activity.comments,
@@ -112,12 +111,31 @@ const ViewActivities = () => {
           return activity;
         });
         setActivities(updatedActivities);
+        toast.success("Activity updated successfully!", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
         // Handle error response
-        alert("Failed to update activity");
+        toast.error("Failed to update activity. Please try again.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (error) {
-      alert(error);
+      toast.error(error, {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 

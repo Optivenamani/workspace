@@ -16,7 +16,6 @@ const CreateActivity = () => {
       date: "",
       time: "",
       expected_output: "",
-      target: "",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -45,7 +44,6 @@ const CreateActivity = () => {
         date: "",
         time: "",
         expected_output: "",
-        target: "",
       },
     ]);
   };
@@ -129,6 +127,15 @@ const CreateActivity = () => {
           <div className="mx-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {activities.map((activity, index) => (
               <div key={index} className="card bg-base-100 shadow-xl p-4">
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeActivityField(index)}
+                    className="btn btn-sm btn-circle btn-ghost btn-error absolute right-2 top-2"
+                  >
+                    ✕
+                  </button>
+                )}
                 <div>
                   <label className="label font-bold text-xs">Title</label>
                   <select
@@ -146,13 +153,12 @@ const CreateActivity = () => {
                     <option value="Make Follow Up Calls">
                       Make Follow Up Calls
                     </option>
-                    <option value="Generate Leads">Generate Leads</option>
                     <option value="Social Media Engagements">
                       Social Media Engagements
                     </option>
                     <option value="Send Emails">Send Emails</option>
-                    <option value="Meeting">Meetings</option>
-                    <option value="Site Visit">Site Visits</option>
+                    <option value="Meeting">Meeting</option>
+                    <option value="Site Visit">Site Visit</option>
                   </select>
 
                   <div>
@@ -199,26 +205,6 @@ const CreateActivity = () => {
                     }
                     required
                   />
-                  <label className="label font-bold text-xs">Target</label>
-                  <textarea
-                    className="textarea textarea-bordered w-full"
-                    type="text"
-                    name="target"
-                    value={activity.target}
-                    onChange={(e) =>
-                      handleActivityChange(index, "target", e.target.value)
-                    }
-                    required
-                  />
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => removeActivityField(index)}
-                      className="btn btn-error btn-circle text-white"
-                    >
-                      —
-                    </button>
-                  )}
                 </div>
               </div>
             ))}
@@ -227,9 +213,9 @@ const CreateActivity = () => {
             <button
               type="button"
               onClick={addActivityField}
-              className="btn btn-primary text-white"
+              className="btn btn-primary btn-circle text-white"
             >
-              Add Another Activity
+              +
             </button>
             <button type="submit" className="btn btn-outline ml-4">
               {loading ? "Submitting..." : "Submit"}
