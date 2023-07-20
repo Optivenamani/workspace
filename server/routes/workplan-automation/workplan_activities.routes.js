@@ -35,19 +35,18 @@ module.exports = (pool) => {
   router.post("/", authenticateJWT, (req, res) => {
     const activities = req.body;
     const query =
-      "INSERT INTO workplan_activities (workplan_id, date, time, title, expected_output, target) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO workplan_activities (workplan_id, date, time, title, expected_output) VALUES (?, ?, ?, ?, ?)";
 
     // Array to store the results of each INSERT query
     const results = [];
 
     // Iterate over the activities and execute the INSERT query for each activity
     activities.forEach((activity) => {
-      const { workplan_id, date, time, title, expected_output, target } =
-        activity;
+      const { workplan_id, date, time, title, expected_output } = activity;
 
       pool.query(
         query,
-        [workplan_id, date, time, title, expected_output, target],
+        [workplan_id, date, time, title, expected_output],
         (err, result) => {
           if (err) {
             console.error(err);
@@ -86,14 +85,14 @@ module.exports = (pool) => {
       time,
       title,
       expected_output,
-      target,
+
       measurable_achievement,
       variance,
       comments,
       remarks,
     } = req.body;
     const query =
-      "UPDATE workplan_activities SET workplan_id = ?, date = ?, time = ?, title = ?, expected_output = ?, target = ?, measurable_achievement = ?, variance = ?, comments = ?, remarks = ? WHERE id = ?";
+      "UPDATE workplan_activities SET workplan_id = ?, date = ?, time = ?, title = ?, expected_output = ?, measurable_achievement = ?, variance = ?, comments = ?, remarks = ? WHERE id = ?";
     pool.query(
       query,
       [
@@ -102,7 +101,6 @@ module.exports = (pool) => {
         time,
         title,
         expected_output,
-        target,
         measurable_achievement,
         variance,
         comments,

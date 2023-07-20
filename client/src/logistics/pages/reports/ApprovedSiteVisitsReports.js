@@ -57,7 +57,7 @@ const ApprovedSiteVisitsReports = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "site_visit_info.pdf";
+      link.download = "approved_site_visits.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -70,7 +70,7 @@ const ApprovedSiteVisitsReports = () => {
     } catch (error) {
       console.error("Error downloading PDF:", error);
       toast.error(
-        "An error occurred while downloading the PDF. Please try again later.",
+        "An error occurred while downloading the PDF. Please try again.",
         {
           position: "top-center",
           closeOnClick: true,
@@ -87,7 +87,7 @@ const ApprovedSiteVisitsReports = () => {
       <div className="hero min-h-screen">
         <div className="form-control w-full max-w-xs">
           <div className="flex flex-col justify-center">
-            <h1 className="font-bold text-lg">DRIVER ITINERARY | APPROVED SITE VISITS REPORTS</h1>
+            <h1 className="font-bold text-lg">APPROVED SITE VISITS REPORTS</h1>
             <label className="label">
               <span className="label-text font-bold">Start Date</span>
             </label>

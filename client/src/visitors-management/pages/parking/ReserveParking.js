@@ -9,8 +9,8 @@ import logo from "../../../assets/optiven-logo-full.png";
 
 const ReserveParking = () => {
   const [name, setName] = useState("");
-  const [vehicle_registration, setVehicleRegistration] = useState("");
-  const [arrival_time, setEstimatedArrivalTime] = useState("");
+  const [vehicleRegistration, setVehicleRegistration] = useState("");
+  const [arrivalTime, setEstimatedArrivalTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const token = useSelector((state) => state.user.token);
@@ -19,7 +19,7 @@ const ReserveParking = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !vehicle_registration || !arrival_time) {
+    if (!name || !vehicleRegistration || !arrivalTime) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -27,8 +27,8 @@ const ReserveParking = () => {
     setError(""); // Clear any previous errors
     const parkingData = {
       name,
-      vehicle_registration,
-      arrival_time,
+      vehicle_registration: vehicleRegistration,
+      arrival_time: arrivalTime,
     };
     try {
       const response = await fetch(
@@ -106,32 +106,33 @@ const ReserveParking = () => {
     // Define the content of the form
     const currentDate = new Date().toLocaleDateString(); // Get the current date
     const ticketContent = `
-  ${currentDate}
-  
-  TO:
-  PROPERTY MANAGER,
-  GIMCO LIMITED,
-  BARCLAYS BANK,
-  P.O BOX 30120-00100,
-  NAIROBI.
-  
-  Attn: Kinyua
-  
-  Dear Sir,
-  
-  RE: PARKING
-  
-  We trust that you are well. Kindly reserve this parking.
-  
-  Vehicle Registration: ${vehicle_registration}
-  
-  Thank you.
-  
-  Yours faithfully,
-  
-  Jane Karimi
-  Administration
-  Optiven Limited`;
+      ${currentDate}
+      
+      TO:
+      PROPERTY MANAGER,
+      GIMCO LIMITED,
+      BARCLAYS BANK,
+      P.O BOX 30120-00100,
+      NAIROBI.
+      
+      Attn: Kinyua
+      
+      Dear Sir,
+      
+      RE: PARKING
+      
+      We trust that you are well. Kindly reserve this parking.
+      
+      Vehicle Registration: ${vehicle_registration}
+      
+      Thank you.
+      
+      Yours faithfully,
+      
+      Jane Karimi
+      Administration
+      Optiven Limited
+      `;
 
     // Add the ticket content below the logo
     doc.text(20, 90, ticketContent);
@@ -139,6 +140,7 @@ const ReserveParking = () => {
     // Save the PDF document as a file
     doc.save("parking_reservation_form.pdf");
   };
+
   return (
     <>
       <Sidebar>
@@ -180,7 +182,6 @@ const ReserveParking = () => {
                       required
                     />
                   </div>
-
                   <div className="col-span-6 sm:col-span-3">
                     <label htmlFor="vehicle_registration" className="label">
                       <span className="label-text font-bold">
@@ -190,8 +191,8 @@ const ReserveParking = () => {
                     <input
                       type="text"
                       id="vehicle_registration"
-                      placeholder="ABC 123"
-                      value={vehicle_registration}
+                      placeholder="KDA 123Q"
+                      value={vehicleRegistration}
                       onChange={(event) =>
                         setVehicleRegistration(event.target.value)
                       }
@@ -199,17 +200,16 @@ const ReserveParking = () => {
                       required
                     />
                   </div>
-
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="arrival_time" className="label">
+                    <label htmlFor="arrivalTime" className="label">
                       <span className="label-text font-bold">
                         Estimated Arrival Time
                       </span>
                     </label>
                     <input
                       type="time"
-                      id="arrival_time"
-                      value={arrival_time}
+                      id="arrivalTime"
+                      value={arrivalTime}
                       onChange={(event) =>
                         setEstimatedArrivalTime(event.target.value)
                       }
@@ -217,8 +217,7 @@ const ReserveParking = () => {
                       required
                     />
                   </div>
-
-                  <div className="col-span-6 sm:col-span-3">
+                  <div className="col-span-6 sm:col-span-3 md:mt-5 lg:mt-5">
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
                       type="submit"

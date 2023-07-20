@@ -9,8 +9,8 @@ import { formatDate } from "@fullcalendar/core";
 import { formatIsoTimeString } from "@fullcalendar/core/internal";
 
 const WorkPlanCalendar = ({ activities, editactivity }) => {
-  const [measurableAchievement, setMeasurableAchievement] = useState(null);
-  const [variance, setVariance] = useState(null);
+  const [measurableAchievement, setMeasurableAchievement] = useState("");
+  const [variance, setVariance] = useState("");
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,12 +21,11 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
     const calendarApi = calendarRef.current.getApi();
 
     calendarApi.setOption("eventDidMount", function (info) {
-      if (info.event.extendedProps.status === "complete") {
+      if (info.event.extendedProps.id !== null) {
         // Change background color of row
-        info.el.style.backgroundColor = "red";
-
+        // info.el.style.backgroundColor = "red";
         // Change color of dot marker
-        const dotEl = info.el.getElementsByClassName("fc-event-dot")[0];
+        const dotEl = info.el.getElementsByClassName("fc-list-event-dot")[0];
         if (dotEl) {
           dotEl.style.backgroundColor = "white";
         }
@@ -64,7 +63,6 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
       date: activity.date,
       expectedOutput: activity.expected_output,
       measurableAchievement: activity.measurable_achievement,
-      target: activity.target,
       variance: activity.variance,
       comments: activity.comments,
       workplanId: activity.workplan_id,
@@ -136,12 +134,6 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               <h1 className="label font-bold">Expectated Output</h1>
               <p className="text-sm italic ml-1">
                 {selectedEvent.extendedProps.expectedOutput}
-              </p>
-            </div>
-            <div>
-              <h1 className="label font-bold">Target</h1>
-              <p className="text-sm italic ml-1">
-                {selectedEvent.extendedProps.target}
               </p>
             </div>
             {selectedEvent.extendedProps.measurableAchievement !== null ? (

@@ -64,6 +64,9 @@ import {
   WorkPlanHome,
   CreateActivity,
   ViewWorkPlans,
+  DriverItinerary,
+  FillRemarks,
+  TeamReports,
 } from "./utils/index";
 
 const App = () => {
@@ -209,6 +212,7 @@ const App = () => {
               path="/marketers-feedback-reports"
               element={<MarketersFeedback />}
             />
+            <Route path="/driver-itinerary" element={<DriverItinerary />} />
             {/* Special Assignment */}
             <Route
               path="/assigned-special-assignments"
@@ -256,6 +260,8 @@ const App = () => {
             <Route path="/view-workplans/:id" element={<CreateActivity />} />
             <Route path="/view-activities" element={<ViewActivities />} />
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
+            <Route path="/fill-remarks" element={<FillRemarks />} />
+            <Route path="/team-reports" element={<TeamReports />} />
           </Route>
         </Routes>
       </Router>
