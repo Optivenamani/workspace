@@ -83,8 +83,8 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
         eventClick={handleEventClick}
         eventClassNames="cursor-pointer"
         height={"85vh"}
-        editable
-        selectable
+        // editable
+        // selectable
         selectMirror
         dayMaxEvents={3}
         ref={calendarRef}

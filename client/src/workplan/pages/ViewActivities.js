@@ -26,13 +26,14 @@ const formatDate = (dateString) => {
 const ViewActivities = () => {
   const [activities, setActivities] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const userId = useSelector((state) => state.user.user.user_id);
 
   useEffect(() => {
     // Fetch activities data from the server
     const fetchActivities = async () => {
       try {
         const response = await fetch(
-          "https://workspace.optiven.co.ke/api/workplan-activities",
+          `http://localhost:8080/api/workplan-activities?user_id=${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -63,7 +64,7 @@ const ViewActivities = () => {
     };
 
     fetchActivities();
-  }, [token]);
+  }, [token, userId]);
 
   const date = new Date().getDate();
   console.log(date);
@@ -81,7 +82,7 @@ const ViewActivities = () => {
 
       // Update the activity with the new measurable achievement
       const response = await fetch(
-        `https://workspace.optiven.co.ke/api/workplan-activities/${activityId}`,
+        `http://localhost:8080/api/workplan-activities/${activityId}`,
         {
           method: "PATCH",
           headers: {

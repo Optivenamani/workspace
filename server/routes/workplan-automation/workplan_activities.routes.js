@@ -3,16 +3,27 @@ const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
 
 module.exports = (pool) => {
-  // GET all workplan activities
+  // GET all workplan activities for the authenticated user
   router.get("/", authenticateJWT, (req, res) => {
-    pool.query("SELECT * FROM workplan_activities", (err, results) => {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server Error" });
-      } else {
-        res.json(results);
+    const { user_id } = req.query;
+    pool.query(
+      `SELECT 
+        wa.*,
+        w.marketer_id 
+      FROM workplan_activities wa
+      INNER JOIN workplans w
+      ON wa.workplan_id = w.id 
+      WHERE marketer_id = ?`,
+      [user_id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server Error" });
+        } else {
+          res.json(results);
+        }
       }
-    });
+    );
   });
 
   // GET a specific workplan activity
@@ -85,7 +96,6 @@ module.exports = (pool) => {
       time,
       title,
       expected_output,
-
       measurable_achievement,
       variance,
       comments,

@@ -3,9 +3,11 @@ const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
 
 module.exports = (pool) => {
-  // GET all workplans
+  // GET all workplans for the authenticated user
   router.get("/", authenticateJWT, (req, res) => {
-    pool.query("SELECT * FROM workplans", (err, results) => {
+    const { user_id } = req.query;
+    const query = "SELECT * FROM workplans WHERE marketer_id = ?";
+    pool.query(query, [user_id], (err, results) => {
       if (err) {
         console.error(err);
         res.status(500).json({ message: "Server Error" });
@@ -31,69 +33,47 @@ module.exports = (pool) => {
     });
   });
 
-  // CREATE a new workplan
+  // CREATE a new workplan for the authenticated user
   router.post("/", authenticateJWT, (req, res) => {
-    const {
-      start_date,
-      end_date,
-      marketer_id,
-    } = req.body;
+    const { user_id } = req.user;
+    const { start_date, end_date } = req.body;
     const query =
       "INSERT INTO workplans (start_date, end_date, marketer_id) VALUES (?, ?, ?)";
-    pool.query(
-      query,
-      [
-        start_date,
-        end_date,
-        marketer_id,
-      ],
-      (err) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ message: "Server Error" });
-        } else {
-          res.json({ message: "Workplan created successfully" });
-        }
+    pool.query(query, [start_date, end_date, user_id], (err) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        res.json({ message: "Workplan created successfully" });
       }
-    );
+    });
   });
 
-  // UPDATE an existing workplan
+  // UPDATE an existing workplan for the authenticated user
   router.put("/:id", authenticateJWT, (req, res) => {
+    const { user_id } = req.user;
     const { id } = req.params;
-    const {
-      start_date,
-      end_date,
-      marketer_id,
-    } = req.body;
+    const { start_date, end_date } = req.body;
     const query =
-      "UPDATE workplans SET start_date = ?, end_date = ?, marketer_id = ? WHERE id = ?";
-    pool.query(
-      query,
-      [
-        start_date,
-        end_date,
-        marketer_id,
-        id,
-      ],
-      (err, result) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ message: "Server Error" });
-        } else if (result.affectedRows > 0) {
-          res.json({ message: "Workplan updated successfully" });
-        } else {
-          res.status(404).json({ message: "Workplan not found" });
-        }
+      "UPDATE workplans SET start_date = ?, end_date = ? WHERE id = ? AND marketer_id = ?";
+    pool.query(query, [start_date, end_date, id, user_id], (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else if (result.affectedRows > 0) {
+        res.json({ message: "Workplan updated successfully" });
+      } else {
+        res.status(404).json({ message: "Workplan not found" });
       }
-    );
+    });
   });
 
-  // DELETE a workplan
+  // DELETE a workplan for the authenticated user
   router.delete("/:id", authenticateJWT, (req, res) => {
+    const { user_id } = req.user;
     const { id } = req.params;
-    const query = "DELETE FROM workplans WHERE id = ?";
-    pool.query(query, [id], (err, result) => {
+    const query = "DELETE FROM workplans WHERE id = ? AND marketer_id = ?";
+    pool.query(query, [id, user_id], (err, result) => {
       if (err) {
         console.error(err);
         res.status(500).json({ message: "Server Error" });
