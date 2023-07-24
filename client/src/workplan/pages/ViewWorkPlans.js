@@ -7,6 +7,7 @@ import formatDate from "../../utils/formatDate";
 const ViewWorkPlans = () => {
   const [workplans, setWorkplans] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const userId = useSelector((state) => state.user.user.user_id);
 
   const navigate = useNavigate();
 
@@ -15,7 +16,7 @@ const ViewWorkPlans = () => {
     const fetchWorkPlans = async () => {
       try {
         const response = await fetch(
-          "https://workspace.optiven.co.ke/api/workplans",
+          `http://localhost:8080/api/workplans?user_id=${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -37,7 +38,7 @@ const ViewWorkPlans = () => {
     };
 
     fetchWorkPlans();
-  }, [token]);
+  }, [token, userId]);
 
   const handleClick = (workplanId) => {
     navigate(`/view-workplans/${workplanId}`);

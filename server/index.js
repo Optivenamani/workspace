@@ -51,6 +51,20 @@ const workplanAutomationPool = mysql.createPool({
   connectTimeout: 30000,
 });
 
+// Set up the Express app and database connection pool
+const feedbackPool = mysql.createPool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.FEEDBACK_DB,
+  ssl: { rejectUnauthorized: false },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 30000,
+});
+
 // Check database connection
 logisticsPool.getConnection((err, connection) => {
   if (err) {
@@ -83,6 +97,19 @@ workplanAutomationPool.getConnection((err, connection) => {
     );
   } else {
     console.log("Connected to the workplan automation database");
+    connection.release();
+  }
+});
+
+// Check database connection
+feedbackPool.getConnection((err, connection) => {
+  if (err) {
+    console.error(
+      "Error connecting to the feedback automation database:",
+      err.message
+    );
+  } else {
+    console.log("Connected to the feedback automation database");
     connection.release();
   }
 });
@@ -125,11 +152,14 @@ const specialAssignment = require("./routes/logistics/special-assignment/special
 // Import visitors management routes
 const visitors = require("./routes/visitors-management/visitors/visitors.routes");
 const interviews = require("./routes/visitors-management/interviews/interview.routes");
-const parking = require("../server/routes/visitors-management/parking/parking.routes")
+const parking = require("../server/routes/visitors-management/parking/parking.routes");
 
 // Import workplan automation routes
 const workplan = require("./routes/workplan-automation/workplan.routes");
 const workplanActivities = require("./routes/workplan-automation/workplan_activities.routes");
+
+// Import feedback routes
+const feedback = require("./routes/feedback/feedback.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -166,6 +196,7 @@ app.use("/api/workplans", workplan(workplanAutomationPool));
 app.use("/api/workplan-activities", workplanActivities(workplanAutomationPool));
 app.use("/api/reserve-parking", parking(visitorManagementPool));
 app.use("/api/reserved-parking", parking(visitorManagementPool));
+app.use("/api/feedback", feedback(feedbackPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
