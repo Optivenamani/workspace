@@ -131,7 +131,7 @@ const Navbar = ({ fullName, email }) => {
             )}
             <li>
               <Link className="justify-between font-bold" to="/feedback">
-                Feedback
+                System Feedback
               </Link>
             </li>
             <li>

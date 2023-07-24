@@ -399,6 +399,12 @@ const Sidebar = ({ children }) => {
                 </Link>
               </li>
             )}
+            {/* Feedback */}
+            <li>
+              <Link to="/feedback" className="font-bold my-1">
+                System Feedback
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
