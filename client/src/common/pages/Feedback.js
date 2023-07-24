@@ -22,7 +22,7 @@ const Feedback = () => {
       feedback: feedback,
     };
     try {
-      const response = await fetch("http://localhost:8080/api/feedback", {
+      const response = await fetch("https://workspace.optiven.co.ke/api/feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
