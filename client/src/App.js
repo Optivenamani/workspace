@@ -67,6 +67,7 @@ import {
   DriverItinerary,
   FillRemarks,
   TeamReports,
+  Feedback,
 } from "./utils/index";
 
 const App = () => {
@@ -137,6 +138,8 @@ const App = () => {
           <Route path="/" exact element={<PrivateRoutes />}>
             {/* App Menu */}
             <Route path="/" element={<AppMenu />} />
+            {/* Feedback */}
+            <Route path="/feedback" element={<Feedback />} />
             {/* Home */}
             <Route path="/logistics-home" element={<Home />} />
             {/* Dashboard */}

@@ -20,6 +20,7 @@ export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests
 export { default as EditSpecialAssignment } from "../logistics/pages/special-assignments/EditSpecialAssignment";
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
 export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor";
+export { default as Feedback } from "../common/pages/Feedback";
 export { default as FillRemarks } from "../workplan/pages/FillRemarks";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";

@@ -130,6 +130,11 @@ const Navbar = ({ fullName, email }) => {
               </li>
             )}
             <li>
+              <Link className="justify-between font-bold" to="/feedback">
+                Feedback
+              </Link>
+            </li>
+            <li>
               <button
                 onClick={handleLogout}
                 className="block w-full text-left py-2 font-bold hover:bg-gray-200"
