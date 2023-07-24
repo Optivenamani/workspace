@@ -22,14 +22,17 @@ const Feedback = () => {
       feedback: feedback,
     };
     try {
-      const response = await fetch("https://workspace.optiven.co.ke/api/feedback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(feedbackData),
-      });
+      const response = await fetch(
+        "https://workspace.optiven.co.ke/api/feedback",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(feedbackData),
+        }
+      );
 
       const responseData = await response.json();
       console.log(responseData);
@@ -72,12 +75,15 @@ const Feedback = () => {
           <p className="text-start">Looking forward to hearing from you,</p>
           <p className="text-start font-bold mb-2">- The ICT Team 📱</p>
           <textarea
-            className="textarea textarea-bordered h-48 w-full"
+            className="textarea textarea-bordered h-48 w-full mb-1"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="This system rocks!"
           />
-          <button className="btn btn-outline" onClick={handleSubmit}>
+          <button
+            className="btn btn-outline w-full lg:w-1/2"
+            onClick={handleSubmit}
+          >
             {loading ? "Submitting" : "Submit"}
           </button>
         </div>

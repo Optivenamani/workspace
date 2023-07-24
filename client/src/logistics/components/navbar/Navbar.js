@@ -33,6 +33,7 @@ const Navbar = ({ fullName, email }) => {
   };
 
   const isAppMenuPage = location.pathname === "/";
+  const isFeedbackPage = location.pathname === "/feedback";
   const isVisitorsHomePage = location.pathname === "/visitors-management";
   const isRegisterVisitorPage = location.pathname === "/register-visitor";
   const isViewVisitorsPage = location.pathname === "/view-visitors";
@@ -44,7 +45,7 @@ const Navbar = ({ fullName, email }) => {
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">
-        {isAppMenuPage ? null : (
+        {isAppMenuPage || isFeedbackPage ? null : (
           <div
             className="tooltip tooltip-right"
             data-tip="Click to toggle drawer"
@@ -100,6 +101,7 @@ const Navbar = ({ fullName, email }) => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
             {isAppMenuPage ||
+            isFeedbackPage ||
             isVisitorsHomePage ||
             isRegisterVisitorPage ||
             isViewVisitorsPage ||
