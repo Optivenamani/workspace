@@ -34,19 +34,45 @@ module.exports = (pool) => {
   });
 
   // CREATE a new workplan for the authenticated user
-  router.post("/", authenticateJWT, (req, res) => {
-    const { user_id } = req.user;
-    const { start_date, end_date } = req.body;
-    const query =
-      "INSERT INTO workplans (start_date, end_date, marketer_id) VALUES (?, ?, ?)";
-    pool.query(query, [start_date, end_date, user_id], (err) => {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server Error" });
-      } else {
-        res.json({ message: "Workplan created successfully" });
+  router.post("/", (req, res) => {
+    const { start_date, end_date, marketer_id } = req.body;
+
+    // Check if any workplan with overlapping date range exists for the same marketer_id
+    const checkQuery =
+      "SELECT * FROM workplans WHERE marketer_id = ? AND start_date <= ? AND end_date >= ?";
+    pool.query(
+      checkQuery,
+      [marketer_id, end_date, start_date], // Swap end_date and start_date to ensure correct comparison
+      (err, results) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server Error" });
+        } else if (results.length > 0) {
+          // If a workplan with overlapping date range exists, return an error response
+          res.status(409).json({
+            message:
+              "A workplan with overlapping date range already exists for this marketer.",
+            status: 409,
+          });
+        } else {
+          // If no workplan with overlapping date range exists, insert the new workplan
+          const insertQuery =
+            "INSERT INTO workplans (start_date, end_date, marketer_id) VALUES (?, ?, ?)";
+          pool.query(
+            insertQuery,
+            [start_date, end_date, marketer_id],
+            (err) => {
+              if (err) {
+                console.error(err);
+                res.status(500).json({ message: "Server Error" });
+              } else {
+                res.json({ message: "Workplan created successfully" });
+              }
+            }
+          );
+        }
       }
-    });
+    );
   });
 
   // UPDATE an existing workplan for the authenticated user
