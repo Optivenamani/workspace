@@ -10,7 +10,7 @@ const CreateWorkPlan = () => {
 
   const token = useSelector((state) => state.user.token);
   const marketerId = useSelector((state) => state.user.user.user_id);
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
   const [workplan, setWorkplan] = useState({
     start_date: "",
@@ -27,8 +27,8 @@ const CreateWorkPlan = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    fetch("https://workspace.optiven.co.ke/api/workplans", {
+        e.preventDefault();
+    fetch("http://localhost:8080/api/workplans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,13 @@ const CreateWorkPlan = () => {
       },
       body: JSON.stringify(workplan),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          // If the response status is not ok, check for specific error messages
+          return response.json().then((data) => Promise.reject(data));
+        }
+        return response.json();
+      })
       .then((data) => {
         console.log(data);
         setLoading(false);
@@ -52,13 +58,27 @@ const CreateWorkPlan = () => {
       .catch((error) => {
         console.error(error);
         setLoading(false);
-        toast.error("An error occurred. Please try again.", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        if (error.status === 409) {
+          // Handling the specific error for duplicate workplan within the same week
+          toast.error(
+            "You have already created a workplan that exists in this date range.",
+            {
+              position: "top-center",
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            }
+          );
+        } else {
+          toast.error("An error occurred. Please try again later.", {
+            position: "top-center",
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
       });
   };
 
