@@ -4,20 +4,11 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const formatTime = (timeStr) => {
-  if (!timeStr) return "";
-  return timeStr.slice(11, 19);
-};
+// const formatTime = (timeStr) => {
+//   if (!timeStr) return "";
+//   return timeStr.slice(11, 19);
+// };
 
-const formatDate = (dateString) => {
-  if (!dateString) return null;
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-CA", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-};
 
 const FillRemarks = () => {
   const [activities, setActivities] = useState([]);
@@ -25,6 +16,26 @@ const FillRemarks = () => {
   const [remarks, setRemarks] = useState("");
   const token = useSelector((state) => state.user.token);
   const userId = useSelector((state) => state.user.user.user_id);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatTime = (timeStr) => {
+    if (!timeStr || !timeStr.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)) {
+      // If timeStr is empty or not in the expected format, return an empty string
+      return "";
+    }
+  
+    const time = timeStr.slice(11, 19);
+    return time;
+  };
+  
 
   useEffect(() => {
     // Fetch activities data from the server
@@ -47,7 +58,12 @@ const FillRemarks = () => {
           id: activity.id,
           workplan_id: activity.workplan_id,
           title: activity.title,
-          date: activity.date,
+          time: `${formatDate(activity.date)}T${formatTime(activity.time)}`,
+          date: `${formatDate(activity.date)}`,
+          expected_output: activity.expected_output,
+          measurable_achievement: activity.measurable_achievement,
+          variance: activity.variance,
+          comments: activity.comments,
         }));
         setActivities(formattedActivities);
         console.log("activities", formattedActivities);
@@ -59,39 +75,7 @@ const FillRemarks = () => {
     fetchActivities();
   }, [token, userId]);
 
-  // useEffect(() => {
-  //   // Sample activities data (replace this with your actual data)
-  //   const sampleActivities = [
-  //     {
-  //       id: 1,
-  //       workplan_id: "WP-001",
-  //       title: "Activity 1",
-  //       date: "2023-07-26T08:00:00",
-  //     },
-  //     {
-  //       id: 2,
-  //       workplan_id: "WP-002",
-  //       title: "Activity 2",
-  //       date: "2023-07-27T09:30:00",
-  //     },
-  //     {
-  //       id: 3,
-  //       workplan_id: "WP-003",
-  //       title: "Activity 3",
-  //       date: "2023-07-28T10:45:00",
-  //     },
-  //   ];
-
-  //   // Format activities and update state
-  //   const formattedActivities = sampleActivities.map((activity) => ({
-  //     id: activity.id,
-  //     workplan_id: activity.workplan_id,
-  //     title: activity.title,
-  //     date: activity.date,
-  //   }));
-  //   setActivities(formattedActivities);
-  // }, []);
-
+ 
   const handleView = (activity) => {
     setSelectedActivity(activity);
   };
@@ -104,7 +88,7 @@ const FillRemarks = () => {
   const handleFillRemarks = async () => {
     try {
       // Check if remarks are empty
-      if (!remarks.trim() === "") {
+      if (!remarks.trim()) {
         toast.error("Remarks cannot be empty!", {
           position: "top-center",
           closeOnClick: true,
@@ -116,25 +100,59 @@ const FillRemarks = () => {
       }
 
       // Update the activity with the new remarks
-      const updatedActivity = {
-        ...selectedActivity,
-        remarks: remarks.trim(),
-      };
+      const activityId = selectedActivity.id;
+      const response = await fetch(
+        `http://localhost:8080/api/workplan-activities/${activityId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...selectedActivity,
+            remarks: remarks.trim(),
+            time: selectedActivity.time.slice(11, 19),
+          }),
+        }
+      );
 
-      // You can send the updatedActivity to the backend here if needed
-      // For demonstration purposes, we are just updating the local state.
+      if (response.ok) {
+        // Activity updated successfully, update the activities state in the parent component
+        const updatedActivities = activities.map((activity) => {
+          if (activity.id === activityId) {
+            return {
+              ...activity,
+              remarks: remarks.trim(),
+            };
+          }
+          return activity;
+        });
 
-      setSelectedActivity(updatedActivity);
-      setRemarks("");
+        setActivities(updatedActivities);
+        setSelectedActivity((prev) => ({
+          ...prev,
+          remarks: remarks.trim(),
+        }));
 
-      toast.success("Remarks added successfully!", {
-        position: "top-center",
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+        toast.success("Remarks added successfully!", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error("Failed to update remarks. Please try again.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     } catch (error) {
+      console.error("Error:", error);
       toast.error(error.message || "Failed to add remarks. Please try again.", {
         position: "top-center",
         closeOnClick: true,
