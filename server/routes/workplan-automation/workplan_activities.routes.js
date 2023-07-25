@@ -26,6 +26,23 @@ module.exports = (pool) => {
     );
   });
 
+  // GET all workplan activities for the authenticated user
+  router.get("/all", authenticateJWT, (req, res) => {
+    const { user_id } = req.query;
+    pool.query(
+      `SELECT * FROM workplan_activities`,
+      [user_id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server Error" });
+        } else {
+          res.json(results);
+        }
+      }
+    );
+  });
+
   // GET a specific workplan activity
   router.get("/:id", authenticateJWT, (req, res) => {
     const { id } = req.params;
