@@ -32,6 +32,8 @@ const FillRemarks = () => {
             item.measurable_achievement !== null && item.remarks === null
         );
 
+        console.log("data:", filteredData);
+
         setActivities(filteredData);
       } catch (error) {
         console.error(error);
@@ -145,6 +147,8 @@ const FillRemarks = () => {
     return acc;
   }, {});
 
+  console.log("grouped activities", groupedActivities);
+
   function truncateText(text, maxLength = 20) {
     if (!text) {
       return "";
@@ -207,7 +211,7 @@ const FillRemarks = () => {
                                 data-tip={activity.expected_output}
                               >
                                 <p className="text-xs font-bold lausanne w-3/4">
-                                  {truncateText(activity.expected_output, 20)}
+                                  {truncateText(activity.expected_output, 25)}
                                 </p>
                               </div>
                             </div>
@@ -222,7 +226,7 @@ const FillRemarks = () => {
                                 <p className="text-xs font-bold lausanne w-3/4">
                                   {truncateText(
                                     activity.measurable_achievement,
-                                    20
+                                    25
                                   )}
                                 </p>
                               </div>
@@ -236,7 +240,7 @@ const FillRemarks = () => {
                                 data-tip={activity.variance}
                               >
                                 <p className="text-xs font-bold lausanne">
-                                  {truncateText(activity.variance, 20)}
+                                  {truncateText(activity.variance, 25)}
                                 </p>
                               </div>
                             </div>
@@ -249,7 +253,7 @@ const FillRemarks = () => {
                                 data-tip={activity.remarks}
                               >
                                 <p className="text-xs font-bold lausanne">
-                                  {truncateText(activity.remarks, 20)}
+                                  {truncateText(activity.remarks, 25)}
                                 </p>
                               </div>
                             </div>
@@ -262,17 +266,18 @@ const FillRemarks = () => {
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  class="h-6 w-6"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
+                                  width={16}
+                                  height={16}
+                                  fill="currentColor"
+                                  className="bi bi-pencil-square mr-2"
+                                  viewBox="0 0 16 16"
                                 >
+                                  {" "}
+                                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />{" "}
                                   <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 4v16m8-8H4"
-                                  />
+                                    fillRule="evenodd"
+                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                  />{" "}
                                 </svg>
                                 Comment
                               </button>
@@ -287,7 +292,7 @@ const FillRemarks = () => {
                                 stroke-width="2"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
-                                class="feather feather-edit-3"
+                                className="feather feather-edit-3"
                               >
                                 <path d="M12 20h9"></path>
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -299,7 +304,7 @@ const FillRemarks = () => {
                                 width="20"
                                 height="20"
                                 fill="currentColor"
-                                class="bi bi-trash"
+                                className="bi bi-trash"
                                 viewBox="0 0 16 16"
                               >
                                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
