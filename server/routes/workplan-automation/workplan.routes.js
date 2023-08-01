@@ -6,7 +6,8 @@ module.exports = (pool) => {
   // GET all workplans for the authenticated user
   router.get("/", authenticateJWT, (req, res) => {
     const { user_id } = req.query;
-    const query = "SELECT * FROM workplans WHERE marketer_id = ?";
+    const query =
+      "SELECT * FROM workplans WHERE marketer_id = ? ORDER BY end_date DESC";
     pool.query(query, [user_id], (err, results) => {
       if (err) {
         console.error(err);

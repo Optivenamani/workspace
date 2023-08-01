@@ -182,9 +182,6 @@ const Dashboard = () => {
                       colorScale={"qualitative"}
                       // labelRadius={({ innerRadius }) => innerRadius + 30}
                       // labels={({ datum }) => `${datum.site_name}: ${datum.count}`}
-                      animate={{
-                        onLoad: { duration: 1000 },
-                      }}
                       labelComponent={<VictoryTooltip />}
                       // padAngle={({ datum }) => datum.count}
                     />
@@ -203,7 +200,6 @@ const Dashboard = () => {
                     <VictoryChart
                       theme={VictoryTheme.material}
                       domainPadding={10}
-                      animate={{ duration: 1000 }}
                     >
                       <VictoryAxis
                         tickValues={siteCounts.map((site, index) => index)}
@@ -230,10 +226,6 @@ const Dashboard = () => {
                         y="count"
                         labels={({ datum }) => `${datum.count}`}
                         labelComponent={<VictoryTooltip />}
-                        animate={{
-                          duration: 2000,
-                          onLoad: { duration: 1000 },
-                        }}
                       />
                     </VictoryChart>
                   </div>
