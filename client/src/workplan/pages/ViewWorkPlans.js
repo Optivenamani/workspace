@@ -82,6 +82,7 @@ const ViewWorkPlans = () => {
     return () => {
       clearInterval(countdownInterval);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workplans]);
 
   return (

@@ -166,7 +166,7 @@ const FillRemarks = () => {
       <div className="bg-base-200 pt-5 pb-10 min-h-full min-w-full">
         <div>
           {/* Loop through the grouped activities and render them */}
-          {Array.isArray(groupedActivities) ? (
+          {groupedActivities ? (
             Object.entries(groupedActivities).map(
               ([date, activitiesForDate]) => (
                 <div key={date} className="block mx-10 md:mx-20 lg:mx-24">
