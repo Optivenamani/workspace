@@ -8,6 +8,7 @@ import huh from "../../assets/app-illustrations/Shrug-bro.png";
 const ViewWorkPlans = () => {
   const [workplans, setWorkplans] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const [selectedWorkplan, setSelectedWorkplan] = useState(null);
   const userId = useSelector((state) => state.user.user.user_id);
   const [countdownTimers, setCountdownTimers] = useState({});
 
@@ -82,8 +83,22 @@ const ViewWorkPlans = () => {
     return () => {
       clearInterval(countdownInterval);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workplans]);
+
+  const handleView = (workplan) => {
+    console.log("view workplan:", workplan);
+    setSelectedWorkplan(workplan);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedWorkplan(null);
+  };
+
+  const deleteWorkplan = () => {
+    console.log("workplan deleted", selectedWorkplan.id);
+    handleCloseModal();
+  };
 
   return (
     <Sidebar>
@@ -151,8 +166,11 @@ const ViewWorkPlans = () => {
                           </svg>
                           ADD ACTIVITIES
                         </button>
-                        {/* {!(new Date() > new Date(workplan.start_date)) && (
-                          <button className="btn btn-square btn-error btn-sm text-white ml-2">
+                        {!(new Date() > new Date(workplan.start_date)) && (
+                          <button
+                            className="btn btn-square btn-error btn-sm text-white ml-2"
+                            onClick={() => handleView(workplan)}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="20"
@@ -168,7 +186,7 @@ const ViewWorkPlans = () => {
                               />
                             </svg>
                           </button>
-                        )} */}
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -185,6 +203,33 @@ const ViewWorkPlans = () => {
           )}
         </div>
       </div>
+      {/* Modal for displaying deletion warning */}
+      {selectedWorkplan && (
+        <div className="fixed inset-0 flex justify-center items-center z-10 bg-black bg-opacity-50">
+          <div className="modal-box container mx-auto">
+            <button
+              onClick={handleCloseModal}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-semibold mb-4">WARNING</h2>
+            <label className="label">
+              Are you sure you want to delete this workplan? All the activities
+              under this workplan will also be deleted.
+            </label>
+
+            <div className="flex flex-col">
+              <button
+                onClick={deleteWorkplan}
+                className="btn btn-error text-white mt-2"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Sidebar>
   );
 };
