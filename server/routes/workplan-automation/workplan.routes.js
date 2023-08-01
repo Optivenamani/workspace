@@ -96,31 +96,34 @@ module.exports = (pool) => {
   });
 
   // DELETE a workplan for the authenticated user
-router.delete("/:id",  (req, res) => {
-  // const { user_id } = req.body;
-  const { id } = req.params;
+  router.delete("/:id", authenticateJWT, (req, res) => {
+    const { id } = req.params;
 
-  const deleteActivitiesQuery = "DELETE FROM workplan_activities WHERE workplan_id = ?";
-  pool.query(deleteActivitiesQuery, [id], (err, activityResult) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ message: "Server Error" });
-    } else {
-      //  delete the workplan
-      const deleteWorkplanQuery = "DELETE FROM workplans WHERE id = ?";
-      pool.query(deleteWorkplanQuery, [id], (err, workplanResult) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ message: "Server Error" });
-        } else if (workplanResult.affectedRows > 0) {
-          res.json({ message: "Workplan and associated activities deleted successfully" });
-        } else {
-          res.status(404).json({ message: "Workplan not found" });
-        }
-      });
-    }
+    const deleteActivitiesQuery =
+      "DELETE FROM workplan_activities WHERE workplan_id = ?";
+    pool.query(deleteActivitiesQuery, [id], (err, activityResult) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        //  delete the workplan
+        const deleteWorkplanQuery = "DELETE FROM workplans WHERE id = ?";
+        pool.query(deleteWorkplanQuery, [id], (err, workplanResult) => {
+          if (err) {
+            console.error(err);
+            res.status(500).json({ message: "Server Error" });
+          } else if (workplanResult.affectedRows > 0) {
+            res.json({
+              message:
+                "Workplan and associated activities deleted successfully",
+            });
+          } else {
+            res.status(404).json({ message: "Workplan not found" });
+          }
+        });
+      }
+    });
   });
-});
 
   return router;
 };

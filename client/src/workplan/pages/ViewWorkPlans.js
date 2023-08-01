@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import formatDate from "../../utils/formatDate";
 import huh from "../../assets/app-illustrations/Shrug-bro.png";
 
@@ -47,7 +49,6 @@ const ViewWorkPlans = () => {
     navigate(`/view-workplans/${workplanId}`);
   };
 
-  // Inside the ViewWorkPlans component
   const updateCountdownTimers = () => {
     const updatedTimers = {};
 
@@ -76,7 +77,6 @@ const ViewWorkPlans = () => {
     setCountdownTimers(updatedTimers);
   };
 
-  // Inside the ViewWorkPlans component
   useEffect(() => {
     const countdownInterval = setInterval(updateCountdownTimers, 1000);
 
@@ -95,9 +95,55 @@ const ViewWorkPlans = () => {
     setSelectedWorkplan(null);
   };
 
-  const deleteWorkplan = () => {
-    console.log("workplan deleted", selectedWorkplan.id);
-    handleCloseModal();
+  const deleteWorkplan = async () => {
+    try {
+      if (!selectedWorkplan) {
+        throw new Error("No workplan selected for deletion.");
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/api/workplans/${selectedWorkplan.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `Failed to delete workplan. Server responded with status ${response.status}. Error message: ${errorData.message}`
+        );
+      }
+
+      // Workplan successfully deleted, update the state
+      setWorkplans((prevWorkplans) =>
+        prevWorkplans.filter((workplan) => workplan.id !== selectedWorkplan.id)
+      );
+
+      handleCloseModal();
+      toast.success("Workplan deleted successfully", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.message || "Failed to delete workplan. Please try again.",
+        {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    }
   };
 
   return (

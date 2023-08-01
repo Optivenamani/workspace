@@ -10,7 +10,7 @@ const CreateWorkPlan = () => {
 
   const token = useSelector((state) => state.user.token);
   const marketerId = useSelector((state) => state.user.user.user_id);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [workplan, setWorkplan] = useState({
     start_date: "",
@@ -27,7 +27,7 @@ const CreateWorkPlan = () => {
   };
 
   const handleSubmit = (e) => {
-        e.preventDefault();
+    e.preventDefault();
     fetch("http://localhost:8080/api/workplans", {
       method: "POST",
       headers: {
