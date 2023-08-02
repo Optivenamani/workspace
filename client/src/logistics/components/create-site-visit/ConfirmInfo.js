@@ -6,6 +6,8 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
   console.log("formData:", formData);
 
   console.log(formatTime(formData.pickup_time));
+  const clientsArrayLength = formData.clients.length;
+  console.log("clients array length", clientsArrayLength);
 
   return (
     <>
@@ -78,10 +80,15 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
         <button
           className="btn btn-primary btn-outline mt-4"
           onClick={onSubmitForm}
-          disabled={isChecked === false}
+          disabled={isChecked === false || clientsArrayLength === 0}
         >
           Submit
         </button>
+        {clientsArrayLength === 0 ? (
+          <span className="text-sm text-red-500 font-bold italic mt-2">
+            You haven't placed any clients
+          </span>
+        ) : null}
       </div>
     </>
   );
