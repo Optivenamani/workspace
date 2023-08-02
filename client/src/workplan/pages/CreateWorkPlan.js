@@ -30,7 +30,7 @@ const CreateWorkPlan = () => {
   const handleSubmit = (e) => {
     console.log(JSON.stringify(workplan));
     e.preventDefault();
-    fetch("https://workplan.optiven.co.ke/api/workplans", {
+    fetch("https://workspace.optiven.co.ke/api/workplans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
