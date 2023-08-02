@@ -25,11 +25,39 @@ const Form = () => {
 
   const navigate = useNavigate();
 
+  const handleNextButtonClick = () => {
+    if (validateForm()) {
+      setPage((currentPage) => currentPage + 1);
+    } else {
+      toast.error(
+        "Please fill in all required fields CORRECTLY before proceeding.",
+        {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    }
+  };
+
   const formTitles = ["Site Visit Info", "Client Info", "Confirm Details"];
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if the form is valid before submitting
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields correctly.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
     // Get the token from the storage
     const token = localStorage.getItem("token");
 
@@ -87,6 +115,12 @@ const Form = () => {
     }
   };
 
+  const isValidPhone = (phone_number) => {
+    // Updated phone number validation (digits, plus sign at the beginning, and dashes)
+    const phoneRegex = /^\+?\d+(-\d+)*$/;
+    return phoneRegex.test(phone_number);
+  };
+
   const validateForm = () => {
     if (page === 0) {
       return (
@@ -98,7 +132,20 @@ const Form = () => {
       );
     } else if (page === 1) {
       return formData.clients.every((client) => {
-        return client.name && client.phone_number;
+        // Check for name presence
+        if (!client.name) {
+          return false;
+        }
+
+        // Check for phone presence and correctness
+        if (
+          !client.phone_number ||
+          !isValidPhone(client.phone_number)
+        ) {
+          return false;
+        }
+
+        return true;
       });
     }
     return false;
@@ -178,22 +225,7 @@ const Form = () => {
           {page === formTitles.length - 1 ? null : (
             <button
               disabled={page === formTitles.length - 1}
-              onClick={() => {
-                if (validateForm()) {
-                  setPage((currentPage) => currentPage + 1);
-                } else {
-                  toast.error(
-                    "Please fill in all required fields before proceeding.",
-                    {
-                      position: "top-center",
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                    }
-                  );
-                }
-              }}
+              onClick={handleNextButtonClick}
               className="mx-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
             >
               <svg

@@ -147,6 +147,16 @@ module.exports = (pool) => {
       console.error("Error during auto-checkout:", error);
     }
   }
+  // Helper function to send staff emails
+const sendStaffEmail = (staffEmail, subject, text) => {
+  return sendEmail(staffEmail, subject, text)
+    .then(() => {
+      console.log("Staff email sent successfully.");
+    })
+    .catch((error) => {
+      console.error("Error sending staff email:", error);
+    });
+};
   // Input new visitor information
   router.post("/", authenticateJWT, async (req, res) => {
     const {
@@ -336,19 +346,93 @@ module.exports = (pool) => {
           visitor_room,
           id,
         ],
+        
         (err, result) => {
-          if (err) throw err;
-
-          if (result.affectedRows === 0) {
-            res.status(404).json({ message: "Visitor not found." });
-          } else {
-            res.json({
-              message: "Visitor updated successfully.",
+          if (err) {
+            console.error("Error updating visitor:", err);
+            res.status(500).json({
+              message: "An error occurred while updating the visitor.",
             });
+          } else {
+            if (result.affectedRows === 0) {
+              res.status(404).json({ message: "Visitor not found." });
+            } else {
+              // Visitor updated successfully, now send the staff email
+              const fetchStaffEmailQuery =
+                "SELECT email FROM defaultdb.users WHERE user_id = ?";
+              pool.query(fetchStaffEmailQuery, [staff_id], (err, results) => {
+                if (err) {
+                  console.error("Error fetching staff email:", err);
+                  res.status(500).json({
+                    message: "An error occurred while fetching the staff email.",
+                  });
+                  return;
+                }
+  
+                const staffEmail = results[0]?.email;
+  
+                if (!staffEmail) {
+                  console.error("Staff email not found.");
+                  res.status(500).json({
+                    message: "An error occurred while fetching the staff email.",
+                  });
+                  return;
+                }
+  
+                // Extract the previous data from the database before updating
+                pool.query(
+                  "SELECT * FROM visitors_information WHERE id = ?",
+                  [id],
+                  (err, prevResults) => {
+                    if (err) {
+                      console.error("Error fetching previous data:", err);
+                      res.status(500).json({
+                        message: "An error occurred while fetching previous data.",
+                      });
+                      return;
+                    }
+  
+                    const prevData = prevResults[0];
+  
+                    const subject =
+                      "Visitor Information Updated - Immediate Attention Required";
+                    const text = `Dear Sir/Madam,
+  
+                    I hope this email finds you well. We want to inform you that visitor information has been updated. Please take a moment to review the changes.
+  
+                    ** Visitor Details:**
+                    Name: ${name}
+                    Phone: ${phone}
+                    Email: ${email}
+                    Purpose: ${purpose}
+                    Room: ${visitor_room}
+  
+                    If you have any concerns or need further information, please do not hesitate to reach out.
+  
+                    Best regards.`;
+  
+                    sendStaffEmail(staffEmail, subject, text)
+                      .then(() => {
+                        res.json({
+                          message: "Visitor updated successfully.",
+                        });
+                      })
+                      .catch((error) => {
+                        console.error("Error sending email to staff:", error);
+                        res.status(500).json({
+                          message:
+                            "An error occurred while sending the email to the staff.",
+                        });
+                      });
+                  }
+                );
+              });
+            }
           }
         }
       );
     } catch (error) {
+      console.error("Error updating visitor:", error);
       res.status(500).json({
         message: "An error occurred while updating the visitor.",
       });
