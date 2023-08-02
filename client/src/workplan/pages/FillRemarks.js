@@ -18,7 +18,7 @@ const FillRemarks = () => {
     const fetchActivities = async () => {
       try {
         const response = await fetch(
-          `http://workplan.optiven.co.ke/api/workplan-activities/all`,
+          `https://workplan.optiven.co.ke/api/workplan-activities/all`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ const FillRemarks = () => {
       // Update the activity with the new remarks
       const activityId = selectedActivity.id;
       const response = await fetch(
-        `http://workplan.optiven.co.ke/api/workplan-activities/${activityId}`,
+        `https://workplan.optiven.co.ke/api/workplan-activities/${activityId}`,
         {
           method: "PATCH",
           headers: {
