@@ -161,7 +161,7 @@ const ViewWorkPlans = () => {
         </div>
         <div className="block mx-20">
           {Array.isArray(workplans) ? (
-            <table className="table w-full bg-base-100 shadow-xl">
+            <table className="table table-zebra w-full bg-base-100 shadow-xl">
               <tbody>
                 {workplans.map((workplan) => (
                   <tr key={workplan.id}>
