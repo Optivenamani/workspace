@@ -140,6 +140,7 @@ const Survey = () => {
                         onChange={(e) => setAmountReserved(e.target.value)}
                         className="input input-bordered w-full max-w-xs"
                         placeholder="100000"
+                        min={1}
                       />
                       <label htmlFor="plotDetails" className="label text-md">
                         What are the details of the plot that they reserved?
