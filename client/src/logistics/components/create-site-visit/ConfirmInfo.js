@@ -67,16 +67,20 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             )}
           </h1>
         </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            className="checkbox mr-2"
-            checked={isChecked}
-            onChange={() => setIsChecked(!isChecked)}
-          />
+        {clientsArrayLength !== 0 && (
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              className="checkbox mr-2"
+              checked={isChecked}
+              onChange={() => setIsChecked(!isChecked)}
+            />
 
-          <p className="font-bold italic">The info provided above is correct</p>
-        </div>
+            <p className="font-bold italic">
+              The info provided above is correct
+            </p>
+          </div>
+        )}
         <button
           className="btn btn-primary btn-outline mt-4"
           onClick={onSubmitForm}

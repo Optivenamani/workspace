@@ -115,14 +115,8 @@ const Form = () => {
     }
   };
 
-  // const isValidEmail = (email) => {
-  //   // Basic email validation
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   return emailRegex.test(email);
-  // };
-
   const isValidPhone = (phone_number) => {
-    // Updated phone number validation (digits, optional plus sign, and dashes)
+    // Updated phone number validation (digits, plus sign at the beginning, and dashes)
     const phoneRegex = /^\+?\d+(-\d+)*$/;
     return phoneRegex.test(phone_number);
   };
@@ -150,10 +144,6 @@ const Form = () => {
         ) {
           return false;
         }
-
-        // if (!isValidEmail(client.email)) {
-        //   return false;
-        // }
 
         return true;
       });
