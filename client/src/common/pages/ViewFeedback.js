@@ -9,7 +9,7 @@ const ViewFeedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/feedback", {
+        const response = await fetch("http://workplan.optiven.co.ke/api/feedback", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -28,7 +28,7 @@ const CreateWorkPlan = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:8080/api/workplans", {
+    fetch("http://workplan.optiven.co.ke/api/workplans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

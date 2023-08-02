@@ -21,7 +21,7 @@ const ViewWorkPlans = () => {
     const fetchWorkPlans = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/workplans?user_id=${userId}`,
+          `http://workplan.optiven.co.ke/api/workplans?user_id=${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ const ViewWorkPlans = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/api/workplans/${selectedWorkplan.id}`,
+        `http://workplan.optiven.co.ke/api/workplans/${selectedWorkplan.id}`,
         {
           method: "DELETE",
           headers: {
