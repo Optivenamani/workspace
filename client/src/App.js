@@ -68,6 +68,7 @@ import {
   FillRemarks,
   TeamReports,
   Feedback,
+  ViewFeedback,
 } from "./utils/index";
 
 const App = () => {
@@ -139,6 +140,7 @@ const App = () => {
             {/* App Menu */}
             <Route path="/" element={<AppMenu />} />
             {/* Feedback */}
+            <Route path="/view-feedback" element={<ViewFeedback />} />
             <Route path="/feedback" element={<Feedback />} />
             {/* Home */}
             <Route path="/logistics-home" element={<Home />} />

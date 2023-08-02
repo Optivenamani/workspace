@@ -53,5 +53,6 @@ export { default as ViewVisitors } from "../visitors-management/pages/visitors/V
 export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
 export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports";
 export { default as ViewActivities } from "../workplan/pages/ViewActivities";
+export { default as ViewFeedback } from "../common/pages/ViewFeedback";
 export { default as ViewWorkPlans } from "../workplan/pages/ViewWorkPlans";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";

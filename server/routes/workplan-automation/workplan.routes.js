@@ -6,7 +6,8 @@ module.exports = (pool) => {
   // GET all workplans for the authenticated user
   router.get("/", authenticateJWT, (req, res) => {
     const { user_id } = req.query;
-    const query = "SELECT * FROM workplans WHERE marketer_id = ?";
+    const query =
+      "SELECT * FROM workplans WHERE marketer_id = ? ORDER BY end_date DESC";
     pool.query(query, [user_id], (err, results) => {
       if (err) {
         console.error(err);
@@ -96,17 +97,30 @@ module.exports = (pool) => {
 
   // DELETE a workplan for the authenticated user
   router.delete("/:id", authenticateJWT, (req, res) => {
-    const { user_id } = req.user;
     const { id } = req.params;
-    const query = "DELETE FROM workplans WHERE id = ? AND marketer_id = ?";
-    pool.query(query, [id, user_id], (err, result) => {
+
+    const deleteActivitiesQuery =
+      "DELETE FROM workplan_activities WHERE workplan_id = ?";
+    pool.query(deleteActivitiesQuery, [id], (err, activityResult) => {
       if (err) {
         console.error(err);
         res.status(500).json({ message: "Server Error" });
-      } else if (result.affectedRows > 0) {
-        res.json({ message: "Workplan deleted successfully" });
       } else {
-        res.status(404).json({ message: "Workplan not found" });
+        //  delete the workplan
+        const deleteWorkplanQuery = "DELETE FROM workplans WHERE id = ?";
+        pool.query(deleteWorkplanQuery, [id], (err, workplanResult) => {
+          if (err) {
+            console.error(err);
+            res.status(500).json({ message: "Server Error" });
+          } else if (workplanResult.affectedRows > 0) {
+            res.json({
+              message:
+                "Workplan and associated activities deleted successfully",
+            });
+          } else {
+            res.status(404).json({ message: "Workplan not found" });
+          }
+        });
       }
     });
   });
