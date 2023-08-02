@@ -5,11 +5,14 @@ module.exports = (pool) => {
   // GET all feedback
   router.get("/", async (req, res) => {
     try {
-      pool.query("SELECT * FROM users_feedback", (err, results) => {
-        if (err) throw err;
+      pool.query(
+        "SELECT * FROM users_feedback ORDER BY id DESC",
+        (err, results) => {
+          if (err) throw err;
 
-        res.json(results);
-      });
+          res.json(results);
+        }
+      );
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching feedback.",

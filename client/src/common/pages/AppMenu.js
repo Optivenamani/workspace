@@ -9,8 +9,6 @@ const AppMenu = ({ onAppSelect }) => {
 
   const department = useSelector((state) => state.user.user.department);
 
-  // console.log(department);
-
   return (
     <>
       <section className="min-h-screen">
@@ -69,6 +67,26 @@ const AppMenu = ({ onAppSelect }) => {
                   <div className="relative pt-3 bg-white">
                     <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
                       Visitors Management
+                    </h3>
+                  </div>
+                </Link>
+              </li>
+            )}
+            {department === "ICT" && (
+              <li>
+                <Link
+                  to="/view-feedback"
+                  className="block overflow-hidden group"
+                  onClick={() => handleAppSelect("Visitor Management")}
+                >
+                  <img
+                    src="https://images.pexels.com/photos/6610213/pexels-photo-6610213.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    alt=""
+                    className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                  />
+                  <div className="relative pt-3 bg-white">
+                    <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                      Feedback
                     </h3>
                   </div>
                 </Link>
