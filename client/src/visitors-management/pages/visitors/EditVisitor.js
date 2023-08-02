@@ -384,7 +384,7 @@ const EditVisitor = () => {
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={loading || !selectedStaffId}
                       id="submit"
                       className="btn btn-primary w-full max-w-xs text-white"
                     >

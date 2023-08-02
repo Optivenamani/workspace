@@ -9,7 +9,7 @@ const ViewFeedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await fetch("https://workplan.optiven.co.ke/api/feedback", {
+        const response = await fetch("https://workspace.optiven.co.ke/api/feedback", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -25,6 +25,18 @@ const ViewFeedback = () => {
     fetchFeedback();
   }, [token]);
 
+  function truncateText(text, maxLength = 20) {
+    if (!text) {
+      return "";
+    }
+
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return text.slice(0, maxLength - 3) + "...";
+    }
+  }
+
   return (
     <div className="container px-4 py-6 mx-auto">
       <div className="overflow-x-auto card bg-base-100 shadow-xl">
@@ -33,7 +45,7 @@ const ViewFeedback = () => {
             <tr>
               <th>User ID</th>
               <th>Name</th>
-              <th>Department</th>
+              <th>feedback</th>
             </tr>
           </thead>
           <tbody>
@@ -41,10 +53,14 @@ const ViewFeedback = () => {
               <tr key={item.id}>
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
-                <td>
-                  {item.feedback === "" || item.feedback === null
-                    ? "NULL"
-                    : item.feedback}
+                <td className="max-w-sm">
+                  {item.feedback === "" || item.feedback === null ? (
+                    "NULL"
+                  ) : (
+                    <div className="tooltip" data-tip={item.feedback}>
+                      <p>{truncateText(item.feedback, 125)}</p>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
