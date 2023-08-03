@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setItemsPerPage } from "../../../redux/logistics/features/pagination/paginationSlice";
 import formatTime from "../../../utils/formatTime";
 import { Link, useNavigate } from "react-router-dom";
 import huh from "../../../assets/app-illustrations/Shrug-bro.png";
@@ -8,10 +9,16 @@ import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 const SiteVisitRequests = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  // const [itemsPerPage, setItemsPerPage] = useState(10);
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
   const [pending, setPending] = useState([]);
   const token = useSelector((state) => state.user.token);
+
+  // Use useSelector to get the itemsPerPage from Redux store
+  const itemsPerPage = useSelector((state) => state.pagination.itemsPerPage);
+  const dispatch = useDispatch();
+
+  console.log("Items per page:", itemsPerPage);
 
   // Calculate the range of items to be displayed on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -75,8 +82,9 @@ const SiteVisitRequests = () => {
   };
 
   const handleItemsPerPageChange = (event) => {
-    setItemsPerPage(parseInt(event.target.value));
-    setCurrentPage(1);
+    const newItemsPerPage = parseInt(event.target.value);
+    dispatch(setItemsPerPage(newItemsPerPage)); // Dispatch the action to update Redux state
+    setCurrentPage(1); // Reset current page when itemsPerPage changes
   };
 
   const handlePageChange = (pageNumber) => {
