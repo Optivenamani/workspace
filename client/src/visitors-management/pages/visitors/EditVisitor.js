@@ -57,7 +57,7 @@ const EditVisitor = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/visitors/${visitorId}`,
+        `https://workspace.optiven.co.ke//api/visitors/${visitorId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ const EditVisitor = () => {
     const fetchStaff = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/users",
+          "https://workspace.optiven.co.ke//api/users",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -128,7 +128,7 @@ const EditVisitor = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/visitors/${visitorId}`,
+        `https://workspace.optiven.co.ke//api/visitors/${visitorId}`,
         {
           method: "PATCH",
           headers: {
