@@ -48,16 +48,16 @@ const Form = () => {
     e.preventDefault();
 
     // Check if the form is valid before submitting
-    if (!validateForm()) {
-      toast.error("Please fill in all required fields correctly.", {
-        position: "top-center",
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
+    // if (!validateForm()) {
+    //   toast.error("Please fill in all required fields correctly.", {
+    //     position: "top-center",
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    //   return;
+    // }
     // Get the token from the storage
     const token = localStorage.getItem("token");
 
