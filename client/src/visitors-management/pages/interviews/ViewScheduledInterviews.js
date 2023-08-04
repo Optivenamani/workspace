@@ -35,7 +35,7 @@ const ViewScheduledInterviews = () => {
     // Fetch interview data from the server
     const fetchInterviews = async () => {
       try {
-        const response = await fetch("https://workspace.optiven.co.ke/api/interviews", {
+        const response = await fetch("http://localhost:8080/api/interviews", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -78,7 +78,7 @@ const ViewScheduledInterviews = () => {
       const currentTimeString = `${hours}:${minutes}:${seconds}`;
   
       const response = await fetch(
-        `https://workspace.optiven.co.ke/api/interviews/admit/${interviewId}`,
+        `http://localhost:8080/api/interviews/admit/${interviewId}`,
         {
           method: "PATCH",
           headers: {
@@ -111,7 +111,7 @@ const ViewScheduledInterviews = () => {
 
   const deleteInterview = (interviewId) => {
    // Send a DELETE request to the server to delete the vehicle with the specified ID
-    fetch(`https://workspace.optiven.co.ke/api/interviews/${interviewId}`, {
+    fetch(`http://localhost:8080/api/interviews/${interviewId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
