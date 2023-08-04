@@ -147,6 +147,8 @@ module.exports = (pool) => {
       console.error("Error during auto-checkout:", error);
     }
   }
+autoCheckoutJob;
+
   // Helper function to send staff emails
 const sendStaffEmail = (staffEmail, subject, text) => {
   return sendEmail(staffEmail, subject, text)
