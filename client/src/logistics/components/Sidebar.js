@@ -5,6 +5,7 @@ import {
   selectActiveSiteVisits,
   fetchPendingSiteVisits,
 } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
+import { fetchPendingVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
 
@@ -14,6 +15,9 @@ const Sidebar = ({ children }) => {
   const activeVisits = useSelector(selectActiveSiteVisits);
   const siteVisitStatus = useSelector((state) => state.siteVisit.status);
   const pendingVisits = useSelector((state) => state.siteVisit.pendingVisits);
+  const pendingVehicleRequests = useSelector(
+    (state) => state.vehicleRequest.pendingVehicleRequests
+  );
 
   const accessRoles = accessRole.split("#");
 
@@ -31,6 +35,7 @@ const Sidebar = ({ children }) => {
   useEffect(() => {
     dispatch(fetchActiveSiteVisits());
     dispatch(fetchPendingSiteVisits());
+    dispatch(fetchPendingVehicleRequests());
   }, [dispatch]);
 
   const hasActiveSiteVisit =
@@ -39,6 +44,12 @@ const Sidebar = ({ children }) => {
   const numPendingSiteVisits =
     Array.isArray(pendingVisits) && pendingVisits.length; // Get the number of pending site visits
   const hasPendingSiteVisits = numPendingSiteVisits > 0;
+
+  const numPendingVehicleRequests =
+    Array.isArray(pendingVehicleRequests) && pendingVehicleRequests.length; // Get the number of pending site visits
+  const hasPendingVehicleRequests = numPendingVehicleRequests > 0;
+
+  console.log(numPendingVehicleRequests);
 
   return (
     <>
@@ -245,7 +256,18 @@ const Sidebar = ({ children }) => {
             {/* Vehicles */}
             <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />
-              <div className="collapse-title font-bold">Vehicles</div>
+              <div className="collapse-title font-bold">
+                Vehicles{" "}
+                {(isAdmin || isHOL) && (
+                  <span
+                    className={`badge badge-warning badge-sm text-white font-bold ${
+                      hasPendingVehicleRequests ? "" : "hidden"
+                    }`}
+                  >
+                    {numPendingVehicleRequests}
+                  </span>
+                )}
+              </div>
               <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                 <Link
                   to="/request-vehicle"
@@ -258,7 +280,16 @@ const Sidebar = ({ children }) => {
                     to="/vehicle-requests"
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                   >
-                    Vehicle Requests
+                    Vehicle Requests{" "}
+                    {(isAdmin || isHOL) && (
+                      <span
+                        className={`badge badge-sm badge-warning text-white font-bold ${
+                          hasPendingVehicleRequests ? "" : "hidden"
+                        }`}
+                      >
+                        {numPendingVehicleRequests}
+                      </span>
+                    )}
                   </Link>
                 )}
                 <Link
