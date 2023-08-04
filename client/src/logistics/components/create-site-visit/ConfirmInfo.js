@@ -6,6 +6,8 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
   console.log("formData:", formData);
 
   console.log(formatTime(formData.pickup_time));
+  const clientsArrayLength = formData.clients.length;
+  console.log("clients array length", clientsArrayLength);
 
   return (
     <>
@@ -65,23 +67,32 @@ const ConfirmInfo = ({ onSubmitForm, formData }) => {
             )}
           </h1>
         </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            className="checkbox mr-2"
-            checked={isChecked}
-            onChange={() => setIsChecked(!isChecked)}
-          />
+        {clientsArrayLength !== 0 && (
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              className="checkbox mr-2"
+              checked={isChecked}
+              onChange={() => setIsChecked(!isChecked)}
+            />
 
-          <p className="font-bold italic">The info provided above is correct</p>
-        </div>
+            <p className="font-bold italic">
+              The info provided above is correct
+            </p>
+          </div>
+        )}
         <button
           className="btn btn-primary btn-outline mt-4"
           onClick={onSubmitForm}
-          disabled={isChecked === false}
+          disabled={isChecked === false || clientsArrayLength === 0}
         >
           Submit
         </button>
+        {clientsArrayLength === 0 ? (
+          <span className="text-sm text-red-500 font-bold italic mt-2">
+            You haven't placed any clients
+          </span>
+        ) : null}
       </div>
     </>
   );

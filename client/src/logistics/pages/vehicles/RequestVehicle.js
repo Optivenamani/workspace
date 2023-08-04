@@ -118,6 +118,7 @@ const RequestVehicle = () => {
               id="passengers"
               value={passengers}
               placeholder="4"
+              min={1}
               onChange={(event) => setPassengers(event.target.value)}
               className="input input-bordered w-full max-w-xs"
             />
