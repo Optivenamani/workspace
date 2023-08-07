@@ -81,12 +81,19 @@ const Home = () => {
                     </button>
                     {activeVisits.map((visit, index) => (
                       <div key={index}>
+                        {visit.status === "approved" && (
+                          <p className="mt-2 text-red-600 font-bold italic">
+                            Your recent site visit request has been approved,
+                            you will have to wait until it's completed, or
+                            cancel it on your end, to be able to book a new one.
+                          </p>
+                        )}
                         {visit.status === "in_progress" && (
                           <p className="mt-2 text-red-600 font-bold italic">
                             The driver assigned to your site visit has started
                             the trip. The site visit status is now in progress.
                             You will get an email notification when the driver
-                            marks the site visit as complete on his end.
+                            marks the site visit as complete on their end.
                           </p>
                         )}
                         {visit.status === "complete" && (
