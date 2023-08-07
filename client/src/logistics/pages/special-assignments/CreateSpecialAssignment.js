@@ -122,6 +122,7 @@ const CreateSpecialAssignment = () => {
               value={assignedTo}
               onChange={(event) => setAssignedTo(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="pickupLocation" className="label">
               <span className="label-text font-bold">Pickup Location</span>
@@ -133,6 +134,7 @@ const CreateSpecialAssignment = () => {
               value={pickupLocation}
               onChange={(event) => setPickupLocation(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="destination" className="label">
               <span className="label-text font-bold">Destination</span>
@@ -144,6 +146,7 @@ const CreateSpecialAssignment = () => {
               value={destination}
               onChange={(event) => setDestination(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="reservationDate" className="label">
               <span className="label-text font-bold">Reservation Date</span>
@@ -154,6 +157,7 @@ const CreateSpecialAssignment = () => {
               value={reservationDate}
               onChange={(event) => setReservationDate(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="reservationTime" className="label">
               <span className="label-text font-bold">Reservation Time</span>
@@ -164,6 +168,7 @@ const CreateSpecialAssignment = () => {
               value={reservationTime}
               onChange={(event) => setReservationTime(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="driver" className="label font-bold">
               Assign a Driver
@@ -176,6 +181,7 @@ const CreateSpecialAssignment = () => {
                 setDriver(event.target.value);
               }}
               className="select select-bordered"
+              required
             >
               <option value="">Select a driver</option>
               {drivers.map((driver) => (
@@ -191,6 +197,7 @@ const CreateSpecialAssignment = () => {
               value={vehicle}
               onChange={(event) => setVehicle(event.target.value)}
               className="select select-bordered"
+              required
             >
               <option value="">Select a Vehicle</option>
               {vehicles.map((v) => (
@@ -209,6 +216,7 @@ const CreateSpecialAssignment = () => {
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               className="textarea textarea-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="remarks" className="label">
               <span className="label-text font-bold">Remarks</span>
@@ -220,6 +228,7 @@ const CreateSpecialAssignment = () => {
               value={remarks}
               onChange={(event) => setRemarks(event.target.value)}
               className="textarea textarea-bordered w-full max-w-xs"
+              required
             />
             <button
               type="submit"

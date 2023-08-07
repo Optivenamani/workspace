@@ -130,6 +130,7 @@ const CreateVehicle = () => {
               value={vehicleRegistration}
               onChange={(event) => setVehicleRegistration(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <button
               type="submit"
