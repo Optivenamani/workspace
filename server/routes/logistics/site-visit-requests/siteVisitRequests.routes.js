@@ -193,25 +193,28 @@ module.exports = (pool, io) => {
     try {
       const query = `
       SELECT 
-        site_visits.*,
-        Projects.name AS site_name,
-        COUNT(site_visit_clients.id) as num_clients,
-        users.fullnames as marketer_name,
-        drivers.fullnames as driver_name,
-        vehicles.vehicle_registration as vehicle_name
+          site_visits.*,
+          Projects.name AS site_name,
+          COUNT(site_visit_clients.id) as num_clients,
+          users.fullnames as marketer_name,
+          drivers.fullnames as driver_name,
+          vehicles.vehicle_registration as vehicle_name
       FROM site_visits
       LEFT JOIN Projects
-        ON site_visits.project_id = Projects.project_id
+          ON site_visits.project_id = Projects.project_id
       LEFT JOIN site_visit_clients
-        ON site_visits.id = site_visit_clients.site_visit_id
+          ON site_visits.id = site_visit_clients.site_visit_id
       LEFT JOIN users
-        ON site_visits.marketer_id = users.user_id
+          ON site_visits.marketer_id = users.user_id
       LEFT JOIN users as drivers
-        ON site_visits.driver_id = drivers.user_id
+          ON site_visits.driver_id = drivers.user_id
       LEFT JOIN vehicles
-        ON site_visits.vehicle_id = vehicles.id
+          ON site_visits.vehicle_id = vehicles.id
       GROUP BY site_visits.id
-      ORDER BY site_visits.created_at DESC;
+      ORDER BY DATE(site_visits.pickup_time), 
+              MIN(TIME(site_visits.pickup_time)) DESC, 
+              site_visits.created_at DESC;
+
     `;
       pool.query(query, (err, results) => {
         if (err) throw err;
@@ -1476,6 +1479,51 @@ module.exports = (pool, io) => {
           res.status(400).json({ message: "Invalid site visit or user." });
         }
       });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  // Delete a single site visit by ID
+  router.delete("/:id", authenticateJWT, async (req, res) => {
+    try {
+      const siteVisitId = req.params.id;
+
+      // Step 1: Delete related rows from child tables
+      const deleteChildRowsQuery = `
+        DELETE svc, n, svs
+        FROM site_visits sv
+        LEFT JOIN site_visit_clients svc ON sv.id = svc.site_visit_id
+        LEFT JOIN notifications n ON sv.id = n.site_visit_id
+        LEFT JOIN site_visit_surveys svs ON sv.id = svs.site_visit_id
+        WHERE sv.id = ?
+      `;
+      pool.query(
+        deleteChildRowsQuery,
+        [siteVisitId],
+        (err, childDeleteResult) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+
+          // Step 2: Delete row from the site_visits table
+          const deleteSiteVisitQuery = "DELETE FROM site_visits WHERE id = ?";
+          pool.query(
+            deleteSiteVisitQuery,
+            [siteVisitId],
+            (err, siteVisitDeleteResult) => {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+
+              res
+                .status(200)
+                .json({ message: "Site visit request deleted successfully" });
+            }
+          );
+        }
+      );
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

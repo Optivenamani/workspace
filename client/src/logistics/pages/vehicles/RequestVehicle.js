@@ -85,6 +85,7 @@ const RequestVehicle = () => {
               placeholder="eg. ABSA Towers"
               onChange={(event) => setLocation(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="destination" className="label">
               <span className="label-text font-bold">Destination</span>
@@ -96,6 +97,7 @@ const RequestVehicle = () => {
               placeholder="eg. Kitengela"
               onChange={(event) => setDestination(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="purpose" className="label">
               <span className="label-text font-bold">Purpose</span>
@@ -107,6 +109,7 @@ const RequestVehicle = () => {
               placeholder="Purpose"
               onChange={(event) => setPurpose(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="passengers" className="label">
               <span className="label-text font-bold">
@@ -121,6 +124,7 @@ const RequestVehicle = () => {
               min={1}
               onChange={(event) => setPassengers(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="date" className="label">
               <span className="label-text font-bold">Date</span>
@@ -131,6 +135,7 @@ const RequestVehicle = () => {
               value={date}
               onChange={(event) => setDate(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <label htmlFor="time" className="label">
               <span className="label-text font-bold">Time</span>
@@ -141,6 +146,7 @@ const RequestVehicle = () => {
               value={time}
               onChange={(event) => setTime(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <button
               type="submit"

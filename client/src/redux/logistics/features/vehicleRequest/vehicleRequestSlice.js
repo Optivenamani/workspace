@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   requests: [],
   activeRequests: [],
+  pendingVehicleRequests: [],
   status: "idle",
   error: null,
 };
@@ -23,6 +24,29 @@ export const fetchActiveVehicleRequests = createAsyncThunk(
           },
         }
       );
+      return response.data;
+    } catch (error) {
+      console.log("Server error:", error.response);
+      throw error;
+    }
+  }
+);
+
+export const fetchPendingVehicleRequests = createAsyncThunk(
+  "vehicleRequest/fetchPendingVehicleRequests",
+  async (_, { getState }) => {
+    const token = getState().user.token;
+
+    try {
+      const response = await axios.get(
+        "https://workspace.optiven.co.ke/api/vehicle-requests/pending-vehicle-requests",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // console.log("Pending VRs:", response.data.length);
       return response.data;
     } catch (error) {
       console.log("Server error:", error.response);
@@ -82,6 +106,18 @@ const vehicleRequestSlice = createSlice({
         );
       })
       .addCase(approveVehicleRequest.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(fetchPendingVehicleRequests.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPendingVehicleRequests.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.pendingVehicleRequests = action.payload;
+      })
+      .addCase(fetchPendingVehicleRequests.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });

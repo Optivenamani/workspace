@@ -50,7 +50,7 @@ const VehicleRequests = () => {
       case "approved":
         return "bg-info";
       case "in_progress":
-        return "bg-secondary";
+        return "bg-purple-500";
       case "rejected":
         return "bg-error";
       case "completed":
@@ -71,19 +71,19 @@ const VehicleRequests = () => {
               {pending.length > 1 || pending.length === 0 ? "s" : ""}
             </h1>
             <div>
-              <div className="badge badge-warning text-white font-bold mr-1">
+              <div className="btn btn-active btn-warning text-white font-bold mr-1">
                 Pending
               </div>
-              <div className="badge badge-info text-white font-bold">
+              <div className="btn btn-active btn-info text-white font-bold">
                 Approved
               </div>
-              <div className="badge badge-error text-white font-bold mx-1">
+              <div className="btn btn-active btn-error text-white font-bold mx-1">
                 Rejected
               </div>
-              <div className="badge badge-primary text-white font-bold mr-1">
+              <div className="btn btn-active btn-primary text-white font-bold mr-1">
                 Completed
               </div>
-              <div className="badge badge-secondary text-white font-bold">
+              <div className="btn btn-active bg-purple-500 border-0 text-white font-bold">
                 In Progress
               </div>
             </div>
@@ -91,40 +91,40 @@ const VehicleRequests = () => {
           <div className="px-4 mt-2 flex justify-center mb-10">
             {vehicleRequests.length > 0 ? (
               <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
-                <table className="w-full border-collapse table-compact">
+                <table className="w-full border-collapse table-compact font-bold">
                   <thead>
                     <tr className="text-center bg-gray-500 text-secondary-content">
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         #
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Requester
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Purpose
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Passengers
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Pickup Location
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Destination
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Pickup Date
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Pickup Time
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Vehicle
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Driver
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Remarks
                       </th>
                     </tr>
@@ -141,7 +141,7 @@ const VehicleRequests = () => {
                           onClick={() => handleView(vr.id)}
                         >
                           <td className="border px-4 py-2">{index + 1}</td>
-                          <td className="border px-4 py-2">
+                          <td className="border px-4 py-2 uppercase">
                             {vr.requester_name}
                           </td>
                           <td className="border px-4 py-2">{vr.purpose}</td>
@@ -172,37 +172,37 @@ const VehicleRequests = () => {
                   </tbody>
                   <tfoot>
                     <tr className="text-center bg-gray-500 text-secondary-content">
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         #
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Requester
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Purpose
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Passengers
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Pickup Location
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Destination
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Pickup Date
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Pickup Time
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Vehicle
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Driver
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 uppercase">
                         Remarks
                       </th>
                     </tr>
