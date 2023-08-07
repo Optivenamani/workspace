@@ -1,12 +1,12 @@
-import Sidebar from "../components/Sidebar";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import Sidebar from "../components/Sidebar";
 import bus from "../../assets/media/home.jpg";
 import {
   fetchActiveSiteVisits,
   selectActiveSiteVisits,
 } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
-import { useEffect } from "react";
 
 const Home = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -46,6 +46,7 @@ const Home = () => {
 
   const hasActiveSiteVisit =
     siteVisitStatus === "succeeded" && activeVisits.length > 0;
+
   return (
     <>
       <Sidebar>
@@ -69,23 +70,45 @@ const Home = () => {
                   <>
                     <button
                       onClick={() => navigate("/book-site-visit")}
-                      disabled={hasActiveSiteVisit} // Disable the button if there is an active site visit
+                      disabled={hasActiveSiteVisit}
                       className={`mt-4 inline-block w-full bg-primary py-4 text-sm font-bold uppercase tracking-widest text-white ${
                         hasActiveSiteVisit
                           ? "opacity-50 cursor-not-allowed"
                           : ""
-                      }`} // Add conditional styling to indicate that the button is disabled
+                      }`}
                     >
                       Book a Site Visit
                     </button>
-                    {hasActiveSiteVisit && (
-                      <p className="mt-2 text-red-600 font-bold italic">
-                        You have to COMPLETE YOUR CURRENT SITE VISIT and <Link to="/notifications" className="underline text-green-400">FILL
-                        THE SURVEY</Link> to be able to book a new site visit.
-                      </p>
-                    )}
+                    {activeVisits.map((visit, index) => (
+                      <div key={index}>
+                        {visit.status === "in_progress" && (
+                          <p className="mt-2 text-red-600 font-bold italic">
+                            The driver assigned to your site visit has started
+                            the trip. The site visit status is now in progress.
+                            You will get an email notification when the driver
+                            marks the site visit as complete on his end.
+                          </p>
+                        )}
+                        {visit.status === "complete" && (
+                          <p className="mt-2 text-red-600 font-bold italic">
+                            The driver assigned to your previous site visit has
+                            marked the site visit as complete. You are now
+                            required to{" "}
+                            <Link
+                              to="/notifications"
+                              className="underline text-green-400"
+                            >
+                              FILL THE SURVEY
+                            </Link>{" "}
+                            to mark it as complete on your end and be able to
+                            book a new site visit.
+                          </p>
+                        )}
+                      </div>
+                    ))}
                   </>
                 )}
+
                 <button
                   onClick={() => navigate("/request-vehicle")}
                   className="mt-4 inline-block w-full bg-neutral py-4 text-sm font-bold uppercase tracking-widest text-white"

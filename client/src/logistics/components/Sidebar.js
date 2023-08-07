@@ -49,8 +49,6 @@ const Sidebar = ({ children }) => {
     Array.isArray(pendingVehicleRequests) && pendingVehicleRequests.length; // Get the number of pending site visits
   const hasPendingVehicleRequests = numPendingVehicleRequests > 0;
 
-  console.log(numPendingVehicleRequests);
-
   return (
     <>
       <div className="drawer">
