@@ -42,11 +42,15 @@ const Navbar = ({ fullName, email }) => {
   const isScheduleInterviewPage = location.pathname === "/schedule-interview";
   const isViewInterviewsPage = location.pathname === "/view-interviews";
   const isEditInterviewPage = location.pathname === "/edit-interview/:id";
+  const isProfilePage = location.pathname === "/profile";
 
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">
-        {isAppMenuPage || isFeedbackPage || isViewFeedbackPage ? null : (
+        {isAppMenuPage ||
+        isFeedbackPage ||
+        isViewFeedbackPage ||
+        isProfilePage ? null : (
           <div
             className="tooltip tooltip-right"
             data-tip="Click to toggle drawer"
@@ -110,6 +114,7 @@ const Navbar = ({ fullName, email }) => {
             isScheduleInterviewPage ||
             isViewInterviewsPage ||
             isViewFeedbackPage ||
+            isProfilePage ||
             isEditInterviewPage ? null : (
               <li>
                 <Link className="justify-between font-bold" to="/notifications">
@@ -133,6 +138,15 @@ const Navbar = ({ fullName, email }) => {
                 </Link>
               </li>
             )}
+            <li>
+              <Link
+                className="justify-between font-bold"
+                to={`/profile`}
+              >
+                Profile
+                <span className="badge">New</span>
+              </Link>
+            </li>
             <li>
               <Link className="justify-between font-bold" to="/feedback">
                 System Feedback

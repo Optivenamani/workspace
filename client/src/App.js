@@ -40,6 +40,7 @@ import {
   MySiteVisits,
   Notifications,
   PastRequests,
+  Profile,
   RegisterVisitor,
   ReserveParking,
   RequestVehicle,
@@ -142,6 +143,8 @@ const App = () => {
             {/* Feedback */}
             <Route path="/view-feedback" element={<ViewFeedback />} />
             <Route path="/feedback" element={<Feedback />} />
+            {/* Profile */}
+            <Route path="/profile" element={<Profile />} />
             {/* Home */}
             <Route path="/logistics-home" element={<Home />} />
             {/* Dashboard */}

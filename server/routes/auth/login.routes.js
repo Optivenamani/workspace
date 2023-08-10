@@ -34,9 +34,9 @@ module.exports = (pool) => {
           const token = jwt.sign(
             { id: user.user_id, Accessrole: user.Accessrole },
             process.env.JWT_SECRET,
-            // {
-            //   expiresIn: "1d",
-            // }
+            {
+              expiresIn: "3d",
+            }
           );
           res
             .status(200)
