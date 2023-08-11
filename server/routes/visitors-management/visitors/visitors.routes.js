@@ -147,18 +147,33 @@ module.exports = (pool) => {
       console.error("Error during auto-checkout:", error);
     }
   }
-autoCheckoutJob;
+  autoCheckoutJob;
 
   // Helper function to send staff emails
-const sendStaffEmail = (staffEmail, subject, text) => {
-  return sendEmail(staffEmail, subject, text)
-    .then(() => {
-      console.log("Staff email sent successfully.");
-    })
-    .catch((error) => {
-      console.error("Error sending staff email:", error);
-    });
+  const sendStaffEmail = (staffEmail, subject, text) => {
+    return sendEmail(staffEmail, subject, text)
+      .then(() => {
+        console.log("Staff email sent successfully.");
+      })
+      .catch((error) => {
+        console.error("Error sending staff email:", error);
+      });
+  };
+
+// Helper function to send staff WhatsApp messages
+const sendStaffWhatsApp = async (staffPhoneNumber, parameters) => {
+  const templateName = "visitor_register"; // Template name
+  try {
+    await sendWhatsAppMessage(staffPhoneNumber, templateName, parameters);
+    console.log("WhatsApp message sent successfully to staff.");
+    return true; // WhatsApp message sent successfully
+  } catch (error) {
+    console.error("Error sending WhatsApp message:", error);
+    return false; // Error sending WhatsApp message
+  }
 };
+
+
   // Input new visitor information
   router.post("/", authenticateJWT, async (req, res) => {
     const {
@@ -199,18 +214,35 @@ const sendStaffEmail = (staffEmail, subject, text) => {
             return;
           }
 
-          const fetchStaffEmailQuery =
-            "SELECT email FROM defaultdb.users WHERE user_id = ?";
-          pool.query(fetchStaffEmailQuery, [staff_id], (err, results) => {
+          const fetchStaffInfoQuery =
+            "SELECT fullnames, email, phone_number FROM defaultdb.users WHERE user_id = ?";
+          pool.query(fetchStaffInfoQuery, [staff_id], async (err, staffInfoResults) => {
             if (err) {
               console.error(err);
               res.status(500).json({
-                message: "An error occurred while fetching the staff email.",
+                message: "An error occurred while fetching the staff info.",
               });
               return;
             }
 
-            const staffEmail = results[0]?.email;
+            const staffInfo = staffInfoResults[0];
+
+            if (!staffInfo) {
+              console.error("Staff information not found.");
+              res.status(500).json({
+                message: "An error occurred while fetching the staff info.",
+              });
+              return;
+            }
+
+            const staffName = staffInfo.fullnames;
+            const staffEmail = staffInfo.email;
+            const staffPhoneNumber = staffInfo.phone_number;
+           
+            console.log("Staff Name:", staffName);
+            console.log("Staff Email:", staffEmail);
+            console.log("Staff Phone Number:", staffPhoneNumber);
+
 
             if (!staffEmail) {
               console.error("Staff email not found.");
@@ -220,50 +252,62 @@ const sendStaffEmail = (staffEmail, subject, text) => {
               return;
             }
 
-            const subject =
-              "Urgent: Visitor Arrival - Immediate Attention Required";
-            const text = `Dear Sir/Madam,
-
-            I hope this email finds you well. We have a visitor waiting in reception who requires immediate assistance. Please attend to them as soon as possible.
-
-            **Visitor Details:**
-            Name: ${name}
-            Phone: ${phone}
-            Email: ${email}
-            Purpose: ${purpose}
-            Room: ${visitor_room}
-
-            Please make it a priority to personally greet the visitor and provide any necessary assistance or guidance. Kindly ensure that they are made to feel welcome and comfortable during their stay with us.
-
-            Please provide a warm welcome and ensure their needs are met. If you're unavailable, please inform me so I can arrange for someone else to assist.
-
-            Thank you for your prompt attention.
-
-            Best regards.`;
-
-            sendEmail(staffEmail, subject, text)
-              .then(() => {
-                res.status(201).json({
-                  message: "Visitor information added successfully.",
-                });
-              })
-              .catch((error) => {
-                console.error("Error sending email:", error);
-                res.status(500).json({
-                  message:
-                    "An error occurred while sending the email to the staff.",
-                });
+            if (!staffPhoneNumber) {
+              console.error("Staff phone number not found.");
+              res.status(500).json({
+                message: "An error occurred while fetching the staff phone number.",
               });
-          });
-        }
-      );
-    } catch (error) {
-      console.error("Error adding visitor information:", error);
-      res.status(500).json({
-        message: "An error occurred while adding the visitor information.",
-      });
-    }
-  });
+              return;
+            }
+
+            const subject =
+            "Urgent: Visitor Arrival - Immediate Attention Required";
+          const text = `Dear Sir/Madam,
+
+          I hope this email finds you well. We have a visitor waiting in reception who requires immediate assistance. Please attend to them as soon as possible.
+
+          **Visitor Details:**
+          Name: ${name}
+          Phone: ${phone}
+          Email: ${email}
+          Purpose: ${purpose}
+          Room: ${visitor_room}
+
+          Please make it a priority to personally greet the visitor and provide any necessary assistance or guidance. Kindly ensure that they are made to feel welcome and comfortable during their stay with us.
+
+          Please provide a warm welcome and ensure their needs are met. If you're unavailable, please inform me so I can arrange for someone else to assist.
+
+          Thank you for your prompt attention.
+
+          Best regards.`;
+
+          const emailSuccess = await sendStaffEmail(staffEmail, subject, text);
+          const parameters = [
+            { name: "staff_name", value: staffName },
+            { name: "visitor_name", value: name },
+            { name: "room", value: visitor_room }
+          ];
+          const whatsappSuccess = await sendStaffWhatsApp(staffPhoneNumber, parameters);
+
+          if (emailSuccess && whatsappSuccess) {
+            res.status(201).json({
+              message: "Visitor information added successfully.",
+            });
+          } else {
+            res.status(500).json({
+              message: "An error occurred while sending messages to the staff.",
+            });
+          }
+        });
+      }
+    );
+  } catch (error) {
+    console.error("Error adding visitor information:", error);
+    res.status(500).json({
+      message: "An error occurred while adding the visitor information.",
+    });
+  }
+});
 
   // Retrieve all visitor information
   router.get("/", authenticateJWT, async (req, res) => {
@@ -348,7 +392,7 @@ const sendStaffEmail = (staffEmail, subject, text) => {
           visitor_room,
           id,
         ],
-        
+
         (err, result) => {
           if (err) {
             console.error("Error updating visitor:", err);
@@ -370,9 +414,9 @@ const sendStaffEmail = (staffEmail, subject, text) => {
                   });
                   return;
                 }
-  
+
                 const staffEmail = results[0]?.email;
-  
+
                 if (!staffEmail) {
                   console.error("Staff email not found.");
                   res.status(500).json({
@@ -380,7 +424,7 @@ const sendStaffEmail = (staffEmail, subject, text) => {
                   });
                   return;
                 }
-  
+
                 // Extract the previous data from the database before updating
                 pool.query(
                   "SELECT * FROM visitors_information WHERE id = ?",
@@ -393,9 +437,9 @@ const sendStaffEmail = (staffEmail, subject, text) => {
                       });
                       return;
                     }
-  
+
                     const prevData = prevResults[0];
-  
+
                     const subject =
                       "Visitor Information Updated - Immediate Attention Required";
                     const text = `Dear Sir/Madam,
@@ -412,7 +456,7 @@ const sendStaffEmail = (staffEmail, subject, text) => {
                     If you have any concerns or need further information, please do not hesitate to reach out.
   
                     Best regards.`;
-  
+
                     sendStaffEmail(staffEmail, subject, text)
                       .then(() => {
                         res.json({
@@ -494,7 +538,7 @@ const sendStaffEmail = (staffEmail, subject, text) => {
                       console.error("Failed to fetch visitor details:", err);
                       return;
                     }
-
+ 
                     if (visitorDetails.length > 0) {
                       const visitorName = visitorDetails[0].name;
                       const visitorPhoneNumber = visitorDetails[0].phone;
