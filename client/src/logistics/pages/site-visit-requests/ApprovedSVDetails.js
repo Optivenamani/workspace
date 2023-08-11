@@ -11,7 +11,7 @@ const ApprovedSVDetails = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/site-visit-requests/${id}`, {
+    fetch(`https://workspace.optiven.co.ke/api/site-visit-requests/${id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

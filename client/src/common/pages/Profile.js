@@ -21,7 +21,7 @@ const Profile = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://workspace.optiven.co.ke/api/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,7 +59,7 @@ const Profile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://workspace.optiven.co.ke/api/users/${userId}`,
         {
           method: "PATCH",
           headers: {
