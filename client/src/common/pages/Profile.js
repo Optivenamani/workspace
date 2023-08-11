@@ -197,9 +197,9 @@ const Profile = () => {
                 placeholder="254712345678"
                 required
               />
-              <span className="font-bold italic text-red-600 text-sm">
+              {/* <span className="font-bold italic text-red-600 text-sm">
                 error
-              </span>
+              </span> */}
               <button
                 onClick={handleChangePhone}
                 className="btn btn-outline mt-2"
