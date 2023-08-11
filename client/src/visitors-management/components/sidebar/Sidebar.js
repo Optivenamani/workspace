@@ -74,6 +74,25 @@ const Sidebar = ({ children }) => {
                 </Link>
               </div>
             </div>
+             {/* Meetings */}
+             <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+             <input type="checkbox" className="peer" />
+             <div className="collapse-title font-bold">Meetings</div>
+             <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
+               <Link
+                 className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                 to="/schedule-meeting"
+               >
+                 Schedule Meeting
+               </Link>
+               <Link
+                 className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                 to="/view-meetings"
+               >
+                 View Scheduled Meeting
+               </Link>
+             </div>
+           </div>
             {/* Parking */}
             <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />

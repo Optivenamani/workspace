@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
-const IntervieweeInfo = ({ formData, setFormData, onNext, onPrevious }) => {
+const IntervieweeInfo = ({ onNext, }) => {
+  const [formData, setFormData] = useState({
+    interviewees: [{ name: "", email: "", phone: "", interviewTime: "" }],
+  });
+
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
-    const list = [...formData.interviewees];
-    list[index][name] = value;
-    setFormData({ ...formData, interviewees: list });
+    const updatedInterviewees = [...formData.interviewees];
+    updatedInterviewees[index] = {
+      ...updatedInterviewees[index],
+      [name]: value,
+    };
+    setFormData({ interviewees: updatedInterviewees });
   };
 
   const handleAddInterviewee = () => {
     setFormData({
-      ...formData,
       interviewees: [
         ...formData.interviewees,
         { name: "", email: "", phone: "", interviewTime: "" },
@@ -19,11 +25,16 @@ const IntervieweeInfo = ({ formData, setFormData, onNext, onPrevious }) => {
   };
 
   const handleRemoveInterviewee = (index) => {
-    const list = [...formData.interviewees];
-    list.splice(index, 1);
-    setFormData({ ...formData, interviewees: list });
+    const updatedInterviewees = [...formData.interviewees];
+    updatedInterviewees.splice(index, 1);
+    setFormData({ interviewees: updatedInterviewees });
   };
 
+  const validateForm = () => {
+    return formData.interviewees.every(
+      (interviewee) => interviewee.name && interviewee.email
+    );
+  };
 
   return (
     <>
@@ -101,15 +112,8 @@ const IntervieweeInfo = ({ formData, setFormData, onNext, onPrevious }) => {
 
         <div className="flex justify-center mt-5">
           <button
-            onClick={onPrevious}
-            className="mx-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
-          >
-            Previous
-          </button>
-
-          <button
             onClick={onNext}
-            disabled={!formData.interviewees.every((interviewee) => interviewee.name && interviewee.email)}
+            disabled={!validateForm()}
             className="mx-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
           >
             Next

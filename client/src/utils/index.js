@@ -35,6 +35,7 @@ export { default as ReserveParking } from "../visitors-management/pages/parking/
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
 export { default as ScheduleInterview } from "../visitors-management/pages/interviews/ScheduleInterview";
+export { default as ScheduleMeeting } from "../visitors-management/pages/meetings/ScheduleMeeting";
 export { default as SiteVisitDetails } from "../logistics/pages/site-visit-requests/SiteVisitDetails";
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
@@ -46,6 +47,7 @@ export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleR
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
 export { default as ViewReservedParking } from "../visitors-management/pages/parking/ViewReservedParking";
 export { default as ViewScheduleInterviews } from "../visitors-management/pages/interviews/ViewScheduledInterviews";
+export { default as ViewScheduledMeetings } from "../visitors-management/pages/meetings/ViewScheduledMeetings";
 export { default as ViewSites } from "../logistics/pages/sites/ViewSites";
 export { default as ViewSpecialAssignments } from "../logistics/pages/special-assignments/ViewSpecialAssignments";
 export { default as ViewVehicles } from "../logistics/pages/vehicles/ViewVehicles";

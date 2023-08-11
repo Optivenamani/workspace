@@ -23,66 +23,120 @@ const InterviewForm = () => {
     setPage((currentPage) => currentPage + 1);
   };
 
+  const handlePrevious = () => {
+    setPage((currentPage) => currentPage - 1);
+  };
+
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...formData.interviewees];
+    list[index][name] = value;
+    setFormData({ ...formData, interviewees: list });
+  };
+
+  const handleAddInterviewee = () => {
+    setFormData({
+      ...formData,
+      interviewees: [
+        ...formData.interviewees,
+        { name: "", email: "", phone: "", interviewTime: "" },
+      ],
+    });
+  };
+
+  const handleRemoveInterviewee = (index) => {
+    const list = [...formData.interviewees];
+    list.splice(index, 1);
+    setFormData({ ...formData, interviewees: list });
+  };
+
   const handleFormSubmit = async () => {
-        try {
-         
-          const response = await fetch('http://localhost:8080/api/interviews', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-      
-          // Check if the response is successful (status code 2xx).
-          if (response.ok) {
-            // Display a success message or redirect the user to another page
-            toast.success("Interview form submitted successfully!", {
-              position: "top-center",
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-      
-            // Reset the form data and navigate to the first page
-            setFormData({
-              position: "",
-              interviewDate: "",
-              interviewees: [],
-            });
-            setPage(0);
-          } else {
-            // Handle error cases where the server returned an error response
-            const errorData = await response.json();
-            // Display the error message to the user or handle it accordingly
-            toast.error(errorData.message || "Error submitting interview form. Please try again.", {
-              position: "top-center",
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-        } catch (error) {
-          // Handle any network errors or exceptions that occurred during the API call
-          toast.error("Error submitting interview form. Please try again.", {
+    // Get the token from the storage
+    const accessToken = localStorage.getItem("token");
+  
+    // Prepare the form data, adjusting phone numbers as necessary.
+    const intervieweesWithAdjustedPhoneNumbers = formData.interviewees.map(
+      (interviewee) => {
+        let phoneNumber = interviewee.phone;
+        if (phoneNumber.charAt(0) === "+") {
+          phoneNumber = phoneNumber.substring(1);
+        }
+        return {
+          ...interviewee,
+          phone: phoneNumber,
+        };
+      }
+    );
+  
+    // Add the interviewees data to formData before sending it to the server
+    const completeFormData = {
+      position: formData.position,
+      interviewDate: formData.interviewDate,
+      interviewees: intervieweesWithAdjustedPhoneNumbers,
+    };
+
+    try {
+      // Send the form data to the server
+      const response = await fetch("http://localhost:8080/api/interviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(completeFormData),
+      });
+
+      // Check if the response is successful (status code 2xx).
+      if (response.ok) {
+        // Display a success message or redirect the user to another page
+        toast.success("Interview form submitted successfully!", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        // Reset the form data and navigate to the first page
+        setFormData({
+          position: "",
+          interviewDate: "",
+          interviewees: [],
+        });
+        setPage(0);
+      } else {
+        // Handle error cases where the server returned an error response
+        const errorData = await response.json();
+        // Display the error message to the user or handle it accordingly
+        toast.error(
+          errorData.message || "Error submitting interview form. Please try again.",
+          {
             position: "top-center",
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          });
-        }
-      };
-      
+          }
+        );
+      }
+    } catch (error) {
+      // Handle any network errors or exceptions that occurred during the API call
+      toast.error("Error submitting interview form. Please try again.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
 
   const validateForm = () => {
     if (page === 0) {
-      return formData.position && formData.interviewDate;
+      return formData.position.trim() !== "" && formData.interviewDate.trim() !== "";
     } else if (page === 1) {
       return formData.interviewees.every(
-        (interviewee) => interviewee.name && interviewee.email
+        (interviewee) => interviewee.name.trim() !== "" && interviewee.email.trim() !== ""
       );
     }
     return true; // Allow submission from ConfirmInterviewInfo step
@@ -104,17 +158,21 @@ const InterviewForm = () => {
             formData={formData}
             setFormData={setFormData}
             onNext={handleNext}
+            handleInputChange={handleInputChange}
+            handleAddInterviewee={handleAddInterviewee}
+            handleRemoveInterviewee={handleRemoveInterviewee}
           />
         );
-      case 2:
-        return (
-          <ConfirmInterviewInfo
-            formData={formData}
-            setFormData={setFormData}
-            onSubmitForm={handleFormSubmit}
-            validateForm={validateForm}
-          />
-        );
+        case 2:
+          return (
+            <ConfirmInterviewInfo
+              formData={formData}
+              setFormData={setFormData}
+              onSubmitForm={handleFormSubmit} 
+              validateForm={validateForm}
+            />
+          );
+        
       default:
         return null;
     }
@@ -139,7 +197,7 @@ const InterviewForm = () => {
             {page === 0 ? null : (
               <button
                 disabled={page === 0}
-                onClick={() => setPage((currentPage) => currentPage - 1)}
+                onClick={handlePrevious}
                 className="mx-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
               >
                 {/* ... existing previous button icon ... */}
@@ -149,7 +207,7 @@ const InterviewForm = () => {
             {page === formTitles.length - 1 ? null : (
               <button
                 disabled={!validateForm()}
-                onClick={() => setPage((currentPage) => currentPage + 1)}
+                onClick={handleNext}
                 className="mx-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
               >
                 {/* ... existing next button icon ... */}

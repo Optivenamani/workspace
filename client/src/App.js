@@ -44,6 +44,7 @@ import {
   ReserveParking,
   RequestVehicle,
   ScheduleInterview,
+  ScheduleMeeting,
   SiteVisitDetails,
   SiteVisitRequests,
   SiteVisitsSummary,
@@ -54,6 +55,7 @@ import {
   ViewDrivers,
   ViewReservedParking,
   ViewScheduleInterviews,
+  ViewScheduledMeetings,
   ViewSites,
   ViewSpecialAssignments,
   ViewVehicles,
@@ -69,7 +71,9 @@ import {
   TeamReports,
   Feedback,
   ViewFeedback,
+ 
 } from "./utils/index";
+import EditMeeting from "./visitors-management/pages/meetings/EditMeeting";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -255,6 +259,12 @@ const App = () => {
             />
             <Route path="/visitors-reports" element={<VisitorsReports />} />
             <Route path="/interviews-reports" element={<InterviewsReports />} />
+
+             {/* Meetings */}
+             <Route path="/schedule-meeting" element={<ScheduleMeeting />} />
+             <Route path="/view-meetings" element={<ViewScheduledMeetings />} />
+             <Route path="/edit-meeting" element={<EditMeeting />} />
+
 
             {/* Parking */}
             <Route path="/reserve-parking" element={<ReserveParking />} />
