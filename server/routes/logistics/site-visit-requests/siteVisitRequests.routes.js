@@ -150,7 +150,8 @@ module.exports = (pool, io) => {
           Projects.name AS site_name,
           users.fullnames as marketer_name,
           drivers.fullnames as driver_name,
-          vehicles.vehicle_registration as vehicle_name
+          vehicles.vehicle_registration as vehicle_name,
+          drivers.phone_number as driver_contact
         FROM site_visits
         LEFT JOIN Projects
           ON site_visits.project_id = Projects.project_id

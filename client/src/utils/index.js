@@ -31,6 +31,7 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
+export { default as Profile } from "../common/pages/Profile";
 export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
