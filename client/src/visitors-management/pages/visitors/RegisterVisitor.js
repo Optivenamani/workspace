@@ -77,7 +77,7 @@ const RegisterVisitor = () => {
       visitor_room: visitorRoom,
     };
     try {
-      const response = await fetch("http://localhost:8080/api/visitors", {
+      const response = await fetch("https://workspace.optiven.co.ke/api/visitors", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
