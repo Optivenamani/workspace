@@ -161,15 +161,15 @@ module.exports = (pool) => {
   };
 
 // Helper function to send staff WhatsApp messages
-const sendStaffWhatsApp = async (staffPhoneNumber, parameters) => {
-  const templateName = "visitor_register"; // Template name
+const sendStaffWhatsApp = async (staffPhoneNumber, parameters, broadcastName) => {
+  const templateName = "visitor_register"; 
   try {
-    await sendWhatsAppMessage(staffPhoneNumber, templateName, parameters);
+    await sendWhatsAppMessage(staffPhoneNumber, templateName, parameters, broadcastName);
     console.log("WhatsApp message sent successfully to staff.");
-    return true; // WhatsApp message sent successfully
+    return true; 
   } catch (error) {
     console.error("Error sending WhatsApp message:", error);
-    return false; // Error sending WhatsApp message
+    return false; 
   }
 };
 
@@ -282,23 +282,25 @@ const sendStaffWhatsApp = async (staffPhoneNumber, parameters) => {
           Best regards.`;
 
           const emailSuccess = await sendStaffEmail(staffEmail, subject, text);
-          const parameters = [
-            { name: "staff_name", value: staffName },
-            { name: "visitor_name", value: name },
-            { name: "room", value: visitor_room }
-          ];
-          const whatsappSuccess = await sendStaffWhatsApp(staffPhoneNumber, parameters);
+           const parameters = [
+    { name: "staff_name", value: staffName },
+    { name: "visitor_name", value: name },
+    { name: "room", value: visitor_room }
+  ];
+  const broadcastName = "visitor_broadcast"; 
 
-          if (emailSuccess && whatsappSuccess) {
-            res.status(201).json({
-              message: "Visitor information added successfully.",
-            });
-          } else {
-            res.status(500).json({
-              message: "An error occurred while sending messages to the staff.",
-            });
-          }
-        });
+  const whatsappSuccess = await sendStaffWhatsApp(staffPhoneNumber, parameters, broadcastName);
+
+  if (emailSuccess && whatsappSuccess) {
+    res.status(201).json({
+      message: "Visitor information added successfully.",
+    });
+  } else {
+    res.status(500).json({
+      message: "An error occurred while sending messages to the staff.",
+    });
+  }
+});
       }
     );
   } catch (error) {
