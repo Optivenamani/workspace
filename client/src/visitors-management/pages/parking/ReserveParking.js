@@ -129,8 +129,8 @@ const ReserveParking = () => {
       
       Yours faithfully,
       
-      Jane Karimi
-      Administration
+      Winfred Waithera
+      Customer Experience
       Optiven Limited
       `;
 

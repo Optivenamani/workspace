@@ -20,7 +20,11 @@ const ViewVisitors = () => {
   const [visitors, setVisitors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const token = useSelector((state) => state.user.token);
+  const user = useSelector((state) => state.user.user); 
+  const office = user.office;
+  const accessRole = user.Accessrole;
 
+  
   useEffect(() => {
     // Fetch visitor data from the server
     const fetchVisitors = async () => {
@@ -35,13 +39,18 @@ const ViewVisitors = () => {
         );
 
         const data = await response.json();
-        console.log("Visitors:", data); // Debugging statement
+       
 
-        // Update visitors state only if the response data is an array
-        if (Array.isArray(data)) {
+        // If the user has "Head of Customer Experience" access role, show all visitors
+        if (accessRole.split("#").includes("headOfCustomerExp")) {
           setVisitors(data);
         } else {
-          console.error("Invalid response format. Expected an array.");
+             // Filter visitors based on the user's office
+        const filteredVisitors = data.filter((visitor) => {
+          // Include visitors that match the user's office or visitors with no specified office
+          return visitor.office === office || !visitor.office;
+        });
+          setVisitors(filteredVisitors);
         }
       } catch (error) {
         console.error(error);
@@ -49,7 +58,7 @@ const ViewVisitors = () => {
     };
 
     fetchVisitors();
-  }, [token]);
+  }, [token, office, accessRole]);
 
   const handleCheckOut = async (visitorId) => {
     try {

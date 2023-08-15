@@ -8,6 +8,7 @@ const AppMenu = ({ onAppSelect }) => {
   };
 
   const department = useSelector((state) => state.user.user.department);
+  const accessRole = useSelector((state) => state.user.user.Accessrole);
 
   return (
     <>
@@ -52,7 +53,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
-            {(department === "ICT" || department === "Customer Exp") && (
+            {(department === "ICT" || department === "Customer Exp" || accessRole === "visitorsManagementHR") && (
               <li>
                 <Link
                   to="/visitors-management"
