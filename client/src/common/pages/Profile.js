@@ -5,8 +5,6 @@ const Profile = () => {
   const token = useSelector((state) => state.user.token);
   const userId = useSelector((state) => state.user.user.user_id);
 
-  console.log("user id:", userId);
-
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
@@ -21,7 +19,7 @@ const Profile = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://workspace.optiven.co.ke/api/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,7 +57,7 @@ const Profile = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://workspace.optiven.co.ke/api/users/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -146,7 +144,7 @@ const Profile = () => {
                       <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />{" "}
                     </svg>
                     <div className="font-bold text-sm italic mr-2">
-                      {user.phone_number}
+                      {user.phone_number ? user.phone_number : "Missing phone number"}
                     </div>
                     <button
                       className="btn btn-secondary btn-xs text-white"
@@ -197,9 +195,9 @@ const Profile = () => {
                 placeholder="254712345678"
                 required
               />
-              <span className="font-bold italic text-red-600 text-sm">
+              {/* <span className="font-bold italic text-red-600 text-sm">
                 error
-              </span>
+              </span> */}
               <button
                 onClick={handleChangePhone}
                 className="btn btn-outline mt-2"

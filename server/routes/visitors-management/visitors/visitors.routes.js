@@ -174,7 +174,6 @@ module.exports = (pool) => {
     }
   };
 
-
   // Input new visitor information
   router.post("/", authenticateJWT, async (req, res) => {
     const {
@@ -413,7 +412,8 @@ Best regards.`;
                 if (err) {
                   console.error("Error fetching staff email:", err);
                   res.status(500).json({
-                    message: "An error occurred while fetching the staff email.",
+                    message:
+                      "An error occurred while fetching the staff email.",
                   });
                   return;
                 }
@@ -423,7 +423,8 @@ Best regards.`;
                 if (!staffEmail) {
                   console.error("Staff email not found.");
                   res.status(500).json({
-                    message: "An error occurred while fetching the staff email.",
+                    message:
+                      "An error occurred while fetching the staff email.",
                   });
                   return;
                 }
@@ -436,7 +437,8 @@ Best regards.`;
                     if (err) {
                       console.error("Error fetching previous data:", err);
                       res.status(500).json({
-                        message: "An error occurred while fetching previous data.",
+                        message:
+                          "An error occurred while fetching previous data.",
                       });
                       return;
                     }
@@ -631,57 +633,57 @@ Best regards.`;
                   [
                     {
                       text: "Index",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Visitor Name",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Email",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Phone Number",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Purpose",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Vehicle Reg.",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Department",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Check-in Time",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Check-in Date",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Staff Name",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                     {
                       text: "Visitor Room",
-                      fillColor: "#BBD4E1",
+                      fillColor: "#202A44",
                       style: "tableHeader",
                     },
                   ],
