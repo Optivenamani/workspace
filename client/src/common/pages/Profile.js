@@ -5,8 +5,6 @@ const Profile = () => {
   const token = useSelector((state) => state.user.token);
   const userId = useSelector((state) => state.user.user.user_id);
 
-  console.log("user id:", userId);
-
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
@@ -146,7 +144,7 @@ const Profile = () => {
                       <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />{" "}
                     </svg>
                     <div className="font-bold text-sm italic mr-2">
-                      {user.phone_number}
+                      {user.phone_number ? user.phone_number : "Missing phone number"}
                     </div>
                     <button
                       className="btn btn-secondary btn-xs text-white"
