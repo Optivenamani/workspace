@@ -715,7 +715,7 @@ Best regards.`;
               color: "white",
             },
             tableCell: {
-              fontSize: 12,
+              fontSize: 9,
               margin: [0, 5],
             },
           },
