@@ -90,7 +90,7 @@ const Sidebar = ({ children }) => {
                   {(isVisitorsManagementHR || department === "ICT") && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      to="/interview-reports"
+                      to="/interviews-reports"
                     >
                       Interview Reports
                     </Link>
