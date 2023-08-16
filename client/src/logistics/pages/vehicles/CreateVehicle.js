@@ -106,6 +106,8 @@ const CreateVehicle = () => {
               value={vehicleSeats}
               onChange={(event) => setVehicleSeats(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
+              min={1}
             />
             <label htmlFor="vehicleEngineCapacity" className="label">
               <span className="label-text font-bold">
@@ -130,6 +132,7 @@ const CreateVehicle = () => {
               value={vehicleRegistration}
               onChange={(event) => setVehicleRegistration(event.target.value)}
               className="input input-bordered w-full max-w-xs"
+              required
             />
             <button
               type="submit"

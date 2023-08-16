@@ -21,6 +21,9 @@ const RegisterVisitor = () => {
   const [error, setError] = useState(null);
   const [allStaff, setAllStaff] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const office = useSelector((state) => state.user.user.office);
+
+  console.log(office)
 
   const navigate = useNavigate();
 
@@ -49,7 +52,8 @@ const RegisterVisitor = () => {
       !checkInTime ||
       !checkInDate ||
       !selectedStaffId ||
-      !visitorRoom
+      !visitorRoom ||
+      !office
     ) {
       setError("Please fill in all required fields.");
       return;
@@ -75,7 +79,9 @@ const RegisterVisitor = () => {
       check_in_date: checkInDate,
       staff_id: selectedStaffId,
       visitor_room: visitorRoom,
+      office,
     };
+    console.log(visitorData)
     try {
       const response = await fetch("https://workspace.optiven.co.ke/api/visitors", {
         method: "POST",

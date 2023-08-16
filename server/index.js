@@ -136,7 +136,7 @@ const io = socketIO(server, {
 // Import auth routes
 const login = require("./routes/auth/login.routes");
 const logout = require("./routes/auth/logout.routes");
-const users = require("./routes/auth/user.routes");
+const users = require("./routes/auth/users.routes");
 
 // Import logistics routes
 const sites = require("./routes/logistics/sites/sites.routes");

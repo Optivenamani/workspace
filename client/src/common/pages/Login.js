@@ -23,10 +23,13 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post("https://workspace.optiven.co.ke/api/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://workspace.optiven.co.ke/api/login",
+        {
+          email,
+          password,
+        }
+      );
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       // console.log("User successfully logged in", response.data);
@@ -107,7 +110,12 @@ const Login = () => {
           {isSubmitting ? "Submitting..." : "Login"}
         </button>
         <label htmlFor="password" className="label">
-          <a href="https://www.portal.optiven.co.ke/Auth/forgotpass.php" className="label-text font-bold text-green-600 italic hover:underline">Forgot Password?</a>
+          <a
+            href="https://www.portal.optiven.co.ke/Auth/forgotpass.php"
+            className="label-text font-bold text-green-600 italic hover:underline"
+          >
+            Forgot Password?
+          </a>
         </label>
       </form>
     </div>

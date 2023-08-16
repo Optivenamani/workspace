@@ -85,6 +85,7 @@ function ClientInfo({ formData, setFormData }) {
               onChange={(event) => handleInputChange(event, index)}
               placeholder="Jim"
               className="input input-bordered w-full"
+              required
             />
           </div>
           <div className="mx-2 w-full">
@@ -98,6 +99,7 @@ function ClientInfo({ formData, setFormData }) {
               onChange={(event) => handleInputChange(event, index)}
               placeholder="Halpert"
               className="input input-bordered w-full"
+              required
             />
           </div>
           <div className="mx-2 w-full">
@@ -115,7 +117,9 @@ function ClientInfo({ formData, setFormData }) {
           </div>
           <div className="mx-2 w-full">
             <label className="label">
-              <span className="label-text font-bold">Phone Number with Country Code</span>
+              <span className="label-text font-bold">
+                Phone Number <span className="text-red-600 uppercase underline">with Country Code</span>
+              </span>
             </label>
             <input
               type="tel"
@@ -124,6 +128,7 @@ function ClientInfo({ formData, setFormData }) {
               onChange={(event) => handleInputChange(event, index)}
               placeholder="+2547XXXXXXXX"
               className="input input-bordered w-full"
+              required
             />
           </div>
           {clients.length > 1 && (
