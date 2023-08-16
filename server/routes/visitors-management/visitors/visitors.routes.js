@@ -628,6 +628,7 @@ Best regards.`;
                   "auto",
                   "auto",
                   "auto",
+                  "auto",
                 ],
                 body: [
                   [
@@ -683,6 +684,11 @@ Best regards.`;
                     },
                     {
                       text: "Visitor Room",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Office",
                       fillColor: "#202A44",
                       style: "tableHeader",
                     },
