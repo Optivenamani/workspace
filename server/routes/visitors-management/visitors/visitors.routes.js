@@ -628,6 +628,7 @@ Best regards.`;
                   "auto",
                   "auto",
                   "auto",
+                  "auto",
                 ],
                 body: [
                   [
@@ -686,6 +687,11 @@ Best regards.`;
                       fillColor: "#202A44",
                       style: "tableHeader",
                     },
+                    {
+                      text: "Office",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
                   ],
                 ],
               },
@@ -709,7 +715,7 @@ Best regards.`;
               color: "white",
             },
             tableCell: {
-              fontSize: 12,
+              fontSize: 9,
               margin: [0, 5],
             },
           },

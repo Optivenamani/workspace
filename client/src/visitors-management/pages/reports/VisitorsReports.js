@@ -22,7 +22,7 @@ const VisitorsReports = () => {
       });
       return;
     }
-
+  
     if (endDate < startDate) {
       toast.error("End date cannot be before start date.", {
         position: "top-center",
@@ -33,8 +33,9 @@ const VisitorsReports = () => {
       });
       return;
     }
-
+  
     try {
+      console.log("Before axios request"); 
       const response = await axios.get(
         "https://workspace.optiven.co.ke/api/visitors/download-pdf/visitors-info",
         {
@@ -48,19 +49,21 @@ const VisitorsReports = () => {
           responseType: "blob",
         }
       );
-
-      console.log(startDate, endDate);
-
+      console.log("After axios request"); 
+  
+      // Check the API response structure
+      console.log("API Response:", response);
+  
       const file = new Blob([response.data], {
         type: "application/pdf",
       });
-
+  
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
       link.download = "visitors_report.pdf";
       link.click();
-
+  
       toast.success("PDF downloaded successfully.", {
         position: "top-center",
         closeOnClick: true,
@@ -70,6 +73,8 @@ const VisitorsReports = () => {
       });
     } catch (error) {
       console.error("Error downloading PDF:", error);
+  
+    
       toast.error(
         "An error occurred while downloading the PDF. Please try again.",
         {

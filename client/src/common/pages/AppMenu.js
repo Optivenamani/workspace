@@ -41,7 +41,7 @@ const AppMenu = ({ onAppSelect }) => {
                   onClick={handleAppSelect}
                 >
                   <img
-                    src="https://images.pexels.com/photos/7564257/pexels-photo-7564257.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                    src="https://images.unsplash.com/photo-1603899607191-e9425cdfdd7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80"
                     alt=""
                     className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
                   />
@@ -53,7 +53,9 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
-            {(department === "ICT" || department === "Customer Exp" || accessRole === "visitorsManagementHR") && (
+            {(department === "ICT" ||
+              department === "Customer Exp" ||
+              accessRole === "visitorsManagementHR") && (
               <li>
                 <Link
                   to="/visitors-management"
