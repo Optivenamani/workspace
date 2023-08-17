@@ -72,7 +72,8 @@ const ViewActivities = () => {
   const handleEditactivity = async (
     activityId,
     measurableAchievement,
-    variance
+    variance,
+    comments
   ) => {
     try {
       // Find the activity based on the activityId
@@ -93,6 +94,7 @@ const ViewActivities = () => {
             ...activity,
             measurable_achievement: measurableAchievement,
             variance: variance,
+            comments: comments,
             date: formatDate(activity.date),
             time: formatTime(activity.time),
           }),
@@ -107,6 +109,7 @@ const ViewActivities = () => {
               ...activity,
               measurable_achievement: measurableAchievement,
               variance: variance,
+              comments: comments,
             };
           }
           return activity;
