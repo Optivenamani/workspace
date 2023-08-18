@@ -52,37 +52,98 @@ router.post("/", authenticateJWT, async (req, res) => {
     }
   });
 
-  // Update a meeting
-  router.patch("/:id", authenticateJWT, async (req, res) => {
+  router.patch("/:id/report", authenticateJWT, async (req, res) => {
     try {
       const meetingId = req.params.id;
-      const {
-        client_name,
-        client_number,
-        arrival_time,
-        meeting_date,
-        purpose,
-        room,
-      } = req.body;
-
-      // Update the meeting in the database
-      const [updatedMeeting] = await pool.promise().query(
-        "UPDATE meetings SET client_name = ?, client_number = ?, arrival_time = ?, meeting_date = ?, purpose = ?, room = ? WHERE id = ? RETURNING *",
-        [client_name, client_number, arrival_time, meeting_date, purpose, room, meetingId]
+      const { report_time } = req.body;
+  
+      const [existingMeeting] = await pool.promise().query(
+        "SELECT report_time, exit_time FROM meetings WHERE id = ?",
+        [meetingId]
       );
-
-      // Return the updated meeting data
-      if (updatedMeeting) {
-        res.status(200).json(updatedMeeting);
-      } else {
-        res.status(404).json({ message: "Meeting not found." });
+  
+      if (!existingMeeting) {
+        return res.status(404).json({ message: "Meeting not found." });
       }
+  
+      if (existingMeeting.report_time) {
+        return res.status(400).json({ message: "Report time is already set and cannot be updated." });
+      }
+  
+      await pool.promise().query(
+        "UPDATE meetings SET report_time = ? WHERE id = ?",
+        [report_time, meetingId]
+      );
+  
+      res.status(200).json({ message: "Report time updated successfully." });
     } catch (error) {
-      console.error("Error updating meeting:", error);
-      res.status(500).json({ error: "An error occurred while updating the meeting." });
+      console.error("Error updating report time:", error);
+      res.status(500).json({ error: "An error occurred while updating the report time." });
     }
   });
-
+  
+  router.patch("/:id/exit", authenticateJWT, async (req, res) => {
+    try {
+      const meetingId = req.params.id;
+      const { exit_time } = req.body;
+  
+      const [existingMeeting] = await pool.promise().query(
+        "SELECT report_time, exit_time FROM meetings WHERE id = ?",
+        [meetingId]
+      );
+  
+      if (!existingMeeting) {
+        return res.status(404).json({ message: "Meeting not found." });
+      }
+  
+      if (existingMeeting.exit_time) {
+        return res.status(400).json({ message: "Exit time is already set and cannot be updated." });
+      }
+  
+      await pool.promise().query(
+        "UPDATE meetings SET exit_time = ? WHERE id = ?",
+        [exit_time, meetingId]
+      );
+  
+      res.status(200).json({ message: "Exit time updated successfully." });
+    } catch (error) {
+      console.error("Error updating exit time:", error);
+      res.status(500).json({ error: "An error occurred while updating the exit time." });
+    }
+  });
+  
+  
+  router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      pool.query(
+        "DELETE FROM meetings WHERE id = ?",
+        [id],
+        (err, result) => {
+          if (err) {
+            console.error("Error deleting meeting:", err);
+            res.status(500).json({
+              message: "An error occurred while deleting the meeting.",
+            });
+          } else if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Meeting not found." });
+          } else {
+            res.json({ message: "Meeting deleted successfully." });
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error deleting meeting:", error);
+      res.status(500).json({
+        message: "An error occurred while deleting the meeting.",
+      });
+    }
+  });
+  
+  
+  
+  
   // ... Other routes ...
 
   return router;

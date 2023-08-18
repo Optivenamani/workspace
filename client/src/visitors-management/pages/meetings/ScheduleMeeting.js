@@ -11,7 +11,6 @@ const ScheduleMeeting = () => {
   const [arrivalTime, setArrivalTime] = useState("");
   const [meetingDate, setMeetingDate] = useState("");
   const [purpose, setPurpose] = useState("");
-  const [room, setRoom] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = useSelector((state) => state.user.token);
@@ -36,7 +35,7 @@ const ScheduleMeeting = () => {
       arrival_time: arrivalTime,
       meeting_date: meetingDate,
       purpose,
-      room,
+      
     };
 
     try {
@@ -68,7 +67,7 @@ const ScheduleMeeting = () => {
       setArrivalTime("");
       setMeetingDate("");
       setPurpose("");
-      setRoom("");
+     
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -85,6 +84,7 @@ const ScheduleMeeting = () => {
     }
   };
 
+  const [meetings, setMeetings] = useState([]);
   useEffect(() => {
     async function fetchMeetingData() {
       try {
@@ -221,23 +221,7 @@ const ScheduleMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="Room"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Room
-                    </label>
-
-                    <input
-                      type="text"
-                      id="Room"
-                      name="room"
-                      value={room}
-                      onChange={(e) => setRoom(e.target.value)}
-                      className="input input-bordered input-success w-full max-w-xs"
-                    />
-                  </div>
+                  
 
                   <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                     <button

@@ -5,18 +5,6 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const formatDate = (dateString) => {
-  if (!dateString) return null;
-  const date = new Date(dateString);
-  return date
-    .toLocaleDateString("en-CA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    .replace(/\//g, "-");
-};
-
 const EditMeeting = () => {
   const { id } = useParams();
   const meetingId = id;
@@ -29,8 +17,11 @@ const EditMeeting = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = useSelector((state) => state.user.token);
-
   const navigate = useNavigate();
+
+  const handleEdit = () => {
+    navigate(`/edit-meeting/${meetingId}`);
+  };
 
   const fetchMeeting = async () => {
     setLoading(true);
@@ -152,7 +143,6 @@ const EditMeeting = () => {
                     >
                       Client Name
                     </label>
-
                     <input
                       type="text"
                       id="ClientName"
@@ -163,7 +153,7 @@ const EditMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
-
+                  {/* Repeat similar blocks for other form fields */}
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="ClientNumber"
@@ -171,7 +161,6 @@ const EditMeeting = () => {
                     >
                       Client Phone Number
                     </label>
-
                     <input
                       type="text"
                       id="ClientNumber"
@@ -182,9 +171,7 @@ const EditMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
-
                   {/* Repeat similar blocks for other form fields */}
-
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="Purpose"
@@ -192,7 +179,6 @@ const EditMeeting = () => {
                     >
                       Purpose
                     </label>
-
                     <input
                       type="text"
                       id="Purpose"
@@ -203,7 +189,7 @@ const EditMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
-
+                  {/* Repeat similar blocks for other form fields */}
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="ArrivalTime"
@@ -211,7 +197,6 @@ const EditMeeting = () => {
                     >
                       Estimated Arrival Time
                     </label>
-
                     <input
                       type="time"
                       id="ArrivalTime"
@@ -221,7 +206,7 @@ const EditMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
-
+                  {/* Repeat similar blocks for other form fields */}
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="MeetingDate"
@@ -229,7 +214,6 @@ const EditMeeting = () => {
                     >
                       Meeting Date
                     </label>
-
                     <input
                       type="date"
                       id="MeetingDate"
@@ -239,6 +223,7 @@ const EditMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
+                  {/* Repeat similar blocks for other form fields */}
                   <div className="col-span-6 sm:col-span-3">
                     <label
                       htmlFor="Room"
@@ -246,7 +231,6 @@ const EditMeeting = () => {
                     >
                       Room
                     </label>
-
                     <input
                       type="text"
                       id="Room"
@@ -256,7 +240,7 @@ const EditMeeting = () => {
                       className="input input-bordered input-success w-full max-w-xs"
                     />
                   </div>
-
+                  {/* Repeat similar blocks for other form fields */}
                   <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                     <button
                       type="submit"
@@ -265,7 +249,6 @@ const EditMeeting = () => {
                     >
                       {loading ? "Editing..." : "Edit Meeting"}
                     </button>
-
                     {error && (
                       <p className="mt-4 text-sm text-red-500">{error}</p>
                     )}
@@ -278,6 +261,6 @@ const EditMeeting = () => {
       </Sidebar>
     </>
   );
-};
+                    };  
 
 export default EditMeeting;

@@ -97,8 +97,7 @@ const Sidebar = ({ children }) => {
                   )}
                 </div>
               </div>
-<<<<<<< HEAD
-            </div>
+            )};
              {/* Meetings */}
              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
              <input type="checkbox" className="peer" />
@@ -118,10 +117,6 @@ const Sidebar = ({ children }) => {
                </Link>
              </div>
            </div>
-=======
-            )}
-
->>>>>>> a43d00e1fd45f176dcf9f55c94cee4d0abed7c0f
             {/* Parking */}
             {(isCustomerExp || department === "ICT") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
