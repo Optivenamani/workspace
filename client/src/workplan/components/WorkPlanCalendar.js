@@ -6,11 +6,11 @@ import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Modal from "react-modal";
 import { formatDate } from "@fullcalendar/core";
-import { formatIsoTimeString } from "@fullcalendar/core/internal";
 
 const WorkPlanCalendar = ({ activities, editactivity }) => {
   const [measurableAchievement, setMeasurableAchievement] = useState("");
   const [variance, setVariance] = useState("");
+  const [comments, setComments] = useState("");
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,13 +45,14 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
     setIsModalOpen(false);
   };
 
-  // Modify the editactivity function to use the editactivity prop
+  // Modify the editActivity function to use the editActivity prop
   const handleEditactivity = async (
     activityId,
     measurableAchievement,
-    variance
+    variance,
+    comments
   ) => {
-    await editactivity(activityId, measurableAchievement, variance);
+    await editactivity(activityId, measurableAchievement, variance, comments);
     setIsModalOpen(true);
   };
 
@@ -68,6 +69,8 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
       workplanId: activity.workplan_id,
     },
   }));
+
+  console.log(activitiesList);
 
   return (
     <div>
@@ -105,7 +108,8 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               handleEditactivity(
                 selectedEvent.extendedProps.id,
                 measurableAchievement,
-                variance
+                variance,
+                comments
               )
             }
           >
@@ -126,7 +130,11 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               <div className="flex items-center mt-1">
                 <h1 className="ml-1 font-bold">Start Time</h1>
                 <p className="text-sm italic ml-2">
-                  {formatIsoTimeString(selectedEvent.start)}
+                  {selectedEvent.start.toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    // timeZone: "EAT",
+                  })}
                 </p>
               </div>
             </div>
@@ -136,6 +144,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                 {selectedEvent.extendedProps.expectedOutput}
               </p>
             </div>
+            {/* render textarea if there's no measureable achievement */}
             {selectedEvent.extendedProps.measurableAchievement !== null ? (
               <div>
                 <h1 className="label font-bold">Measurable Achievement</h1>
@@ -170,8 +179,26 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                 />
               </div>
             )}
+            {selectedEvent.extendedProps.comments !== null ? (
+              <div>
+                <h1 className="label font-bold">Comments</h1>
+                <p className="text-sm italic ml-1">
+                  {selectedEvent.extendedProps.comments}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <h1 className="label font-bold">Comments</h1>
+                <textarea
+                  className="textarea textarea-bordered h-32 w-full"
+                  required
+                  onChange={(e) => setComments(e.target.value)}
+                />
+              </div>
+            )}
             {(selectedEvent.extendedProps.measurableAchievement === null ||
-              selectedEvent.extendedProps.variance === null) && (
+              selectedEvent.extendedProps.variance === null ||
+              selectedEvent.extendedProps.comments === null) && (
               <button className="btn btn-outline w-full mt-1" type="submit">
                 Mark as Done
               </button>

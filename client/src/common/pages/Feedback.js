@@ -84,6 +84,7 @@ const Feedback = () => {
           <button
             className="btn btn-outline w-full lg:w-1/2"
             onClick={handleSubmit}
+            disabled={!feedback}
           >
             {loading ? "Submitting" : "Submit"}
           </button>

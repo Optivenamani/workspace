@@ -228,7 +228,7 @@ const EditVisitor = () => {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       className="input input-bordered w-full max-w-xs"
-                      required
+                      
                     />
                   </div>
                   <div className="col-span-6 sm:col-span-3">

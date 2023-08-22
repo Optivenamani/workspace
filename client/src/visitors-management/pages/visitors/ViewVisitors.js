@@ -19,11 +19,12 @@ const formatDate = (dateString) => {
 const ViewVisitors = () => {
   const [visitors, setVisitors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
   const token = useSelector((state) => state.user.token);
-  const user = useSelector((state) => state.user.user); 
+  const user = useSelector((state) => state.user.user);
   const office = user.office;
   const accessRole = user.Accessrole;
-
   
   useEffect(() => {
     // Fetch visitor data from the server
@@ -129,6 +130,14 @@ const ViewVisitors = () => {
       visitor.phone.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredVisitors.length / itemsPerPage);
+  const paginationArray = Array.from({ length: totalPages }, (_, index) => index + 1);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const handlePaginationClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <Sidebar>
       <div className="container px-4 py-6 mx-auto">
@@ -162,8 +171,7 @@ const ViewVisitors = () => {
               </tr>
             </thead>
             <tbody>
-              {/* Render visitor data */}
-              {filteredVisitors.map((visitor, i) => (
+              {filteredVisitors.slice(startIndex, endIndex).map((visitor, i) => (
                 <tr key={visitor.id}>
                   <td>{i + 1}</td>
                   <td>{visitor.name}</td>
@@ -212,9 +220,20 @@ const ViewVisitors = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+                ))}
             </tbody>
           </table>
+          <div className="flex justify-center mt-4">
+          {paginationArray.map((pageNumber) => (
+            <button
+              key={pageNumber}
+              className={`join-item btn ${currentPage === pageNumber ? "btn-active" : ""}`}
+              onClick={() => handlePaginationClick(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+            ))}
+          </div>
         </div>
       </div>
     </Sidebar>
