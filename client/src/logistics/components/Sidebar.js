@@ -1,15 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 import {
   fetchActiveSiteVisits,
   selectActiveSiteVisits,
   fetchPendingSiteVisits,
 } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
 import { fetchPendingVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
+import { fetchNotifications } from "../../redux/logistics/features/notifications/notificationsSlice";
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
+  const [canBookSiteVisit, setCanBookSiteVisit] = useState(true);
+  const [latestNotification, setLatestNotification] = useState(null);
+
   const accessRole = useSelector((state) => state.user.accessRole).trim();
 
   const activeVisits = useSelector(selectActiveSiteVisits);
@@ -37,6 +42,47 @@ const Sidebar = ({ children }) => {
     dispatch(fetchPendingSiteVisits());
     dispatch(fetchPendingVehicleRequests());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchActiveSiteVisits());
+
+    dispatch(fetchNotifications())
+      .unwrap()
+      .then((notificationsData) => {
+        const latestNotification = notificationsData.notifications[0];
+        setLatestNotification(latestNotification); // Store the latest notification in state
+        if (
+          latestNotification.type === "approved" &&
+          moment().diff(latestNotification.timestamp, "hours") > 24
+        ) {
+          setCanBookSiteVisit(false);
+        }
+      });
+  }, [dispatch]);
+
+  const shouldDisableSiteVisitButton = () => {
+    if (
+      latestNotification &&
+      latestNotification.type === "approved" &&
+      moment().diff(latestNotification.timestamp, "hours") > 24
+    ) {
+      return true;
+    }
+
+    if (hasActiveSiteVisit) {
+      for (const visit of activeVisits) {
+        if (
+          visit.status === "in_progress" ||
+          visit.status === "complete" ||
+          visit.status === "reviewed"
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
 
   const hasActiveSiteVisit =
     siteVisitStatus === "succeeded" && activeVisits.length > 0;
@@ -174,9 +220,13 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
                     <Link
-                      to={hasActiveSiteVisit ? "#" : "/book-site-visit"} // Check if there is an active site visit and conditionally set the link's "to" prop
+                      to={
+                        !hasActiveSiteVisit && !shouldDisableSiteVisitButton()
+                          ? "/book-site-visit"
+                          : "#"
+                      }
                       className={`font-sans mt-1 hover:bg-base-200 rounded p-2 ${
-                        hasActiveSiteVisit
+                        hasActiveSiteVisit && shouldDisableSiteVisitButton()
                           ? "opacity-50 cursor-not-allowed"
                           : ""
                       }`} // Add conditional styling to indicate that the link is disabled
