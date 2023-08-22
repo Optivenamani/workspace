@@ -12,15 +12,22 @@ export const fetchNotifications = createAsyncThunk(
   "notifications/fetchNotifications",
   async (_, { getState }) => {
     const token = getState().user.token;
-    const response = await fetch("https://workspace.optiven.co.ke/api/notifications", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      "https://workspace.optiven.co.ke/api/notifications",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error("Error fetching notifications");
     }
     const data = await response.json();
+    console.log(
+      "Last notification:",
+      data.notifications[data.notifications.length - 1]
+    );
     return data;
   }
 );
