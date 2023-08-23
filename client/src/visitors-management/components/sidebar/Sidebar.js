@@ -29,7 +29,7 @@ const Sidebar = ({ children }) => {
             </li>
 
             {/* Visitors */}
-            {(isCustomerExp || department === "ICT") && (
+            {(isCustomerExp || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Visitors</div>
@@ -51,12 +51,12 @@ const Sidebar = ({ children }) => {
             )}
 
             {/* Interviews */}
-            {(isCustomerExp || isVisitorsManagementHR || department === "ICT") && (
+            {(isCustomerExp || isVisitorsManagementHR || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Interviews</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
-                  {(isVisitorsManagementHR || department === "ICT")&& (
+                  {(isVisitorsManagementHR || department === "ICT (S)")&& (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/schedule-interview"
@@ -76,7 +76,7 @@ const Sidebar = ({ children }) => {
             )}
 
             {/* Reports */}
-            {(isCustomerExp || isVisitorsManagementHR || department === "ICT") && (
+            {(isCustomerExp || isVisitorsManagementHR || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Reports</div>
@@ -87,7 +87,7 @@ const Sidebar = ({ children }) => {
                   >
                     Visitors Reports
                   </Link>
-                  {(isVisitorsManagementHR || department === "ICT") && (
+                  {(isVisitorsManagementHR || department === "ICT (S)") && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/interviews-reports"
@@ -100,7 +100,7 @@ const Sidebar = ({ children }) => {
             )}
 
             {/* Parking */}
-            {(isCustomerExp || department === "ICT") && (
+            {(isCustomerExp || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Parking</div>
