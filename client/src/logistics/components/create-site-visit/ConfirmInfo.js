@@ -3,11 +3,8 @@ import formatTime from "../../../utils/formatTime";
 
 const ConfirmInfo = ({ onSubmitForm, formData }) => {
   const [isChecked, setIsChecked] = useState(false);
-  console.log("formData:", formData);
 
-  console.log(formatTime(formData.pickup_time));
   const clientsArrayLength = formData.clients.length;
-  console.log("clients array length", clientsArrayLength);
 
   return (
     <>

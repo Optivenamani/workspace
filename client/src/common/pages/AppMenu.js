@@ -33,7 +33,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </div>
               </Link>
             </li>
-            {department === "ICT" && (
+            {department === "ICT (S)" && (
               <li>
                 <Link
                   to="/workplan-home"
@@ -53,7 +53,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
-            {(department === "ICT" ||
+            {(department === "ICT (S)" ||
               department === "Customer Exp" ||
               accessRole === "visitorsManagementHR") && (
               <li>
@@ -75,7 +75,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
-            {department === "ICT" && (
+            {department === "ICT (S)" && (
               <li>
                 <Link
                   to="/view-feedback"
