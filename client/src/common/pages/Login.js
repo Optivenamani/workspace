@@ -111,7 +111,7 @@ const Login = () => {
         </button>
         <label htmlFor="password" className="label">
           <a
-            href="https://www.portal.optiven.co.ke/Auth/forgotpass.php"
+            href="http://localhost:3000/forgot-pass"
             className="label-text font-bold text-green-600 italic hover:underline"
           >
             Forgot Password?

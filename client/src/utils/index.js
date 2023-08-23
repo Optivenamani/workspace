@@ -22,6 +22,7 @@ export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle"
 export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor";
 export { default as Feedback } from "../common/pages/Feedback";
 export { default as FillRemarks } from "../workplan/pages/FillRemarks";
+export { default as ForgotPass } from "../common/pages/ForgotPass";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";
 export { default as Login } from "../common/pages/Login";
@@ -33,6 +34,7 @@ export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
 export { default as Profile } from "../common/pages/Profile";
 export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";
+export { default as ResetPass } from "../common/pages/ResetPass";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
 export { default as ScheduleInterview } from "../visitors-management/pages/interviews/ScheduleInterview";

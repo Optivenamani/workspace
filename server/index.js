@@ -135,6 +135,8 @@ const io = socketIO(server, {
 
 // Import auth routes
 const login = require("./routes/auth/login.routes");
+const forgotpass = require("./routes/auth/forgotpass.routes")
+const resetpass = require("./routes/auth/resetpass.routes")
 const logout = require("./routes/auth/logout.routes");
 const users = require("./routes/auth/users.routes");
 
@@ -179,6 +181,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // Apply route middlewares
 app.use("/api/login", login(logisticsPool));
+app.use("/api/forgot-password", forgotpass(logisticsPool));
+app.use("/api/reset-pass", resetpass(logisticsPool));
 app.use("/api/logout", logout);
 app.use("/api/users", users(logisticsPool));
 app.use("/api/sites", sites(logisticsPool));

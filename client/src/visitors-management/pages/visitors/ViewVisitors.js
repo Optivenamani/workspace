@@ -223,19 +223,56 @@ const ViewVisitors = () => {
                 ))}
             </tbody>
           </table>
-          <div className="flex justify-center mt-4">
-          {paginationArray.map((pageNumber) => (
-            <button
-              key={pageNumber}
-              className={`join-item btn ${currentPage === pageNumber ? "btn-active" : ""}`}
-              onClick={() => handlePaginationClick(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-            ))}
           </div>
-        </div>
-      </div>
+          </div>
+          <nav aria-label="Page navigation example">
+  <ul className="list-style-none flex justify-center mt-4">
+    <li>
+      <button
+        className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+        aria-label="Previous"
+        onClick={() => {
+          handlePaginationClick(currentPage - 1);
+          window.scrollTo(0, 0); // Scroll to the top
+        }}
+        disabled={currentPage === 1}
+      >
+        <span aria-hidden="true">«</span>
+      </button>
+    </li>
+    {paginationArray.map((pageNumber) => (
+      <li key={pageNumber}>
+        <button
+          className={`relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white ${
+            currentPage === pageNumber ? "text-white bg-primary" : ""
+          }`}
+          onClick={() => {
+            handlePaginationClick(pageNumber);
+            window.scrollTo(0, 0); // Scroll to the top
+          }}
+        >
+          {pageNumber}
+        </button>
+      </li>
+    ))}
+    <li>
+      <button
+        className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+        aria-label="Next"
+        onClick={() => {
+          handlePaginationClick(currentPage + 1);
+          window.scrollTo(0, 0); // Scroll to the top
+        }}
+        disabled={currentPage === totalPages}
+      >
+        <span aria-hidden="true">»</span>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+        
+      
     </Sidebar>
   );
 };

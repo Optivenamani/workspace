@@ -70,7 +70,9 @@ import {
   TeamReports,
   Feedback,
   ViewFeedback,
+  ResetPass,
 } from "./utils/index";
+import ForgotPass from "./common/pages/ForgotPass";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -137,6 +139,8 @@ const App = () => {
         <Routes>
           {/* Login */}
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-pass" element={<ForgotPass />} />
+          <Route path="/reset-pass" element={<ResetPass />} />
           <Route path="/" exact element={<PrivateRoutes />}>
             {/* App Menu */}
             <Route path="/" element={<AppMenu />} />
