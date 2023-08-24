@@ -140,7 +140,7 @@ const App = () => {
           {/* Login */}
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-pass" element={<ForgotPass />} />
-          <Route path="/reset-pass" element={<ResetPass />} />
+          <Route path="/reset-password" element={<ResetPass />} />
           <Route path="/" exact element={<PrivateRoutes />}>
             {/* App Menu */}
             <Route path="/" element={<AppMenu />} />
