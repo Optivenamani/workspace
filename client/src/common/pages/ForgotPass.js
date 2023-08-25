@@ -88,7 +88,10 @@ const ForgotPass = () => {
           placeholder="name@domain"
           className="input input-bordered w-full max-w-xs"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value)
+            localStorage.setItem("reset-email-pass", email)
+          }}
           required
         />
 

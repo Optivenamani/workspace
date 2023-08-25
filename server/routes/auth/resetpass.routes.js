@@ -1,16 +1,17 @@
 require("dotenv").config();
 const express = require("express");
 const { body, validationResult } = require("express-validator");
-const crypto = require("crypto");
+const md5 = require("md5");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
-// Store reset codes and their creation times in memory
-const resetCodes = {};
+// JWT secret key
+const JWT_SECRET = process.env.JWT_SECRET ;
 
 module.exports = (pool) => {
   router.post(
     "/",
-    // Validate reset code and new password
+    body("email").notEmpty().withMessage("Email is required"),
     body("code").notEmpty().withMessage("Reset code is required"),
     body("password").notEmpty().withMessage("New password is required"),
     async (req, res) => {
@@ -19,42 +20,32 @@ module.exports = (pool) => {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { code, password } = req.body;
-      const { email } = req.query; // Get the email from the URL query parameters
+      const { email, code, password } = req.body;
 
       try {
-        // Check if the reset code and email combination exists in memory
-        if (!(email in resetCodes) || resetCodes[email].code !== code) {
-          return res.status(400).json({ message: "Invalid reset code or email" });
-        }
+        // Verify the reset code using JWT
+        jwt.verify(code, JWT_SECRET, (err, decoded) => {
+          if (err || decoded.email !== email) {
+            return res.status(400).json({ message: "Invalid reset code or email" });
+          }
 
-        // Check if the reset code was generated within the last 10 minutes
-        const currentTime = new Date().getTime();
-        const tenMinutesInMillis = 10 * 60 * 1000; // 10 minutes in milliseconds
+          // Hash the new password using md5
+          const hashedPassword = md5(password);
 
-        if (currentTime - resetCodes[email].timestamp > tenMinutesInMillis) {
-          return res.status(400).json({ message: "Reset code has expired" });
-        }
-
-        // Update the user's password and clear the reset code
-        const hashedPassword = crypto.createHash("md5").update(password).digest("hex");
-        await pool
-          .promise()
-          .query("UPDATE defaultdb.users SET password = ?, reset_code = NULL WHERE reset_code = ? AND email = ?", [
-            hashedPassword,
-            code,
-            email,
-          ]);
-
-        // Clear the reset code from memory
-        delete resetCodes[email];
-
-        res.status(200).json({ message: "Password reset successful" });
+          // Update the user's password and handle database logic
+          const updateQuery = "UPDATE defaultdb.users SET password = ?, reset_code = ? WHERE email = ?";
+          pool.promise().query(updateQuery, [hashedPassword, null, email])
+            .then(() => {
+              return res.status(200).json({ message: "Password reset successful" });
+            })
+            .catch((err) => {
+              console.error("Error during password reset:", err);
+              return res.status(500).json({ message: "Internal server error", error: err.message });
+            });
+        });
       } catch (err) {
         console.error("Error during password reset:", err);
-        res
-          .status(500)
-          .json({ message: "Internal server error", error: err.message });
+        return res.status(500).json({ message: "Internal server error", error: err.message });
       }
     }
   );
