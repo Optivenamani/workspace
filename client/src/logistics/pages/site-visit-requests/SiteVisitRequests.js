@@ -9,7 +9,6 @@ import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 const SiteVisitRequests = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  // const [itemsPerPage, setItemsPerPage] = useState(10);
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
   const [pending, setPending] = useState([]);
   const token = useSelector((state) => state.user.token);
@@ -17,8 +16,6 @@ const SiteVisitRequests = () => {
   // Use useSelector to get the itemsPerPage from Redux store
   const itemsPerPage = useSelector((state) => state.pagination.itemsPerPage);
   const dispatch = useDispatch();
-
-  console.log("Items per page:", itemsPerPage);
 
   // Calculate the range of items to be displayed on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -35,7 +32,7 @@ const SiteVisitRequests = () => {
     const fetchSiteVisitRequests = async () => {
       try {
         const response = await fetch(
-          "https://workspace.optiven.co.ke/api/site-visit-requests/",
+          "http://localhost:8080/api/site-visit-requests/",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -55,11 +52,10 @@ const SiteVisitRequests = () => {
         const filtered = sortedData.filter((item) => {
           if (selectedStatus === "all") {
             return true;
-          } else if (
-            selectedStatus === "in_progress" ||
-            selectedStatus === "complete"
-          ) {
-            return item.status === "in_progress" || item.status === "complete";
+          } else if (selectedStatus === "in_progress") {
+            return item.status === "in_progress";
+          } else if (selectedStatus === "complete") {
+            return item.status === "complete";
           } else {
             return item.status === selectedStatus;
           }
@@ -67,7 +63,7 @@ const SiteVisitRequests = () => {
 
         setPending(filtered);
         setSiteVisitRequests(filtered);
-        console.log(data);
+        console.log(data.filter((item) => item.status === "pending"));
       } catch (error) {
         console.error("Error fetching site visits:", error);
       }
@@ -99,10 +95,10 @@ const SiteVisitRequests = () => {
         return "bg-info";
       case "rejected":
         return "bg-error";
-      case "complete":
-        return "bg-purple-500";
       case "in_progress":
         return "bg-purple-500";
+      case "complete":
+        return "bg-pink-400";
       case "reviewed":
         return "bg-primary";
       case "cancelled":
@@ -203,11 +199,14 @@ const SiteVisitRequests = () => {
     case "rejected":
       statusText = "Rejected Site Visit Requests";
       break;
-    case "complete":
-      statusText = "Complete Site Visits";
-      break;
     case "in_progress":
-      statusText = "Site Visits In Progress";
+      statusText = "Site Visits En Route";
+      break;
+    case "complete":
+      statusText = "Undertaken Site Visits With Unfilled Surveys";
+      break;
+    case "reviewed":
+      statusText = "Undertaken Site Visits With Filled Surveys";
       break;
     default:
       statusText = "Site Visit Requests";
@@ -223,7 +222,14 @@ const SiteVisitRequests = () => {
               <span className="text-primary">{pending.length}</span>{" "}
               {statusText}
             </h1>
-            <div className="grid grid-cols-3 lg:grid-cols-8 justify-center">
+            {/* <div className="text-center">
+              <input
+                type="text"
+                className="input input-bordered mb-2 w-80"
+                placeholder="Search name..."
+              />
+            </div> */}
+            <div className="grid grid-cols-3 lg:grid-cols-9 justify-center">
               <div
                 className={`btn m-1 btn-outline font-bold mr-1 ${
                   selectedStatus === "all" ? "btn-active" : ""
@@ -265,23 +271,28 @@ const SiteVisitRequests = () => {
                 Rejected
               </div>
               <div
+                className={`btn m-1 bg-purple-500 border-none text-white font-bold ${
+                  selectedStatus === "in_progress" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("in_progress")}
+              >
+                En Route
+              </div>
+              <div
+                className={`btn m-1 bg-pink-400 border-none text-white font-bold ${
+                  selectedStatus === "complete" ? "btn-active" : ""
+                }`}
+                onClick={() => setSelectedStatus("complete")}
+              >
+                Unfilled Surveys
+              </div>
+              <div
                 className={`btn m-1 btn-primary text-white font-bold mr-1 ${
                   selectedStatus === "reviewed" ? "btn-active" : ""
                 }`}
                 onClick={() => setSelectedStatus("reviewed")}
               >
                 Complete
-              </div>
-              <div
-                className={`btn m-1 bg-purple-500 border-none text-white font-bold ${
-                  selectedStatus === "in_progress" ||
-                  selectedStatus === "complete"
-                    ? "btn-active"
-                    : ""
-                }`}
-                onClick={() => setSelectedStatus("in_progress" || "complete")}
-              >
-                In Progress
               </div>
               <Link
                 to="/driver-itinerary"
@@ -291,7 +302,7 @@ const SiteVisitRequests = () => {
               </Link>
             </div>
           </div>
-          <div className="px-4 mt-2 flex justify-center mb-5">
+          <div className="px-4 flex justify-center mb-5">
             {siteVisitRequests.length > 0 ? (
               <div className="overflow-x-auto w-screen card bg-base-100 shadow-xl">
                 <table className="w-full border-collapse">
@@ -304,13 +315,13 @@ const SiteVisitRequests = () => {
                         Date
                       </th>
                       <th className="border border-secondary-content px-2 py-2">
-                        Marketer
+                        Marketer / Person(s) Assigned
                       </th>
                       <th className="border border-secondary-content px-2 py-2">
-                        Clients
+                        Clients / Passengers
                       </th>
                       <th className="border border-secondary-content px-2 py-2">
-                        Site Name
+                        Site Name / Destination
                       </th>
                       <th className="border border-secondary-content px-2 py-2">
                         Driver
@@ -325,7 +336,10 @@ const SiteVisitRequests = () => {
                         Pickup Location
                       </th>
                       <th className="border border-secondary-content px-2 py-2">
-                        Remarks
+                        Remarks / Reason
+                      </th>
+                      <th className="border border-secondary-content px-2 py-2">
+                        Action
                       </th>
                     </tr>
                   </thead>
@@ -347,13 +361,17 @@ const SiteVisitRequests = () => {
                           )}
                         </td>
                         <td className="border border-secondary-content px-2 py-2 font-bold">
-                          {svr.marketer_name.toUpperCase()}
+                          {svr.marketer_name !== null
+                            ? svr.marketer_name.toUpperCase()
+                            : svr.special_assignment_assigned_to}
                         </td>
                         <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.num_clients}
                         </td>
                         <td className="border border-secondary-content px-2 py-2 font-bold">
-                          {svr.site_name}
+                          {svr.project_id !== 7
+                            ? svr.site_name
+                            : svr.special_assignment_destination}
                         </td>
                         <td className="border border-secondary-content px-2 py-2 font-bold">
                           {svr.driver_name}
@@ -420,6 +438,7 @@ const SiteVisitRequests = () => {
               </div>
             )}
           </div>
+          {/* pagination component */}
           <div className="flex justify-center mb-10">
             <div className="join">{renderPaginationButtons()}</div>
             <select
