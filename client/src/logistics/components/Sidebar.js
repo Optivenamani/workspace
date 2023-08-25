@@ -392,7 +392,7 @@ const Sidebar = ({ children }) => {
                       </Link>
                     </>
                   )}
-                  {(isHOL || isAdmin) && (
+                  {/* {(isHOL || isAdmin) && (
                     <>
                       <Link
                         className="font-sans mt-1 hover:bg-base-200 rounded p-2"
@@ -401,7 +401,7 @@ const Sidebar = ({ children }) => {
                         View Special Assignments
                       </Link>
                     </>
-                  )}
+                  )} */}
                   {(isDriver || isAdmin) && (
                     <>
                       <Link
