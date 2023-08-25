@@ -24,7 +24,7 @@ const CreateSpecialAssignment = () => {
     const fetchVehicles = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/vehicles/available",
+          "https://workspace.optiven.co.ke/api/vehicles/available",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ const CreateSpecialAssignment = () => {
     const fetchDrivers = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/drivers/all-drivers",
+          "https://workspace.optiven.co.ke/api/drivers/all-drivers",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ const CreateSpecialAssignment = () => {
       ],
     };
     try {
-      const response = await fetch("http://localhost:8080/api/site-visits", {
+      const response = await fetch("https://workspace.optiven.co.ke/api/site-visits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const CreateSpecialAssignment = () => {
       const data = await response.json();
       console.log(data);
       setLoading(false);
-      navigate("/logistics-home");
+      navigate("/site-visit-requests");
     } catch (error) {
       console.error(error);
       setLoading(false);

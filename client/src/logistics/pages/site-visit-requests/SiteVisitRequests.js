@@ -3,6 +3,8 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { setItemsPerPage } from "../../../redux/logistics/features/pagination/paginationSlice";
 import formatTime from "../../../utils/formatTime";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 
@@ -32,7 +34,7 @@ const SiteVisitRequests = () => {
     const fetchSiteVisitRequests = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/site-visit-requests/",
+          "https://workspace.optiven.co.ke/api/site-visit-requests/",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -338,9 +340,6 @@ const SiteVisitRequests = () => {
                       <th className="border border-secondary-content px-2 py-2">
                         Remarks / Reason
                       </th>
-                      <th className="border border-secondary-content px-2 py-2">
-                        Action
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -393,35 +392,35 @@ const SiteVisitRequests = () => {
                   </tbody>
                   <tfoot>
                     <tr className="text-center bg-gray-700 text-secondary-content">
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         #
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Date
                       </th>
-                      <th className="border border-secondary-content px-2">
-                        Marketer
+                      <th className="border border-secondary-content px-2 py-2">
+                        Marketer / Person(s) Assigned
                       </th>
-                      <th className="border border-secondary-content px-2">
-                        Clients
+                      <th className="border border-secondary-content px-2 py-2">
+                        Clients / Passengers
                       </th>
-                      <th className="border border-secondary-content px-2">
-                        Site Name
+                      <th className="border border-secondary-content px-2 py-2">
+                        Site Name / Destination
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Driver
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Pickup Time
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Vehicle
                       </th>
-                      <th className="border border-secondary-content px-2">
+                      <th className="border border-secondary-content px-2 py-2">
                         Pickup Location
                       </th>
-                      <th className="border border-secondary-content px-2">
-                        Remarks
+                      <th className="border border-secondary-content px-2 py-2">
+                        Remarks / Reason
                       </th>
                     </tr>
                   </tfoot>

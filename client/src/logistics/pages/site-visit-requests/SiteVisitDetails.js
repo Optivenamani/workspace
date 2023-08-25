@@ -10,6 +10,8 @@ const SiteVisitDetails = () => {
   const [vehicles, setVehicles] = useState([]);
   const [vehicle, setVehicle] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
+  const [destination, setDestination] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
   const [remarks, setRemarks] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [driver, setDriver] = useState("");
@@ -50,6 +52,8 @@ const SiteVisitDetails = () => {
         setDriver(data.driver_id);
         setVehicle(data.vehicle_id);
         setStatus(data.status);
+        setDestination(data.special_assignment_destination);
+        setAssignedTo(data.special_assignment_assigned_to);
       } catch (error) {
         console.error("Error fetching site visit request:", error);
       }
@@ -84,14 +88,11 @@ const SiteVisitDetails = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(
-          "https://workspace.optiven.co.ke/api/sites",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("https://workspace.optiven.co.ke/api/sites", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await response.json();
         console.log("Sites: ", data);
         setSites(data);
@@ -270,6 +271,96 @@ const SiteVisitDetails = () => {
       .replace(/\//g, "-");
   };
 
+  const startTrip = async (id) => {
+    try {
+      const response = await fetch(
+        `https://workspace.optiven.co.ke/api/site-visits/start-trip/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        toast.success("Trip set to in progress.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        // Reload the page
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        toast.error("An error occurred while attempting to start trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        console.error("Error starting trip:", data.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred while attempting to start trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.error("Error starting trip:", error);
+    }
+  };
+
+  const endTrip = async (id) => {
+    try {
+      const response = await fetch(
+        `https://workspace.optiven.co.ke/api/site-visits/end-trip/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        toast.success("Trip set to complete.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        // Reload the page
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        toast.error("An error occurred while attempting to end trip.", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        console.error("Error ending trip:", data.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred while attempting to end trip.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.error("Error ending trip:", error);
+    }
+  };
+
   return (
     <>
       <Sidebar>
@@ -291,28 +382,36 @@ const SiteVisitDetails = () => {
                   <div action="#" className="grid grid-cols-6 gap-1">
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="siteName" className="label font-bold">
-                        Site
+                        {destination !== null ? "Destination" : "Site"}
                       </label>
-                      <select
-                        id="site"
-                        as="select"
-                        value={site}
-                        onChange={(event) => {
-                          setSite(event.target.value);
-                        }}
-                        className="select select-bordered lg:w-4/5"
-                        required
-                      >
-                        <option value="">Pick a site</option>
-                        {sites.map((site) => (
-                          <option
-                            key={crypto.randomUUID()}
-                            value={site.project_id}
-                          >
-                            {site.name}
-                          </option>
-                        ))}
-                      </select>
+                      {site === 7 ? (
+                        <input
+                          className="input input-bordered"
+                          value={destination}
+                          disabled
+                        />
+                      ) : (
+                        <select
+                          id="site"
+                          as="select"
+                          value={site}
+                          onChange={(event) => {
+                            setSite(event.target.value);
+                          }}
+                          className="select select-bordered lg:w-4/5"
+                          required
+                        >
+                          <option value="">Pick a site</option>
+                          {sites.map((site) => (
+                            <option
+                              key={crypto.randomUUID()}
+                              value={site.project_id}
+                            >
+                              {site.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
@@ -348,19 +447,22 @@ const SiteVisitDetails = () => {
                         disabled={status !== "pending" && status !== "approved"}
                       />
                     </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label htmlFor="Password" className="label font-bold">
-                        Number of Clients
-                      </label>
-                      <input
-                        type="number"
-                        id="numberOfClients"
-                        name="numberOfClients"
-                        className="input input-bordered"
-                        value={numClients}
-                        disabled
-                      />
-                    </div>
+                    {marketerName !== null && (
+                      <div className="col-span-6 sm:col-span-3">
+                        <label htmlFor="Password" className="label font-bold">
+                          Number of Clients
+                        </label>
+                        <input
+                          type="number"
+                          id="numberOfClients"
+                          name="numberOfClients"
+                          className="input input-bordered"
+                          value={numClients}
+                          disabled
+                        />
+                      </div>
+                    )}
+
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="pickupTime" className="label font-bold">
                         Pickup Time
@@ -377,13 +479,15 @@ const SiteVisitDetails = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label htmlFor="siteName" className="label font-bold">
-                        Marketer
+                        {marketerName === null ? "Assigned To" : "Marketer"}
                       </label>
                       <input
                         type="text"
                         id="siteName"
                         name="first_name"
-                        value={marketerName}
+                        value={
+                          marketerName === null ? assignedTo : marketerName
+                        }
                         className="input input-bordered"
                         disabled
                       />
@@ -451,7 +555,8 @@ const SiteVisitDetails = () => {
                       {status !== "reviewed" &&
                       status !== "complete" &&
                       status !== "rejected" &&
-                      status !== "in_progress" ? (
+                      status !== "in_progress" &&
+                      marketerName !== null ? (
                         <>
                           <button
                             className="btn btn-primary text-white"
@@ -467,6 +572,22 @@ const SiteVisitDetails = () => {
                           </button>
                         </>
                       ) : null}
+                      {marketerName !== null || status === "complete" ? null : (
+                        <button
+                          className={`btn ${
+                            status === "in_progress"
+                              ? "btn-error"
+                              : "btn-primary"
+                          } text-white`}
+                          onClick={() =>
+                            status === "in_progress"
+                              ? endTrip(id)
+                              : startTrip(id)
+                          }
+                        >
+                          {status === "in_progress" ? "End Trip" : "Start Trip"}
+                        </button>
+                      )}
                       <button
                         className="btn btn-error btn-outline mr-1"
                         onClick={deleteSiteVisit}
