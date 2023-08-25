@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import logo from "../../assets/optiven-logo-full.png";
-import "react-toastify/dist/ReactToastify.css"; // Make sure to import the toast styles
+import "react-toastify/dist/ReactToastify.css";
 
 const ResetPass = () => {
   const navigate = useNavigate();
@@ -16,15 +16,83 @@ const ResetPass = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const emailParam = queryParams.get("email");
+
     if (emailParam) {
       setUserEmail(emailParam);
     }
   }, []);
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   setIsSubmitting(true);
+
+  //   if (password !== confirmPassword) {
+  //     toast.error("Passwords do not match", {
+  //       position: "top-center",
+  //       autoClose: 3000,
+  //       hideProgressBar: true,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     console.log("Sending Axios request...");
+  //     const apiUrl = `http://localhost:8080/api/reset-pass`;
+
+  //     const url = new URL(window.location.href);
+  //     const queryParams = new URLSearchParams(url.search);
+  //     const code = queryParams.get("code");
+  //     // const email = localStorage.getItem("reset-email-pass")
+  //     const requestData = {
+  //       email: 'developer@optiven.co.ke',
+  //       code: '1e9d1d8b4bdca3816ed519d0e26decb29d613812', // assuming "code" is the code extracted from the URL
+  //       password: 'test' // assuming "password" is the new password entered by the user
+  //     };
+
+  //     console.log("API URL:", apiUrl);
+  //     console.log("Request Data:", requestData);
+
+  //     const response = await axios.post(apiUrl, requestData);
+  //     console.log("Axios Response:", response.data);
+
+  //     if (response.data.message === "Password reset successful") {
+  //       console.log("Password reset successful");
+  //       toast.success("Password reset successful. You can now login with your new password.", {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         hideProgressBar: true,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //       });
+  //       navigate("/login");
+  //     }
+  //   } catch (error) {
+  //     console.error("Axios Error:", error);
+  //     toast.error("Error resetting password. Please try again later.", {
+  //       position: "top-center",
+  //       autoClose: 3000,
+  //       hideProgressBar: true,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   }
+
+  //   setIsSubmitting(false);
+  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-
+  
     if (password !== confirmPassword) {
       toast.error("Passwords do not match", {
         position: "top-center",
@@ -38,14 +106,32 @@ const ResetPass = () => {
       setIsSubmitting(false);
       return;
     }
-
+  
     try {
-      const response = await axios.post(`http://localhost:8080/api/reset-password?email=${userEmail}`, {
-        code,
-        password,
-      });
+      console.log("Sending Axios request...");
+      const apiUrl = `http://localhost:8080/api/reset-pass`;
 
+            const url = new URL(window.location.href);
+      const queryParams = new URLSearchParams(url.search);
+      const code = queryParams.get("code");
+      const email = localStorage.getItem("reset-email-pass")
+  
+      const requestData = {
+        email: "developer@optiven.co.ke",
+        code: code,
+        password: password
+      };
+  
+      console.log("API URL:", apiUrl);
+      console.log("Request Data:", requestData);
+  
+      const response = await axios.post(apiUrl, requestData, {
+        headers: { "Content-Type": "application/json" }
+      });
+      console.log("Axios Response:", response.data);
+  
       if (response.data.message === "Password reset successful") {
+        console.log("Password reset successful");
         toast.success("Password reset successful. You can now login with your new password.", {
           position: "top-center",
           autoClose: 3000,
@@ -58,7 +144,7 @@ const ResetPass = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Axios Error:", error);
       toast.error("Error resetting password. Please try again later.", {
         position: "top-center",
         autoClose: 3000,
@@ -69,9 +155,11 @@ const ResetPass = () => {
         progress: undefined,
       });
     }
-
+  
     setIsSubmitting(false);
   };
+  
+
 
   return (
     <div className="hero min-h-screen">
