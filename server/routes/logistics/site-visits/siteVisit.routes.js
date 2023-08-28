@@ -1,7 +1,7 @@
 // Load required modules and environment variables
 require("dotenv").config();
 const express = require("express");
-const axios = require('axios');
+const axios = require("axios");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
@@ -9,7 +9,12 @@ const WATI_TOKEN = process.env.WATI_TOKEN;
 const WATI_BASE_URL = process.env.WATI_BASE_URL;
 
 // WATI Helper function to send the WhatsApp msg
-const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadcastName) => {
+const sendWhatsAppMessage = async (
+  phoneNumber,
+  templateName,
+  parameters,
+  broadcastName
+) => {
   const config = {
     headers: {
       Authorization: `Bearer ${WATI_TOKEN}`,
@@ -21,10 +26,14 @@ const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadc
     broadcast_name: broadcastName,
   };
   try {
-    const response = await axios.post(`${WATI_BASE_URL}/api/v1/sendTemplateMessage?whatsappNumber=${phoneNumber}`, bodyData, config);
+    const response = await axios.post(
+      `${WATI_BASE_URL}/api/v1/sendTemplateMessage?whatsappNumber=${phoneNumber}`,
+      bodyData,
+      config
+    );
     return response.data;
   } catch (error) {
-    console.error('Failed to send WhatsApp message:', error.message);
+    console.error("Failed to send WhatsApp message:", error.message);
     throw error;
   }
 };
@@ -32,8 +41,18 @@ const sendWhatsAppMessage = async (phoneNumber, templateName, parameters, broadc
 module.exports = (pool, io) => {
   // Create a new site visit request
   router.post("/", authenticateJWT, async (req, res) => {
-    const { project_id, pickup_location, pickup_time, pickup_date, clients } =
-      req.body;
+    const {
+      project_id,
+      pickup_location,
+      pickup_time,
+      pickup_date,
+      clients,
+      special_assignment_destination,
+      special_assignment_assigned_to,
+      remarks,
+      driver_id,
+      vehicle_id,
+    } = req.body;
     const marketer_id = req.body.marketer_id; // Get the authenticated user ID from the JWT
 
     // Validation for client information
@@ -61,10 +80,26 @@ module.exports = (pool, io) => {
             pickup_location, 
             pickup_time, 
             pickup_date, 
-            status
+            status,
+            special_assignment_destination,
+            special_assignment_assigned_to,
+            remarks,
+            driver_id,
+            vehicle_id
           ) 
-         VALUES (?, ?, ?, ?, ?, 'pending')`,
-        [marketer_id, project_id, pickup_location, pickup_time, pickup_date],
+         VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?)`,
+        [
+          marketer_id,
+          project_id,
+          pickup_location,
+          pickup_time,
+          pickup_date,
+          special_assignment_destination,
+          special_assignment_assigned_to,
+          remarks,
+          driver_id,
+          vehicle_id,
+        ],
         (err, result) => {
           if (err) throw err;
 
@@ -106,13 +141,8 @@ module.exports = (pool, io) => {
   router.patch("/:id", authenticateJWT, async (req, res) => {
     try {
       const { id } = req.params;
-      const {
-        project_id,
-        pickup_location,
-        pickup_time,
-        pickup_date,
-        clients,
-      } = req.body;
+      const { project_id, pickup_location, pickup_time, pickup_date, clients } =
+        req.body;
 
       // Validation for client information
       if (!clients || clients.length === 0) {
@@ -146,7 +176,8 @@ module.exports = (pool, io) => {
         (err, result) => {
           if (err) {
             res.status(500).json({
-              message: "An error occurred while updating the site visit request.",
+              message:
+                "An error occurred while updating the site visit request.",
             });
             return;
           }
@@ -219,179 +250,184 @@ module.exports = (pool, io) => {
     }
   });
   // Set site_visit status to "in_progress" when starting a trip
-  router.patch(
-    "/start-trip/:id",
-    authenticateJWT,
-    async (req, res) => {
-      const { id } = req.params;
+  router.patch("/start-trip/:id", authenticateJWT, async (req, res) => {
+    const { id } = req.params;
 
-      try {
-        pool.query(
-          "UPDATE site_visits SET status = 'in_progress' WHERE id = ?",
-          [id],
-          (err, result) => {
-            if (err) throw err;
-            if (result.affectedRows === 0) {
-              res
-                .status(404)
-                .json({ message: "Site visit request not found." });
-            } else {
-              res.json({
-                message:
-                  "Site visit request status updated to 'in_progress' successfully.",
-              });
-            }
-          }
-        );
-      } catch (error) {
-        res.status(500).json({
-          message:
-            "An error occurred while updating the site visit request status.",
-        });
-      }
-    }
-  );
-  // Set site_visit status to "complete" when ending a trip
-  router.patch(
-    "/end-trip/:id",
-    authenticateJWT,
-    async (req, res) => {
-      const { id } = req.params;
-      const driverId = req.user.id;
-
-      const sendCompletionNotification = async () => {
-        const getUserIdQuery = "SELECT marketer_id FROM site_visits WHERE id = ?";
-        pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
+    try {
+      pool.query(
+        "UPDATE site_visits SET status = 'in_progress' WHERE id = ?",
+        [id],
+        (err, result) => {
           if (err) throw err;
-          if (userIdResult.length > 0) {
-            const userId = userIdResult[0].marketer_id;
-            const notificationQuery = `
+          if (result.affectedRows === 0) {
+            res.status(404).json({ message: "Site visit request not found." });
+          } else {
+            res.json({
+              message:
+                "Site visit request status updated to 'in_progress' successfully.",
+            });
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message:
+          "An error occurred while updating the site visit request status.",
+      });
+    }
+  });
+  // Set site_visit status to "complete" when ending a trip
+  router.patch("/end-trip/:id", authenticateJWT, async (req, res) => {
+    const { id } = req.params;
+    const driverId = req.user.id;
+
+    const sendCompletionNotification = async () => {
+      const getUserIdQuery = "SELECT marketer_id FROM site_visits WHERE id = ?";
+      pool.query(getUserIdQuery, [id], async (err, userIdResult) => {
+        if (err) throw err;
+        if (userIdResult.length > 0) {
+          const userId = userIdResult[0].marketer_id;
+          const notificationQuery = `
               INSERT INTO notifications (user_id, type, message, remarks, site_visit_id)
               VALUES (?, 'completed', 'Your site visit has been completed', 'The site visit has been marked as complete by the driver', ?);
             `;
-            pool.query(notificationQuery, [userId, id], async (err, result) => {
-              if (err) throw err;
+          pool.query(notificationQuery, [userId, id], async (err, result) => {
+            if (err) throw err;
 
-              // Send WhatsApp message to clients
-              const getClientPhoneNumbersQuery = 'SELECT phone_number FROM site_visit_clients WHERE site_visit_id = ?';
-              pool.query(getClientPhoneNumbersQuery, [id], async (err, phoneNumbersResult) => {
+            // Send WhatsApp message to clients
+            const getClientPhoneNumbersQuery =
+              "SELECT phone_number FROM site_visit_clients WHERE site_visit_id = ?";
+            pool.query(
+              getClientPhoneNumbersQuery,
+              [id],
+              async (err, phoneNumbersResult) => {
                 if (err) throw err;
                 if (phoneNumbersResult.length > 0) {
-                  const clientPhoneNumbers = phoneNumbersResult.map(item => item.phone_number);
-                  const completionMessage = "Your site visit has been completed.";
+                  const clientPhoneNumbers = phoneNumbersResult.map(
+                    (item) => item.phone_number
+                  );
+                  const completionMessage =
+                    "Your site visit has been completed.";
                   const templateName = "site_visit_completed";
-                  const parameters = [{ name: "message", value: completionMessage }];
+                  const parameters = [
+                    { name: "message", value: completionMessage },
+                  ];
                   const broadcastName = "site_visit_completed";
 
                   try {
                     // Send WhatsApp messages to all client phone numbers
                     for (const phoneNumber of clientPhoneNumbers) {
-                      await sendWhatsAppMessage(phoneNumber, templateName, parameters, broadcastName);
+                      await sendWhatsAppMessage(
+                        phoneNumber,
+                        templateName,
+                        parameters,
+                        broadcastName
+                      );
                     }
                   } catch (error) {
                     console.error("Failed to send WhatsApp message:", error);
                   }
                 }
-              });
+              }
+            );
 
-              // Emit the notification via Socket.IO
-              io.emit("siteVisitCompleted", {
-                id: req.params.id,
-                message: "Site visit has been completed",
-              });
+            // Emit the notification via Socket.IO
+            io.emit("siteVisitCompleted", {
+              id: req.params.id,
+              message: "Site visit has been completed",
             });
-          }
-        });
-      };
+          });
+        }
+      });
+    };
 
-      pool.getConnection((err, connection) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        return res.status(500).json({
+          message:
+            "An error occurred while establishing the database connection.",
+        });
+      }
+
+      connection.beginTransaction(async (err) => {
         if (err) {
+          connection.release();
           return res.status(500).json({
-            message:
-              "An error occurred while establishing the database connection.",
+            message: "An error occurred while beginning the transaction.",
           });
         }
 
-        connection.beginTransaction(async (err) => {
-          if (err) {
-            connection.release();
-            return res.status(500).json({
-              message: "An error occurred while beginning the transaction.",
-            });
-          }
-
-          try {
-            // Update site visit status
-            connection.query(
-              "UPDATE site_visits SET status = 'complete' WHERE id = ?",
-              [id],
-              async (err, result) => {
-                if (err) {
-                  connection.rollback(() => {
-                    connection.release();
-                    return res.status(500).json({
-                      message:
-                        "An error occurred while updating the site visit request status.",
-                    });
-                  });
-                }
-
-                if (result.affectedRows === 0) {
+        try {
+          // Update site visit status
+          connection.query(
+            "UPDATE site_visits SET status = 'complete' WHERE id = ?",
+            [id],
+            async (err, result) => {
+              if (err) {
+                connection.rollback(() => {
                   connection.release();
-                  return res
-                    .status(404)
-                    .json({ message: "Site visit request not found." });
-                } else {
-                  await sendCompletionNotification();
+                  return res.status(500).json({
+                    message:
+                      "An error occurred while updating the site visit request status.",
+                  });
+                });
+              }
 
-                  // Update driver's availability status
-                  connection.query(
-                    "UPDATE users SET is_available = 1 WHERE user_id = ?",
-                    [driverId],
-                    (err, result) => {
+              if (result.affectedRows === 0) {
+                connection.release();
+                return res
+                  .status(404)
+                  .json({ message: "Site visit request not found." });
+              } else {
+                await sendCompletionNotification();
+
+                // Update driver's availability status
+                connection.query(
+                  "UPDATE users SET is_available = 1 WHERE user_id = ?",
+                  [driverId],
+                  (err, result) => {
+                    if (err) {
+                      connection.rollback(() => {
+                        connection.release();
+                        return res.status(500).json({
+                          message:
+                            "An error occurred while updating the driver availability.",
+                        });
+                      });
+                    }
+
+                    connection.commit((err) => {
                       if (err) {
                         connection.rollback(() => {
                           connection.release();
                           return res.status(500).json({
                             message:
-                              "An error occurred while updating the driver availability.",
+                              "An error occurred while committing the transaction.",
                           });
                         });
                       }
-
-                      connection.commit((err) => {
-                        if (err) {
-                          connection.rollback(() => {
-                            connection.release();
-                            return res.status(500).json({
-                              message:
-                                "An error occurred while committing the transaction.",
-                            });
-                          });
-                        }
-                        connection.release();
-                        return res.json({
-                          message:
-                            "Site visit request status updated to 'complete', driver set to 'available', and notification sent successfully.",
-                        });
+                      connection.release();
+                      return res.json({
+                        message:
+                          "Site visit request status updated to 'complete', driver set to 'available', and notification sent successfully.",
                       });
-                    }
-                  );
-                }
+                    });
+                  }
+                );
               }
-            );
-          } catch (error) {
-            connection.rollback(() => {
-              connection.release();
-              return res.status(500).json({
-                message:
-                  "An error occurred while updating the site visit request status and driver availability.",
-              });
+            }
+          );
+        } catch (error) {
+          connection.rollback(() => {
+            connection.release();
+            return res.status(500).json({
+              message:
+                "An error occurred while updating the site visit request status and driver availability.",
             });
-          }
-        });
+          });
+        }
       });
-    }
-  );
+    });
+  });
   return router;
 };
