@@ -163,67 +163,75 @@ const FillRemarks = () => {
 
   return (
     <Sidebar>
-      <div className="bg-base-200 pt-5 pb-10 min-h-full min-w-full">
+      <div className="container py-6 mx-auto">
         <div>
           {/* Loop through the grouped activities and render them */}
-          {groupedActivities ? (
+          {groupedActivities.length > 0 ? (
             Object.entries(groupedActivities).map(
               ([date, activitiesForDate]) => (
                 <div key={date} className="block mx-10 md:mx-20 lg:mx-24">
-                  <label className="label font-bold lausanne mt-5">
+                  <label className="label font-bold lausanne mt-5 italic ">
                     {date}
                   </label>
-                  <table className="table w-full bg-base-100 shadow-xl">
+                  <table className="table min-w-full bg-base-100 shadow-xl">
                     <tbody>
                       {activitiesForDate.map((activity) => (
                         <tr key={activity.id}>
                           <td className="flex items-center justify-between py-6">
-                            <div className="w-24">
-                              <h1 className="stat-title text-xs lausanne">
+                            <div className="min-w-fit">
+                              <h1 className="stat-title text-xs lausanne italic">
                                 Marketer
                               </h1>
-                              <p className="text-xs font-bold lausanne">
+                              <p className="text-sm font-bold lausanne">
                                 {activity.name}
                               </p>
                             </div>
-                            <div className="w-24">
-                              <h1 className="stat-title text-xs lausanne">
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="stat-title text-xs lausanne italic">
                                 Activity
                               </h1>
-                              <p className="text-xs font-bold lausanne">
+                              <p className="text-sm font-bold lausanne">
                                 {activity.title}
                               </p>
                             </div>
-                            <div className="w-24">
-                              <h1 className="stat-title text-xs lausanne">
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="stat-title text-xs lausanne italic">
                                 Day
                               </h1>
-                              <p className="text-xs font-bold lausanne">
+                              <p className="text-sm font-bold lausanne">
                                 {formatDate(activity.date)}
                               </p>
                             </div>
-                            <div className="w-24">
-                              <h1 className="text-gray-400 text-xs lausanne">
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="text-gray-400 text-xs lausanne italic">
                                 Expected Output
                               </h1>
                               <div
                                 className="tooltip"
                                 data-tip={activity.expected_output}
                               >
-                                <p className="text-xs font-bold lausanne w-3/4">
+                                <p className="text-sm font-bold lausanne w-3/4">
                                   {truncateText(activity.expected_output, 25)}
                                 </p>
                               </div>
                             </div>
-                            <div className="w-24">
-                              <h1 className="text-gray-400 text-xs lausanne w-1/2">
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="text-gray-400 text-xs lausanne italic w-1/2">
                                 Measurable Achievement
                               </h1>
                               <div
                                 className="tooltip"
                                 data-tip={activity.measurable_achievement}
                               >
-                                <p className="text-xs font-bold lausanne w-3/4">
+                                <p className="text-sm font-bold lausanne w-3/4">
                                   {truncateText(
                                     activity.measurable_achievement,
                                     25
@@ -231,32 +239,53 @@ const FillRemarks = () => {
                                 </p>
                               </div>
                             </div>
-                            <div className="w-24">
-                              <h1 className="stat-title text-xs lausanne">
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="stat-title text-xs lausanne italic">
                                 Variance
                               </h1>
                               <div
                                 className="tooltip"
                                 data-tip={activity.variance}
                               >
-                                <p className="text-xs font-bold lausanne">
+                                <p className="text-sm font-bold lausanne">
                                   {truncateText(activity.variance, 25)}
                                 </p>
                               </div>
                             </div>
-                            <div className="w-24">
-                              <h1 className="stat-title text-xs lausanne">
-                                Remarks
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="stat-title text-xs lausanne italic">
+                                Marketer Comments
+                              </h1>
+                              <div
+                                className="tooltip"
+                                data-tip={activity.comments}
+                              >
+                                <p className="text-sm font-bold lausanne">
+                                  {truncateText(activity.comments, 25)}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="min-w-fit">
+                              <h1 className="stat-title text-xs lausanne italic">
+                                Regional Manager Remarks
                               </h1>
                               <div
                                 className="tooltip"
                                 data-tip={activity.remarks}
                               >
-                                <p className="text-xs font-bold lausanne">
+                                <p className="text-sm font-bold lausanne">
                                   {truncateText(activity.remarks, 25)}
                                 </p>
                               </div>
                             </div>
+                          </td>
+                          <td>
                             {/* Action buttons */}
                             <div>
                               <button
@@ -264,7 +293,7 @@ const FillRemarks = () => {
                                 className="btn btn-primary btn-sm text-white"
                                 disabled={activity.remarks !== null}
                               >
-                                <svg
+                                {/* <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width={16}
                                   height={16}
@@ -278,7 +307,7 @@ const FillRemarks = () => {
                                     fillRule="evenodd"
                                     d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
                                   />{" "}
-                                </svg>
+                                </svg> */}
                                 Comment
                               </button>
                               {/* <button className="btn btn-square btn-outline btn-sm ml-2">
@@ -327,7 +356,7 @@ const FillRemarks = () => {
             <div className="flex justify-center">
               <div className="flex flex-col items-center mt-20">
                 <img src={huh} alt="huh" className="lg:w-96" />
-                <h1 className="font-bold text-center">Nothing to see here.</h1>
+                <h1 className="font-bold text-center">Nothing to see here. Check back later</h1>
               </div>
             </div>
           )}

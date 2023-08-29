@@ -213,8 +213,8 @@ module.exports = (pool) => {
     });
   });
 
-  // Download workplans as a PDF
-  router.get("/download-pdf/workplans", async (req, res) => {
+  // Download workplan reports as a PDF
+  router.get("/download-pdf/workplans", authenticateJWT, async (req, res) => {
     try {
       const { start_date, end_date } = req.query;
 
@@ -233,7 +233,7 @@ module.exports = (pool) => {
       FROM workplans wp
       INNER JOIN defaultdb.users u ON wp.marketer_id = u.user_id
       LEFT JOIN workplan_activities wpa ON wp.id = wpa.workplan_id
-      WHERE wp.start_date >= ? AND wp.end_date <= ?
+      WHERE wpa.date >= ? AND wpa.date <= ?
       ORDER BY wp.end_date DESC;
     `;
       // Execute the SQL query

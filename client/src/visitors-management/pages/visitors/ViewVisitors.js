@@ -40,17 +40,16 @@ const ViewVisitors = () => {
         );
 
         const data = await response.json();
-       
 
         // If the user has "Head of Customer Experience" access role, show all visitors
         if (accessRole.split("#").includes("headOfCustomerExp")) {
           setVisitors(data);
         } else {
-             // Filter visitors based on the user's office
-        const filteredVisitors = data.filter((visitor) => {
-          // Include visitors that match the user's office or visitors with no specified office
-          return visitor.office === office || !visitor.office;
-        });
+          // Filter visitors based on the user's office
+          const filteredVisitors = data.filter((visitor) => {
+            // Include visitors that match the user's office or visitors with no specified office
+            return visitor.office === office || !visitor.office;
+          });
           setVisitors(filteredVisitors);
         }
       } catch (error) {
@@ -131,7 +130,11 @@ const ViewVisitors = () => {
   );
 
   const totalPages = Math.ceil(filteredVisitors.length / itemsPerPage);
-  const paginationArray = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const paginationArray = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1
+  );
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -171,55 +174,57 @@ const ViewVisitors = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredVisitors.slice(startIndex, endIndex).map((visitor, i) => (
-                <tr key={visitor.id}>
-                  <td>{i + 1}</td>
-                  <td>{visitor.name}</td>
-                  <td>{visitor.phone}</td>
-                  <td>{visitor.email}</td>
-                  <td>{visitor.staff_name}</td>
-                  <td>{visitor.visitor_room}</td>
-                  <td>{visitor.vehicle_registration}</td>
-                  <td>{visitor.purpose}</td>
-                  <td>{visitor.department}</td>
-                  <td>{formatDate(visitor.check_in_date)}</td>
-                  <td className="text-center">
-                    {formatTime(visitor.check_in_time)}
-                  </td>
-                  <td>
-                    {visitor.check_out_time ? (
-                      formatTime(visitor.check_out_time)
-                    ) : (
-                      <button
-                        className="btn btn-outline btn-sm"
-                        onClick={() => handleCheckOut(visitor.id)}
-                        disabled={visitor.check_out_time !== null}
-                      >
-                        Check Out
-                      </button>
-                    )}
-                  </td>
-                  <td>
-                    <div className="flex gap-2">
-                      {visitor.check_out_time === null && (
-                        <>
-                          <Link
-                            to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
-                            className="btn btn-warning btn-sm"
-                          >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={() => deleteVisitor(visitor.id)}
-                            className="btn btn-error text-white btn-sm"
-                          >
-                            Delete
-                          </button>
-                        </>
+              {filteredVisitors
+                .slice(startIndex, endIndex)
+                .map((visitor, i) => (
+                  <tr key={visitor.id}>
+                    <td>{i + 1}</td>
+                    <td>{visitor.name}</td>
+                    <td>{visitor.phone}</td>
+                    <td>{visitor.email}</td>
+                    <td>{visitor.staff_name}</td>
+                    <td>{visitor.visitor_room}</td>
+                    <td>{visitor.vehicle_registration}</td>
+                    <td>{visitor.purpose}</td>
+                    <td>{visitor.department}</td>
+                    <td>{formatDate(visitor.check_in_date)}</td>
+                    <td className="text-center">
+                      {formatTime(visitor.check_in_time)}
+                    </td>
+                    <td>
+                      {visitor.check_out_time ? (
+                        formatTime(visitor.check_out_time)
+                      ) : (
+                        <button
+                          className="btn btn-outline btn-sm"
+                          onClick={() => handleCheckOut(visitor.id)}
+                          disabled={visitor.check_out_time !== null}
+                        >
+                          Check Out
+                        </button>
                       )}
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      <div className="flex gap-2">
+                        {visitor.check_out_time === null && (
+                          <>
+                            <Link
+                              to={`/edit-visitor/${visitor.id}`} // Link to the EditVisitor component with visitorId as query parameter
+                              className="btn btn-warning btn-sm"
+                            >
+                              Edit
+                            </Link>
+                            <button
+                              onClick={() => deleteVisitor(visitor.id)}
+                              className="btn btn-error text-white btn-sm"
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
                 ))}
             </tbody>
           </table>
@@ -236,6 +241,48 @@ const ViewVisitors = () => {
           </div>
         </div>
       </div>
+      <nav>
+        <ul className="list-style-none flex justify-center mb-4">
+          <li>
+            <button
+              className="btn btn-sm"
+              aria-label="Previous"
+              onClick={() => {
+                handlePaginationClick(currentPage - 1);
+              }}
+              disabled={currentPage === 1}
+            >
+              <span aria-hidden="true">«</span>
+            </button>
+          </li>
+          {paginationArray.map((pageNumber) => (
+            <li key={pageNumber}>
+              <button
+                className={`btn btn-sm border-none ${
+                  currentPage === pageNumber ? "text-white bg-primary" : ""
+                }`}
+                onClick={() => {
+                  handlePaginationClick(pageNumber);
+                }}
+              >
+                {pageNumber}
+              </button>
+            </li>
+          ))}
+          <li>
+            <button
+              className="btn btn-sm"
+              aria-label="Next"
+              onClick={() => {
+                handlePaginationClick(currentPage + 1);
+              }}
+              disabled={currentPage === totalPages}
+            >
+              <span aria-hidden="true">»</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </Sidebar>
   );
 };

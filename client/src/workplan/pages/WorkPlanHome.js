@@ -16,7 +16,7 @@ const WorkPlanHome = () => {
 
           <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
             <div className="max-w-xl lg:max-w-3xl">
-              <h1 className="mt-6 text-5xl font-bold text-gray-900 sm:text-3xl md:text-7xl lausanne">
+              <h1 className="mt-6 text-7xl font-bold text-gray-900 lausanne">
                 Optiven{" "}
                 <span className="sometimes-italic tracking-wider font-thin">
                   Workplan.

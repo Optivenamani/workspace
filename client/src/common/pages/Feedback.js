@@ -80,6 +80,7 @@ const Feedback = () => {
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="This system rocks!"
             required
+            spellCheck
           />
           <button
             className="btn btn-outline w-full lg:w-1/2"

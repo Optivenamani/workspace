@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -19,8 +19,33 @@ const CreateActivity = () => {
     },
   ]);
   const [loading, setLoading] = useState(false);
+  const [workplanItem, setWorkplanItem] = useState({});
 
   const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    const fetchWorkplan = async () => {
+      try {
+        const response = await fetch(
+          `https://workspace.optiven.co.ke/api/workplans/${workplanId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+        setWorkplanItem(data);
+      } catch (error) {
+        console.error("Error fetching site visits:", error);
+      }
+    };
+
+    fetchWorkplan();
+  }, [token, workplanId]);
+
+  console.log("workplan", workplanItem);
 
   const navigate = useNavigate();
 
@@ -203,6 +228,7 @@ const CreateActivity = () => {
                         e.target.value
                       )
                     }
+                    spellCheck
                     required
                   />
                 </div>
