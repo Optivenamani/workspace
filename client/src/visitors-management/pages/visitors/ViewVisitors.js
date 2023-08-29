@@ -25,7 +25,7 @@ const ViewVisitors = () => {
   const user = useSelector((state) => state.user.user);
   const office = user.office;
   const accessRole = user.Accessrole;
-
+  
   useEffect(() => {
     // Fetch visitor data from the server
     const fetchVisitors = async () => {
@@ -130,6 +130,7 @@ const ViewVisitors = () => {
   );
 
   const totalPages = Math.ceil(filteredVisitors.length / itemsPerPage);
+
   const paginationArray = Array.from(
     { length: totalPages },
     (_, index) => index + 1
@@ -227,6 +228,17 @@ const ViewVisitors = () => {
                 ))}
             </tbody>
           </table>
+          <div className="flex justify-center mt-4">
+          {paginationArray.map((pageNumber) => (
+            <button
+              key={pageNumber}
+              className={`join-item btn ${currentPage === pageNumber ? "btn-active" : ""}`}
+              onClick={() => handlePaginationClick(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+            ))}
+          </div>
         </div>
       </div>
       <nav>
