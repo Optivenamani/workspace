@@ -148,7 +148,7 @@ const ViewWorkPlans = () => {
 
   return (
     <Sidebar>
-      <div className="bg-base-200 py-10 min-h-full min-w-full">
+      <div className="container px-4 py-6 mx-auto">
         <div className="block mx-20">
           <div className="text-sm breadcrumbs">
             <ul>
@@ -170,28 +170,34 @@ const ViewWorkPlans = () => {
                         <h1 className="stat-title text-xs lausanne">
                           Start Date
                         </h1>
-                        <p className="text-xs font-bold lausanne">
+                        <p className="text-md font-bold lausanne">
                           {formatDate(workplan.start_date)}
                         </p>
                       </div>
+                    </td>
+                    <td>
                       <div className="w-24">
                         <h1 className="stat-title text-xs lausanne">
                           End Date
                         </h1>
-                        <p className="text-xs font-bold lausanne">
+                        <p className="text-md font-bold lausanne">
                           {formatDate(workplan.end_date)}
                         </p>
                       </div>
+                    </td>
+                    <td>
                       <div className="w-24">
                         <h1 className="stat-title text-xs lausanne">
                           Time Left
                         </h1>
-                        <p className="text-xs font-bold lausanne">
+                        <p className="text-md font-bold lausanne">
                           <span className="countdown lausanne">
                             {countdownTimers[workplan.id]}
                           </span>
                         </p>
                       </div>
+                    </td>
+                    <td>
                       {/* Action buttons */}
                       <div>
                         <button
