@@ -85,6 +85,7 @@ const SiteVisitInfo = ({ formData, setFormData }) => {
           placeholder="eg. ABSA Towers"
           className="input input-bordered w-full"
           disabled={selfDrive}
+          spellCheck
         />
         <div className="flex my-2 items-center">
           <input
