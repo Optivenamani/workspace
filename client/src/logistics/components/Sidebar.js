@@ -5,7 +5,6 @@ import {
   fetchActiveSiteVisits,
   selectActiveSiteVisits,
   fetchPendingSiteVisits,
-  fetchAssignedSiteVisits,
 } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
 import { fetchPendingVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
 import { fetchNotifications } from "../../redux/logistics/features/notifications/notificationsSlice";
@@ -15,10 +14,6 @@ import { Link } from "react-router-dom";
 const Sidebar = ({ children }) => {
   const [canBookSiteVisit, setCanBookSiteVisit] = useState(true);
   const [latestNotification, setLatestNotification] = useState(null);
- // const [numAssignedSiteVisits, setNumAssignedSiteVisits] = useState(0);
- 
-
-  const token = useSelector((state) => state.user.token)
 
   const accessRole = useSelector((state) => state.user.accessRole).trim();
 
@@ -28,16 +23,6 @@ const Sidebar = ({ children }) => {
   const pendingVehicleRequests = useSelector(
     (state) => state.vehicleRequest.pendingVehicleRequests
   );
-  const assignedBookings = useSelector((state) => state.siteVisit);
-
-  console.log(assignedBookings)
-  const numAssignedSiteVisits = useSelector((state) =>
-  Array.isArray(state.siteVisit.assignedVisits)
-    ? state.siteVisit.assignedVisits.length
-    : 0
-);
-
-console.log(numAssignedSiteVisits)
 
   const accessRoles = accessRole.split("#");
 
@@ -56,47 +41,24 @@ console.log(numAssignedSiteVisits)
     dispatch(fetchActiveSiteVisits());
     dispatch(fetchPendingSiteVisits());
     dispatch(fetchPendingVehicleRequests());
-    dispatch(fetchAssignedSiteVisits());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   dispatch(fetchActiveSiteVisits());
-    
-  //   //    const fetchAssignedSiteVisits = async () => {
-  //   //       try {
-  //   //         console.log("Fetching assigned site visits...");
-  //   //         const response = await fetch("http://localhost:8080/api/drivers/assigned-site-visits", {headers: { Authorization: `Bearer ${token}`}});
-  //   //         console.log("Response status:", response.status);
-  //   //         // if (!response.ok) {
-  //   //         //   console.error("Failed to fetch assigned site visits");
-  //   //         //   return;
-  //   //         // }
-        
-  //   //         const data = await response.json();
-  //   //         console.log("ASVs",data)
-  //   //         setNumAssignedSiteVisits(data.length);
-  //   //       } catch (error) {          
-  //   //           console.error("Error fetching assigned site visits:", error);
-  //   //         console.error("Error response:", error.response.json());
-  //   //       }
-  //   //     };
-        
-  
-  //   // fetchAssignedSiteVisits();
+  useEffect(() => {
+    dispatch(fetchActiveSiteVisits());
 
-  //   dispatch(fetchNotifications())
-  //     .unwrap()
-  //     .then((notificationsData) => {
-  //       const latestNotification = notificationsData.notifications[0];
-  //       setLatestNotification(latestNotification); // Store the latest notification in state
-  //       if (
-  //         latestNotification.type === "approved" &&
-  //         moment().diff(latestNotification.timestamp, "hours") > 24
-  //       ) {
-  //         setCanBookSiteVisit(false);
-  //       }
-  //     });
-  // }, [dispatch]);
+    dispatch(fetchNotifications())
+      .unwrap()
+      .then((notificationsData) => {
+        const latestNotification = notificationsData.notifications[0];
+        setLatestNotification(latestNotification); // Store the latest notification in state
+        if (
+          latestNotification.type === "approved" &&
+          moment().diff(latestNotification.timestamp, "hours") > 24
+        ) {
+          setCanBookSiteVisit(false);
+        }
+      });
+  }, [dispatch]);
 
   const shouldDisableSiteVisitButton = () => {
     if (
@@ -240,30 +202,21 @@ console.log(numAssignedSiteVisits)
               </div>
             )}
             {/* Site Visit */}
-        {(isMarketer || isHOS || isGM || isAdmin || isDriver || isHOL) && (
-          <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
-            <input type="checkbox" className="peer" />
-            <div className="collapse-title font-bold">
-              Site Visits{" "}
-              {(isAdmin || isHOL) && (
-                <span
-                  className={`badge badge-warning badge-sm text-white font-bold ${
-                    hasPendingSiteVisits ? "" : "hidden"
-                  }`}
-                >
-                  {numPendingSiteVisits}
-                </span>
-              )}
-              {(isDriver || isAdmin) && (
-                <span
-                  className={`badge badge-warning badge-sm text-white font-bold ${
-                    numAssignedSiteVisits > 0 ? "" : "hidden"
-                  }`}
-                >
-                  {numAssignedSiteVisits}
-                </span>
-              )}
-            </div>
+            {(isMarketer || isHOS || isGM || isAdmin || isDriver || isHOL) && (
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+                <input type="checkbox" className="peer" />
+                <div className="collapse-title font-bold">
+                  Site Visits{" "}
+                  {(isAdmin || isHOL) && (
+                    <span
+                      className={`badge badge-warning badge-sm text-white font-bold ${
+                        hasPendingSiteVisits ? "" : "hidden"
+                      }`}
+                    >
+                      {numPendingSiteVisits}
+                    </span>
+                  )}
+                </div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
                     <Link
@@ -281,27 +234,6 @@ console.log(numAssignedSiteVisits)
                       Book a Site Visit
                     </Link>
                   )}
-                  {(isDriver || isAdmin) && (
-                    
-                    
-                    <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/assigned-site-visits"
-                  >
-                    Assigned Site Visits{" "}
-                    {(isDriver || isAdmin) && (
-                      <span
-                        className={`badge badge-sm badge-warning text-white font-bold ${
-                          Array.isArray(assignedBookings.assignedVisits) && assignedBookings.assignedVisits.length > 0 ? "" : "hidden"
-                        }`}
-                      >
-                        {Array.isArray(assignedBookings.assignedVisits) ? assignedBookings.assignedVisits.length : 0}
-                      </span>
-                    )}
-                  </Link>
-                  
-                  
-                    )}
                   {(isMarketer || isAdmin) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
@@ -310,7 +242,14 @@ console.log(numAssignedSiteVisits)
                       My Site Visits
                     </Link>
                   )}
-                  
+                  {(isAdmin || isDriver) && (
+                    <Link
+                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                      to="/assigned-site-visits"
+                    >
+                      Assigned Site Visits
+                    </Link>
+                  )}
                   {(isHOS || isGM || isAdmin || isOperations || isHOL) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
