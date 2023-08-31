@@ -159,6 +159,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                   className="textarea textarea-bordered h-32 w-full"
                   required
                   onChange={(e) => setMeasurableAchievement(e.target.value)}
+                  spellCheck
                 />
               </div>
             )}
@@ -176,6 +177,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                   className="textarea textarea-bordered h-32 w-full"
                   required
                   onChange={(e) => setVariance(e.target.value)}
+                  spellCheck
                 />
               </div>
             )}
@@ -193,6 +195,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
                   className="textarea textarea-bordered h-32 w-full"
                   required
                   onChange={(e) => setComments(e.target.value)}
+                  spellCheck
                 />
               </div>
             )}

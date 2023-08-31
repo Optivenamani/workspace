@@ -160,7 +160,7 @@ const ViewWorkPlans = () => {
           </div>
         </div>
         <div className="block mx-20">
-          {Array.isArray(workplans) ? (
+          {Array.isArray(workplans) && workplans.length > 0 ? (
             <table className="table table-zebra w-full bg-base-100 shadow-xl">
               <tbody>
                 {workplans.map((workplan) => (
@@ -249,7 +249,7 @@ const ViewWorkPlans = () => {
             <div className="flex justify-center">
               <div className="flex flex-col items-center mt-20">
                 <img src={huh} alt="huh" className="lg:w-96" />
-                <h1 className="font-bold text-center">Nothing to see here.</h1>
+                <h1 className="font-bold text-center">Nothing to see here. Add a workplan to get started.</h1>
               </div>
             </div>
           )}
