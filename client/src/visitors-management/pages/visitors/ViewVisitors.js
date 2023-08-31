@@ -228,17 +228,6 @@ const ViewVisitors = () => {
                 ))}
             </tbody>
           </table>
-          <div className="flex justify-center mt-4">
-          {paginationArray.map((pageNumber) => (
-            <button
-              key={pageNumber}
-              className={`join-item btn ${currentPage === pageNumber ? "btn-active" : ""}`}
-              onClick={() => handlePaginationClick(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-            ))}
-          </div>
         </div>
       </div>
       <nav>

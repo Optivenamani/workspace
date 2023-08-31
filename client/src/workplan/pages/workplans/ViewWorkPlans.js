@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import formatDate from "../../utils/formatDate";
-import huh from "../../assets/app-illustrations/Shrug-bro.png";
+import formatDate from "../../../utils/formatDate";
+import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 
 const ViewWorkPlans = () => {
   const [workplans, setWorkplans] = useState([]);
