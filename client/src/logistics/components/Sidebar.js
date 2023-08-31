@@ -53,6 +53,7 @@ const Sidebar = ({ children }) => {
     dispatch(fetchPendingSiteVisits());
     dispatch(fetchPendingVehicleRequests());
     dispatch(fetchAssignedSiteVisits());
+    dispatch(fetchAssignedSiteVisits());
   }, [dispatch]);
 
   useEffect(() => {
@@ -255,6 +256,14 @@ const Sidebar = ({ children }) => {
                       Book a Site Visit
                     </Link>
                   )}
+                  {(isMarketer || isAdmin) && (
+                    <Link
+                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                      to="/my-site-visits"
+                    >
+                      My Site Visits
+                    </Link>
+                  )}
                   {(isDriver || isAdmin) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
@@ -277,15 +286,6 @@ const Sidebar = ({ children }) => {
                       )}
                     </Link>
                   )}
-                  {(isMarketer || isAdmin) && (
-                    <Link
-                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      to="/my-site-visits"
-                    >
-                      My Site Visits
-                    </Link>
-                  )}
-
                   {(isHOS || isGM || isAdmin || isOperations || isHOL) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
