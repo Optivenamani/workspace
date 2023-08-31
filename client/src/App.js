@@ -70,6 +70,7 @@ import {
   TeamReports,
   Feedback,
   ViewFeedback,
+  IndividualReports,
 } from "./utils/index";
 
 const App = () => {
@@ -269,6 +270,7 @@ const App = () => {
             <Route path="/view-activities" element={<ViewActivities />} />
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
             <Route path="/fill-remarks" element={<FillRemarks />} />
+            <Route path="/individual-reports" element={<IndividualReports />} />
             <Route path="/team-reports" element={<TeamReports />} />
           </Route>
         </Routes>

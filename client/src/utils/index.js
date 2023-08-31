@@ -24,6 +24,7 @@ export { default as Feedback } from "../common/pages/Feedback";
 export { default as FillRemarks } from "../workplan/pages/FillRemarks";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";
+export { default as IndividualReports } from "../workplan/pages/reports/IndividualReports";
 export { default as Login } from "../common/pages/Login";
 export { default as MarketersFeedback } from "../logistics/pages/reports/MarketersFeedback";
 export { default as MostBookedSitesReports } from "../logistics/pages/reports/MostBookedSitesReports";
@@ -40,7 +41,7 @@ export { default as SiteVisitDetails } from "../logistics/pages/site-visit-reque
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
 export { default as Survey } from "../logistics/pages/Survey";
-export { default as TeamReports } from "../workplan/pages/TeamReports";
+export { default as TeamReports } from "../workplan/pages/reports/TeamReports";
 export { default as Users } from "../logistics/pages/Users";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";
 export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleRequests";
