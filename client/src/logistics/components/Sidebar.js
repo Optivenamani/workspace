@@ -53,7 +53,6 @@ const Sidebar = ({ children }) => {
     dispatch(fetchPendingSiteVisits());
     dispatch(fetchPendingVehicleRequests());
     dispatch(fetchAssignedSiteVisits());
-    dispatch(fetchAssignedSiteVisits());
   }, [dispatch]);
 
   useEffect(() => {
