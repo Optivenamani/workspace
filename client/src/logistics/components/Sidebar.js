@@ -5,6 +5,7 @@ import {
   fetchActiveSiteVisits,
   selectActiveSiteVisits,
   fetchPendingSiteVisits,
+  fetchAssignedSiteVisits,
 } from "../../redux/logistics/features/siteVisit/siteVisitSlice";
 import { fetchPendingVehicleRequests } from "../../redux/logistics/features/vehicleRequest/vehicleRequestSlice";
 import { fetchNotifications } from "../../redux/logistics/features/notifications/notificationsSlice";
@@ -12,7 +13,7 @@ import "./Sidebar.css";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ children }) => {
-  const [canBookSiteVisit, setCanBookSiteVisit] = useState(true);
+  const [, setCanBookSiteVisit] = useState(true);
   const [latestNotification, setLatestNotification] = useState(null);
 
   const accessRole = useSelector((state) => state.user.accessRole).trim();
@@ -23,6 +24,16 @@ const Sidebar = ({ children }) => {
   const pendingVehicleRequests = useSelector(
     (state) => state.vehicleRequest.pendingVehicleRequests
   );
+  const assignedBookings = useSelector((state) => state.siteVisit);
+
+  console.log(assignedBookings);
+  const numAssignedSiteVisits = useSelector((state) =>
+    Array.isArray(state.siteVisit.assignedVisits)
+      ? state.siteVisit.assignedVisits.length
+      : 0
+  );
+
+  console.log(numAssignedSiteVisits);
 
   const accessRoles = accessRole.split("#");
 
@@ -41,6 +52,7 @@ const Sidebar = ({ children }) => {
     dispatch(fetchActiveSiteVisits());
     dispatch(fetchPendingSiteVisits());
     dispatch(fetchPendingVehicleRequests());
+    dispatch(fetchAssignedSiteVisits());
   }, [dispatch]);
 
   useEffect(() => {
@@ -216,6 +228,15 @@ const Sidebar = ({ children }) => {
                       {numPendingSiteVisits}
                     </span>
                   )}
+                  {(isDriver || isAdmin) && (
+                    <span
+                      className={`badge badge-primary badge-sm text-white font-bold ${
+                        numAssignedSiteVisits > 0 ? "" : "hidden"
+                      }`}
+                    >
+                      {numAssignedSiteVisits}
+                    </span>
+                  )}
                 </div>
                 <div className="collapse-content -mt-3 flex flex-col menu bg-base-100">
                   {(isMarketer || isAdmin) && (
@@ -234,6 +255,28 @@ const Sidebar = ({ children }) => {
                       Book a Site Visit
                     </Link>
                   )}
+                  {(isDriver || isAdmin) && (
+                    <Link
+                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                      to="/assigned-site-visits"
+                    >
+                      Assigned Site Visits{" "}
+                      {(isDriver || isAdmin) && (
+                        <span
+                          className={`badge badge-sm badge-primary text-white font-bold ${
+                            Array.isArray(assignedBookings.assignedVisits) &&
+                            assignedBookings.assignedVisits.length > 0
+                              ? ""
+                              : "hidden"
+                          }`}
+                        >
+                          {Array.isArray(assignedBookings.assignedVisits)
+                            ? assignedBookings.assignedVisits.length
+                            : 0}
+                        </span>
+                      )}
+                    </Link>
+                  )}
                   {(isMarketer || isAdmin) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
@@ -242,14 +285,7 @@ const Sidebar = ({ children }) => {
                       My Site Visits
                     </Link>
                   )}
-                  {(isAdmin || isDriver) && (
-                    <Link
-                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      to="/assigned-site-visits"
-                    >
-                      Assigned Site Visits
-                    </Link>
-                  )}
+
                   {(isHOS || isGM || isAdmin || isOperations || isHOL) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
