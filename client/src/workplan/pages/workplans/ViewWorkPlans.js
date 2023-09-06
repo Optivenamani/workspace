@@ -33,7 +33,29 @@ const ViewWorkPlans = () => {
 
         // Update visitors state only if the response data is an array
         if (Array.isArray(data)) {
-          setWorkplans(data);
+          // Calculate the target date and time for the countdown timer
+          const updatedWorkplans = data.map((workplan) => {
+            const startDate = new Date(workplan.start_date);
+
+            // Calculate the target date (Saturday preceding the workplan)
+            const targetDate = new Date(startDate);
+            targetDate.setDate(
+              startDate.getDate() - ((startDate.getDay() + 1) % 7)
+            ); // Set to previous Saturday
+            targetDate.setHours(24, 0o0, 0, 0); // Set to 12:00 PM
+
+            // Calculate time left based on the target date
+            const timeLeft = targetDate - new Date();
+
+            // Update the workplan with the target date
+            return {
+              ...workplan,
+              targetDate, // Add this to the workplan object
+              timeLeft, // You can keep this for displaying the countdown
+            };
+          });
+
+          setWorkplans(updatedWorkplans);
         } else {
           console.error("Invalid response format. Expected an array.");
         }
@@ -53,9 +75,7 @@ const ViewWorkPlans = () => {
     const updatedTimers = {};
 
     workplans.forEach((workplan) => {
-      const startDate = new Date(workplan.start_date).getTime();
-      const currentTime = new Date().getTime();
-      const timeLeft = startDate - currentTime;
+      const timeLeft = workplan.targetDate - new Date();
 
       if (timeLeft <= 0) {
         updatedTimers[workplan.id] = "Expired";
@@ -249,7 +269,9 @@ const ViewWorkPlans = () => {
             <div className="flex justify-center">
               <div className="flex flex-col items-center mt-20">
                 <img src={huh} alt="huh" className="lg:w-96" />
-                <h1 className="font-bold text-center">Nothing to see here. Add a workplan to get started.</h1>
+                <h1 className="font-bold text-center">
+                  Nothing to see here. Add a workplan to get started.
+                </h1>
               </div>
             </div>
           )}
