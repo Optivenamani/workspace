@@ -28,8 +28,23 @@ const CreateWorkPlan = () => {
   };
 
   const handleSubmit = (e) => {
-    console.log(JSON.stringify(workplan));
     e.preventDefault();
+
+    // Get the current date
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    // Check if the selected start_date is in the past
+    if (workplan.start_date < currentDate) {
+      toast.error("You cannot create a workplan for a past date.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return; // Prevent further execution
+    }
+    
     fetch("https://workspace.optiven.co.ke/api/workplans", {
       method: "POST",
       headers: {

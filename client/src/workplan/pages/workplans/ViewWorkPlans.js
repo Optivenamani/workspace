@@ -219,7 +219,7 @@ const ViewWorkPlans = () => {
                     </td>
                     <td>
                       {/* Action buttons */}
-                      <div>
+                      <div className="flex">
                         <button
                           onClick={() => handleClick(workplan.id)}
                           className="btn btn-primary btn-sm text-white"
@@ -239,25 +239,67 @@ const ViewWorkPlans = () => {
                           ADD ACTIVITIES
                         </button>
                         {!(new Date() > new Date(workplan.start_date)) && (
-                          <button
-                            className="btn btn-square btn-error btn-sm text-white ml-2"
-                            onClick={() => handleView(workplan)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="currentColor"
-                              className="bi bi-trash"
-                              viewBox="0 0 16 16"
+                          <div>
+                            <button
+                              className="btn btn-square btn-error btn-sm text-white ml-2"
+                              onClick={() => handleView(workplan)}
                             >
-                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                              <path
-                                fill-rule="evenodd"
-                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                              />
-                            </svg>
-                          </button>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={18}
+                                height={18}
+                                fill="currentColor"
+                                className="bi bi-trash"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                />
+                              </svg>
+                            </button>
+                            <button
+                              className="btn btn-sm text-white ml-2"
+                              onClick={() =>
+                                alert("view workplan clicked")
+                              }
+                            >
+                              <svg
+                                width={18}
+                                height={18}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="mr-1"
+                              >
+                                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
+                                <g
+                                  id="SVGRepo_tracerCarrier"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <g id="SVGRepo_iconCarrier">
+                                  {" "}
+                                  <path
+                                    d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
+                                    stroke="white"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />{" "}
+                                  <path
+                                    d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
+                                    stroke="white"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />{" "}
+                                </g>
+                              </svg>
+                              VIEW
+                            </button>
+                          </div>
                         )}
                       </div>
                     </td>
