@@ -1,7 +1,7 @@
 // ViewActivities component
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import WorkPlanCalendar from "../components/WorkPlanCalendar";
+import Sidebar from "../../components/Sidebar";
+import WorkPlanCalendar from "../../components/WorkPlanCalendar";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

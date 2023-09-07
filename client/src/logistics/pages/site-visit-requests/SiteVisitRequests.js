@@ -3,8 +3,6 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { setItemsPerPage } from "../../../redux/logistics/features/pagination/paginationSlice";
 import formatTime from "../../../utils/formatTime";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 

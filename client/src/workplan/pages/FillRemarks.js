@@ -163,10 +163,10 @@ const FillRemarks = () => {
 
   return (
     <Sidebar>
-      <div className="container py-6 mx-auto">
+      <div className="container py-6">
         <div>
           {/* Loop through the grouped activities and render them */}
-          {groupedActivities.length > 0 ? (
+          {Object.keys(groupedActivities).length > 0 ? (
             Object.entries(groupedActivities).map(
               ([date, activitiesForDate]) => (
                 <div key={date} className="block mx-10 md:mx-20 lg:mx-24">
@@ -356,7 +356,9 @@ const FillRemarks = () => {
             <div className="flex justify-center">
               <div className="flex flex-col items-center mt-20">
                 <img src={huh} alt="huh" className="lg:w-96" />
-                <h1 className="font-bold text-center">Nothing to see here. Check back later</h1>
+                <h1 className="font-bold text-center">
+                  Nothing to see here. Check back later
+                </h1>
               </div>
             </div>
           )}

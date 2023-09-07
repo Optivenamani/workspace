@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
@@ -36,7 +36,7 @@ const TeamReports = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/workplans/download-pdf/workplans",
+        "https://workspace.optiven.co.ke/api/workplan-reports/team",
         {
           headers: {
             Authorization: `Bearer ${token}`,

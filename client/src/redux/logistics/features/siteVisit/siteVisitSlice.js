@@ -5,6 +5,7 @@ const initialState = {
   visits: [],
   activeVisits: [],
   pendingVisits: [],
+  assignedVisits: [],
   status: "idle",
   error: null,
 };
@@ -97,6 +98,28 @@ export const fetchPendingSiteVisits = createAsyncThunk(
   }
 );
 
+export const fetchAssignedSiteVisits = createAsyncThunk(
+  "siteVisits/fetchAssignedSiteVisits",
+  async (_, { getState }) => {
+    const token = getState().user.token;
+
+    try {
+      const response = await axios.get(
+        `https://workspace.optiven.co.ke/api/drivers/assigned-site-visits`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Server error:", error.response);
+      throw error;
+    }
+  }
+);
+
 const siteVisitSlice = createSlice({
   name: "siteVisit",
   initialState,
@@ -156,10 +179,23 @@ const siteVisitSlice = createSlice({
       .addCase(fetchPendingSiteVisits.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(fetchAssignedSiteVisits.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchAssignedSiteVisits.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.assignedVisits = action.payload;
+      })
+      .addCase(fetchAssignedSiteVisits.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });
 
 export const selectActiveSiteVisits = (state) => state.siteVisit.activeVisits;
+export const selectAssignedSiteVisits = (state) =>
+  state.siteVisit.assignedVisits;
 
 export default siteVisitSlice.reducer;
