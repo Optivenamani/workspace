@@ -1,8 +1,11 @@
 const checkPermissions = (allowedRoles) => {
   return (req, res, next) => {
-    const userAccessRole = req.user.Accessrole;
+    const userRoles = req.user.Accessrole.split('#');
+    
+    // Check if the user has at least one of the allowed roles
+    const hasPermission = allowedRoles.some(role => userRoles.includes(role));
 
-    if (allowedRoles.some((role) => userAccessRole.includes(role))) {
+    if (hasPermission) {
       next();
     } else {
       res.status(403).json({

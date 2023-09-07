@@ -92,7 +92,7 @@ function dataToPdfRows(data) {
 
 module.exports = (pool) => {
   // Download workplan reports as a PDF
-  router.get("/team",  async (req, res) => {
+  router.get("/team", authenticateJWT,  async (req, res) => {
     try {
       const { start_date, end_date } = req.query;
 

@@ -208,7 +208,7 @@ const ViewWorkPlans = () => {
                     <td>
                       <div className="w-24">
                         <h1 className="stat-title text-xs lausanne">
-                          Time Left
+                          Editing Time Left
                         </h1>
                         <p className="text-md font-bold lausanne">
                           <span className="countdown lausanne">

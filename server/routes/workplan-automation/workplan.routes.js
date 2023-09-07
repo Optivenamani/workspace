@@ -1,5 +1,6 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
+const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
 
 module.exports = (pool) => {
@@ -35,15 +36,15 @@ module.exports = (pool) => {
   });
 
   // CREATE a new workplan for the authenticated user
-  router.post("/", (req, res) => {
-    const { start_date, end_date, marketer_id } = req.body;
+  router.post("/", authenticateJWT, (req, res) => {
+    const { start_date, end_date, marketer_id, status } = req.body;
 
     // Check if any workplan with overlapping date range exists for the same marketer_id
     const checkQuery =
       "SELECT * FROM workplans WHERE marketer_id = ? AND start_date <= ? AND end_date >= ?";
     pool.query(
       checkQuery,
-      [marketer_id, end_date, start_date], // Swap end_date and start_date to ensure correct comparison
+      [marketer_id, end_date, start_date],
       (err, results) => {
         if (err) {
           console.error(err);
@@ -58,10 +59,10 @@ module.exports = (pool) => {
         } else {
           // If no workplan with overlapping date range exists, insert the new workplan
           const insertQuery =
-            "INSERT INTO workplans (start_date, end_date, marketer_id) VALUES (?, ?, ?)";
+            "INSERT INTO workplans (start_date, end_date, marketer_id, status) VALUES (?, ?, ?, ?)";
           pool.query(
             insertQuery,
-            [start_date, end_date, marketer_id],
+            [start_date, end_date, marketer_id, status],
             (err) => {
               if (err) {
                 console.error(err);
@@ -94,6 +95,48 @@ module.exports = (pool) => {
       }
     });
   });
+
+  // Route to approve a workplan (only accessible by authorized Level 1 Managers)
+  router.put(
+    "/:id/approve",
+    // authenticateJWT,
+    // checkPermissions(["level1Manager"]),
+    (req, res) => {
+      const { id } = req.params;
+      const query = "UPDATE workplans SET status = 'Approved' WHERE id = ?";
+      pool.query(query, [id], (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server Error" });
+        } else if (result.affectedRows > 0) {
+          res.json({ message: "Workplan approved successfully" });
+        } else {
+          res.status(404).json({ message: "Workplan not found" });
+        }
+      });
+    }
+  );
+
+  // Route to reject a workplan (only accessible by authorized Level 1 Managers)
+  router.put(
+    "/:id/reject",
+    // authenticateJWT,
+    // checkPermissions(["level1Manager"]),
+    (req, res) => {
+      const { id } = req.params;
+      const query = "UPDATE workplans SET status = 'Rejected' WHERE id = ?";
+      pool.query(query, [id], (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server Error" });
+        } else if (result.affectedRows > 0) {
+          res.json({ message: "Workplan rejected successfully" });
+        } else {
+          res.status(404).json({ message: "Workplan not found" });
+        }
+      });
+    }
+  );
 
   // DELETE a workplan for the authenticated user
   router.delete("/:id", authenticateJWT, (req, res) => {

@@ -4,7 +4,7 @@ const router = express.Router();
 
 module.exports = (pool) => {
   // GET all workplan activities for the authenticated user
-  router.get("/", (req, res) => {
+  router.get("/", authenticateJWT, (req, res) => {
     const { user_id } = req.query;
     pool.query(
       `SELECT 
@@ -16,7 +16,7 @@ module.exports = (pool) => {
       ON w_a.workplan_id = w.id
       INNER JOIN defaultdb.users u
       ON u.user_id = w.marketer_id
-      WHERE marketer_id = ?`,
+      WHERE marketer_id = ? AND w.status = 'approved'`,
       [user_id],
       (err, results) => {
         if (err) {
@@ -29,8 +29,8 @@ module.exports = (pool) => {
     );
   });
 
-  // GET all workplan activities for the authenticated user
-  router.get("/all", (req, res) => {
+  // GET all workplan activities
+  router.get("/all", authenticateJWT, (req, res) => {
     const { user_id } = req.query;
     pool.query(
       `SELECT 
@@ -56,7 +56,7 @@ module.exports = (pool) => {
   });
 
   // GET a specific workplan activity
-  router.get("/:id", (req, res) => {
+  router.get("/:id", authenticateJWT, (req, res) => {
     const { id } = req.params;
     const query = `SELECT 
         wa.*,
@@ -81,7 +81,7 @@ module.exports = (pool) => {
   });
 
   // CREATE a new workplan activity
-  router.post("/", (req, res) => {
+  router.post("/", authenticateJWT, (req, res) => {
     const activities = req.body;
     const query =
       "INSERT INTO workplan_activities (workplan_id, date, time, title, expected_output) VALUES (?, ?, ?, ?, ?)";
@@ -126,7 +126,7 @@ module.exports = (pool) => {
   });
 
   // UPDATE an existing workplan activity
-  router.patch("/:id", (req, res) => {
+  router.patch("/:id", authenticateJWT, (req, res) => {
     const { id } = req.params;
     const {
       workplan_id,
@@ -139,37 +139,68 @@ module.exports = (pool) => {
       comments,
       remarks,
     } = req.body;
-    const query =
-      "UPDATE workplan_activities SET workplan_id = ?, date = ?, time = ?, title = ?, expected_output = ?, measurable_achievement = ?, variance = ?, comments = ?, remarks = ? WHERE id = ?";
+
+    // Check the status of the associated workplan
     pool.query(
-      query,
-      [
-        workplan_id,
-        date,
-        time,
-        title,
-        expected_output,
-        measurable_achievement,
-        variance,
-        comments,
-        remarks,
-        id,
-      ],
+      "SELECT status FROM workplans WHERE id = ?",
+      [workplan_id],
       (err, result) => {
         if (err) {
           console.error(err);
           res.status(500).json({ message: "Server Error" });
-        } else if (result.affectedRows > 0) {
-          res.json({ message: "Workplan activity updated successfully" });
+        } else if (result.length === 0) {
+          res.status(404).json({ message: "Associated Workplan not found" });
         } else {
-          res.status(404).json({ message: "Workplan activity not found" });
+          const workplanStatus = result[0].status;
+
+          // Check if the workplan is approved; if yes, allow edits
+          if (workplanStatus === "approved") {
+            // Update the workplan accordingly
+            const query =
+              "UPDATE workplan_activities SET workplan_id = ?, date = ?, time = ?, title = ?, expected_output = ?, measurable_achievement = ?, variance = ?, comments = ?, remarks = ? WHERE id = ?";
+            pool.query(
+              query,
+              [
+                workplan_id,
+                date,
+                time,
+                title,
+                expected_output,
+                measurable_achievement,
+                variance,
+                comments,
+                remarks,
+                id,
+              ],
+              (err, result) => {
+                if (err) {
+                  console.error(err);
+                  res.status(500).json({ message: "Server Error" });
+                } else if (result.affectedRows > 0) {
+                  res.json({
+                    message: "Workplan activity updated successfully",
+                  });
+                } else {
+                  res
+                    .status(404)
+                    .json({ message: "Workplan activity not found" });
+                }
+              }
+            );
+          } else {
+            // Workplan is not approved; restrict edits
+            res.status(403).json({
+              message:
+                "You can only edit this activity when the workplan is approved",
+            });
+          }
         }
       }
     );
   });
 
   // DELETE a workplan activity
-  router.delete("/:id", (req, res) => {
+  router.delete("/:id", authenticateJWT, (req, res) => {
     const { id } = req.params;
     const query = "DELETE FROM workplan_activities WHERE id = ?";
     pool.query(query, [id], (err, result) => {

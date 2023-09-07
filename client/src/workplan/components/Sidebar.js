@@ -38,6 +38,14 @@ const Sidebar = ({ children }) => {
                     View Work Plans
                   </Link>
                 </>
+                <>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/approve-workplans"
+                  >
+                    Approve Work Plans
+                  </Link>
+                </>
               </div>
             </div>
             {/* Activities */}
@@ -50,7 +58,7 @@ const Sidebar = ({ children }) => {
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-activities"
                   >
-                    View Activities
+                    Visualize Activities
                   </Link>
                 </>
                 <>
