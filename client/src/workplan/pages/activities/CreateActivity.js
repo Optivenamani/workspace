@@ -20,6 +20,7 @@ const CreateActivity = () => {
   ]);
   const [loading, setLoading] = useState(false);
   const [workplanItem, setWorkplanItem] = useState({});
+  const [customActivity, setCustomActivity] = useState([false]);
 
   const token = useSelector((state) => state.user.token);
 
@@ -60,6 +61,15 @@ const CreateActivity = () => {
     });
   };
 
+  const toggleCustomActivity = (index) => {
+    // Toggle custom activity state for the specific card
+    setCustomActivity((prevCustomActivity) => {
+      const updatedCustomActivity = [...prevCustomActivity];
+      updatedCustomActivity[index] = !updatedCustomActivity[index];
+      return updatedCustomActivity;
+    });
+  };
+
   const addActivityField = () => {
     setActivities((prevActivities) => [
       ...prevActivities,
@@ -71,6 +81,7 @@ const CreateActivity = () => {
         expected_output: "",
       },
     ]);
+    setCustomActivity((prevCustomActivity) => [...prevCustomActivity, false]); // Initialize custom activity state for the new card
   };
 
   const removeActivityField = (index) => {
@@ -78,6 +89,11 @@ const CreateActivity = () => {
       const updatedActivities = [...prevActivities];
       updatedActivities.splice(index, 1);
       return updatedActivities;
+    });
+    setCustomActivity((prevCustomActivity) => {
+      const updatedCustomActivity = [...prevCustomActivity];
+      updatedCustomActivity.splice(index, 1); // Remove custom activity state for the removed card
+      return updatedCustomActivity;
     });
   };
 
@@ -171,6 +187,7 @@ const CreateActivity = () => {
                     }
                     required
                     className="select select-bordered w-full"
+                    disabled={customActivity[index]}
                   >
                     <option value="">Select Activity</option>
                     <option value="Activation">Activation</option>
@@ -185,6 +202,36 @@ const CreateActivity = () => {
                     <option value="Meeting">Meeting</option>
                     <option value="Site Visit">Site Visit</option>
                   </select>
+
+                  <div className="flex items-center my-2">
+                    <input
+                      type="checkbox"
+                      className="checkbox mr-2"
+                      checked={customActivity[index]}
+                      onChange={() => toggleCustomActivity(index)}
+                    />
+                    <p className="text-sm italic">Add Custom activity</p>
+                  </div>
+
+                  {customActivity[index] && (
+                    <div>
+                      <label className="label font-bold text-xs">
+                        Custom Activity
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        type="text"
+                        name="custom_activity"
+                        placeholder="Enter custom activity"
+                        value={activity.title}
+                        onChange={(e) =>
+                          handleActivityChange(index, "title", e.target.value)
+                        }
+                        required
+                        spellCheck
+                      />
+                    </div>
+                  )}
 
                   <div>
                     <div>

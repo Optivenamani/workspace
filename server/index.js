@@ -157,6 +157,7 @@ const parking = require("../server/routes/visitors-management/parking/parking.ro
 // Import workplan automation routes
 const workplan = require("./routes/workplan-automation/workplan.routes");
 const workplanActivities = require("./routes/workplan-automation/workplan_activities.routes");
+const workplanReports = require("./routes/workplan-automation/workplan_reports.routes");
 
 // Import feedback routes
 const feedback = require("./routes/feedback/feedback.routes");
@@ -194,6 +195,7 @@ app.use("/api/special-assignments", specialAssignment(logisticsPool));
 app.use("/api/interviews", interviews(visitorManagementPool));
 app.use("/api/workplans", workplan(workplanAutomationPool));
 app.use("/api/workplan-activities", workplanActivities(workplanAutomationPool));
+app.use("/api/workplan-reports", workplanReports(workplanAutomationPool));
 app.use("/api/reserve-parking", parking(visitorManagementPool));
 app.use("/api/reserved-parking", parking(visitorManagementPool));
 app.use("/api/feedback", feedback(feedbackPool));

@@ -36,7 +36,7 @@ const TeamReports = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/workplans/download-pdf/workplans",
+        "https://workspace.optiven.co.ke/api/workplan-reports/team",
         {
           headers: {
             Authorization: `Bearer ${token}`,
