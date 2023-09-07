@@ -1,5 +1,4 @@
 const express = require("express");
-const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../middleware/authenticateJWT");
 const router = express.Router();
 
