@@ -19,6 +19,35 @@ module.exports = (pool) => {
     });
   });
 
+  // GET all workplans for the authenticated user
+  router.get("/all", authenticateJWT, (req, res) => {
+    const { user_id } = req.query;
+    const query = "SELECT * FROM workplans ORDER BY end_date DESC";
+    pool.query(query, [user_id], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        res.json(results);
+      }
+    });
+  });
+
+  // GET pending workplans for the authenticated user
+  router.get("/pending", authenticateJWT, (req, res) => {
+    const { user_id } = req.query;
+    const query =
+      "SELECT * FROM workplans WHERE status = 'pending' ORDER BY end_date DESC";
+    pool.query(query, [user_id], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        res.json(results);
+      }
+    });
+  });
+
   // GET a specific workplan
   router.get("/:id", authenticateJWT, (req, res) => {
     const { id } = req.params;
@@ -29,6 +58,56 @@ module.exports = (pool) => {
         res.status(500).json({ message: "Server Error" });
       } else if (workplan.length > 0) {
         res.json(workplan[0]);
+      } else {
+        res.status(404).json({ message: "Workplan not found" });
+      }
+    });
+  });
+
+  // GET detailed workplan information including activities
+  router.get("/:id/details", authenticateJWT, (req, res) => {
+    const { id } = req.params;
+    const query = `
+    SELECT 
+      wp.id AS workplan_id,
+      wp.start_date,
+      wp.end_date,
+      wp.status AS workplan_status,
+      wpa.id AS activity_id,
+      wpa.date AS activity_date,
+      wpa.time AS activity_time,
+      wpa.title AS activity_title,
+      wpa.expected_output AS activity_expected_output,
+      wpa.measurable_achievement AS activity_measurable_achievement,
+      wpa.variance AS activity_variance,
+      wpa.comments AS activity_comments,
+      wpa.remarks AS activity_remarks
+    FROM workplans wp
+    LEFT JOIN workplan_activities wpa ON wp.id = wpa.workplan_id
+    WHERE wp.id = ?`;
+    pool.query(query, [id], (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else if (result.length > 0) {
+        const workplanData = {
+          id: result[0].workplan_id,
+          start_date: result[0].start_date,
+          end_date: result[0].end_date,
+          status: result[0].workplan_status,
+          activities: result.map((row) => ({
+            id: row.activity_id,
+            date: row.activity_date,
+            time: row.activity_time,
+            title: row.activity_title,
+            expected_output: row.activity_expected_output,
+            measurable_achievement: row.activity_measurable_achievement,
+            variance: row.activity_variance,
+            comments: row.activity_comments,
+            remarks: row.activity_remarks,
+          })),
+        };
+        res.json(workplanData);
       } else {
         res.status(404).json({ message: "Workplan not found" });
       }

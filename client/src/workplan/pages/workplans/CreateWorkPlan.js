@@ -44,6 +44,28 @@ const CreateWorkPlan = () => {
       });
       return; // Prevent further execution
     }
+
+    if (!workplan.start_date || !workplan.end_date) {
+      toast.error("Both dates must be chosen before submitting the form.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (workplan.end_date < workplan.start_date) {
+      toast.error("End date cannot be before start date.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
     
     fetch("https://workspace.optiven.co.ke/api/workplans", {
       method: "POST",

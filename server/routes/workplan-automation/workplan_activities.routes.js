@@ -31,7 +31,6 @@ module.exports = (pool) => {
 
   // GET all workplan activities
   router.get("/all", authenticateJWT, (req, res) => {
-    const { user_id } = req.query;
     pool.query(
       `SELECT 
         wa.*,

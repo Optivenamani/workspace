@@ -4,6 +4,7 @@ export { default as AppMenu } from "../common/pages/AppMenu";
 export { default as ApprovedBookings } from "../logistics/pages/site-visit-requests/ApprovedBookings";
 export { default as ApprovedSiteVisitsReports } from "../logistics/pages/reports/ApprovedSiteVisitsReports";
 export { default as ApprovedSVDetails } from "../logistics/pages/site-visit-requests/ApprovedSVDetails";
+export { default as ApproveWorkplans } from "../workplan/pages/workplans/ApproveWorkplans";
 export { default as AssignedBookings } from "../logistics/pages/site-visit-requests/AssignedBookings";
 export { default as AssignedSpecialAssignments } from "../logistics/pages/special-assignments/AssignedSpecialAssignments";
 export { default as AssignedVehicleRequests } from "../logistics/pages/vehicles/AssignedVehicleRequests";
@@ -43,6 +44,7 @@ export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVis
 export { default as Survey } from "../logistics/pages/Survey";
 export { default as TeamReports } from "../workplan/pages/reports/TeamReports";
 export { default as Users } from "../logistics/pages/Users";
+export { default as UpdateActivities } from "../workplan/pages/activities/UpdateActivities";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";
 export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleRequests";
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
@@ -58,3 +60,4 @@ export { default as ViewActivities } from "../workplan/pages/activities/ViewActi
 export { default as ViewFeedback } from "../common/pages/ViewFeedback";
 export { default as ViewWorkPlans } from "../workplan/pages/workplans/ViewWorkPlans";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
+export { default as WorkPlanDetails } from "../workplan/pages/workplans/WorkplanDetails";
