@@ -19,7 +19,7 @@ async function sendEmail(userEmail, subject, text) {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Optiven Workplan 💂" <notify@optiven.co.ke>',
+    from: '"Optiven Work Plan" <notify@optiven.co.ke>',
     to: userEmail,
     subject: subject,
     text: text,
