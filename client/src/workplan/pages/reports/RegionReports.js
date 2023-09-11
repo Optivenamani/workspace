@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
-const TeamReports = () => {
+const RegionReports = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   // Get the token from local storage
@@ -58,7 +58,7 @@ const TeamReports = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "team_reports.pdf";
+      link.download = "region_reports.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -87,7 +87,7 @@ const TeamReports = () => {
       <div className="hero min-h-screen">
         <div className="form-control w-full max-w-xs">
           <div className="flex flex-col justify-center">
-            <h1 className="font-bold text-lg">TEAM REPORTS</h1>
+            <h1 className="font-bold text-lg">REGION REPORTS</h1>
             <label className="label">
               <span className="label-text font-bold">Start Date</span>
             </label>
@@ -116,4 +116,4 @@ const TeamReports = () => {
   );
 };
 
-export default TeamReports;
+export default RegionReports;

@@ -18,7 +18,7 @@ const ApproveWorkplans = () => {
     const fetchPendingWorkplans = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/workplans/pending`,
+          `https://workspace.optiven.co.ke/api/workplans/pending`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

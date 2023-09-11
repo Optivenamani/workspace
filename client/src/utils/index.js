@@ -42,7 +42,7 @@ export { default as SiteVisitDetails } from "../logistics/pages/site-visit-reque
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
 export { default as Survey } from "../logistics/pages/Survey";
-export { default as TeamReports } from "../workplan/pages/reports/TeamReports";
+export { default as RegionReports } from "../workplan/pages/reports/RegionReports";
 export { default as Users } from "../logistics/pages/Users";
 export { default as UpdateActivities } from "../workplan/pages/activities/UpdateActivities";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";

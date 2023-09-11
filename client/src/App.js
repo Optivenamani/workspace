@@ -67,7 +67,7 @@ import {
   ViewWorkPlans,
   DriverItinerary,
   FillRemarks,
-  TeamReports,
+  RegionReports,
   Feedback,
   ViewFeedback,
   IndividualReports,
@@ -276,7 +276,7 @@ const App = () => {
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
-            <Route path="/team-reports" element={<TeamReports />} />
+            <Route path="/team-reports" element={<RegionReports />} />
             <Route path="/workplan-details/:id" element={<WorkPlanDetails />} />
           </Route>
         </Routes>

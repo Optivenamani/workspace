@@ -33,7 +33,7 @@ const WorkplanDetails = () => {
     const fetchWorkplanDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/workplans/${id}`,
+          `https://workspace.optiven.co.ke/api/workplans/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const WorkplanDetails = () => {
 
         // Fetch workplan activities for the workplan
         const activitiesResponse = await fetch(
-          `http://localhost:8080/api/workplans/${id}/details`,
+          `https://workspace.optiven.co.ke/api/workplans/${id}/details`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const WorkplanDetails = () => {
     try {
       // Make a POST request to approve the workplan
       const response = await fetch(
-        `http://localhost:8080/api/workplans/${id}/approve`,
+        `https://workspace.optiven.co.ke/api/workplans/${id}/approve`,
         {
           method: "PUT",
           headers: {
@@ -113,7 +113,7 @@ const WorkplanDetails = () => {
     try {
       // Make a POST request to reject the workplan
       const response = await fetch(
-        `http://localhost:8080/api/workplans/${id}/reject`,
+        `https://workspace.optiven.co.ke/api/workplans/${id}/reject`,
         {
           method: "PUT",
           headers: {
