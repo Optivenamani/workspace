@@ -271,16 +271,13 @@ module.exports = (pool) => {
       pool.query(query, [start_date, end_date, marketer], (err, results) => {
         if (err) throw err;
 
-        // Log the data to inspect its structure
-        console.log("Individual reports for", marketer, ":", results);
-
         // Define the document definition for the PDF
         const docDefinition = {
           pageSize: "A4",
           pageOrientation: "landscape",
           content: [
             {
-              text: `Workplan Reports from ${start_date} to ${end_date} for Marketer: ${marketer}`,
+              text: `Workplan Reports from ${start_date} to ${end_date} for ${results[0].marketer_name}`,
               fontSize: 20,
               alignment: "center",
               margin: [0, 0, 0, 20],
