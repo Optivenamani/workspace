@@ -67,10 +67,13 @@ import {
   ViewWorkPlans,
   DriverItinerary,
   FillRemarks,
-  TeamReports,
+  RegionReports,
   Feedback,
   ViewFeedback,
   IndividualReports,
+  ApproveWorkplans,
+  WorkPlanDetails,
+  UpdateActivities,
 } from "./utils/index";
 
 const App = () => {
@@ -267,11 +270,14 @@ const App = () => {
             <Route path="/workplan-home" element={<WorkPlanHome />} />
             <Route path="/create-workplan" element={<CreateWorkPlan />} />
             <Route path="/view-workplans/:id" element={<CreateActivity />} />
+            <Route path="/approve-workplans" element={<ApproveWorkplans />} />
             <Route path="/view-activities" element={<ViewActivities />} />
+            <Route path="/update-activities" element={<UpdateActivities />} />
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
-            <Route path="/team-reports" element={<TeamReports />} />
+            <Route path="/team-reports" element={<RegionReports />} />
+            <Route path="/workplan-details/:id" element={<WorkPlanDetails />} />
           </Route>
         </Routes>
       </Router>

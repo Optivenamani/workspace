@@ -163,7 +163,7 @@ const FillRemarks = () => {
 
   return (
     <Sidebar>
-      <div className="container py-6">
+      <div className="container px-4 py-6 mx-auto">
         <div>
           {/* Loop through the grouped activities and render them */}
           {Object.keys(groupedActivities).length > 0 ? (

@@ -38,6 +38,14 @@ const Sidebar = ({ children }) => {
                     View Work Plans
                   </Link>
                 </>
+                <>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/approve-workplans"
+                  >
+                    Approve Work Plans
+                  </Link>
+                </>
               </div>
             </div>
             {/* Activities */}
@@ -45,12 +53,20 @@ const Sidebar = ({ children }) => {
               <input type="checkbox" className="peer" />
               <div className="collapse-title font-bold">Activities</div>
               <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
+              <>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/update-activities"
+                  >
+                    Update Activities
+                  </Link>
+                </>
                 <>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-activities"
                   >
-                    View Activities
+                    Visualize Activities
                   </Link>
                 </>
                 <>

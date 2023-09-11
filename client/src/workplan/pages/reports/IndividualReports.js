@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import { toast } from "react-toastify";
@@ -9,7 +9,30 @@ const IndividualReports = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [marketer, setMarketer] = useState("");
+  const [users, setUsers] = useState([]); // State to store users
   const token = useSelector((state) => state.user.token);
+
+  // Use useEffect to fetch users when the component mounts
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch(
+          "https://workspace.optiven.co.ke/api/users",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [token]);
 
   const handleDownload = async () => {
     if (!marketer || marketer === "") {
@@ -35,7 +58,7 @@ const IndividualReports = () => {
     }
 
     if (endDate < startDate) {
-      toast.error("End date cannot be before start date.", {
+      toast.error("End date cannot be before the start date.", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
@@ -46,17 +69,12 @@ const IndividualReports = () => {
     }
 
     try {
-      // todo: add url
+      // Make a GET request to the backend route with query parameters
       const response = await axios.get(
-        "url",
+        `https://workspace.optiven.co.ke/api/workplan-reports/marketer?start_date=${startDate}&end_date=${endDate}&marketer=${marketer}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
-          params: {
-            marketer,
-            start_date: startDate,
-            end_date: endDate,
           },
           responseType: "blob",
         }
@@ -95,6 +113,7 @@ const IndividualReports = () => {
       );
     }
   };
+
   return (
     <Sidebar>
       <div className="hero min-h-screen">
@@ -112,8 +131,11 @@ const IndividualReports = () => {
               <option value="" disabled>
                 Select Marketer
               </option>
-              <option value="John Doe">John Doe</option>
-              <option value="Jane Doe">Jane Doe</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.user_id}>
+                  {user.fullnames}
+                </option>
+              ))}
             </select>
             <label className="label">
               <span className="label-text font-bold">Start Date</span>
