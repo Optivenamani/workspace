@@ -17,6 +17,7 @@ const CreateWorkPlan = () => {
     start_date: "",
     end_date: "",
     marketer_id: marketerId,
+    state: "pending",
   });
 
   const handleChange = (e) => {
@@ -66,7 +67,7 @@ const CreateWorkPlan = () => {
       });
       return;
     }
-    
+
     fetch("https://workspace.optiven.co.ke/api/workplans", {
       method: "POST",
       headers: {
