@@ -89,7 +89,7 @@ const Sidebar = ({ children }) => {
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/team-reports"
                   >
-                    Team Reports
+                    Region Reports
                   </Link>
                 </>
                 <>

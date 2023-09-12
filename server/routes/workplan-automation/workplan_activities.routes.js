@@ -42,7 +42,6 @@ module.exports = (pool) => {
       INNER JOIN defaultdb.users u
       ON u.user_id = w.marketer_id
       ORDER By date ASC`,
-      // [user_id],
       (err, results) => {
         if (err) {
           console.error(err);

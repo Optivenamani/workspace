@@ -201,7 +201,7 @@ const WorkplanDetails = () => {
             {Object.keys(groupedActivities).length > 0 ? (
               Object.entries(groupedActivities).map(
                 ([date, activitiesForDate]) => (
-                  <div key={date} className="">
+                  <div key={date}>
                     <label className="label font-bold lausanne mt-5 italic ">
                       {date}
                     </label>
