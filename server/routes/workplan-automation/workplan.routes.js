@@ -161,7 +161,7 @@ module.exports = (pool) => {
         } else {
           // If no workplan with overlapping date range exists, insert the new workplan
           const insertQuery =
-            "INSERT INTO workplans (start_date, end_date, marketer_id, status) VALUES (?, ?, ?, ?)";
+            "INSERT INTO workplans (start_date, end_date, marketer_id, status) VALUES (?, ?, ?, 'pending')";
           pool.query(
             insertQuery,
             [start_date, end_date, marketer_id, status],

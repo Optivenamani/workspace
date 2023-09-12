@@ -166,6 +166,8 @@ const ViewWorkPlans = () => {
     }
   };
 
+  console.log(workplans);
+
   return (
     <Sidebar>
       <div className="container px-4 py-6 mx-auto">
@@ -276,7 +278,7 @@ const ViewWorkPlans = () => {
                                 </svg>
                               </button>
                             )}
-                            <button
+                            {/* <button
                               className="btn btn-sm text-white ml-2"
                               onClick={() => alert("view workplan clicked")}
                             >
@@ -313,7 +315,7 @@ const ViewWorkPlans = () => {
                                 </g>
                               </svg>
                               VIEW
-                            </button>
+                            </button> */}
                           </div>
                         )}
                       </div>
