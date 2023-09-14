@@ -60,7 +60,7 @@ module.exports = (pool) => {
   router.get("/pending", authenticateJWT, (req, res) => {
     const { user_id } = req.query;
     const query =
-      "SELECT * FROM workplans WHERE status = 'pending' ORDER BY end_date DESC";
+      "SELECT w.*, u.fullnames as marketer_name FROM workplans w INNER JOIN defaultdb.users u ON w.marketer_id = u.user_id WHERE w.status = 'pending' ORDER BY end_date DESC";
     pool.query(query, [user_id], (err, results) => {
       if (err) {
         console.error(err);

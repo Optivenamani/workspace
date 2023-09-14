@@ -10,6 +10,7 @@ import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 const ViewWorkPlans = () => {
   const [workplans, setWorkplans] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const accessRole = useSelector((state) => state.user.user.Accessrole);
   const [selectedWorkplan, setSelectedWorkplan] = useState(null);
   const userId = useSelector((state) => state.user.user.user_id);
   const [countdownTimers, setCountdownTimers] = useState({});
@@ -166,8 +167,6 @@ const ViewWorkPlans = () => {
     }
   };
 
-  console.log(workplans);
-
   return (
     <Sidebar>
       <div className="container px-4 py-6 mx-auto">
@@ -240,10 +239,11 @@ const ViewWorkPlans = () => {
                         </button>
                       )}
                     </td>
-                    <td className="w-8">
+                    <td className="w-4">
                       {!(new Date() > new Date(workplan.start_date)) && (
                         <div>
-                          {workplan.status === "pending" && (
+                          {(accessRole.split("#").includes("workplanAdmin") ||
+                            workplan.status === "pending") && (
                             <button
                               className="btn btn-square btn-error btn-sm text-white ml-2"
                               onClick={() => handleView(workplan)}

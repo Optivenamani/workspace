@@ -18,7 +18,7 @@ const ApproveWorkplans = () => {
     const fetchPendingWorkplans = async () => {
       try {
         const response = await fetch(
-          `https://workspace.optiven.co.ke/api/workplans/pending`,
+          `http://localhost:8080/api/workplans/pending`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ const ApproveWorkplans = () => {
         );
 
         const data = await response.json();
-        console.log("workplans:", data); // Debugging statement
+        console.log("workplans:", data);
         setWorkplans(data);
       } catch (error) {
         console.error(error);
@@ -62,8 +62,18 @@ const ApproveWorkplans = () => {
             workplans.map((workplan) => (
               <table className="table table-zebra w-full bg-base-100 shadow-xl">
                 <tr key={workplan.id}>
-                  <td className="flex items-center justify-between py-6">
-                    <div className="w-24">
+                  <td className="w-64">
+                    <div>
+                      <h1 className="stat-title text-xs lausanne">
+                        Marketer
+                      </h1>
+                      <p className="text-md font-bold lausanne">
+                        {workplan.marketer_name}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
                       <h1 className="stat-title text-xs lausanne">
                         Start Date
                       </h1>
@@ -73,7 +83,7 @@ const ApproveWorkplans = () => {
                     </div>
                   </td>
                   <td>
-                    <div className="w-24">
+                    <div>
                       <h1 className="stat-title text-xs lausanne">End Date</h1>
                       <p className="text-md font-bold lausanne">
                         {formatDate(workplan.end_date)}
@@ -81,7 +91,7 @@ const ApproveWorkplans = () => {
                     </div>
                   </td>
                   <td>
-                    <div className="w-24">
+                    <div>
                       <h1 className="stat-title text-xs lausanne">Status</h1>
                       <p className="text-md font-bold lausanne">
                         <span className="countdown lausanne">
@@ -91,7 +101,6 @@ const ApproveWorkplans = () => {
                     </div>
                   </td>
                   <td>
-                    {/* Action buttons */}
                     <div className="flex">
                       {!(new Date() > new Date(workplan.start_date)) && (
                         <div>

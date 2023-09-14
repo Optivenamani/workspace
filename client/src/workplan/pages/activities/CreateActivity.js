@@ -125,7 +125,7 @@ const CreateActivity = () => {
       }
 
       setLoading(false);
-      navigate("/view-activities");
+      navigate("/workplan-details/" + workplanId);
 
       // Display success notification
       toast.success("Activities added successfully!", {
@@ -195,8 +195,8 @@ const CreateActivity = () => {
                     <option value="Make Follow Up Calls">
                       Make Follow Up Calls
                     </option>
-                    <option value="Social Media Engagements">
-                      Social Media Engagements
+                    <option value="Social Media Engagement">
+                      Social Media Engagement
                     </option>
                     <option value="Send Emails">Send Emails</option>
                     <option value="Meeting">Meeting</option>
