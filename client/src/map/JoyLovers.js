@@ -845,7 +845,7 @@ const JoyLovers = () => {
     // Fetch plot data from the backend when the component mounts
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/plots");
+        const response = await fetch("https://workspace.optiven.co.ke/api/plots");
         if (response.ok) {
           const data = await response.json();
           console.log("Fetched plot data:", data);
