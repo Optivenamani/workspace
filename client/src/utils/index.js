@@ -58,3 +58,7 @@ export { default as ViewActivities } from "../workplan/pages/activities/ViewActi
 export { default as ViewFeedback } from "../common/pages/ViewFeedback";
 export { default as ViewWorkPlans } from "../workplan/pages/workplans/ViewWorkPlans";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
+
+
+
+export { default as JoyLovers } from "../map/JoyLovers";

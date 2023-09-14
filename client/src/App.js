@@ -71,7 +71,10 @@ import {
   Feedback,
   ViewFeedback,
   IndividualReports,
+
+  JoyLovers,
 } from "./utils/index";
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -272,6 +275,9 @@ const App = () => {
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
             <Route path="/team-reports" element={<TeamReports />} />
+
+            {/*Maps */}
+            <Route path="/joy-lovers" element={<JoyLovers />} />
           </Route>
         </Routes>
       </Router>
