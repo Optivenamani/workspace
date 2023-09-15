@@ -22,7 +22,7 @@ module.exports = (pool) => {
 
       if (!status) {
         // Assuming status should have a default value if not provided
-        status = "pending";
+        status = "approved";
       }
 
       const query = `

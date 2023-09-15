@@ -271,96 +271,6 @@ const SiteVisitDetails = () => {
       .replace(/\//g, "-");
   };
 
-  const startTrip = async (id) => {
-    try {
-      const response = await fetch(
-        `https://workspace.optiven.co.ke/api/site-visits/start-trip/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        toast.success("Trip set to in progress.", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        // Reload the page
-        window.location.reload();
-      } else {
-        const data = await response.json();
-        toast.error("An error occurred while attempting to start trip.", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        console.error("Error starting trip:", data.message);
-      }
-    } catch (error) {
-      toast.error("An error occurred while attempting to start trip.", {
-        position: "top-center",
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      console.error("Error starting trip:", error);
-    }
-  };
-
-  const endTrip = async (id) => {
-    try {
-      const response = await fetch(
-        `https://workspace.optiven.co.ke/api/site-visits/end-trip/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        toast.success("Trip set to complete.", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        // Reload the page
-        window.location.reload();
-      } else {
-        const data = await response.json();
-        toast.error("An error occurred while attempting to end trip.", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        console.error("Error ending trip:", data.message);
-      }
-    } catch (error) {
-      toast.error("An error occurred while attempting to end trip.", {
-        position: "top-center",
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      console.error("Error ending trip:", error);
-    }
-  };
-
   return (
     <>
       <Sidebar>
@@ -572,22 +482,6 @@ const SiteVisitDetails = () => {
                           </button>
                         </>
                       ) : null}
-                      {marketerName !== null || status === "complete" ? null : (
-                        <button
-                          className={`btn ${
-                            status === "in_progress"
-                              ? "btn-error"
-                              : "btn-primary"
-                          } text-white`}
-                          onClick={() =>
-                            status === "in_progress"
-                              ? endTrip(id)
-                              : startTrip(id)
-                          }
-                        >
-                          {status === "in_progress" ? "End Trip" : "Start Trip"}
-                        </button>
-                      )}
                       <button
                         className="btn btn-error btn-outline mr-1"
                         onClick={deleteSiteVisit}

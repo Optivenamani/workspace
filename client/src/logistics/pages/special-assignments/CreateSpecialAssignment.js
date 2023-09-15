@@ -78,7 +78,7 @@ const CreateSpecialAssignment = () => {
       vehicle_id: vehicle,
       special_assignment_destination: destination,
       driver_id: driver,
-      status: "pending",
+      status: "approved",
       clients: [
         {
           name: "N/A - SA",
@@ -88,14 +88,17 @@ const CreateSpecialAssignment = () => {
       ],
     };
     try {
-      const response = await fetch("https://workspace.optiven.co.ke/api/site-visits", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(specialAssignmentData),
-      });
+      const response = await fetch(
+        "https://workspace.optiven.co.ke/api/site-visits",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(specialAssignmentData),
+        }
+      );
 
       const data = await response.json();
       console.log(data);
