@@ -21,6 +21,7 @@ const Form = () => {
     pickup_date: "",
     pickup_time: "",
     clients: [],
+    status: "pending",
   });
 
   const navigate = useNavigate();
