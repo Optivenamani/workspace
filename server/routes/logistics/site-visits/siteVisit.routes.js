@@ -47,6 +47,7 @@ module.exports = (pool, io) => {
       pickup_time,
       pickup_date,
       clients,
+      status,
       special_assignment_destination,
       special_assignment_assigned_to,
       remarks,
@@ -87,13 +88,14 @@ module.exports = (pool, io) => {
             driver_id,
             vehicle_id
           ) 
-         VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           marketer_id,
           project_id,
           pickup_location,
           pickup_time,
           pickup_date,
+          status,
           special_assignment_destination,
           special_assignment_assigned_to,
           remarks,
