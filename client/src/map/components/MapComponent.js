@@ -19,7 +19,7 @@ const MapComponent = ({ geojsonData }) => {
 
       L.tileLayer('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzklEQVRIDb3BAQEAAAABIP5mz6iDBTAYzFRMXAuN7ABTGYMKEzzLMvBDFRgwoTPsDAUxiwwTM82zIAxUYMKRM+wMBTGLDNEzPMDEUYMKRM+wMBTGJ6m8F9B5K3RgEoYMKRM+wMBTGYsM0TMsxMVGAwTKhM+wMBTGJ6SBDHAk4MwBaxjAzRM9bAtwRWWoMKEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwFMb7JzEz7AwF9AAAAABJRU5ErkJggg==', {
         transparent: true,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href="https://www.optiven.co.ke">Optiven</a>'
       }).addTo(mapRef.current);
     }
 
@@ -34,7 +34,7 @@ const MapComponent = ({ geojsonData }) => {
     }
 
     // Fetch plotUnitsData from your API or data source
-    fetch('https://workspace.optiven.co.ke/api/plots')
+    fetch('http://localhost:8080/api/plots')
       .then((response) => response.json())
       .then((data) => {
         setPlotsUnitsData(data);
@@ -57,11 +57,11 @@ const MapComponent = ({ geojsonData }) => {
         const Unit_Status = plotsInfo.Unit_Status;
   
         if (Unit_Status === 'Open') {
-          fillColor = 'red';
+          fillColor = 'green';
         } else if (Unit_Status === 'Reserved') {
           fillColor = 'yellow';
         } else if (Unit_Status === 'Sold') {
-          fillColor = 'green';
+          fillColor = 'red';
         }
       }
     }
@@ -89,9 +89,11 @@ const MapComponent = ({ geojsonData }) => {
 
       if (plotsInfo) {
         popupContent += `Project Name: ${plotsInfo.Name}<br />`;
+        popupContent += `Plots ID: ${plotsInfo.Unit_Number}<br />`;
         popupContent += `Project ID: ${plotsInfo.project_id}<br />`;
         popupContent += `Unit_Status: ${plotsInfo.Unit_Status}<br />`;
-        popupContent += `Plots ID: ${plotsInfo.Unit_Number}<br />`;
+        popupContent += `Price: ${plotsInfo.Cash_Price}<br />`;
+        popupContent += `Plot Size: ${plotsInfo.Unit_Type}<br />`;
       }
     }
 
