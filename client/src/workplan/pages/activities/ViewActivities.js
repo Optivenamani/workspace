@@ -77,63 +77,69 @@ const ViewActivities = () => {
   ) => {
     try {
       // Find the activity based on the activityId
-      const activity = activities.find(
+      const activityIndex = activities.findIndex(
         (activity) => activity.id === activityId
       );
 
-      // Update the activity with the new measurable achievement
-      const response = await fetch(
-        `https://workspace.optiven.co.ke/api/workplan-activities/${activityId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ...activity,
-            measurable_achievement: measurableAchievement,
-            variance: variance,
-            comments: comments,
-            date: formatDate(activity.date),
-            time: formatTime(activity.time),
-          }),
-        }
-      );
+      if (activityIndex !== -1) {
+        // Create a copy of the activities array
+        const updatedActivities = [...activities];
 
-      if (response.ok) {
-        // Activity updated successfully, update the activities state in the parent component
-        const updatedActivities = activities.map((activity) => {
-          if (activity.id === activityId) {
-            return {
-              ...activity,
-              measurable_achievement: measurableAchievement,
-              variance: variance,
-              comments: comments,
-            };
-          }
-          return activity;
-        });
+        // Update the activity with the new data
+        updatedActivities[activityIndex] = {
+          ...updatedActivities[activityIndex],
+          measurable_achievement: measurableAchievement,
+          variance: variance,
+          comments: comments,
+        };
+
+        // Update the state with the updated activities
         setActivities(updatedActivities);
-        toast.success("Activity updated successfully!", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+
+        // Perform the API update here (assuming it's successful)
+        const response = await fetch(
+          `https://workspace.optiven.co.ke/api/workplan-activities/${activityId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              ...updatedActivities[activityIndex], // Send the updated data to the API
+              date: formatDate(updatedActivities[activityIndex].date),
+              time: formatTime(updatedActivities[activityIndex].time),
+            }),
+          }
+        );
+
+        if (response.ok) {
+          // Activity updated successfully, show a success toast
+          toast.success("Activity updated successfully!", {
+            position: "top-center",
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else {
+          // Handle error response and show an error toast
+          toast.error("Failed to update activity. Please try again.", {
+            position: "top-center",
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
       } else {
-        // Handle error response
-        toast.error("Failed to update activity. Please try again.", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        // Handle the case where the activity is not found
+        console.error("Activity not found");
       }
     } catch (error) {
-      toast.error(error, {
+      console.error(error);
+      // Show an error toast for unexpected errors
+      toast.error("An error occurred. Please try again.", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
