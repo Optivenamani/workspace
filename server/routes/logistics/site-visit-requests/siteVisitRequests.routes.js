@@ -543,7 +543,6 @@ module.exports = (pool, io) => {
           };
           // Populate the body array with your data
           docDefinition.content[0].table.body.push(...dataToPdfRows3(results));
-          console.log(results);
           // Create the PDF and send it as a response
           const pdfDoc = printer.createPdfKitDocument(docDefinition);
           res.setHeader("Content-Type", "application/pdf");
