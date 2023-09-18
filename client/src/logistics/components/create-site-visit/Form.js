@@ -139,10 +139,7 @@ const Form = () => {
         }
 
         // Check for phone presence and correctness
-        if (
-          !client.phone_number ||
-          !isValidPhone(client.phone_number)
-        ) {
+        if (!client.phone_number || !isValidPhone(client.phone_number)) {
           return false;
         }
 

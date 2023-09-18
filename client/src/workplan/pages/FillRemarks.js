@@ -32,8 +32,6 @@ const FillRemarks = () => {
             item.measurable_achievement !== null && item.remarks === null
         );
 
-        console.log("data:", filteredData);
-
         setActivities(filteredData);
       } catch (error) {
         console.error(error);
@@ -44,7 +42,6 @@ const FillRemarks = () => {
   }, [token, userId]);
 
   const handleView = (activity) => {
-    console.log("view activity:", activity);
     setSelectedActivity(activity);
   };
 
@@ -147,8 +144,6 @@ const FillRemarks = () => {
     return acc;
   }, {});
 
-  console.log("grouped activities", groupedActivities);
-
   function truncateText(text, maxLength = 20) {
     if (!text) {
       return "";
@@ -212,14 +207,9 @@ const FillRemarks = () => {
                               <h1 className="text-gray-400 text-xs lausanne italic">
                                 Expected Output
                               </h1>
-                              <div
-                                className="tooltip"
-                                data-tip={activity.expected_output}
-                              >
-                                <p className="text-sm font-bold lausanne w-3/4">
-                                  {truncateText(activity.expected_output, 25)}
-                                </p>
-                              </div>
+                              <p className="text-sm font-bold lausanne w-3/4">
+                                {truncateText(activity.expected_output, 25)}
+                              </p>
                             </div>
                           </td>
                           <td>
@@ -227,17 +217,12 @@ const FillRemarks = () => {
                               <h1 className="text-gray-400 text-xs lausanne italic w-1/2">
                                 Measurable Achievement
                               </h1>
-                              <div
-                                className="tooltip"
-                                data-tip={activity.measurable_achievement}
-                              >
-                                <p className="text-sm font-bold lausanne w-3/4">
-                                  {truncateText(
-                                    activity.measurable_achievement,
-                                    25
-                                  )}
-                                </p>
-                              </div>
+                              <p className="text-sm font-bold lausanne w-3/4">
+                                {truncateText(
+                                  activity.measurable_achievement,
+                                  25
+                                )}
+                              </p>
                             </div>
                           </td>
                           <td>
@@ -245,14 +230,9 @@ const FillRemarks = () => {
                               <h1 className="stat-title text-xs lausanne italic">
                                 Variance
                               </h1>
-                              <div
-                                className="tooltip"
-                                data-tip={activity.variance}
-                              >
-                                <p className="text-sm font-bold lausanne">
-                                  {truncateText(activity.variance, 25)}
-                                </p>
-                              </div>
+                              <p className="text-sm font-bold lausanne">
+                                {truncateText(activity.variance, 25)}
+                              </p>
                             </div>
                           </td>
                           <td>
@@ -260,14 +240,9 @@ const FillRemarks = () => {
                               <h1 className="stat-title text-xs lausanne italic">
                                 Marketer Comments
                               </h1>
-                              <div
-                                className="tooltip"
-                                data-tip={activity.comments}
-                              >
-                                <p className="text-sm font-bold lausanne">
-                                  {truncateText(activity.comments, 25)}
-                                </p>
-                              </div>
+                              <p className="text-sm font-bold lausanne">
+                                {truncateText(activity.comments, 25)}
+                              </p>
                             </div>
                           </td>
                           <td>
@@ -275,14 +250,9 @@ const FillRemarks = () => {
                               <h1 className="stat-title text-xs lausanne italic">
                                 Regional Manager Remarks
                               </h1>
-                              <div
-                                className="tooltip"
-                                data-tip={activity.remarks}
-                              >
-                                <p className="text-sm font-bold lausanne">
-                                  {truncateText(activity.remarks, 25)}
-                                </p>
-                              </div>
+                              <p className="text-sm font-bold lausanne">
+                                {truncateText(activity.remarks, 25)}
+                              </p>
                             </div>
                           </td>
                           <td>
@@ -291,58 +261,13 @@ const FillRemarks = () => {
                               <button
                                 onClick={() => handleView(activity)}
                                 className="btn btn-primary btn-sm text-white"
-                                disabled={activity.remarks !== null}
+                                disabled={
+                                  activity.remarks !== null ||
+                                  activity.remarks === ""
+                                }
                               >
-                                {/* <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={16}
-                                  height={16}
-                                  fill="currentColor"
-                                  className="bi bi-pencil-square mr-2"
-                                  viewBox="0 0 16 16"
-                                >
-                                  {" "}
-                                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />{" "}
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                  />{" "}
-                                </svg> */}
                                 Comment
                               </button>
-                              {/* <button className="btn btn-square btn-outline btn-sm ml-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                className="feather feather-edit-3"
-                              >
-                                <path d="M12 20h9"></path>
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                              </svg>
-                            </button>
-                            <button className="btn btn-square btn-error text-white btn-sm ml-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                fill="currentColor"
-                                className="bi bi-trash"
-                                viewBox="0 0 16 16"
-                              >
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                <path
-                                  fill-rule="evenodd"
-                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                                />
-                              </svg>
-                            </button> */}
                             </div>
                           </td>
                         </tr>
@@ -385,6 +310,8 @@ const FillRemarks = () => {
             <p className="ml-1 italic">
               {selectedActivity.measurable_achievement}
             </p>
+            <label className="label font-bold">Comments</label>
+            <p className="ml-1 italic">{selectedActivity.comments}</p>
             <div className="flex flex-col">
               <label className="label font-bold">Remarks</label>
               {selectedActivity.remarks !== null ? (

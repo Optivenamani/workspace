@@ -112,6 +112,7 @@ module.exports = (pool) => {
         INNER JOIN defaultdb.users u ON wp.marketer_id = u.user_id
         LEFT JOIN workplan_activities wpa ON wp.id = wpa.workplan_id
         WHERE wpa.date >= ? AND wpa.date <= ?
+        AND wp.status = 'approved'
         ORDER BY wpa.date DESC, wpa.time DESC;
       `;
       // Execute the SQL query
@@ -264,6 +265,7 @@ module.exports = (pool) => {
       INNER JOIN defaultdb.users u ON wp.marketer_id = u.user_id
       LEFT JOIN workplan_activities wpa ON wp.id = wpa.workplan_id
       WHERE wpa.date >= ? AND wpa.date <= ? AND wp.marketer_id = ?
+      AND wp.status = 'approved'
       ORDER BY wpa.date DESC, wpa.time DESC;
     `;
 

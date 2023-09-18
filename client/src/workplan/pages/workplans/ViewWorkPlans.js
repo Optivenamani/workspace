@@ -17,6 +17,8 @@ const ViewWorkPlans = () => {
 
   const navigate = useNavigate();
 
+  console.log("Access role", accessRole.split("#").includes("workplanAdmin"));
+
   useEffect(() => {
     // Fetch visitor data from the server
     const fetchWorkPlans = async () => {
@@ -240,7 +242,8 @@ const ViewWorkPlans = () => {
                       )}
                     </td>
                     <td className="w-4">
-                      {!(new Date() > new Date(workplan.start_date)) && (
+                      {(accessRole.split("#").includes("workplanAdmin") ||
+                        !(new Date() > new Date(workplan.start_date))) && (
                         <div>
                           {(accessRole.split("#").includes("workplanAdmin") ||
                             workplan.status === "pending") && (
@@ -273,6 +276,7 @@ const ViewWorkPlans = () => {
                         onClick={() =>
                           navigate("/workplan-details/" + workplan.id)
                         }
+                        disabled={new Date() > new Date(workplan.start_date)}
                       >
                         View
                       </button>

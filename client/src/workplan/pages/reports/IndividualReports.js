@@ -25,7 +25,13 @@ const IndividualReports = () => {
           }
         );
         const data = await response.json();
-        setUsers(data);
+        setUsers(
+          data.filter(
+            (user) =>
+              user.Accessrole.split("#").includes("113") ||
+              user.Accessrole.split("#").includes("workplanAdmin")
+          )
+        );
       } catch (error) {
         console.error("Error fetching users:", error);
       }
