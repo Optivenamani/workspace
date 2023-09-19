@@ -125,12 +125,28 @@ function dataToPdfRows3(data) {
     const formattedDate = `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()}`;
+
+    let assignedTo = ""; // Initialize assignedTo variable
+    let optivenSite = ""; // Initialize optivenSite variable
+    let numClients = "";   // Initialize numClients variable
+
+    // Check if it's a special assignment
+    if (item.special_assignment_destination !== null) {
+      assignedTo = item.special_assignment_assigned_to || ""; // Capture assigned person
+      optivenSite = item.special_assignment_destination || ""; // Capture destination
+      numClients = "N/A"; // Set "N/A" for special assignments
+    } else {
+      assignedTo = item.marketer_name || ""; // Capture marketer name for site visits
+      optivenSite = item.site_name || ""; // Capture site name for site visits
+      numClients = item.num_clients || ""; // Capture number of clients for site visits
+    }
+
     return [
       { text: index + 1 ?? "", style: "tableCell" },
       { text: formattedDate ?? "", style: "tableCell" },
-      { text: item.marketer_name ?? "", style: "tableCell" },
-      { text: item.num_clients ?? "", style: "tableCell" },
-      { text: item.site_name ?? "", style: "tableCell" },
+      { text: assignedTo, style: "tableCell" }, // Display assignedTo or special_assignment_assigned_to
+      { text: numClients, style: "tableCell" }, // Display numClients
+      { text: optivenSite, style: "tableCell" }, // Display optivenSite or special_assignment_destination
       { text: item.driver_name ?? "", style: "tableCell" },
       { text: item.pickup_time ?? "", style: "tableCell" },
       { text: item.vehicle_name ?? "", style: "tableCell" },
@@ -459,7 +475,7 @@ module.exports = (pool, io) => {
                         style: "tableHeader",
                       },
                       {
-                        text: "Converter",
+                        text: "Converter/Persons Assigned",
                         fillColor: "#202A44",
                         style: "tableHeader",
                       },
@@ -469,7 +485,7 @@ module.exports = (pool, io) => {
                         style: "tableHeader",
                       },
                       {
-                        text: "Optiven Site",
+                        text: "Optiven Site/Destination",
                         fillColor: "#202A44",
                         style: "tableHeader",
                       },

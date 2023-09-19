@@ -10,11 +10,14 @@ import huh from "../../../assets/app-illustrations/Shrug-bro.png";
 const ViewWorkPlans = () => {
   const [workplans, setWorkplans] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const accessRole = useSelector((state) => state.user.user.Accessrole);
   const [selectedWorkplan, setSelectedWorkplan] = useState(null);
   const userId = useSelector((state) => state.user.user.user_id);
   const [countdownTimers, setCountdownTimers] = useState({});
 
   const navigate = useNavigate();
+
+  console.log("Access role", accessRole.split("#").includes("workplanAdmin"));
 
   useEffect(() => {
     // Fetch visitor data from the server
@@ -218,28 +221,32 @@ const ViewWorkPlans = () => {
                       </div>
                     </td>
                     <td>
-                      {/* Action buttons */}
-                      <div className="flex">
+                      <div className="w-24">
+                        <h1 className="stat-title text-xs lausanne">Status</h1>
+                        <p className="text-md font-bold lausanne">
+                          <span className="countdown lausanne">
+                            {workplan.status.toUpperCase()}
+                          </span>
+                        </p>
+                      </div>
+                    </td>
+                    <td className="w-8">
+                      {workplan.status === "pending" && (
                         <button
                           onClick={() => handleClick(workplan.id)}
                           className="btn btn-primary btn-sm text-white"
                           disabled={new Date() > new Date(workplan.start_date)}
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={18}
-                            height={18}
-                            fill="currentColor"
-                            className="bi bi-plus"
-                            viewBox="0 0 16 16"
-                          >
-                            {" "}
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />{" "}
-                          </svg>
-                          ADD ACTIVITIES
+                          Add Activities
                         </button>
-                        {!(new Date() > new Date(workplan.start_date)) && (
-                          <div>
+                      )}
+                    </td>
+                    <td className="w-4">
+                      {(accessRole.split("#").includes("workplanAdmin") ||
+                        !(new Date() > new Date(workplan.start_date))) && (
+                        <div>
+                          {(accessRole.split("#").includes("workplanAdmin") ||
+                            workplan.status === "pending") && (
                             <button
                               className="btn btn-square btn-error btn-sm text-white ml-2"
                               onClick={() => handleView(workplan)}
@@ -259,49 +266,20 @@ const ViewWorkPlans = () => {
                                 />
                               </svg>
                             </button>
-                            <button
-                              className="btn btn-sm text-white ml-2"
-                              onClick={() =>
-                                alert("view workplan clicked")
-                              }
-                            >
-                              <svg
-                                width={18}
-                                height={18}
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="mr-1"
-                              >
-                                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                                <g
-                                  id="SVGRepo_tracerCarrier"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <g id="SVGRepo_iconCarrier">
-                                  {" "}
-                                  <path
-                                    d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
-                                    stroke="white"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />{" "}
-                                  <path
-                                    d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
-                                    stroke="white"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />{" "}
-                                </g>
-                              </svg>
-                              VIEW
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm text-white ml-2"
+                        onClick={() =>
+                          navigate("/workplan-details/" + workplan.id)
+                        }
+                        disabled={new Date() > new Date(workplan.start_date)}
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))}

@@ -30,8 +30,7 @@ module.exports = (pool) => {
   });
 
   // GET all workplan activities
-  router.get("/all", authenticateJWT, (req, res) => {
-    const { user_id } = req.query;
+  router.get("/all", (req, res) => {
     pool.query(
       `SELECT 
         wa.*,
@@ -43,7 +42,6 @@ module.exports = (pool) => {
       INNER JOIN defaultdb.users u
       ON u.user_id = w.marketer_id
       ORDER By date ASC`,
-      [user_id],
       (err, results) => {
         if (err) {
           console.error(err);
@@ -56,7 +54,7 @@ module.exports = (pool) => {
   });
 
   // GET a specific workplan activity
-  router.get("/:id", authenticateJWT, (req, res) => {
+  router.get("/:id", (req, res) => {
     const { id } = req.params;
     const query = `SELECT 
         wa.*,
@@ -67,7 +65,7 @@ module.exports = (pool) => {
       ON wa.workplan_id = w.id
       INNER JOIN defaultdb.users u
       ON u.user_id = w.marketer_id 
-      WHERE id = ?`;
+      WHERE wa.id = ?`;
     pool.query(query, [id], (err, activity) => {
       if (err) {
         console.error(err);
