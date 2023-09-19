@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import MapComponent from "./components/MapComponent";
 import geojsonData from "./geojsonData/OG"
 import Legend from "./components/Legend";
+import { Link } from "react-router-dom";
+import logo from "../../src/assets/optiven-logo-full.png";
 
 const OasisGardens = () => {
   const [plotUnitsData, setplotUnitsData] = useState([]);
@@ -27,13 +29,22 @@ const OasisGardens = () => {
   }, []);
 
   return (
-    <div className="OasisGardens">
-    <div className="header">
-      <h1><b>The Great Oasis Gardens - Nanyuki</b></h1>
-    </div>
-    <MapComponent geojsonData={geojsonData} plotUnitsData={plotUnitsData} />
-    <Legend /> 
-  </div>
+    <>
+      <div className="navbar bg-primary">
+        <Link className="btn btn-ghost normal-case text-xl" to="#">
+          <img src={logo} alt="logo" className="w-40" />
+        </Link>
+      </div>
+      <div className="Oasis Gardens">
+        <div className="header">
+          <h1>
+            <b>The Great Oasis Gardens - Nanyuki</b>
+          </h1>
+        </div>
+        <MapComponent geojsonData={geojsonData} plotUnitsData={plotUnitsData} />
+        <Legend />
+      </div>
+    </>
   
 
   );
