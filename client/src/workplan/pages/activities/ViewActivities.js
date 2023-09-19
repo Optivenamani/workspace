@@ -154,7 +154,7 @@ const ViewActivities = () => {
       <div className="p-5">
         <WorkPlanCalendar
           activities={activities}
-          editactivity={handleEditactivity}
+          editActivity={handleEditactivity}
         />
       </div>
     </Sidebar>
