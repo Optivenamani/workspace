@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import MapComponent from "./components/MapComponent";
-import geojsonData from "./geojsonData/JLClub"
+import geojsonData from "./geojsonData/OG"
 import Legend from "./components/Legend";
 
-const JoyLovers = () => {
+const OasisGardens = () => {
   const [plotUnitsData, setplotUnitsData] = useState([]);
 
   useEffect(() => {
@@ -27,9 +27,9 @@ const JoyLovers = () => {
   }, []);
 
   return (
-    <div className="JoyLovers">
+    <div className="OasisGardens">
     <div className="header">
-      <h1><b>JOY LOVERS CLUB - MALINDI</b></h1>
+      <h1><b>The Great Oasis Gardens - Nanyuki</b></h1>
     </div>
     <MapComponent geojsonData={geojsonData} plotUnitsData={plotUnitsData} />
     <Legend /> 
@@ -39,4 +39,4 @@ const JoyLovers = () => {
   );
 };
 
-export default JoyLovers;
+export default OasisGardens;

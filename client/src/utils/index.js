@@ -62,3 +62,5 @@ export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
 
 
 export { default as JoyLovers } from "../map/JoyLovers";
+export { default as MapHome } from "../map/MapsHome";
+export { default as OasisGardens } from "../map/OasisGardens";

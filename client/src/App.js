@@ -73,6 +73,8 @@ import {
   IndividualReports,
 
   JoyLovers,
+  MapHome,
+  OasisGardens,
 } from "./utils/index";
 
 
@@ -139,6 +141,9 @@ const App = () => {
     <>
       <Router>
         <Routes>
+        {/*Maps , Public Access */}
+        <Route path="/joy-lovers" element={<JoyLovers />} />
+        <Route path="/oasis-gardens" element={<OasisGardens />} />
           {/* Login */}
           <Route path="/login" element={<Login />} />
           <Route path="/" exact element={<PrivateRoutes />}>
@@ -278,6 +283,8 @@ const App = () => {
 
             {/*Maps */}
             <Route path="/joy-lovers" element={<JoyLovers />} />
+            <Route path="/map-home" element={<MapHome />} />
+            <Route path="/oasis-gardens" element={<OasisGardens />} />
           </Route>
         </Routes>
       </Router>

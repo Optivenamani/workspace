@@ -95,6 +95,26 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
+            {department === "ICT (S)" && (
+              <li>
+                <Link
+                  to="/map-home"
+                  className="block overflow-hidden group"
+                  onClick={() => handleAppSelect("Maps")}
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1619468129361-605ebea04b44?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+                    alt=""
+                    className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                  />
+                  <div className="relative pt-3 bg-white">
+                    <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                      Optiven Maps
+                    </h3>
+                  </div>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </section>

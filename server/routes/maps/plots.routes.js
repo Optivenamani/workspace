@@ -1,5 +1,4 @@
 const express = require("express");
-//const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
 module.exports = (pool) => {
