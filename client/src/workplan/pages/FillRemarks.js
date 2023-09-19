@@ -158,14 +158,14 @@ const FillRemarks = () => {
 
   return (
     <Sidebar>
-      <div className="container px-4 py-6 mx-auto">
+      <div className="container py-6 mx-10">
         <div>
           {/* Loop through the grouped activities and render them */}
           {Object.keys(groupedActivities).length > 0 ? (
             Object.entries(groupedActivities).map(
               ([date, activitiesForDate]) => (
-                <div key={date} className="block mx-10 md:mx-20 lg:mx-24">
-                  <label className="label font-bold lausanne mt-5 italic ">
+                <div key={date} className="block">
+                  <label className="label font-extrabold lausanne mt-5 italic underline">
                     {date}
                   </label>
                   <table className="table min-w-full bg-base-100 shadow-xl">
@@ -178,7 +178,7 @@ const FillRemarks = () => {
                                 Marketer
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                              {truncateText(activity.name, 25)}
+                              {truncateText(activity.name, 20)}
                               </p>
                             </div>
                           </td>
@@ -188,7 +188,7 @@ const FillRemarks = () => {
                                 Activity
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                              {truncateText(activity.title, 25)}
+                              {truncateText(activity.title, 20)}
                               </p>
                             </div>
                           </td>
@@ -208,7 +208,7 @@ const FillRemarks = () => {
                                 Expected Output
                               </h1>
                               <p className="text-sm font-bold lausanne w-3/4">
-                                {truncateText(activity.expected_output, 25)}
+                                {truncateText(activity.expected_output, 20)}
                               </p>
                             </div>
                           </td>
@@ -231,7 +231,7 @@ const FillRemarks = () => {
                                 Variance
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                                {truncateText(activity.variance, 25)}
+                                {truncateText(activity.variance, 20)}
                               </p>
                             </div>
                           </td>
@@ -241,17 +241,17 @@ const FillRemarks = () => {
                                 Marketer Comments
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                                {truncateText(activity.comments, 25)}
+                                {truncateText(activity.comments, 20)}
                               </p>
                             </div>
                           </td>
                           <td>
                             <div className="min-w-fit">
                               <h1 className="stat-title text-xs lausanne italic">
-                                Regional Manager Remarks
+                                RM Remarks
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                                {truncateText(activity.remarks, 25)}
+                                {truncateText(activity.remarks, 20)}
                               </p>
                             </div>
                           </td>
