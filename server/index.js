@@ -162,6 +162,9 @@ const workplanReports = require("./routes/workplan-automation/workplan_reports.r
 // Import feedback routes
 const feedback = require("./routes/feedback/feedback.routes");
 
+// Import Map routes
+const plots = require("./routes/maps/plots.routes");
+
 // Configure CORS options
 const corsOptions = {
   origin: [
@@ -199,6 +202,8 @@ app.use("/api/workplan-reports", workplanReports(workplanAutomationPool));
 app.use("/api/reserve-parking", parking(visitorManagementPool));
 app.use("/api/reserved-parking", parking(visitorManagementPool));
 app.use("/api/feedback", feedback(feedbackPool));
+
+app.use("/api/plots", plots(logisticsPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
