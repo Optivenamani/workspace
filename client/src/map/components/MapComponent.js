@@ -44,7 +44,7 @@ const MapComponent = ({ geojsonData }) => {
     }
 
     // Fetch plotUnitsData from your API or data source
-    fetch('http://localhost:8080/api/plots')
+    fetch('https://workspace.optiven.co.ke/api/plots')
       .then((response) => response.json())
       .then((data) => {
         setPlotsUnitsData(data);
