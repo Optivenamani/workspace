@@ -77,6 +77,7 @@ import {
   ApproveWorkplans,
   WorkPlanDetails,
   UpdateActivities,
+  PendingWorkplanDetails,
 } from "./utils/index";
 
 
@@ -284,6 +285,7 @@ const App = () => {
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
             <Route path="/team-reports" element={<RegionReports />} />
+            <Route path="/pending-workplan-details/:id" element={<PendingWorkplanDetails />} />
             <Route path="/workplan-details/:id" element={<WorkPlanDetails />} />
             {/*Maps */}
             <Route path="/joy-lovers" element={<JoyLovers />} />

@@ -171,8 +171,8 @@ const ViewWorkPlans = () => {
 
   return (
     <Sidebar>
-      <div className="container px-4 py-6 mx-auto">
-        <div className="block mx-20">
+      <div className="container mx-auto py-6">
+        <div className="block mx-10">
           <div className="text-sm breadcrumbs">
             <ul>
               <li>
@@ -182,9 +182,9 @@ const ViewWorkPlans = () => {
             </ul>
           </div>
         </div>
-        <div className="block mx-20">
+        <div className="block">
           {Array.isArray(workplans) && workplans.length > 0 ? (
-            <table className="table table-zebra w-full bg-base-100 shadow-xl">
+            <table className="table table-zebra w-full bg-base-100 shadow-xl mx-10">
               <tbody>
                 {workplans.map((workplan) => (
                   <tr key={workplan.id}>

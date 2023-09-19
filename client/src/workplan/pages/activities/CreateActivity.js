@@ -19,7 +19,7 @@ const CreateActivity = () => {
     },
   ]);
   const [loading, setLoading] = useState(false);
-  const [workplanItem, setWorkplanItem] = useState({});
+  const [, setWorkplanItem] = useState({});
   const [customActivity, setCustomActivity] = useState([false]);
 
   const token = useSelector((state) => state.user.token);
@@ -45,8 +45,6 @@ const CreateActivity = () => {
 
     fetchWorkplan();
   }, [token, workplanId]);
-
-  console.log("workplan", workplanItem);
 
   const navigate = useNavigate();
 
