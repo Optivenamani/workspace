@@ -51,9 +51,13 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
 
+    const trimmedNum = (num) => {
+      return num.replace(/^\+/, "");
+    };
+
     const updatedUserData = {
       ...user,
-      phone_number: phoneNumber,
+      phone_number: trimmedNum(phoneNumber),
     };
 
     try {
@@ -169,9 +173,15 @@ const Profile = () => {
           </div>
           <div className="h-full rounded-lg bg-gray-100 py-10 flex flex-col items-center lg:h-1/2">
             <div className="flex flex-col justify-center">
-              <Link to="/" className="font-bold hover:underline">Menu</Link>
-              <Link to="/feedback" className="font-bold hover:underline">Feedback</Link>
-              <Link to="/login" className="font-bold hover:underline">Logout</Link>
+              <Link to="/" className="font-bold hover:underline">
+                Menu
+              </Link>
+              <Link to="/feedback" className="font-bold hover:underline">
+                Feedback
+              </Link>
+              <Link to="/login" className="font-bold hover:underline">
+                Logout
+              </Link>
             </div>
           </div>
           <div className="h-full rounded-lg bg-gray-100 lg:col-span-2">
@@ -244,20 +254,19 @@ const Profile = () => {
             <div className="flex flex-col">
               <label className="label font-bold">Edit Phone Number</label>
               <input
-                type="text"
+                type="tel"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="input input-bordered"
-                placeholder="254712345678"
+                placeholder="+254712345678"
                 required
+                min={11}
+                max={13}
               />
-              {/* <span className="font-bold italic text-red-600 text-sm">
-                error
-              </span> */}
               <button
                 onClick={handleChangePhone}
                 className="btn btn-outline mt-2"
-                disabled={!phoneNumber || phoneNumber.length !== 12}
+                disabled={!phoneNumber || phoneNumber.length <= 11}
               >
                 {loading ? "Editing..." : "Edit"}
               </button>
