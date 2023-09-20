@@ -23,7 +23,7 @@ function formatDate(inputDate) {
 
 const WorkplanDetails = () => {
   const [workplan, setWorkplan] = useState({});
-  const accessRole = useSelector((state) => state.user.user.Accessrole);
+  // const accessRole = useSelector((state) => state.user.user.Accessrole);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const { id } = useParams();
