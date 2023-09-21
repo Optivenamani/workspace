@@ -173,13 +173,13 @@ const Profile = () => {
           </div>
           <div className="h-full rounded-lg bg-gray-100 py-10 flex flex-col items-center lg:h-1/2">
             <div className="flex flex-col justify-center">
-              <Link to="/" className="font-bold hover:underline">
+              <Link to="/" className="hover:underline">
                 Menu
               </Link>
-              <Link to="/feedback" className="font-bold hover:underline">
+              <Link to="/feedback" className="hover:underline">
                 Feedback
               </Link>
-              <Link to="/login" className="font-bold hover:underline">
+              <Link to="/login" className="hover:underline">
                 Logout
               </Link>
             </div>
@@ -252,7 +252,9 @@ const Profile = () => {
             </button>
 
             <div className="flex flex-col">
-              <label className="label font-bold">Edit Phone Number</label>
+              <label className="label font-bold">
+                Enter Phone Number with Country Code
+              </label>
               <input
                 type="tel"
                 value={phoneNumber}
