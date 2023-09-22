@@ -74,6 +74,7 @@ import {
   JoyLovers,
   MapHome,
   OasisGardens,
+  KumpaSprings,
   ApproveWorkplans,
   WorkPlanDetails,
   UpdateActivities,
@@ -146,6 +147,7 @@ const App = () => {
         {/*Maps , Public Access */}
         <Route path="/joy-lovers" element={<JoyLovers />} />
         <Route path="/oasis-gardens" element={<OasisGardens />} />
+        <Route path="/kumpa-springs" element={<KumpaSprings />} />
           {/* Login */}
           <Route path="/login" element={<Login />} />
           <Route path="/" exact element={<PrivateRoutes />}>
@@ -283,13 +285,14 @@ const App = () => {
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
-            <Route path="/team-reports" element={<TeamReports />} />
+            
             <Route path="/team-reports" element={<RegionReports />} />
             <Route path="/workplan-details/:id" element={<WorkPlanDetails />} />
             {/*Maps */}
             <Route path="/joy-lovers" element={<JoyLovers />} />
             <Route path="/map-home" element={<MapHome />} />
             <Route path="/oasis-gardens" element={<OasisGardens />} />
+            <Route path="/kumpa-springs" element={<KumpaSprings />} />
           </Route>
         </Routes>
       </Router>

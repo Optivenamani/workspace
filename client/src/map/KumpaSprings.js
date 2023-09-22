@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import MapComponent from "./components/JoyComponent";
-import geojsonData from "./geojsonData/JLClub";
+import MapComponent from "./components/MapComponent";
+import geojsonData from "./geojsonData/Kumpa";
 import Legend from "./components/Legend";
 import { Link } from "react-router-dom";
 import logo from "../../src/assets/optiven-logo-full.png";
@@ -35,10 +35,10 @@ const JoyLovers = () => {
           <img src={logo} alt="logo" className="w-40" />
         </Link>
       </div>
-      <div className="JoyLovers">
+      <div className="KumpaSprings">
         <div className="header">
           <h1>
-            <b>JOY LOVERS CLUB - MALINDI</b>
+            <b>Kumpa Springs</b>
           </h1>
         </div>
         <MapComponent geojsonData={geojsonData} plotUnitsData={plotUnitsData} />

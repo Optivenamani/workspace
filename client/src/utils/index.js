@@ -64,3 +64,4 @@ export { default as JoyLovers } from "../map/JoyLovers";
 export { default as MapHome } from "../map/MapsHome";
 export { default as OasisGardens } from "../map/OasisGardens";
 export { default as WorkPlanDetails } from "../workplan/pages/workplans/WorkplanDetails";
+export { default as KumpaSprings } from "../map/KumpaSprings";
