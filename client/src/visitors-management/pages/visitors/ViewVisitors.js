@@ -131,12 +131,27 @@ const ViewVisitors = () => {
 
   const totalPages = Math.ceil(filteredVisitors.length / itemsPerPage);
 
-  const paginationArray = Array.from(
-    { length: totalPages },
-    (_, index) => index + 1
-  );
+  const paginationArray = (() => {
+    const maxPagesToShow = 5;
+    const halfMaxPages = Math.floor(maxPagesToShow / 2);
+  
+    let startPage = Math.max(1, currentPage - halfMaxPages);
+    let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+  
+    // Adjust startPage and endPage to show exactly maxPagesToShow pages
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+  
+    return Array.from({ length: endPage - startPage + 1 }, (_, index) => index + startPage);
+  })();
+  
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  
+  
+  
+  
 
   const handlePaginationClick = (pageNumber) => {
     setCurrentPage(pageNumber);
