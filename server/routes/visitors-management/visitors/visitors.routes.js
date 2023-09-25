@@ -162,10 +162,19 @@ module.exports = (pool) => {
   };
 
   // Helper function to send staff WhatsApp messages
-  const sendStaffWhatsApp = async (staffPhoneNumber, parameters, broadcastName) => {
+  const sendStaffWhatsApp = async (
+    staffPhoneNumber,
+    parameters,
+    broadcastName
+  ) => {
     const templateName = "visitor_register";
     try {
-      await sendWhatsAppMessage(staffPhoneNumber, templateName, parameters, broadcastName);
+      await sendWhatsAppMessage(
+        staffPhoneNumber,
+        templateName,
+        parameters,
+        broadcastName
+      );
       console.log("WhatsApp message sent successfully to staff.");
       return true;
     } catch (error) {
@@ -191,34 +200,38 @@ module.exports = (pool) => {
     } = req.body;
 
     try {
-        pool.query(
-          "INSERT INTO visitors_information (name, phone, email, vehicle_registration, purpose, department, check_in_time, check_in_date, staff_id, visitor_room, office) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          [
-            name,
-            phone,
-            email,
-            vehicle_registration,
-            purpose,
-            department,
-            check_in_time,
-            check_in_date,
-            staff_id,
-            visitor_room,
-            office, // Include the user's office
-          ],
-          async (err, result) => {
-            if (err) {
-              console.error(err);
-              res.status(500).json({
-                message: "An error occurred while adding the visitor information.",
-              });
-              return;
-            }
+      pool.query(
+        "INSERT INTO visitors_information (name, phone, email, vehicle_registration, purpose, department, check_in_time, check_in_date, staff_id, visitor_room, office) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          name,
+          phone,
+          email,
+          vehicle_registration,
+          purpose,
+          department,
+          check_in_time,
+          check_in_date,
+          staff_id,
+          visitor_room,
+          office, // Include the user's office
+        ],
+        async (err, result) => {
+          if (err) {
+            console.error(err);
+            res.status(500).json({
+              message:
+                "An error occurred while adding the visitor information.",
+            });
+            return;
+          }
 
-            // Fetch staff information
-            const fetchStaffInfoQuery =
-              "SELECT fullnames, email, phone_number FROM defaultdb.users WHERE user_id = ?";
-            pool.query(fetchStaffInfoQuery, [staff_id], async (err, staffInfoResults) => {
+          // Fetch staff information
+          const fetchStaffInfoQuery =
+            "SELECT fullnames, email, phone_number FROM defaultdb.users WHERE user_id = ?";
+          pool.query(
+            fetchStaffInfoQuery,
+            [staff_id],
+            async (err, staffInfoResults) => {
               if (err) {
                 console.error(err);
                 res.status(500).json({
@@ -256,12 +269,14 @@ module.exports = (pool) => {
               if (!staffPhoneNumber) {
                 console.error("Staff phone number not found.");
                 res.status(500).json({
-                  message: "An error occurred while fetching the staff phone number.",
+                  message:
+                    "An error occurred while fetching the staff phone number.",
                 });
                 return;
               }
 
-              const subject = "Urgent: Visitor Arrival - Immediate Attention Required";
+              const subject =
+                "Urgent: Visitor Arrival - Immediate Attention Required";
               const text = `Dear Sir/Madam,
 
 I hope this email finds you well. We have a visitor waiting in reception who requires immediate assistance. Please attend to them as soon as possible.
@@ -281,15 +296,23 @@ Thank you for your prompt attention.
 
 Best regards.`;
 
-              const emailSuccess = await sendStaffEmail(staffEmail, subject, text);
+              const emailSuccess = await sendStaffEmail(
+                staffEmail,
+                subject,
+                text
+              );
               const parameters = [
                 { name: "staff_name", value: staffName },
                 { name: "visitor_name", value: name },
-                { name: "room", value: visitor_room }
+                { name: "room", value: visitor_room },
               ];
               const broadcastName = "visitor_broadcast";
 
-              const whatsappSuccess = await sendStaffWhatsApp(staffPhoneNumber, parameters, broadcastName);
+              const whatsappSuccess = await sendStaffWhatsApp(
+                staffPhoneNumber,
+                parameters,
+                broadcastName
+              );
 
               if (emailSuccess && whatsappSuccess) {
                 res.status(201).json({
@@ -297,71 +320,73 @@ Best regards.`;
                 });
               } else {
                 res.status(500).json({
-                  message: "An error occurred while sending messages to the staff.",
+                  message:
+                    "An error occurred while sending messages to the staff.",
                 });
               }
-            });
-          }
-        );
-      } catch (error) {
-        console.error("Error adding visitor information:", error);
-        res.status(500).json({
-          message: "An error occurred while adding the visitor information.",
-        });
-      }
-    });
-  
+            }
+          );
+        }
+      );
+    } catch (error) {
+      console.error("Error adding visitor information:", error);
+      res.status(500).json({
+        message: "An error occurred while adding the visitor information.",
+      });
+    }
+  });
+
   // Retrieve all visitor information
   router.get("/", authenticateJWT, async (req, res) => {
-          try {
-        pool.query(
-          "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id ORDER BY id DESC",
-                    (err, results) => {
-            if (err) throw err;
+    try {
+      pool.query(
+        "SELECT vi.*, u.email as staff_email, u.fullnames as staff_name FROM visitors_information vi INNER JOIN defaultdb.users u ON vi.staff_id = u.user_id ORDER BY id DESC",
+        (err, results) => {
+          if (err) throw err;
 
-            res.json(results);
-          }
-        );
-      } catch (error) {
-        res.status(500).json({
-          message: "An error occurred while fetching visitor information.",
-        });
-      }
-    });
-  
+          res.json(results);
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching visitor information.",
+      });
+    }
+  });
+
   // Retrieve a single visitor information by id
   router.get("/:id", authenticateJWT, async (req, res) => {
     const { id } = req.params;
-    
-      try {
-        pool.query(
-          `SELECT 
+
+    try {
+      pool.query(
+        `SELECT 
         id AS visitor_id,
         visitors_information.*,
         users.fullnames as staff_name
       FROM visitors_information
       INNER JOIN defaultdb.users ON visitors_information.staff_id = users.user_id 
       WHERE id = ?`,
-          [id],
-          (err, results) => {
-            if (err) throw err;
+        [id],
+        (err, results) => {
+          if (err) throw err;
 
-            if (results.length === 0) {
-              res.status(404).json({ message: "Visitor information not found." });
-            } else {
-              const visitor = results[0];
+          if (results.length === 0) {
+            res.status(404).json({ message: "Visitor information not found." });
+          } else {
+            const visitor = results[0];
 
-              res.json(visitor);
-            }
+            res.json(visitor);
           }
-        );
-      } catch (error) {
-        res.status(500).json({
-          message: "An error occurred while fetching the visitor information.",
-        });
-      }
-    });
-  
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching the visitor information.",
+      });
+    }
+  });
+
   // Update a visitor
   router.patch("/:id", authenticateJWT, async (req, res) => {
     const {
