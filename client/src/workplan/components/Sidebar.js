@@ -37,8 +37,6 @@ const Sidebar = ({ children }) => {
                   >
                     Create Work Plan
                   </Link>
-                </>
-                <>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-workplans"
@@ -47,7 +45,9 @@ const Sidebar = ({ children }) => {
                   </Link>
                 </>
                 <>
-                  {accessRole.split("#").includes("workplanAdmin") && (
+                  {(accessRole.split("#").includes("salesManager") ||
+                    accessRole.split("#").includes("regionalManager") ||
+                    accessRole.split("#").includes("workplanAdmin")) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/approve-workplans"
@@ -80,7 +80,8 @@ const Sidebar = ({ children }) => {
                   </Link>
                 </>
                 <>
-                  {accessRole.split("#").includes("workplanAdmin") && (
+                  {(accessRole.split("#").includes("regionalManager") ||
+                    accessRole.split("#").includes("workplanAdmin")) && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/fill-remarks"
@@ -92,11 +93,28 @@ const Sidebar = ({ children }) => {
               </div>
             </div>
             {/* Reports */}
-            {accessRole.split("#").includes("workplanAdmin") && (
+            {(accessRole.split("#").includes("regionalManager") ||
+              accessRole.split("#").includes("workplanAdmin")) && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Reports</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
+                  <>
+                    <Link
+                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                      to="/activity-reports"
+                    >
+                      Activity Reports
+                    </Link>
+                  </>
+                  <>
+                    <Link
+                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                      to="/productivity-reports"
+                    >
+                      Productivity Reports
+                    </Link>
+                  </>
                   <>
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"

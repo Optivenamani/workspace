@@ -79,6 +79,8 @@ import {
   UpdateActivities,
   PendingWorkplanDetails,
   WorkPlanDashboard,
+  ActivityReports,
+  ProductivityReports,
 } from "./utils/index";
 
 const App = () => {
@@ -284,6 +286,11 @@ const App = () => {
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
+            <Route path="/activity-reports" element={<ActivityReports />} />
+            <Route
+              path="/productivity-reports"
+              element={<ProductivityReports />}
+            />
             <Route path="/team-reports" element={<RegionReports />} />
             <Route path="/workplan-dashboard" element={<WorkPlanDashboard />} />
             <Route

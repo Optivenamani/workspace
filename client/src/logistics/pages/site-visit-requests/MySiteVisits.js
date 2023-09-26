@@ -183,7 +183,6 @@ const MySiteVisits = () => {
           draggable: true,
           progress: undefined,
         });
-        navigate("/logistics-home");
       } else {
         const data = await response.json();
         toast.error("An error occurred while attempting to end trip.", {
@@ -264,12 +263,21 @@ const MySiteVisits = () => {
                           siteVisit.status === "rejected"
                             ? "red"
                             : siteVisit.status === "complete"
+                            ? "purple"
+                            : siteVisit.status === "reviewed"
                             ? "green"
                             : "black",
                       }}
                     >
-                      {siteVisit.status}
+                      {siteVisit.status === "in_progress"
+                        ? "In Progress"
+                        : siteVisit.status === "complete"
+                        ? "Pending Survey"
+                        : siteVisit.status === "reviewed"
+                        ? "Complete"
+                        : siteVisit.status}
                     </td>
+
                     <td>
                       {siteVisit.status === "pending" ? (
                         <button
@@ -311,6 +319,14 @@ const MySiteVisits = () => {
                           {siteVisit.status === "in_progress"
                             ? "End Trip"
                             : "Start Trip"}
+                        </button>
+                      ) : null}
+                      {siteVisit.status === "complete" ? (
+                        <button
+                          className="btn btn-sm btn-gray-500 mr-1"
+                          onClick={() => navigate(`/survey/${siteVisit.id}`)}
+                        >
+                          Complete Survey
                         </button>
                       ) : null}
                     </td>

@@ -10,7 +10,7 @@ const CreateWorkPlan = () => {
 
   const token = useSelector((state) => state.user.token);
   const marketerId = useSelector((state) => state.user.user.user_id);
-  console.log(marketerId);
+
   const navigate = useNavigate();
 
   const [workplan, setWorkplan] = useState({
