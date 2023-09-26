@@ -24,36 +24,30 @@ const MapComponent = ({ geojsonData }) => {
           imageBounds: [[16.864913627, -159.27981614], [-17.248458657, -52.05325364]] 
         },
         {
-            // find new image
             imageUrl: left,
             imageBounds: [[66.60827, -74.02591], [48.14953, -57.67827]] 
           },
           {
-            // find new image
             imageUrl: left,
             imageBounds: [[64.88144 , -181.18854], [-17.679222, -157.93750]] 
           },
           {
-            //banner
             imageUrl: logo,
             imageBounds: [[76.44939, -23.92825], [70.16178, 17.38034]] 
           }, 
           {
-            //key
             imageUrl: key,
             imageBounds: [[24.10405, -56.44778], [-14.02811, -1.95560]] 
           }, 
           {
-            //community
             imageUrl: community,
             imageBounds: [[66.11492, -136.16458], [65.53909, -125.26614]] 
           }, 
           {
-            //access
             imageUrl: access,
             imageBounds: [[64.49998, -81.84818], [59.56628, -80.26614]] 
           }, 
-        // Add more images as needed
+
       ]);
       
   
