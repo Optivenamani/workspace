@@ -99,7 +99,7 @@ const WorkPlanDashboard = () => {
   } else {
     return (
       <Sidebar>
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <div className=" p-4">
             <div className="card w-full bg-base-100 shadow-xl">
               <div className="m-4">
