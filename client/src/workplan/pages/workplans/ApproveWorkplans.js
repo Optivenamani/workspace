@@ -105,7 +105,9 @@ const ApproveWorkplans = () => {
                           <button
                             className="btn btn-sm text-white ml-2"
                             onClick={() =>
-                              navigate(`/workplan-details/${workplan.id}`)
+                              navigate(
+                                `/pending-workplan-details/${workplan.id}`
+                              )
                             }
                           >
                             View

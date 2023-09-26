@@ -69,7 +69,7 @@ const ViewActivities = () => {
   const date = new Date().getDate();
   console.log(date);
 
-  const handleEditactivity = async (
+  const handleEditActivity = async (
     activityId,
     measurableAchievement,
     variance,
@@ -92,9 +92,6 @@ const ViewActivities = () => {
           variance: variance,
           comments: comments,
         };
-
-        // Update the state with the updated activities
-        setActivities(updatedActivities);
 
         // Perform the API update here (assuming it's successful)
         const response = await fetch(
@@ -122,6 +119,9 @@ const ViewActivities = () => {
             draggable: true,
             progress: undefined,
           });
+
+          // If the API call is successful, then update the state
+          setActivities(updatedActivities);
         } else {
           // Handle error response and show an error toast
           toast.error("Failed to update activity. Please try again.", {
@@ -154,7 +154,7 @@ const ViewActivities = () => {
       <div className="p-5">
         <WorkPlanCalendar
           activities={activities}
-          editactivity={handleEditactivity}
+          editActivity={handleEditActivity}
         />
       </div>
     </Sidebar>

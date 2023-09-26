@@ -1,3 +1,4 @@
+export { default as ActivityReports } from "../workplan/pages/reports/ActivityReports";
 export { default as AllClientsContacts } from "../logistics/pages/clients/AllClientsContacts";
 export { default as AllSiteVisits } from "../logistics/pages/site-visit-requests/AllSiteVisits";
 export { default as AppMenu } from "../common/pages/AppMenu";
@@ -33,8 +34,11 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
+export { default as ProductivityReports } from "../workplan/pages/reports/ProductivityReports";
 export { default as Profile } from "../common/pages/Profile";
+export { default as PendingWorkplanDetails } from "../workplan/pages/workplans/PendingWorkplanDetails";
 export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";
+export { default as RegionReports } from "../workplan/pages/reports/RegionReports";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
 export { default as ScheduleInterview } from "../visitors-management/pages/interviews/ScheduleInterview";
@@ -42,7 +46,6 @@ export { default as SiteVisitDetails } from "../logistics/pages/site-visit-reque
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
 export { default as Survey } from "../logistics/pages/Survey";
-export { default as RegionReports } from "../workplan/pages/reports/RegionReports";
 export { default as Users } from "../logistics/pages/Users";
 export { default as UpdateActivities } from "../workplan/pages/activities/UpdateActivities";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";

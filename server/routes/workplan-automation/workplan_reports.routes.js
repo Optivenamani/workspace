@@ -90,6 +90,45 @@ function dataToPdfRows(data) {
   return pdfRows;
 }
 
+// Define your dataToPdfRows function for the activity count report
+function dataToPdfRowsActivityCount(results) {
+  const pdfRows = [];
+
+  for (const result of results) {
+    pdfRows.push([
+      { text: result.activity_title, style: "tableCell" },
+      { text: result.total_activities.toString(), style: "tableCell" },
+    ]);
+  }
+
+  return pdfRows;
+}
+
+// Define your dataToPdfRows function for the comprehensive marketer activity report
+function dataToPdfRowsComprehensiveMarketerActivity(results) {
+  const pdfRows = [];
+  let currentMarketer = null;
+
+  for (const result of results) {
+    if (result.marketer_name !== currentMarketer) {
+      pdfRows.push([
+        { text: result.marketer_name, style: "tableCell" },
+        { text: result.activity_title, style: "tableCell" },
+        { text: result.total_activities.toString(), style: "tableCell" },
+      ]);
+      currentMarketer = result.marketer_name;
+    } else {
+      pdfRows.push([
+        { text: "", style: "tableCell" },
+        { text: result.activity_title, style: "tableCell" },
+        { text: result.total_activities.toString(), style: "tableCell" },
+      ]);
+    }
+  }
+
+  return pdfRows;
+}
+
 module.exports = (pool) => {
   // Download workplan reports as a PDF
   router.get("/team", authenticateJWT, async (req, res) => {
@@ -393,6 +432,209 @@ module.exports = (pool) => {
         .status(500)
         .json({ error: "An error occurred while generating the PDF." });
     }
+  });
+
+  // Download the activity count summary as a PDF
+  router.get("/activity-count-pdf", (req, res) => {
+    const { start_date, end_date } = req.query;
+
+    // Define the SQL query to count activities within the specified date range
+    const query = `
+    SELECT
+      title as activity_title,
+      COUNT(*) as total_activities
+    FROM (
+      SELECT DISTINCT title, date
+      FROM workplan_activities
+      WHERE date >= ? AND date <= ?
+    ) AS unique_activities
+    GROUP BY activity_title
+  `;
+
+    // Execute the SQL query
+    pool.query(query, [start_date, end_date], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        const docDefinition = {
+          pageSize: "A4",
+          pageOrientation: "landscape",
+          content: [
+            {
+              text: `Activity Count Report from ${start_date} to ${end_date}`,
+              fontSize: 20,
+              alignment: "center",
+              margin: [0, 0, 0, 20],
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ["auto", "auto"],
+                body: [
+                  [
+                    {
+                      text: "Activity ",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Total Entries",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
+                  ],
+                ],
+              },
+              layout: {
+                hLineWidth: function (i, node) {
+                  return 1; // Horizontal line width
+                },
+                vLineWidth: function (i, node) {
+                  return i === 0 ? 0 : 1; // Vertical line width, skip for the first column
+                },
+                hLineColor: function (i, node) {
+                  return "#202A44"; // Horizontal line color
+                },
+                vLineColor: function (i, node) {
+                  return "#202A44"; // Vertical line color
+                },
+                fillColor: function (rowIndex, node, columnIndex) {
+                  return rowIndex % 2 === 0 ? "#D3D3D3" : null;
+                },
+              },
+            },
+          ],
+          styles: {
+            tableHeader: {
+              bold: true,
+              fontSize: 13,
+              color: "white",
+            },
+            tableCell: {
+              fontSize: 12,
+              margin: [0, 5],
+            },
+          },
+        };
+
+        // Populate the body array of the table with the fetched data
+        docDefinition.content[1].table.body.push(
+          ...dataToPdfRowsActivityCount(results)
+        );
+        // Create the PDF document using pdfmake
+        const pdfDoc = printer.createPdfKitDocument(docDefinition);
+        // Set the response headers to indicate a PDF file
+        res.setHeader("Content-Type", "application/pdf");
+        // Stream the PDF document as the response
+        pdfDoc.pipe(res);
+        pdfDoc.end();
+      }
+    });
+  });
+
+  // Download the comprehensive marketer activity summary as a PDF
+  router.get("/comprehensive-marketer-activity-pdf", (req, res) => {
+    const { start_date, end_date } = req.query;
+
+    // Define the SQL query to fetch comprehensive marketer activity data within the specified date range
+    const query = `
+  SELECT
+    u.fullnames as marketer_name,
+    wpa.title as activity_title,
+    COUNT(*) as total_activities
+  FROM workplans wp
+  INNER JOIN defaultdb.users u ON wp.marketer_id = u.user_id
+  LEFT JOIN workplan_activities wpa ON wp.id = wpa.workplan_id
+  WHERE wpa.date >= ? AND wpa.date <= ?
+  GROUP BY marketer_name, activity_title
+`;
+
+    // Execute the SQL query
+    pool.query(query, [start_date, end_date], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        const docDefinition = {
+          pageSize: "A4",
+          pageOrientation: "landscape",
+          content: [
+            {
+              text: `Comprehensive Marketer Activity Report from ${start_date} to ${end_date}`,
+              fontSize: 20,
+              alignment: "center",
+              margin: [0, 0, 0, 20],
+            },
+            {
+              table: {
+                headerRows: 1,
+                widths: ["auto", "*", "auto"],
+                body: [
+                  [
+                    {
+                      text: "Marketer Name",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Activity",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
+                    {
+                      text: "Activity Count",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                    },
+                  ],
+                ],
+              },
+              layout: {
+                hLineWidth: function (i, node) {
+                  return 1; // Horizontal line width
+                },
+                vLineWidth: function (i, node) {
+                  return i === 0 ? 0 : 1; // Vertical line width, skip for the first column
+                },
+                hLineColor: function (i, node) {
+                  return "#202A44"; // Horizontal line color
+                },
+                vLineColor: function (i, node) {
+                  return "#202A44"; // Vertical line color
+                },
+                fillColor: function (rowIndex, node, columnIndex) {
+                  return rowIndex % 2 === 0 ? "#D3D3D3" : null;
+                },
+              },
+            },
+          ],
+          styles: {
+            tableHeader: {
+              bold: true,
+              fontSize: 13,
+              color: "white",
+            },
+            tableCell: {
+              fontSize: 12,
+              margin: [0, 5],
+            },
+          },
+        };
+
+        const pdfRows = dataToPdfRowsComprehensiveMarketerActivity(results);
+
+        // Populate the body array of the table with the fetched data
+        docDefinition.content[1].table.body.push(...pdfRows);
+        // Create the PDF document using pdfmake
+        const pdfDoc = printer.createPdfKitDocument(docDefinition);
+        // Set the response headers to indicate a PDF file
+        res.setHeader("Content-Type", "application/pdf");
+        // Stream the PDF document as the response
+        pdfDoc.pipe(res);
+        pdfDoc.end();
+      }
+    });
   });
 
   return router;

@@ -78,8 +78,10 @@ import {
   ApproveWorkplans,
   WorkPlanDetails,
   UpdateActivities,
+  PendingWorkplanDetails,
+  ActivityReports,
+  ProductivityReports,
 } from "./utils/index";
-
 
 const App = () => {
   const dispatch = useDispatch();
@@ -285,8 +287,16 @@ const App = () => {
             <Route path="/view-workplans" element={<ViewWorkPlans />} />
             <Route path="/fill-remarks" element={<FillRemarks />} />
             <Route path="/individual-reports" element={<IndividualReports />} />
-            
+             <Route path="/activity-reports" element={<ActivityReports />} />
+            <Route
+              path="/productivity-reports"
+              element={<ProductivityReports />}
+            />
             <Route path="/team-reports" element={<RegionReports />} />
+            <Route
+              path="/pending-workplan-details/:id"
+              element={<PendingWorkplanDetails />}
+            />
             <Route path="/workplan-details/:id" element={<WorkPlanDetails />} />
             {/*Maps */}
             <Route path="/joy-lovers" element={<JoyLovers />} />

@@ -21,14 +21,15 @@ function formatDate(inputDate) {
   return formattedDate;
 }
 
-const WorkplanDetails = () => {
+const PendingWorkplanDetails = () => {
   const [workplan, setWorkplan] = useState({});
-  // const accessRole = useSelector((state) => state.user.user.Accessrole);
+  const accessRole = useSelector((state) => state.user.user.Accessrole);
   const [activities, setActivities] = useState([]);
-  const [selectedActivity, setSelectedActivity] = useState(null);
   const { id } = useParams();
   const token = useSelector((state) => state.user.token);
   const navigate = useNavigate();
+
+  console.log(id);
 
   useEffect(() => {
     // Fetch workplan details from the server based on the id parameter
@@ -75,70 +76,80 @@ const WorkplanDetails = () => {
     fetchWorkplanDetails();
   }, [token, id, navigate]);
 
-  // Sort activities by date in ascending order
-  activities.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  const handleView = (workplan) => {
-    console.log("view workplan:", workplan);
-    setSelectedActivity(workplan);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedActivity(null);
-  };
-
-  const deleteActivity = async () => {
+  const handleApprove = async () => {
     try {
-      if (!selectedActivity) {
-        throw new Error("No activity selected for deletion.");
-      }
-
-      console.log(selectedActivity);
-
+      // Make a POST request to approve the workplan
       const response = await fetch(
-        `https://workspace.optiven.co.ke/api/workplan-activities/${selectedActivity.id}`,
+        `https://workspace.optiven.co.ke/api/workplans/${id}/approve`,
         {
-          method: "DELETE",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          `Failed to delete activity. Server responded with status ${response.status}. Error message: ${errorData.message}`
-        );
-      }
-
-      // Workplan successfully deleted, update the state
-      setActivities((prevActivities) =>
-        prevActivities.filter((workplan) => workplan.id !== selectedActivity.id)
-      );
-
-      handleCloseModal();
-      toast.success("Activity deleted successfully", {
+      const data = await response.json();
+      console.log("workplan approved:", data);
+      toast.success("Workplan approved successfully!", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
       });
+      // Redirect back to the workplans list
+      navigate("/approve-workplans");
     } catch (error) {
       console.error(error);
-      toast.error(
-        error.message || "Failed to delete activity. Please try again.",
-        {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+      toast.error("Failed to approve the workplan. Please try again.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
+
+  const handleReject = async () => {
+    try {
+      // Make a POST request to reject the workplan
+      const response = await fetch(
+        `https://workspace.optiven.co.ke/api/workplans/${id}/reject`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log("workplan rejected:", data);
+      toast.success("Workplan rejected successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // Redirect back to the workplans list
+      navigate("/approve-workplans");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to reject the workplan. Please try again.", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  // Sort activities by date in ascending order
+  activities.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
     <Sidebar>
@@ -164,12 +175,25 @@ const WorkplanDetails = () => {
             <div className="flex flex-col md:flex md:flex-row lg:flex lg:flex-row">
               {workplan.status === "pending" && (
                 <>
-                  <button
-                    onClick={() => navigate("/view-workplans/" + workplan.id)}
-                    className="btn text-white md:btn-md md:mr-1 lg:btn-md lg:mt-0 lg:mr-1"
-                  >
-                    Add Activity
-                  </button>
+                  {accessRole.split("#").includes("workplanAdmin") && (
+                    <>
+                      <button
+                        onClick={handleReject}
+                        className="btn btn-error mt-1 text-white md:btn-md md:mr-1 md:mt-0 lg:btn-md lg:mt-0 lg:mr-1"
+                      >
+                        Reject
+                      </button>
+                      <button
+                        onClick={handleApprove}
+                        className="btn mt-1 btn-primary text-white md:btn-md md:mt-0 lg:btn-md lg:mt-0"
+                        disabled={
+                          activities.length === 0 || activities[0].id === null
+                        }
+                      >
+                        Approve
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -228,16 +252,6 @@ const WorkplanDetails = () => {
                           </div>
                         </div>
                       </td>
-                      {workplan.status === "pending" && (
-                        <td>
-                          <button
-                            onClick={() => handleView(activity)}
-                            className="btn btn-sm mt-1 btn-error text-white md:mt-0 lg:mt-0"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -247,7 +261,7 @@ const WorkplanDetails = () => {
                 <div className="flex flex-col items-center mt-20">
                   <img src={huh} alt="huh" className="lg:w-96" />
                   <h1 className="font-bold text-center">
-                    No activities in this workplan.
+                    No activities in this workplan, thus you cannot approve it.
                   </h1>
                 </div>
               </div>
@@ -255,34 +269,8 @@ const WorkplanDetails = () => {
           </div>
         </div>
       </div>
-      {/* Modal for displaying deletion warning */}
-      {selectedActivity && (
-        <div className="fixed inset-0 flex justify-center items-center z-10 bg-black bg-opacity-50">
-          <div className="modal-box container mx-auto">
-            <button
-              onClick={handleCloseModal}
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            >
-              ✕
-            </button>
-            <h2 className="text-lg font-semibold mb-4">WARNING</h2>
-            <label className="label">
-              Are you sure you want to delete this activity?
-            </label>
-
-            <div className="flex flex-col">
-              <button
-                onClick={deleteActivity}
-                className="btn btn-error text-white mt-2"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </Sidebar>
   );
 };
 
-export default WorkplanDetails;
+export default PendingWorkplanDetails;

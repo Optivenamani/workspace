@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import Legend from './Legend';
+// import Legend from './Legend';
 
 const MapComponent = ({ geojsonData }) => {
   const mapRef = useRef(null);

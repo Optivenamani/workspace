@@ -7,13 +7,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import Modal from "react-modal";
 import { formatDate } from "@fullcalendar/core";
 
-const WorkPlanCalendar = ({ activities, editactivity }) => {
-  const [measurableAchievement, setMeasurableAchievement] = useState("");
-  const [variance, setVariance] = useState("");
-  const [comments, setComments] = useState("");
-
+const WorkPlanCalendar = ({ activities, editActivity }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    measurableAchievement: "",
+    variance: "",
+    comments: "",
+  });
 
   const calendarRef = useRef(null);
 
@@ -22,38 +23,36 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
 
     calendarApi.setOption("eventDidMount", function (info) {
       if (info.event.extendedProps.id !== null) {
-        // Change background color of row
-        // info.el.style.backgroundColor = "red";
-        // Change color of dot marker
         const dotEl = info.el.getElementsByClassName("fc-list-event-dot")[0];
         if (dotEl) {
-          dotEl.style.backgroundColor = "white";
+          dotEl.style.backgroundColor = "red";
         }
       }
     });
   }, []);
 
-  // open model upon clicking on activity (event)
   const handleEventClick = (arg) => {
     const event = arg.event;
     setSelectedEvent(event);
     setIsModalOpen(true);
   };
 
-  // handle modal close
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  // Modify the editActivity function to use the editActivity prop
-  const handleEditactivity = async (
-    activityId,
-    measurableAchievement,
-    variance,
-    comments
-  ) => {
-    await editactivity(activityId, measurableAchievement, variance, comments);
-    setIsModalOpen(true);
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleEditActivity = async () => {
+    const { measurableAchievement, variance, comments } = formData;
+    if (!selectedEvent) return;
+
+    const activityId = selectedEvent.extendedProps.id;
+    await editActivity(activityId, measurableAchievement, variance, comments);
+    setIsModalOpen(false);
   };
 
   const activitiesList = activities.map((activity) => ({
@@ -70,16 +69,16 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
     },
   }));
 
-  console.log(activitiesList);
-
   return (
     <div>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin, listPlugin, timeGridPlugin]}
         headerToolbar={{
-          left: "prev,next today",
-          center: "title",
+          left: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+        }}
+        footerToolbar={{
+          right: "today prev,next",
         }}
         initialView="listWeek"
         events={activitiesList}
@@ -88,10 +87,9 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
         height={"85vh"}
         // editable
         // selectable
-        selectMirror
+        // selectMirror
         dayMaxEvents={3}
         ref={calendarRef}
-        // updateSize
         // eventAdd={function () {}}
         // eventChange={function () {}}
         // eventRemove={function () {}}
@@ -103,16 +101,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
         className="modal-box container mx-auto"
       >
         {selectedEvent && (
-          <form
-            onSubmit={() =>
-              handleEditactivity(
-                selectedEvent.extendedProps.id,
-                measurableAchievement,
-                variance,
-                comments
-              )
-            }
-          >
+          <form onSubmit={handleEditActivity}>
             <button
               onClick={closeModal}
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -156,9 +145,11 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               <div>
                 <h1 className="label font-bold">Measurable Achievement</h1>
                 <textarea
-                  className="textarea textarea-bordered h-32 w-full"
+                  className="textarea textarea-bordered h-min w-full"
+                  name="measurableAchievement"
+                  value={formData.measurableAchievement}
                   required
-                  onChange={(e) => setMeasurableAchievement(e.target.value)}
+                  onChange={handleFormChange}
                   spellCheck
                 />
               </div>
@@ -174,9 +165,11 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               <div>
                 <h1 className="label font-bold">Variance</h1>
                 <textarea
-                  className="textarea textarea-bordered h-32 w-full"
+                  className="textarea textarea-bordered h-min w-full"
+                  name="variance"
+                  value={formData.variance}
                   required
-                  onChange={(e) => setVariance(e.target.value)}
+                  onChange={handleFormChange}
                   spellCheck
                 />
               </div>
@@ -192,9 +185,11 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
               <div>
                 <h1 className="label font-bold">Comments</h1>
                 <textarea
-                  className="textarea textarea-bordered h-32 w-full"
+                  className="textarea textarea-bordered h-min w-full"
+                  name="comments"
+                  value={formData.comments}
                   required
-                  onChange={(e) => setComments(e.target.value)}
+                  onChange={handleFormChange}
                   spellCheck
                 />
               </div>
@@ -202,7 +197,7 @@ const WorkPlanCalendar = ({ activities, editactivity }) => {
             {(selectedEvent.extendedProps.measurableAchievement === null ||
               selectedEvent.extendedProps.variance === null ||
               selectedEvent.extendedProps.comments === null) && (
-              <button className="btn btn-outline w-full mt-1" type="submit">
+              <button className="btn btn-outline w-full mt-4" type="submit">
                 Mark as Done
               </button>
             )}

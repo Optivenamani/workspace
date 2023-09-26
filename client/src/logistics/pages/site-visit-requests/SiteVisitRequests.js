@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { setItemsPerPage } from "../../../redux/logistics/features/pagination/paginationSlice";
@@ -10,21 +10,36 @@ const SiteVisitRequests = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [siteVisitRequests, setSiteVisitRequests] = useState([]);
-  const [pending, setPending] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const token = useSelector((state) => state.user.token);
 
   // Use useSelector to get the itemsPerPage from Redux store
   const itemsPerPage = useSelector((state) => state.pagination.itemsPerPage);
   const dispatch = useDispatch();
 
+  const filteredSiteVisitRequests = useMemo(() => {
+    return siteVisitRequests.filter((svr) => {
+      if (searchQuery === "") {
+        return true; // Include all items when the search query is empty
+      } else if (
+        svr.marketer_name &&
+        svr.marketer_name.toLowerCase().includes(searchQuery.toLowerCase())
+      ) {
+        return true; // Include the item if it matches the search query
+      } else {
+        return false; // Exclude the item if it doesn't match the search query
+      }
+    });
+  }, [searchQuery, siteVisitRequests]);
+
   // Calculate the range of items to be displayed on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = siteVisitRequests.slice(
+  const currentItems = filteredSiteVisitRequests.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(siteVisitRequests.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredSiteVisitRequests.length / itemsPerPage);
 
   const navigate = useNavigate();
 
@@ -52,6 +67,10 @@ const SiteVisitRequests = () => {
         const filtered = sortedData.filter((item) => {
           if (selectedStatus === "all") {
             return true;
+          } else if (selectedStatus === "approved") {
+            return item.status === "approved";
+          } else if (selectedStatus === "rejected") {
+            return item.status === "rejected";
           } else if (selectedStatus === "in_progress") {
             return item.status === "in_progress";
           } else if (selectedStatus === "complete") {
@@ -61,9 +80,7 @@ const SiteVisitRequests = () => {
           }
         });
 
-        setPending(filtered);
         setSiteVisitRequests(filtered);
-        console.log(data.filter((item) => item.status === "pending"));
       } catch (error) {
         console.error("Error fetching site visits:", error);
       }
@@ -218,17 +235,21 @@ const SiteVisitRequests = () => {
       <Sidebar>
         <div className="flex flex-col">
           <div className="mt-6 mb-6 flex flex-col mx-4">
-            <h1 className="text-3xl font-extrabold mb-1 text-gray-800 uppercase text-center">
-              <span className="text-primary">{pending.length}</span>{" "}
-              {statusText}
-            </h1>
-            {/* <div className="text-center">
+            <div className="text-center">
               <input
                 type="text"
-                className="input input-bordered mb-2 w-80"
-                placeholder="Search name..."
+                className="input input-bordered mb-2 w-full md:w-1/2 lg:w-1/4"
+                placeholder="Search marketer by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div> */}
+            </div>
+            <h1 className="text-3xl font-extrabold mb-1 text-gray-800 uppercase text-center">
+              <span className="text-primary">
+                {filteredSiteVisitRequests.length}
+              </span>{" "}
+              {statusText}
+            </h1>
             <div className="grid grid-cols-3 lg:grid-cols-9 justify-center">
               <div
                 className={`btn m-1 btn-outline font-bold mr-1 ${
