@@ -1,3 +1,4 @@
+export { default as ActivityReports } from "../workplan/pages/reports/ActivityReports";
 export { default as AllClientsContacts } from "../logistics/pages/clients/AllClientsContacts";
 export { default as AllSiteVisits } from "../logistics/pages/site-visit-requests/AllSiteVisits";
 export { default as AppMenu } from "../common/pages/AppMenu";
@@ -33,6 +34,7 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
+export { default as ProductivityReports } from "../workplan/pages/reports/ProductivityReports";
 export { default as Profile } from "../common/pages/Profile";
 export { default as PendingWorkplanDetails } from "../workplan/pages/workplans/PendingWorkplanDetails";
 export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";

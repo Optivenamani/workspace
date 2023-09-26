@@ -1,7 +1,8 @@
 const express = require("express");
 const authenticateJWT = require("../../middleware/authenticateJWT");
-const checkPermissions = require("../../middleware/checkPermissions");
+// const checkPermissions = require("../../middleware/checkPermissions");
 const router = express.Router();
+const schedule = require("node-schedule");
 const nodemailer = require("nodemailer");
 
 // Nodemailer helper function to send email
@@ -27,6 +28,49 @@ async function sendEmail(userEmail, subject, text) {
 }
 
 module.exports = (pool) => {
+  async function autoApproveWorkplans(pool) {
+    try {
+      // Calculate the timestamp for 12 hours ago
+      const twelveHoursAgo = new Date();
+      twelveHoursAgo.setHours(twelveHoursAgo.getHours() - 12);
+
+      // Query the database to find workplans that are not approved, older than 12 hours, and belong to sales managers
+      const query = `
+        UPDATE workplans
+        SET status = 'approved'
+        WHERE status = 'pending'
+          AND marketer_id IN (SELECT user_id FROM defaultdb.users WHERE Accessrole LIKE '%salesManager%')
+      `;
+
+      pool.query(query, [twelveHoursAgo], (error, result) => {
+        if (error) {
+          console.error("Error during auto-approval:", error);
+          return;
+        }
+
+        const affectedRows = result.affectedRows;
+
+        if (affectedRows === 0) {
+          console.log("No workplans for sales managers to auto-approve.");
+        } else {
+          console.log(
+            "Auto-approval completed successfully. Approved",
+            affectedRows,
+            "workplans for sales managers."
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Error during auto-approval:", error);
+    }
+  }
+
+  const autoApprovalJob = schedule.scheduleJob("0 */12 * * *", () => {
+    autoApproveWorkplans(pool);
+  });
+
+  autoApprovalJob;
+
   // GET all workplans for the authenticated user
   router.get("/", authenticateJWT, (req, res) => {
     const { user_id } = req.query;
