@@ -53,6 +53,63 @@ module.exports = (pool) => {
     );
   });
 
+  // GET the most prolific activities done within a week with filled values
+  router.get("/most-prolific-activities", (req, res) => {
+    const { limit } = req.query;
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Calculate the date one week ago
+
+    const query = `
+    SELECT
+      wa.title,
+      COUNT(wa.id) AS activity_count
+    FROM workplan_activities wa
+    WHERE wa.date >= ?
+      AND wa.measurable_achievement IS NOT NULL
+      AND wa.variance IS NOT NULL
+      AND wa.comments IS NOT NULL
+    GROUP BY wa.title
+    ORDER BY activity_count DESC
+    LIMIT ?`;
+
+    pool.query(query, [oneWeekAgo, parseInt(limit)], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        res.json(results);
+      }
+    });
+  });
+
+  // GET all marketers for the past one week, including those with nil activity count
+  router.get("/most-active-marketers", (req, res) => {
+    const { limit } = req.query; // Specify how many top marketers to retrieve
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Calculate the date one week ago
+
+    const query = `
+    SELECT
+      u.fullnames AS marketer_name,
+      u.user_id AS marketer_id,
+      SUM(CASE WHEN wa.date >= ? THEN 1 ELSE 0 END) AS activity_count
+    FROM workplan_activities wa
+    RIGHT JOIN workplans w ON wa.workplan_id = w.id
+    RIGHT JOIN defaultdb.users u ON u.user_id = w.marketer_id
+    GROUP BY u.fullnames, u.user_id
+    ORDER BY activity_count DESC
+    LIMIT ?`;
+
+    pool.query(query, [oneWeekAgo, parseInt(limit)], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
+      } else {
+        res.json(results);
+      }
+    });
+  });
+
   // GET a specific workplan activity
   router.get("/:id", (req, res) => {
     const { id } = req.params;

@@ -148,6 +148,13 @@ const Profile = () => {
                   </button>
                 </div>
               </div>
+              <div className="flex flex-col items-center justify-between">
+                <h1 className="menu-title">Achievements</h1>
+                <p className="text-center text-xs mx-2 italic">
+                  You need to have completed a few tasks/activities to get
+                  achievement trophies
+                </p>
+              </div>
               {user.team && (
                 <div className="flex justify-start ">
                   <div className="flex items-center justify-between">

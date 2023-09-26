@@ -60,6 +60,7 @@ export { default as VisitorsReports } from "../visitors-management/pages/reports
 export { default as ViewActivities } from "../workplan/pages/activities/ViewActivities";
 export { default as ViewFeedback } from "../common/pages/ViewFeedback";
 export { default as ViewWorkPlans } from "../workplan/pages/workplans/ViewWorkPlans";
+export { default as WorkPlanDashboard } from "../workplan/pages/WorkPlanDashboard";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
 export { default as JoyLovers } from "../map/JoyLovers";
 export { default as MapHome } from "../map/MapsHome";

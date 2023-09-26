@@ -20,6 +20,11 @@ const Sidebar = ({ children }) => {
                 Home
               </Link>
             </li>
+            <li>
+              <Link to="/workplan-dashboard" className="font-bold my-1">
+                Dashboard
+              </Link>
+            </li>
             {/* Workplans */}
             <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
               <input type="checkbox" className="peer" />

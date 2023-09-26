@@ -254,11 +254,8 @@ const Dashboard = () => {
                       />
                       <div className="font-bold text-7xl text-center">
                         {
-                          sitesData.filter(
-                            (sv) =>
-                              sv.status === "complete" ||
-                              sv.status === "reviewed"
-                          ).length
+                          sitesData.filter((sv) => sv.status === "reviewed")
+                            .length
                         }
                       </div>
                     </div>
