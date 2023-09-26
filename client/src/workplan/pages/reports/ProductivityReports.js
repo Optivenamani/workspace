@@ -36,7 +36,7 @@ const ProductivityReports = () => {
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/workplan-reports/comprehensive-marketer-activity-pdf",
+        "https://workspace.optiven.co.ke/api/workplan-reports/comprehensive-marketer-activity-pdf",
         {
           headers: {
             Authorization: `Bearer ${token}`,
