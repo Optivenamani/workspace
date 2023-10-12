@@ -5,7 +5,7 @@ const app = express()
 // routes
 app.get("/", (req, res) => res.send("Hi from the root route"))
 
-// telling the app to listen to this port
+// telling the app to listen to
 app.listen(6969, () => {
     console.log("App is running on port 6969")
 })
