@@ -24,6 +24,7 @@ export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle"
 export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor";
 export { default as Feedback } from "../common/pages/Feedback";
 export { default as FillRemarks } from "../workplan/pages/FillRemarks";
+export { default as FoundationHome } from "../foundation/pages/FoundationHome";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";
 export { default as IndividualReports } from "../workplan/pages/reports/IndividualReports";

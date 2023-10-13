@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 
-const VisitorsManagementHome = () => {
+const FoundationHome= () => {
   return (
     <Sidebar>
       <section className="bg-white">
@@ -35,4 +35,4 @@ const VisitorsManagementHome = () => {
   );
 };
 
-export default foundation_home;
+export default FoundationHome;

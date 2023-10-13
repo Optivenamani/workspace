@@ -31,6 +31,7 @@ import {
   EditSpecialAssignment,
   EditVehicle,
   EditVisitor,
+  FoundationHome,
   Home,
   InterviewsReports,
   Login,
@@ -300,6 +301,11 @@ const App = () => {
             <Route path="/joy-lovers" element={<JoyLovers />} />
             <Route path="/map-home" element={<MapHome />} />
             <Route path="/oasis-gardens" element={<OasisGardens />} />
+            {/* Optiven Foundation */}
+            <Route
+              path="/foundation-home"
+              element={<FoundationHome />}
+            />
           </Route>
         </Routes>
       </Router>

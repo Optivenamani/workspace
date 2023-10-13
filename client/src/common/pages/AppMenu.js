@@ -115,6 +115,26 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
+            {department === "ICT (S)" && (
+              <li>
+                <Link
+                  to="/foundation-home"
+                  className="block overflow-hidden group"
+                  onClick={() => handleAppSelect("Maps")}
+                >
+                  <img
+                    src="https://media.istockphoto.com/id/1169660432/photo/adult-and-children-hands-holding-paper-family-cutout-family-home-foster-care-homeless-charity.jpg?s=612x612&w=0&k=20&c=eYp6K1kaCpbe9bOwyvj590hVHV6vW311MdrmmNuetJg="
+                    alt=""
+                    className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                  />
+                  <div className="relative pt-3 bg-white">
+                    <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                      Optiven Foundation
+                    </h3>
+                  </div>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </section>
