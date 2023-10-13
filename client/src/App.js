@@ -31,7 +31,10 @@ import {
   EditSpecialAssignment,
   EditVehicle,
   EditVisitor,
+  Education,
+  Environment,
   FoundationHome,
+  Health,
   Home,
   InterviewsReports,
   Login,
@@ -41,6 +44,7 @@ import {
   MySiteVisits,
   Notifications,
   PastRequests,
+  PovertyAlleviation,
   Profile,
   RegisterVisitor,
   ReserveParking,
@@ -302,10 +306,11 @@ const App = () => {
             <Route path="/map-home" element={<MapHome />} />
             <Route path="/oasis-gardens" element={<OasisGardens />} />
             {/* Optiven Foundation */}
-            <Route
-              path="/foundation-home"
-              element={<FoundationHome />}
-            />
+            <Route path="/foundation-home" element={<FoundationHome />} />
+            <Route path="/education" element={<Education />} />
+            <Route path="/environment" element={<Environment />} />
+            <Route path="/health" element={<Health />} />
+            <Route path="/poverty-alleviation" element={<PovertyAlleviation />} />
           </Route>
         </Routes>
       </Router>

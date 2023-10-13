@@ -1,7 +1,7 @@
 import React from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
-const FoundationHome = () => {
+const Health = () => {
   return (
     <Sidebar>
         <section>
@@ -59,4 +59,4 @@ const FoundationHome = () => {
   );
 };
 
-export default FoundationHome;
+export default Health;

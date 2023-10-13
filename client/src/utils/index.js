@@ -22,9 +22,12 @@ export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests
 export { default as EditSpecialAssignment } from "../logistics/pages/special-assignments/EditSpecialAssignment";
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
 export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor";
+export { default as Education } from "../foundation/pages/pillars/Education";
+export { default as Environment } from "../foundation/pages/pillars/Environment";
 export { default as Feedback } from "../common/pages/Feedback";
 export { default as FillRemarks } from "../workplan/pages/FillRemarks";
 export { default as FoundationHome } from "../foundation/pages/FoundationHome";
+export { default as Health } from "../foundation/pages/pillars/Health";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";
 export { default as IndividualReports } from "../workplan/pages/reports/IndividualReports";
@@ -38,6 +41,7 @@ export { default as PastRequests } from "../logistics/pages/vehicles/PastRequest
 export { default as ProductivityReports } from "../workplan/pages/reports/ProductivityReports";
 export { default as Profile } from "../common/pages/Profile";
 export { default as PendingWorkplanDetails } from "../workplan/pages/workplans/PendingWorkplanDetails";
+export { default as PovertyAlleviation } from "../foundation/pages/pillars/PovertyAlleviation";
 export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";
 export { default as RegionReports } from "../workplan/pages/reports/RegionReports";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";

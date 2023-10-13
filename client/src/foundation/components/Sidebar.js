@@ -23,38 +23,50 @@ const Sidebar = ({ children }) => {
           <ul className="menu p-4 w-80 bg-base-100 text-base-content">
             {/* Home */}
             <li>
-              <Link to="/visitors-management" className="font-bold my-1">
+              <Link to="/foundation-home" className="font-bold my-1">
                 Home
               </Link>
             </li>
 
-            {/* Visitors */}
+            {/* Pillars */}
             {(isCustomerExp || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
-                <div className="collapse-title font-bold">Visitors</div>
+                <div className="collapse-title font-bold">Pillars</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/register-visitor"
+                    to="/education"
                   >
-                    Register Visitor
+                    Education
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-visitors"
+                    to="/health"
                   >
-                    View Visitors
+                    Health
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/environment"
+                  >
+                    Environment
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/poverty-alleviation"
+                  >
+                    Poverty Alleviation
                   </Link>
                 </div>
               </div>
             )}
 
-            {/* Interviews */}
+            {/* Books */}
             {(isCustomerExp || isVisitorsManagementHR || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
-                <div className="collapse-title font-bold">Interviews</div>
+                <div className="collapse-title font-bold">Books</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   {(isVisitorsManagementHR || department === "ICT (S)")&& (
                     <Link
@@ -75,11 +87,11 @@ const Sidebar = ({ children }) => {
               </div>
             )}
 
-            {/* Reports */}
+            {/* Donors */}
             {(isCustomerExp || isVisitorsManagementHR || department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
-                <div className="collapse-title font-bold">Reports</div>
+                <div className="collapse-title font-bold">Donors</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
@@ -95,28 +107,6 @@ const Sidebar = ({ children }) => {
                       Interview Reports
                     </Link>
                   )}
-                </div>
-              </div>
-            )}
-
-            {/* Parking */}
-            {(isCustomerExp || department === "ICT (S)") && (
-              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
-                <input type="checkbox" className="peer" />
-                <div className="collapse-title font-bold">Parking</div>
-                <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/reserve-parking"
-                  >
-                    Reserve Parking
-                  </Link>
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/reserved-parking"
-                  >
-                    View Reserved Parking
-                  </Link>
                 </div>
               </div>
             )}
