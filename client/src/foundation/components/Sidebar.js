@@ -1,7 +1,7 @@
 import React from "react";
 import "./Sidebar.css";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux"; 
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ children }) => {
   const accessRole = useSelector((state) => state.user.accessRole).trim();
@@ -9,7 +9,7 @@ const Sidebar = ({ children }) => {
   const department = useSelector((state) => state.user.user.department);
 
   const accessRoles = accessRole.split("#");
-  
+
   const isCustomerExp = accessRoles.includes("isCustomerExp");
   const isVisitorsManagementHR = accessRoles.includes("visitorsManagementHR");
 
@@ -63,12 +63,14 @@ const Sidebar = ({ children }) => {
             )}
 
             {/* Books */}
-            {(isCustomerExp || isVisitorsManagementHR || department === "ICT (S)") && (
+            {(isCustomerExp ||
+              isVisitorsManagementHR ||
+              department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Books</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
-                  {(isVisitorsManagementHR || department === "ICT (S)")&& (
+                  {(isVisitorsManagementHR || department === "ICT (S)") && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/schedule-interview"
@@ -82,13 +84,14 @@ const Sidebar = ({ children }) => {
                   >
                     View Interviews
                   </Link>
-                  
                 </div>
               </div>
             )}
 
             {/* Donors */}
-            {(isCustomerExp || isVisitorsManagementHR || department === "ICT (S)") && (
+            {(isCustomerExp ||
+              isVisitorsManagementHR ||
+              department === "ICT (S)") && (
               <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Donors</div>
@@ -107,6 +110,24 @@ const Sidebar = ({ children }) => {
                       Interview Reports
                     </Link>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Events */}
+            {(isCustomerExp ||
+              isVisitorsManagementHR ||
+              department === "ICT (S)") && (
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+                <input type="checkbox" className="peer" />
+                <div className="collapse-title font-bold">Events</div>
+                <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/visitors-reports"
+                  >
+                    All Events
+                  </Link>
                 </div>
               </div>
             )}
