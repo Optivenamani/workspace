@@ -27,7 +27,7 @@ const Education = () => {
                     <h2 className="title-font font-medium text-3xl text-gray-900">
                       2.7K
                     </h2>
-                    <p className="leading-relaxed">Downloads</p>
+                    <p className="leading-relaxed">Total Revenue</p>
                   </div>
                 </div>
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
@@ -48,7 +48,7 @@ const Education = () => {
                     <h2 className="title-font font-medium text-3xl text-gray-900">
                       1.3K
                     </h2>
-                    <p className="leading-relaxed">Users</p>
+                    <p className="leading-relaxed">Outreached</p>
                   </div>
                 </div>
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
@@ -68,7 +68,7 @@ const Education = () => {
                     <h2 className="title-font font-medium text-3xl text-gray-900">
                       74
                     </h2>
-                    <p className="leading-relaxed">Files</p>
+                    <p className="leading-relaxed">Events</p>
                   </div>
                 </div>
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
@@ -87,7 +87,7 @@ const Education = () => {
                     <h2 className="title-font font-medium text-3xl text-gray-900">
                       46
                     </h2>
-                    <p className="leading-relaxed">Places</p>
+                    <p className="leading-relaxed">Total Money used</p>
                   </div>
                 </div>
               </div>

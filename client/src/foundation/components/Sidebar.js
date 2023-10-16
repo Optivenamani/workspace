@@ -75,14 +75,26 @@ const Sidebar = ({ children }) => {
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/schedule-interview"
                     >
-                      Schedule Interview
+                      Book 1
                     </Link>
                   )}
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-interviews"
                   >
-                    View Interviews
+                    Book 2
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-interviews"
+                  >
+                    Book 3
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-interviews"
+                  >
+                    Book 4
                   </Link>
                 </div>
               </div>
@@ -100,16 +112,8 @@ const Sidebar = ({ children }) => {
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/visitors-reports"
                   >
-                    Visitors Reports
+                    All Donors
                   </Link>
-                  {(isVisitorsManagementHR || department === "ICT (S)") && (
-                    <Link
-                      className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      to="/interviews-reports"
-                    >
-                      Interview Reports
-                    </Link>
-                  )}
                 </div>
               </div>
             )}
