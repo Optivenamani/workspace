@@ -73,20 +73,20 @@ const Sidebar = ({ children }) => {
                   {(isVisitorsManagementHR || department === "ICT (S)") && (
                     <Link
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                      to="/schedule-interview"
+                      to="/store"
                     >
                    Store
                     </Link>
                   )}
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-interviews"
+                    to="/issuance"
                   >
                     Issuance
                   </Link>
                   <Link
                   className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                  to="/view-interviews"
+                  to="/sales"
                 >
                   Sales
                 </Link>
@@ -128,13 +128,13 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/visitors-reports"
+                    to="/add-event"
                   >
                    Add Event
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/visitors-reports"
+                    to="/view-events"
                   >
                     View Events
                   </Link>
