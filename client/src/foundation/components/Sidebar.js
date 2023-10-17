@@ -75,27 +75,21 @@ const Sidebar = ({ children }) => {
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/schedule-interview"
                     >
-                      Book 1
+                   Store
                     </Link>
                   )}
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-interviews"
                   >
-                    Book 2
+                    Issuance
                   </Link>
                   <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-interviews"
-                  >
-                    Book 3
-                  </Link>
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-interviews"
-                  >
-                    Book 4
-                  </Link>
+                  className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                  to="/view-interviews"
+                >
+                  Sales
+                </Link>
                 </div>
               </div>
             )}
@@ -110,9 +104,15 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/visitors-reports"
+                    to="/AddDonor"
                   >
-                    All Donors
+                    Add Donors
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/ViewDonors"
+                  >
+                    View Donors
                   </Link>
                 </div>
               </div>
@@ -130,7 +130,13 @@ const Sidebar = ({ children }) => {
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/visitors-reports"
                   >
-                    All Events
+                   Add Event
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/visitors-reports"
+                  >
+                    View Events
                   </Link>
                 </div>
               </div>

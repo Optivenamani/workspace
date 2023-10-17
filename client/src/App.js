@@ -12,6 +12,7 @@ import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
 import {
   AddDonor,
+  AddEvent,
   AllClientsContacts,
   AllSiteVisits,
   AppMenu,
@@ -38,6 +39,7 @@ import {
   Health,
   Home,
   InterviewsReports,
+  Issuance,
   Login,
   MarketersFeedback,
   MostBookedSitesReports,
@@ -50,16 +52,19 @@ import {
   RegisterVisitor,
   ReserveParking,
   RequestVehicle,
+  Sales,
   ScheduleInterview,
   SiteVisitDetails,
   SiteVisitRequests,
   SiteVisitsSummary,
+  Store,
   Survey,
   Users,
   VehicleRequestDetails,
   VehicleRequests,
   ViewDonors,
   ViewDrivers,
+  ViewEvents,
   ViewReservedParking,
   ViewScheduleInterviews,
   ViewSites,
@@ -315,6 +320,11 @@ const App = () => {
             <Route path="/poverty-alleviation" element={<PovertyAlleviation />} />
             <Route path="/add-donor" element={<AddDonor />} />
             <Route path="/view-donors" element={<ViewDonors />} />
+            <Route path="/issuance" element={<Issuance />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/add-events" element={<AddEvent />} />
+            <Route path="/view-events" element={<ViewEvents />} />
 
           </Route>
         </Routes>

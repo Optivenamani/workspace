@@ -1,5 +1,6 @@
 export { default as ActivityReports } from "../workplan/pages/reports/ActivityReports";
 export { default as AddDonor } from "../foundation/pages/Donors/AddDonor";
+export { default as AddEvent } from "../foundation/pages/Events/AddEvent";
 export { default as AllClientsContacts } from "../logistics/pages/clients/AllClientsContacts";
 export { default as AllSiteVisits } from "../logistics/pages/site-visit-requests/AllSiteVisits";
 export { default as AppMenu } from "../common/pages/AppMenu";
@@ -32,6 +33,7 @@ export { default as Health } from "../foundation/pages/pillars/Health";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";
 export { default as IndividualReports } from "../workplan/pages/reports/IndividualReports";
+export { default as Issuance } from "../foundation/pages/Books/Issuance";
 export { default as Login } from "../common/pages/Login";
 export { default as MarketersFeedback } from "../logistics/pages/reports/MarketersFeedback";
 export { default as MostBookedSitesReports } from "../logistics/pages/reports/MostBookedSitesReports";
@@ -47,10 +49,12 @@ export { default as ReserveParking } from "../visitors-management/pages/parking/
 export { default as RegionReports } from "../workplan/pages/reports/RegionReports";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";
 export { default as RequestVehicle } from "../logistics/pages/vehicles/RequestVehicle";
+export { default as Sales } from "../foundation/pages/Books/Sales";
 export { default as ScheduleInterview } from "../visitors-management/pages/interviews/ScheduleInterview";
 export { default as SiteVisitDetails } from "../logistics/pages/site-visit-requests/SiteVisitDetails";
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
+export { default as Store } from "../foundation/pages/Books/Store";
 export { default as Survey } from "../logistics/pages/Survey";
 export { default as Users } from "../logistics/pages/Users";
 export { default as UpdateActivities } from "../workplan/pages/activities/UpdateActivities";
@@ -67,6 +71,7 @@ export { default as ViewVisitors } from "../visitors-management/pages/visitors/V
 export { default as VisitorsManagementHome } from "../visitors-management/pages/VisitorsManagementHome";
 export { default as VisitorsReports } from "../visitors-management/pages/reports/VisitorsReports";
 export { default as ViewActivities } from "../workplan/pages/activities/ViewActivities";
+export { default as ViewEvents } from "../foundation/pages/Events/ViewEvents";
 export { default as ViewFeedback } from "../common/pages/ViewFeedback";
 export { default as ViewWorkPlans } from "../workplan/pages/workplans/ViewWorkPlans";
 export { default as WorkPlanHome } from "../workplan/pages/WorkPlanHome";
