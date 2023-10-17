@@ -11,6 +11,7 @@ import {
 import PrivateRoutes from "./utils/PrivateRoutes";
 // pages
 import {
+  AddDonor,
   AllClientsContacts,
   AllSiteVisits,
   AppMenu,
@@ -57,6 +58,7 @@ import {
   Users,
   VehicleRequestDetails,
   VehicleRequests,
+  ViewDonors,
   ViewDrivers,
   ViewReservedParking,
   ViewScheduleInterviews,
@@ -311,6 +313,9 @@ const App = () => {
             <Route path="/environment" element={<Environment />} />
             <Route path="/health" element={<Health />} />
             <Route path="/poverty-alleviation" element={<PovertyAlleviation />} />
+            <Route path="/add-donor" element={<AddDonor />} />
+            <Route path="/view-donors" element={<ViewDonors />} />
+
           </Route>
         </Routes>
       </Router>

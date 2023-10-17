@@ -1,4 +1,5 @@
 export { default as ActivityReports } from "../workplan/pages/reports/ActivityReports";
+export { default as AddDonor } from "../foundation/pages/Donors/AddDonor";
 export { default as AllClientsContacts } from "../logistics/pages/clients/AllClientsContacts";
 export { default as AllSiteVisits } from "../logistics/pages/site-visit-requests/AllSiteVisits";
 export { default as AppMenu } from "../common/pages/AppMenu";
@@ -55,6 +56,7 @@ export { default as Users } from "../logistics/pages/Users";
 export { default as UpdateActivities } from "../workplan/pages/activities/UpdateActivities";
 export { default as VehicleRequestDetails } from "../logistics/pages/vehicles/VehicleRequestDetails";
 export { default as VehicleRequests } from "../logistics/pages/vehicles/VehicleRequests";
+export { default as ViewDonors } from "../foundation/pages/Donors/ViewDonors";
 export { default as ViewDrivers } from "../logistics/pages/drivers/ViewDrivers";
 export { default as ViewReservedParking } from "../visitors-management/pages/parking/ViewReservedParking";
 export { default as ViewScheduleInterviews } from "../visitors-management/pages/interviews/ViewScheduledInterviews";
