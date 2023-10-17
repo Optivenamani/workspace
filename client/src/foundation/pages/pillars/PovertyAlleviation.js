@@ -1,11 +1,5 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDollarSign,
-  faUsers,
-  faCalendar,
-} from "@fortawesome/free-solid-svg-icons";
 
 const PovertyAlleviation = () => {
   return (
