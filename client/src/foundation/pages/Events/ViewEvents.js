@@ -1,17 +1,13 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import Sidebar from "../../../foundation/components/Sidebar";
-
-
+import Modal from "react-modal";
 
 const ViewEvents = () => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-  
-  const closeModal = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, []);
   return (
     <Sidebar>
       <section className="container px-4 mx-auto">
@@ -57,7 +53,7 @@ const ViewEvents = () => {
             </button>
             <button
               className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600"
-              onClick={openModal}
+              onClick={() => setIsModalOpen(true)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,30 +69,24 @@ const ViewEvents = () => {
                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span>Add vendor</span>
+              <span>Add Event</span>
             </button>
-            {isModalOpen && (
-              <dialog
-                id="my_modal_5"
-                className="modal modal-bottom sm:modal-middle"
-                open
-              >
-                <div className="modal-box">
-                  <h3 className="font-bold text-lg">Hello!</h3>
-                  <p className="py-4">
-                    Press ESC key or click the button below to close
-                  </p>
-                  <div className="modal-action">
-                    <form method="dialog">
-                      {/* if there is a button in form, it will close the modal */}
-                      <button className="btn" onClick={closeModal}>
-                        Close
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </dialog>
-            )}
+            <Modal
+              isOpen={isModalOpen}
+              onRequestClose={closeModal}
+              className="modal-box container mx-auto"
+            >
+              <form>
+                <button
+                  onClick={closeModal}
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                >
+                  ✕
+                </button>
+                {/* Add your form fields or other content here */}
+                
+              </form>
+            </Modal>
           </div>
         </div>
         <div className="mt-6 md:flex md:items-center md:justify-between">

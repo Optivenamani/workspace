@@ -52,6 +52,20 @@ const workplanAutomationPool = mysql.createPool({
 });
 
 // Set up the Express app and database connection pool
+const foundationPool = mysql.createPool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.FOUNDATION_DB,
+  ssl: { rejectUnauthorized: false },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 30000,
+});
+
+// Set up the Express app and database connection pool
 const feedbackPool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -102,14 +116,27 @@ workplanAutomationPool.getConnection((err, connection) => {
 });
 
 // Check database connection
-feedbackPool.getConnection((err, connection) => {
+foundationPool.getConnection((err, connection) => {
   if (err) {
     console.error(
-      "Error connecting to the feedback automation database:",
+      "Error connecting to the foundation database:",
       err.message
     );
   } else {
-    console.log("Connected to the feedback automation database");
+    console.log("Connected to the foundation database");
+    connection.release();
+  }
+});
+
+// Check database connection
+feedbackPool.getConnection((err, connection) => {
+  if (err) {
+    console.error(
+      "Error connecting to the feedback database:",
+      err.message
+    );
+  } else {
+    console.log("Connected to the feedback database");
     connection.release();
   }
 });
@@ -165,6 +192,10 @@ const feedback = require("./routes/feedback/feedback.routes");
 // Import Map routes
 const plots = require("./routes/maps/plots.routes");
 
+// Import Foundation routes
+const events = require("./routes/foundation/events/events.routes");
+//const foundation = require("./routes/foundation/books/books_home.routes");
+
 // Configure CORS options
 const corsOptions = {
   origin: [
@@ -202,13 +233,14 @@ app.use("/api/workplan-reports", workplanReports(workplanAutomationPool));
 app.use("/api/reserve-parking", parking(visitorManagementPool));
 app.use("/api/reserved-parking", parking(visitorManagementPool));
 app.use("/api/feedback", feedback(feedbackPool));
-
+//app.use("/api/foundation", foundation(foundationPool));
+app.use("/api/events", events(foundationPool));
 app.use("/api/plots", plots(logisticsPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
   console.log("Connected");
-  socket.on("disconnect", () => {
+  socket.on("disconnect", () => {`1`
     console.log("Disconnected");
   });
 });
