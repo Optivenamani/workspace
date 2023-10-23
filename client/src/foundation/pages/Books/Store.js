@@ -16,7 +16,6 @@ import {
   Tooltip,
   Dialog,
 } from "@material-tailwind/react";
-import { Store } from "../../../utils";
 const TABLE_HEAD = ["Member", "Function", "Status", "Employed", ""];
 const TABLE_ROWS = [
   {

@@ -11,7 +11,7 @@ const Education = () => {
               Education
             </span>
             <div className="container px-0 py-24 mx-auto">
-              <div className="flex flex-wrap -m-4 text-center">
+              <div className="flex flex-wrap m-4 text-center">
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
                   <div className="border-2 border-gray-200 px-4 py-6 rounded-lg">
                     <svg
@@ -93,8 +93,8 @@ const Education = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-wrap -m-0 pt-10">
-                <div className="xl:w-1/3 md:w-1/3 p-4 bg-white border-2 border-gray-200 rounded-lg shadow dark:bg-gray-800 pl-5">
+              <div className="flex flex-wrap m-4 pt-10">
+                <div className="w-full xl:w-1/3 md:w-1/3 p-4 bg-white border-2 border-gray-200 rounded-lg shadow dark:bg-gray-800 pl-5">
                   {/* ... (your second segment code here) */}
                   <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                     <div className="flex justify-between">

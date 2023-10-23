@@ -178,7 +178,7 @@ const FillRemarks = () => {
                                 Marketer
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                              {truncateText(activity.name, 20)}
+                                {truncateText(activity.name, 20)}
                               </p>
                             </div>
                           </td>
@@ -188,7 +188,7 @@ const FillRemarks = () => {
                                 Activity
                               </h1>
                               <p className="text-sm font-bold lausanne">
-                              {truncateText(activity.title, 20)}
+                                {truncateText(activity.title, 20)}
                               </p>
                             </div>
                           </td>
