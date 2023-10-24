@@ -1,28 +1,32 @@
-require("dotenv").config();
 const express = require("express");
-const axios = require("axios");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
 
 module.exports = (pool, io) => {
   // Endpoint to handle data insertion
   router.post("/", async (req, res) => {
-    const { event_name, event_location, event_amount } = req.body;
+    const { event_name, event_location, event_amount, pillar } = req.body;
 
     try {
-      // Insert data into the Events table
-      const [results] = await connection.query(
-        "INSERT INTO Events (event_name, event_location, event_amount) VALUES (?, ?, ?)",
-        [event_name, event_location, event_amount]
+      pool.query(
+        "INSERT INTO Events (event_name, event_location, event_amount, pillar) VALUES (?, ?, ?, ?)",
+        [event_name, event_location, event_amount, pillar],
+        (err, result) => {
+          if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).json({
+              message: "An error occurred while creating the event.",
+            });
+          }
+          res.status(201).json({ message: "Event created successfully!" });
+        }
       );
-      // If insertion is successful, you can handle the response accordingly
-      res.json({ success: true, message: "Data inserted successfully" });
     } catch (error) {
-      console.error("Error:", error);
-      // If there's an error during insertion, handle it appropriately
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      res.status(500).json({
+        message: "An error occurred while creating the event.",
+      });
     }
   });
+
+  return router;
 };
