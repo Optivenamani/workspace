@@ -183,14 +183,22 @@ const ViewEvents = () => {
                   <label className="label font-bold text-xs">
                     Pillar Supported by the event
                   </label>
-                  <input
+                  <select
                     className="input input-bordered w-full"
                     name="pillar"
                     value={pillar}
                     onChange={(e) => setPillar(e.target.value)}
-                    spellCheck
                     required
-                  />
+                  >
+                    <option value="None Selected">Please select Pillar</option>
+                    <option value="Education">Education</option>
+                    <option value="Health">Health</option>
+                    <option value="Poverty Alleviation">
+                      Poverty Alleviation
+                    </option>
+                    <option value="Environment">Environment</option>
+                  </select>
+
                   <button
                     type="submit"
                     className="btn btn-outline my-4 w-full bg-green"
