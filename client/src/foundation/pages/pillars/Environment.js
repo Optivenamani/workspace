@@ -113,8 +113,8 @@ const Environment = () => {
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
-                  These are all the Environmental Projects that have been Registered under this
-                  Pillar.
+                  These are all the Environmental Projects that have been
+                  Registered under this Pillar.
                 </p>
               </div>
               <div className="flex items-center mt-4 gap-x-3">
@@ -368,8 +368,10 @@ const Environment = () => {
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                           {env.map((env, index) => (
                             <tr key={index}>
-                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                {env.env_name}
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                                <div className="flex flex-col justify-center items-start">
+                                  {env.env_name}
+                                </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {env.env_amount}
