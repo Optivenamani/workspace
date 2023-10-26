@@ -75,7 +75,7 @@ const Sidebar = ({ children }) => {
                       className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                       to="/store"
                     >
-                   Store
+                      Store
                     </Link>
                   )}
                   <Link
@@ -85,11 +85,11 @@ const Sidebar = ({ children }) => {
                     Issuance
                   </Link>
                   <Link
-                  className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                  to="/sales"
-                >
-                  Sales
-                </Link>
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/sales"
+                  >
+                    Sales
+                  </Link>
                 </div>
               </div>
             )}
@@ -104,13 +104,7 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/AddDonor"
-                  >
-                    Add Donors
-                  </Link>
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/ViewDonors"
+                    to="/view-donors"
                   >
                     View Donors
                   </Link>
@@ -126,12 +120,6 @@ const Sidebar = ({ children }) => {
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title font-bold">Events</div>
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/add-event"
-                  >
-                   Add Event
-                  </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/view-events"

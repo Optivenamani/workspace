@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,6 +13,7 @@ const ViewEvents = () => {
   const [pillar, setPillar] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   const closeModal = useCallback(() => {
@@ -67,6 +68,26 @@ const ViewEvents = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/events", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <Sidebar>
@@ -312,7 +333,27 @@ const ViewEvents = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900"></tbody>
+                  <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                    {events.map((event, index) => (
+                      <tr key={index}>
+                        <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          {event.event_name}
+                        </td>
+                        <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          {event.event_location}
+                        </td>
+                        <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          {event.event_amount}
+                        </td>
+                        <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                          <div className="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                            {event.pillar}
+                          </div>
+                        </td>
+                        {/* Display more columns as needed */}
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
             </div>

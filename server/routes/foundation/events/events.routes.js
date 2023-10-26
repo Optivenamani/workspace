@@ -32,7 +32,20 @@ module.exports = (pool, io) => {
       });
     }
   });
-  // Route for the Add event modal
+  //Route to get Event Data
+  router.get("/", async (req, res) => {
+    try {
+      pool.query("SELECT * FROM Events", (err, results) => {
+        if (err) throw err;
+
+        res.json(results);
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching Event information.",
+      });
+    }
+  });
 
   return router;
 };

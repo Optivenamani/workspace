@@ -1,6 +1,4 @@
 export { default as ActivityReports } from "../workplan/pages/reports/ActivityReports";
-export { default as AddDonor } from "../foundation/pages/Donors/AddDonor";
-export { default as AddEvent } from "../foundation/pages/Events/AddEvent";
 export { default as AllClientsContacts } from "../logistics/pages/clients/AllClientsContacts";
 export { default as AllSiteVisits } from "../logistics/pages/site-visit-requests/AllSiteVisits";
 export { default as AppMenu } from "../common/pages/AppMenu";
