@@ -13,7 +13,7 @@ const Store = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [env, setEnv] = useState([]);
+  const [store, setStore] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   const closeModal = useCallback(() => {
@@ -23,12 +23,11 @@ const Store = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const env = {
+    const store = {
       book_name: bookName,
       book_code: bookCode,
       book_price: bookPrice,
       book_copies: bookCopies,
-      
     };
 
     try {
@@ -38,7 +37,7 @@ const Store = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(env),
+        body: JSON.stringify(store),
       });
 
       if (!response.ok) {
@@ -68,7 +67,6 @@ const Store = () => {
       setBookCode("");
       setBookPrice("");
       setBookCopies("");
-
     } catch (error) {
       // Display error notification
       toast.error(error, {
@@ -94,7 +92,7 @@ const Store = () => {
 
         const data = await response.json();
 
-        setEnv(data);
+        setStore(data);
       } catch (error) {
         console.error(error);
       }
@@ -159,7 +157,7 @@ const Store = () => {
                   <div>
                     <form onSubmit={handleSubmit}>
                       <label className="label font-bold text-xs">
-                        Add a Book 
+                        Add a Book
                       </label>
                       <label className="label font-bold text-xs">
                         Name of the Book
@@ -173,24 +171,35 @@ const Store = () => {
                         required
                       />
                       <label className="label font-bold text-xs">
-                        Amount disbursed to the project
+                        Code of the Book
                       </label>
                       <input
                         className="input input-bordered w-full"
-                        name="envAmount"
-                        value={envAmount}
-                        onChange={(e) => setEnvAmount(e.target.value)}
+                        name="bookCode"
+                        value={bookCode}
+                        onChange={(e) => setBookCode(e.target.value)}
                         spellCheck
                         required
                       />
                       <label className="label font-bold text-xs">
-                        Comment on the Project
+                        Price of the Book{" "}
                       </label>
                       <input
                         className="input input-bordered w-full"
-                        name="envComment"
-                        value={envComment}
-                        onChange={(e) => setEnvComment(e.target.value)}
+                        name="bookPrice"
+                        value={bookPrice}
+                        onChange={(e) => setBookPrice(e.target.value)}
+                        spellCheck
+                        required
+                      />
+                      <label className="label font-bold text-xs">
+                        Copies of the Book{" "}
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="bookCopies"
+                        value={bookCopies}
+                        onChange={(e) => setBookCopies(e.target.value)}
                         spellCheck
                         required
                       />
@@ -270,18 +279,23 @@ const Store = () => {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                          {env.map((env, index) => (
+                          {store.map((store, index) => (
                             <tr key={index}>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
                                 <div className="flex flex-col justify-center items-start">
-                                  {env.env_name}
+                                  {store.book_name}
                                 </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                {env.env_amount}
+                                <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
+                                  {store.book_code}
+                                </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                {env.env_comment}
+                                {store.book_price}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {store.book_price}
                               </td>
                             </tr>
                           ))}

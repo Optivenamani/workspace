@@ -195,11 +195,13 @@ const plots = require("./routes/maps/plots.routes");
 // Import Foundation routes
 const events = require("./routes/foundation/events/events.routes");
 const donors = require("./routes/foundation/donors/donors.routes");
-const books = require("./routes/foundation/books/books.routes");
 const education = require("./routes/foundation/pillars/education.routes");
 const environment = require("./routes/foundation/pillars/environment.routes");
 const health = require("./routes/foundation/pillars/health.routes");
 const poverty = require("./routes/foundation/pillars/poverty.routes");
+const books = require("./routes/foundation/books/books.routes");
+const issuance = require("./routes/foundation/books/issuance.routes");
+const sales = require("./routes/foundation/books/sales.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -240,11 +242,14 @@ app.use("/api/reserved-parking", parking(visitorManagementPool));
 app.use("/api/feedback", feedback(feedbackPool));
 app.use("/api/events", events(foundationPool));
 app.use("/api/donors", donors(foundationPool));
-app.use("/api/books", books(foundationPool));
 app.use("/api/education", education(foundationPool));
 app.use("/api/environment", environment(foundationPool));
 app.use("/api/health", health(foundationPool));
 app.use("/api/poverty", poverty(foundationPool));
+app.use("/api/books", books(foundationPool));
+app.use("/api/issuance", issuance(foundationPool));
+app.use("/api/sales", sales(foundationPool));
+
 
 app.use("/api/plots", plots(logisticsPool));
 
