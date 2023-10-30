@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../../foundation/components/Sidebar";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Education = () => {
   const [educName, setEducName] = useState("");
@@ -13,14 +14,64 @@ const Education = () => {
   const [educLevel, setEducLevel] = useState("");
   const [educAmount, setEducAmount] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
   const [loading, setLoading] = useState(false);
   const [educ, setEduc] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
+  // const filteredSiteVisitRequests = useMemo(() => {
+  //   return siteVisitRequests.filter((svr) => {
+  //     if (searchQuery === "") {
+  //       return true; // Include all items when the search query is empty
+  //     } else if (
+  //       svr.marketer_name &&
+  //       svr.marketer_name.toLowerCase().includes(searchQuery.toLowerCase())
+  //     ) {
+  //       return true; // Include the item if it matches the search query
+  //     } else {
+  //       return false; // Exclude the item if it doesn't match the search query
+  //     }
+  //   });
+  // }, [searchQuery, siteVisitRequests]);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
+  const closedModal = useCallback(() => {
+    setIsModal2Open(false);
+  }, []);
 
+  const downloadTemplate = () => {
+    // Make a GET request to the server endpoint to download the template
+    axios({
+      url: "http://localhost:8080/api/education/download-template", // Replace with your server endpoint
+      method: "GET",
+      responseType: "blob", // Important: responseType must be 'blob' for binary data
+    })
+      .then((response) => {
+        // Create a blob from the binary data and create a download link
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template.xlsx"; // Specify the default download file name
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url); // Clean up the URL object after the download
+      })
+      .catch((error) => {
+        toast.error("Error downloading Excel Sheet", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -32,7 +83,6 @@ const Education = () => {
       educ_level: educLevel,
       educ_amount: educAmount,
     };
-
     try {
       const response = await fetch("http://localhost:8080/api/education", {
         method: "POST",
@@ -42,7 +92,6 @@ const Education = () => {
         },
         body: JSON.stringify(educ),
       });
-
       if (!response.ok) {
         toast.error("Error adding Student", {
           position: "top-center",
@@ -62,7 +111,6 @@ const Education = () => {
           progress: undefined,
         });
       }
-
       setLoading(false);
       closeModal();
 
@@ -81,11 +129,51 @@ const Education = () => {
         draggable: true,
         progress: undefined,
       });
-
       setLoading(false);
     }
   };
+  const [file, setFile] = useState(null);
+  const onFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+  const onFormSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
 
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:8080/api/education/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Upload Response:", response.data);
+      toast.success("File uploaded successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error("Upload Error:", error);
+      toast.error("Error uploading file", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     const fetchEducation = async () => {
       try {
@@ -96,15 +184,34 @@ const Education = () => {
         });
 
         const data = await response.json();
+        const sortedData = data.sort((a, b) => {
+          return new Date(b.pickup_date) - new Date(a.pickup_date);
+        });
 
-        setEduc(data);
+        const filtered = sortedData.filter((item) => {
+          if (selectedStatus === "all") {
+            return true;
+          } else if (selectedStatus === "approved") {
+            return item.status === "approved";
+          } else if (selectedStatus === "rejected") {
+            return item.status === "rejected";
+          } else if (selectedStatus === "in_progress") {
+            return item.status === "in_progress";
+          } else if (selectedStatus === "complete") {
+            return item.status === "complete";
+          } else {
+            return item.status === selectedStatus;
+          }
+        });
+
+        setEduc(filtered);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchEducation();
-  }, []);
+  }, [token, selectedStatus]);
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -121,11 +228,22 @@ const Education = () => {
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
-                  These are all the Students have been Registered under this Pillar.
+                  These are all the Students have been Registered under this
+                  Pillar.
                 </p>
+                <button
+                  type="button"
+                  onClick={downloadTemplate}
+                  className="mt-1 text-sm text-gray-500 dark:text-gray-300 bg-white border rounded-lg"
+                >
+                  Download Excel Sheet
+                </button>
               </div>
               <div className="flex items-center mt-4 gap-x-3">
-                <button className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
+                <button
+                  className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
+                  onClick={() => setIsModal2Open(true)}
+                >
                   <svg
                     width={20}
                     height={20}
@@ -150,6 +268,47 @@ const Education = () => {
                   </svg>
                   <span>Import Students</span>
                 </button>
+                <Modal
+                  isOpen={isModal2Open}
+                  onRequestClose={closedModal}
+                  className="modal-box container mx-auto"
+                >
+                  {" "}
+                  <button
+                    onClick={closedModal}
+                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                  >
+                    ✕
+                  </button>
+                  {/* Add your form fields or other content here */}
+                  <figure className="px-10 pt-10">
+                    <img
+                      src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
+                      alt="Upload"
+                      className="rounded-xl"
+                    />
+                  </figure>
+                  <div className="card-body">
+                    <form onSubmit={onFormSubmit}>
+                      <label className="label font-bold3">
+                        Kindly Upload the Excel Sheet
+                      </label>
+                      <input
+                        type="file"
+                        accept=".xlsx"
+                        onChange={onFileChange}
+                        className="file-input file-input-bordered file-input-primary w-full"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="btn btn-primary w-full mt-2"
+                      >
+                        {loading ? "Uploading..." : "Upload"}
+                      </button>
+                    </form>{" "}
+                  </div>
+                </Modal>
                 <button
                   className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-primary rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600"
                   onClick={() => setIsModalOpen(true)}

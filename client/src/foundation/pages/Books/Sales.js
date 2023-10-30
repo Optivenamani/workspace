@@ -6,12 +6,16 @@ import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 
 const Sales = () => {
-  const [envName, setEnvName] = useState("");
-  const [envAmount, setEnvAmount] = useState("");
-  const [envComment, setEnvComment] = useState("");
+  const [bookName, setBookName] = useState("");
+  const [bookCode, setBookCode] = useState("");
+  const [bookPrice, setBookPrice] = useState("");
+  const [bookCopies, setBookCopies] = useState("");
+  const [bookAmountExpected, setBookAmountExpected] = useState("");
+  const [bookAmountGiven, setBookAmountGiven] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [env, setEnv] = useState([]);
+  const [sales, setSales] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   const closeModal = useCallback(() => {
@@ -21,24 +25,27 @@ const Sales = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const env = {
-      env_name: envName,
-      env_amount: envAmount,
-      env_comment: envComment,
+    const sales = {
+      book_name: bookName,
+      book_code: bookCode,
+      book_price: bookPrice,
+      book_copies: bookCopies,
+      book_amount_expected: bookAmountExpected,
+      book_amount_given: bookAmountGiven,
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/books", {
+      const response = await fetch("http://localhost:8080/api/sales", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(env),
+        body: JSON.stringify(sales),
       });
 
       if (!response.ok) {
-        toast.error("Error adding Environmental Project ", {
+        toast.error("Error adding Book", {
           position: "top-center",
           closeOnClick: true,
           pauseOnHover: true,
@@ -48,7 +55,7 @@ const Sales = () => {
       }
       // Display success notification
       else {
-        toast.success("Environmental Project added successfully!", {
+        toast.success("Book added successfully!", {
           position: "top-center",
           closeOnClick: true,
           pauseOnHover: true,
@@ -60,9 +67,12 @@ const Sales = () => {
       setLoading(false);
       closeModal();
 
-      setEnvName("");
-      setEnvAmount("");
-      setEnvComment("");
+      setBookName("");
+      setBookCode("");
+      setBookPrice("");
+      setBookCopies("");
+      setBookAmountExpected("");
+      setBookAmountGiven("");
     } catch (error) {
       // Display error notification
       toast.error(error, {
@@ -78,9 +88,9 @@ const Sales = () => {
   };
 
   useEffect(() => {
-    const fetchEnvironment = async () => {
+    const fetchSales = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/books", {
+        const response = await fetch("http://localhost:8080/api/sales", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -88,13 +98,13 @@ const Sales = () => {
 
         const data = await response.json();
 
-        setEnv(data);
+        setSales(data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchEnvironment();
+    fetchSales();
   }, []);
 
   return (
@@ -106,43 +116,17 @@ const Sales = () => {
               <div>
                 <div className="flex items-center gap-x-3">
                   <h2 className="text-lg font-medium text-gray-800 dark:text-white">
-                    Environment
+                    Book Sales
                   </h2>
                   <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
                     Welcome 😊
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
-                  These are all the Environmental Projects that have been
-                  Registered under this Pillar.
+                  These are all the Book Sales that have been Registered.
                 </p>
               </div>
               <div className="flex items-center mt-4 gap-x-3">
-                <button className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
-                  <svg
-                    width={20}
-                    height={20}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g clipPath="url(#clip0_3098_154395)">
-                      <path
-                        d="M13.3333 13.3332L9.99997 9.9999M9.99997 9.9999L6.66663 13.3332M9.99997 9.9999V17.4999M16.9916 15.3249C17.8044 14.8818 18.4465 14.1806 18.8165 13.3321C19.1866 12.4835 19.2635 11.5359 19.0351 10.6388C18.8068 9.7417 18.2862 8.94616 17.5555 8.37778C16.8248 7.80939 15.9257 7.50052 15 7.4999H13.95C13.6977 6.52427 13.2276 5.61852 12.5749 4.85073C11.9222 4.08295 11.104 3.47311 10.1817 3.06708C9.25943 2.66104 8.25709 2.46937 7.25006 2.50647C6.24304 2.54358 5.25752 2.80849 4.36761 3.28129C3.47771 3.7541 2.70656 4.42249 2.11215 5.23622C1.51774 6.04996 1.11554 6.98785 0.935783 7.9794C0.756025 8.97095 0.803388 9.99035 1.07431 10.961C1.34523 11.9316 1.83267 12.8281 2.49997 13.5832"
-                        stroke="currentColor"
-                        strokeWidth="1.67"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_3098_154395">
-                        <rect width={20} height={20} fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                  <span>Import Projects</span>
-                </button>
                 <button
                   className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-primary rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600"
                   onClick={() => setIsModalOpen(true)}
@@ -161,7 +145,7 @@ const Sales = () => {
                       d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span>Add a Project</span>
+                  <span>Add a Book</span>
                 </button>
                 <Modal
                   isOpen={isModalOpen}
@@ -179,38 +163,71 @@ const Sales = () => {
                   <div>
                     <form onSubmit={handleSubmit}>
                       <label className="label font-bold text-xs">
-                        Add an Environmental Project
+                        Add a Book sale
                       </label>
                       <label className="label font-bold text-xs">
-                        Name of the Environmental Project
+                        Name of the Book
                       </label>
                       <input
                         className="input input-bordered w-full"
-                        name="envName"
-                        value={envName}
-                        onChange={(e) => setEnvName(e.target.value)}
+                        name="bookName"
+                        value={bookName}
+                        onChange={(e) => setBookName(e.target.value)}
                         spellCheck
                         required
                       />
                       <label className="label font-bold text-xs">
-                        Amount disbursed to the project
+                        Code of the Book
                       </label>
                       <input
                         className="input input-bordered w-full"
-                        name="envAmount"
-                        value={envAmount}
-                        onChange={(e) => setEnvAmount(e.target.value)}
+                        name="bookCode"
+                        value={bookCode}
+                        onChange={(e) => setBookCode(e.target.value)}
                         spellCheck
                         required
                       />
                       <label className="label font-bold text-xs">
-                        Comment on the Project
+                        Price of the Book{" "}
                       </label>
                       <input
                         className="input input-bordered w-full"
-                        name="envComment"
-                        value={envComment}
-                        onChange={(e) => setEnvComment(e.target.value)}
+                        name="bookPrice"
+                        value={bookPrice}
+                        onChange={(e) => setBookPrice(e.target.value)}
+                        spellCheck
+                        required
+                      />
+                      <label className="label font-bold text-xs">
+                        Copies of the Book{" "}
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="bookCopies"
+                        value={bookCopies}
+                        onChange={(e) => setBookCopies(e.target.value)}
+                        spellCheck
+                        required
+                      />
+                      <label className="label font-bold text-xs">
+                        Amount Of Money Expected on the Book{" "}
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="bookAmountExpected"
+                        value={bookAmountExpected}
+                        onChange={(e) => setBookAmountExpected(e.target.value)}
+                        spellCheck
+                        required
+                      />{" "}
+                      <label className="label font-bold text-xs">
+                        Amount Of Money Got on the Book{" "}
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="bookAmountGiven"
+                        value={bookAmountGiven}
+                        onChange={(e) => setBookAmountGiven(e.target.value)}
                         spellCheck
                         required
                       />
@@ -227,88 +244,6 @@ const Sales = () => {
             </div>
             {/*BOXES */}
             <div className="container px-0 py-4 mx-auto">
-              <div className="flex flex-wrap m-4 text-center">
-                <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
-                  <div className="border-2 border-gray-200 px-4 py-6 rounded-lg">
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      className="text-indigo-500 w-12 h-12 mb-3 inline-block"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 17l4 4 4-4m-4-5v9" />
-                      <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
-                    </svg>
-                    <h2 className="title-font font-medium text-3xl text-gray-900">
-                      2.7K
-                    </h2>
-                    <p className="leading-relaxed">Total Revenue</p>
-                  </div>
-                </div>
-                <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
-                  <div className="border-2 border-gray-200 px-4 py-6 rounded-lg">
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      className="text-indigo-500 w-12 h-12 mb-3 inline-block"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                      <circle cx={9} cy={7} r={4} />
-                      <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75" />
-                    </svg>
-                    <h2 className="title-font font-medium text-3xl text-gray-900">
-                      1.3K
-                    </h2>
-                    <p className="leading-relaxed">Outreached</p>
-                  </div>
-                </div>
-                <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
-                  <div className="border-2 border-gray-200 px-4 py-6 rounded-lg">
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      className="text-indigo-500 w-12 h-12 mb-3 inline-block"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M3 18v-6a9 9 0 0118 0v6" />
-                      <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" />
-                    </svg>
-                    <h2 className="title-font font-medium text-3xl text-gray-900">
-                      74
-                    </h2>
-                    <p className="leading-relaxed">Events</p>
-                  </div>
-                </div>
-                <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
-                  <div className="border-2 border-gray-200 px-4 py-6 rounded-lg">
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      className="text-indigo-500 w-12 h-12 mb-3 inline-block"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                    <h2 className="title-font font-medium text-3xl text-gray-900">
-                      46
-                    </h2>
-                    <p className="leading-relaxed">Total Money used</p>
-                  </div>
-                </div>
-              </div>
               <div className="flex flex-col mt-6">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -322,7 +257,7 @@ const Sales = () => {
                             >
                               <div className="text-center">
                                 <div className="flex items-center gap-x-3 focus:outline-none">
-                                  <span>Name of the Project</span>
+                                  <span>Name of the Book</span>
                                   <svg
                                     className="h-3"
                                     viewBox="0 0 10 11"
@@ -355,29 +290,58 @@ const Sales = () => {
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
-                              Amount Disbursed
+                              Book Code
                             </th>
                             <th
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
-                              Comment
+                              Book Price
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Book copies
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Amount of money Expected
+                            </th>{" "}
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Amount of money Got
                             </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                          {env.map((env, index) => (
+                          {sales.map((sales, index) => (
                             <tr key={index}>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
                                 <div className="flex flex-col justify-center items-start">
-                                  {env.env_name}
+                                  {sales.book_name}
                                 </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                {env.env_amount}
+                                <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
+                                  {sales.book_code}
+                                </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                {env.env_comment}
+                                {sales.book_price}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.book_copies}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.book_amount_expected}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.book_amount_given}
                               </td>
                             </tr>
                           ))}
