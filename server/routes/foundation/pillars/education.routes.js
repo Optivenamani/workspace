@@ -60,9 +60,9 @@ module.exports = (pool, io) => {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.load(req.file.buffer);
       const worksheet = workbook.getWorksheet(1); // Assuming data is in the first worksheet
-  
+
       const dataFromExcel = [];
-  
+
       // Iterate through rows and columns to extract data
       worksheet.eachRow((row, rowNumber) => {
         if (rowNumber !== 1) {
@@ -79,15 +79,15 @@ module.exports = (pool, io) => {
           dataFromExcel.push(rowData);
         }
       });
-  
+
       // Insert data into the database
       const insertQuery = `
         INSERT INTO education (educ_name, educ_age, educ_gender, educ_phone, educ_level, educ_amount)
         VALUES (?, ?, ?, ?, ?, ?)
       `;
-  
+
       // Prepare data for insertion
-      const values = dataFromExcel.map(row => [
+      const values = dataFromExcel.map((row) => [
         row.column1,
         row.column2,
         row.column3,
@@ -95,56 +95,21 @@ module.exports = (pool, io) => {
         row.column5,
         row.column6,
       ]);
-  
+
       // Execute the insert query with multiple values
       await pool.query(insertQuery, values);
-  
+
       res.status(200).send("Data saved to the database");
     } catch (error) {
-      console.error("Error processing Excel file and saving to the database:", error);
-      res.status(500).send("Error processing Excel file and saving to the database");
+      console.error(
+        "Error processing Excel file and saving to the database:",
+        error
+      );
+      res
+        .status(500)
+        .send("Error processing Excel file and saving to the database");
     }
   });
-  
-
-  // router.post("/upload", upload.single("file"), async (req, res) => {
-  //   try {
-  //     const workbook = new ExcelJS.Workbook();
-  //     await workbook.xlsx.load(req.file.buffer);
-  //     const worksheet = workbook.getWorksheet(1); // Assuming data is in the first worksheet
-
-  //     const dataFromExcel = [];
-
-  //     // Iterate through rows and columns to extract data
-  //     worksheet.eachRow((row, rowNumber) => {
-  //       if (rowNumber !== 1) {
-  //         // Skip header row
-  //         const rowData = {
-  //           column1: row.getCell(1).value, // Assuming data in column A
-  //           column2: row.getCell(2).value, // Assuming data in column B
-  //           column3: row.getCell(3).value, // Assuming data in column C
-  //           column4: row.getCell(4).value, // Assuming data in column D
-  //           column5: row.getCell(5).value, // Assuming data in column E
-  //           column6: row.getCell(6).value, // Assuming data in column F
-
-  //           // Add more columns as needed
-  //         };
-  //         dataFromExcel.push(rowData);
-  //       }
-  //     });
-
-  //     // Insert data into the database directly using pool.query()
-  //     await pool.query(
-  //       "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `educ_amount`) VALUES (?, ?, ?, ?, ?, ?)",
-  //       dataFromExcel.map(Object.values).flat()
-  //     );
-
-  //     res.status(200).send("Data saved to the database");
-  //   } catch (error) {
-  //     console.error("Error processing Excel file and saving to the database:", error);
-  //     res.status(500).send("Error processing Excel file and saving to the database");
-  //   }
-  // });
 
   router.get("/download-template", (req, res) => {
     // Create a new workbook

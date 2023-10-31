@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,6 +8,7 @@ import axios from "axios";
 
 const Education = () => {
   const [educName, setEducName] = useState("");
+  const [events, setEvents] = useState([]);
   const [educAge, setEducAge] = useState("");
   const [educGender, setEducGender] = useState("");
   const [educPhone, setEducPhone] = useState("");
@@ -15,25 +16,14 @@ const Education = () => {
   const [educAmount, setEducAmount] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [educationAssisted, setEducationAssisted] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [educ, setEduc] = useState([]);
   const token = useSelector((state) => state.user.token);
   const [selectedStatus, setSelectedStatus] = useState("all");
-
-  // const filteredSiteVisitRequests = useMemo(() => {
-  //   return siteVisitRequests.filter((svr) => {
-  //     if (searchQuery === "") {
-  //       return true; // Include all items when the search query is empty
-  //     } else if (
-  //       svr.marketer_name &&
-  //       svr.marketer_name.toLowerCase().includes(searchQuery.toLowerCase())
-  //     ) {
-  //       return true; // Include the item if it matches the search query
-  //     } else {
-  //       return false; // Exclude the item if it doesn't match the search query
-  //     }
-  //   });
-  // }, [searchQuery, siteVisitRequests]);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -72,6 +62,7 @@ const Education = () => {
         });
       });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -132,10 +123,13 @@ const Education = () => {
       setLoading(false);
     }
   };
+
   const [file, setFile] = useState(null);
+
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
   };
+
   const onFormSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -174,6 +168,7 @@ const Education = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const fetchEducation = async () => {
       try {
@@ -184,27 +179,12 @@ const Education = () => {
         });
 
         const data = await response.json();
+
         const sortedData = data.sort((a, b) => {
-          return new Date(b.pickup_date) - new Date(a.pickup_date);
+          return b.id - a.id;
         });
 
-        const filtered = sortedData.filter((item) => {
-          if (selectedStatus === "all") {
-            return true;
-          } else if (selectedStatus === "approved") {
-            return item.status === "approved";
-          } else if (selectedStatus === "rejected") {
-            return item.status === "rejected";
-          } else if (selectedStatus === "in_progress") {
-            return item.status === "in_progress";
-          } else if (selectedStatus === "complete") {
-            return item.status === "complete";
-          } else {
-            return item.status === selectedStatus;
-          }
-        });
-
-        setEduc(filtered);
+        setEduc(sortedData);
       } catch (error) {
         console.error(error);
       }
@@ -212,6 +192,54 @@ const Education = () => {
 
     fetchEducation();
   }, [token, selectedStatus]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/events/pillar-count?pillar=Education",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  const filteredEducated = useMemo(() => {
+    return educ.filter((item) => {
+      if (searchQuery === "") {
+        return true; // Include all items when the search query is empty
+      } else if (
+        item.educ_name &&
+        item.educ_name.toLowerCase().includes(searchQuery.toLowerCase())
+      ) {
+        return true; // Include the item if it matches the search query
+      } else {
+        return false; // Exclude the item if it doesn't match the search query
+      }
+    });
+  }, [searchQuery, educ]);
+
+  console.log(educ)
+
+  // Calculate the total sum of educ_amount values
+  const totalAmount = educ.reduce((sum, item) => {
+    // Parse the educ_amount string to a number and add it to the sum
+    return sum + item.educ_amount;
+  }, 0);
+
+  console.log("Total Sum of educ_amount:", totalAmount);
+
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -231,13 +259,6 @@ const Education = () => {
                   These are all the Students have been Registered under this
                   Pillar.
                 </p>
-                <button
-                  type="button"
-                  onClick={downloadTemplate}
-                  className="mt-1 text-sm text-gray-500 dark:text-gray-300 bg-white border rounded-lg"
-                >
-                  Download Excel Sheet
-                </button>
               </div>
               <div className="flex items-center mt-4 gap-x-3">
                 <button
@@ -425,6 +446,7 @@ const Education = () => {
                         onChange={(e) => setEducAmount(e.target.value)}
                         spellCheck
                         required
+                        type="number"
                       />
                       <button
                         type="submit"
@@ -435,6 +457,41 @@ const Education = () => {
                     </form>{" "}
                   </div>
                 </Modal>
+              </div>
+            </div>
+            <div className="mt-6 md:flex md:items-center md:justify-between">
+              <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700"></div>
+              <button
+                type="button"
+                onClick={downloadTemplate}
+                className="mt-1 text-sm text-gray-500 dark:text-gray-300 bg-white border rounded-lg"
+              >
+                Download Excel Sheet
+              </button>
+              <div className="relative flex items-center mt-4 md:mt-0">
+                <span className="absolute">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  placeholder="Search marketer by name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
             {/*BOXES */}
@@ -455,7 +512,7 @@ const Education = () => {
                       <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      2.7K
+                      <input type="text" className="w-1/2 border-gray-900" />{" "}
                     </h2>
                     <p className="leading-relaxed">Total Revenue</p>
                   </div>
@@ -476,7 +533,7 @@ const Education = () => {
                       <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      1.3K
+                      {educ.length}
                     </h2>
                     <p className="leading-relaxed">Outreached</p>
                   </div>
@@ -496,7 +553,7 @@ const Education = () => {
                       <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      74
+                      {events.length}
                     </h2>
                     <p className="leading-relaxed">Events</p>
                   </div>
@@ -515,7 +572,7 @@ const Education = () => {
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      46
+                      {totalAmount.toLocaleString()}
                     </h2>
                     <p className="leading-relaxed">Total Money used</p>
                   </div>
@@ -590,7 +647,7 @@ const Education = () => {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                          {educ.map((educ, index) => (
+                          {filteredEducated.map((educ, index) => (
                             <tr key={index}>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-start">
                                 <div className="flex flex-col justify-center items-start">
