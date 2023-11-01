@@ -1,6 +1,8 @@
 const express = require("express");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
+const ExcelJS = require("exceljs");
+const multer = require("multer");
 
 module.exports = (pool, io) => {
   // Route for the Add event modal
@@ -41,5 +43,32 @@ module.exports = (pool, io) => {
     }
   });
 
+  router.get("/download-template", (req, res) => {
+    // Create a new workbook
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Sheet 1");
+
+    // Add data to the worksheet (for example, headers)
+    worksheet.addRow([
+      "Name of The student",      
+      "Amount Disbursed",
+      "Comment",
+
+    ]);
+
+    // Set response headers to trigger download
+    res.setHeader("Content-Disposition", "attachment; filename=template.xlsx");
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    // Write workbook to response and send it to the client
+    workbook.xlsx.write(res).then(() => {
+      res.end();
+    });
+  });
+
+  
   return router;
 };

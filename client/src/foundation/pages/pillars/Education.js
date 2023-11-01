@@ -16,6 +16,8 @@ const Education = () => {
   const [educAmount, setEducAmount] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
+  const [isModal3Open, setIsModal3Open] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [educationAssisted, setEducationAssisted] = useState([]);
@@ -30,6 +32,9 @@ const Education = () => {
   }, []);
   const closedModal = useCallback(() => {
     setIsModal2Open(false);
+  }, []);
+  const closedModal3 = useCallback(() => {
+    setIsModal3Open(false);
   }, []);
 
   const downloadTemplate = () => {
@@ -169,6 +174,45 @@ const Education = () => {
     }
   };
 
+  const onUpdate = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:8080/api/education/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Upload Response:", response.data);
+      toast.success("File uploaded successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error("Upload Error:", error);
+      toast.error("Error uploading file", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchEducation = async () => {
       try {
@@ -191,7 +235,7 @@ const Education = () => {
     };
 
     fetchEducation();
-  }, [token, selectedStatus]);
+  }, [token]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -214,7 +258,7 @@ const Education = () => {
     };
     fetchEvents();
   }, []);
-
+  
   const filteredEducated = useMemo(() => {
     return educ.filter((item) => {
       if (searchQuery === "") {
@@ -230,7 +274,6 @@ const Education = () => {
     });
   }, [searchQuery, educ]);
 
-  console.log(educ)
 
   // Calculate the total sum of educ_amount values
   const totalAmount = educ.reduce((sum, item) => {
@@ -257,7 +300,14 @@ const Education = () => {
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
                   These are all the Students have been Registered under this
-                  Pillar.
+                  Pillar.<br></br>
+                  <button
+                    onClick={downloadTemplate}
+                    className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start"
+                  >
+                    Please click below to
+                    <div className="underline">Download Excel Sheet</div>
+                  </button>
                 </p>
               </div>
               <div className="flex items-center mt-4 gap-x-3">
@@ -461,13 +511,6 @@ const Education = () => {
             </div>
             <div className="mt-6 md:flex md:items-center md:justify-between">
               <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700"></div>
-              <button
-                type="button"
-                onClick={downloadTemplate}
-                className="mt-1 text-sm text-gray-500 dark:text-gray-300 bg-white border rounded-lg"
-              >
-                Download Excel Sheet
-              </button>
               <div className="relative flex items-center mt-4 md:mt-0">
                 <span className="absolute">
                   <svg
@@ -515,6 +558,67 @@ const Education = () => {
                       <input type="text" className="w-1/2 border-gray-900" />{" "}
                     </h2>
                     <p className="leading-relaxed">Total Revenue</p>
+                    <button
+                      className="btn btn-sm btn-outline btn-success"
+                      onClick={() => setIsModal3Open(true)}
+                    >
+                      Update
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </button>
+                    <Modal
+                      isOpen={isModal3Open}
+                      onRequestClose={closedModal3}
+                      className="modal-box container mx-auto"
+                    >
+                      {" "}
+                      <button
+                        onClick={closedModal3}
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                      >
+                        ✕
+                      </button>
+                      {/* Add your form fields or other content here */}
+                      <figure className="px-10 pt-10">
+                        <img
+                          src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
+                          alt="Upload"
+                          className="rounded-xl"
+                        />
+                      </figure>
+                      <div className="card-body">
+                        <form onSubmit={onUpdate}>
+                          <label className="label font-bold3 text-center">
+                            Kindly Update the Amount
+                          </label>
+                          <input
+                            type="text"
+                            onChange={onFileChange}
+                            className="file-input file-input-bordered file-input-primary w-full"
+                            name="allocated_amount"
+                            required
+                          />
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-full mt-2"
+                          >
+                            {loading ? "Uploading..." : "Upload"}
+                          </button>
+                        </form>{" "}
+                      </div>
+                    </Modal>
                   </div>
                 </div>
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">

@@ -1,21 +1,30 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../../foundation/components/Sidebar";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Environment = () => {
   const [envName, setEnvName] = useState("");
+  const [events, setEvents] = useState([]);
   const [envAmount, setEnvAmount] = useState("");
   const [envComment, setEnvComment] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [env, setEnv] = useState([]);
   const token = useSelector((state) => state.user.token);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
+  }, []);
+
+  const closedModal = useCallback(() => {
+    setIsModal2Open(false);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -77,6 +86,97 @@ const Environment = () => {
     }
   };
 
+  const onFormSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:8080/api/education/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Upload Response:", response.data);
+      toast.success("File uploaded successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.error("Upload Error:", error);
+      toast.error("Error uploading file", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadTemplate = () => {
+    // Make a GET request to the server endpoint to download the template
+    axios({
+      url: "http://localhost:8080/api/environment/download-template", // Replace with your server endpoint
+      method: "GET",
+      responseType: "blob", // Important: responseType must be 'blob' for binary data
+    })
+      .then((response) => {
+        // Create a blob from the binary data and create a download link
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template.xlsx"; // Specify the default download file name
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url); // Clean up the URL object after the download
+      })
+      .catch((error) => {
+        toast.error("Error downloading Excel Sheet", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
+
+  const [file, setFile] = useState(null);
+
+  const onFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const filteredEnvironment = useMemo(() => {
+    return env.filter((item) => {
+      if (searchQuery === "") {
+        return true; // Include all items when the search query is empty
+      } else if (
+        item.env_name &&
+        item.env_name.toLowerCase().includes(searchQuery.toLowerCase())
+      ) {
+        return true; // Include the item if it matches the search query
+      } else {
+        return false; // Exclude the item if it doesn't match the search query
+      }
+    });
+  }, [searchQuery, env]);
+
   useEffect(() => {
     const fetchEnvironment = async () => {
       try {
@@ -97,6 +197,35 @@ const Environment = () => {
     fetchEnvironment();
   }, []);
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/events/pillar-count?pillar=Environment",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchEvents();
+  }, []);
+  
+
+  // Calculate the total sum of educ_amount values
+  const totalAmount = env.reduce((sum, item) => {
+    // Parse the educ_amount string to a number and add it to the sum
+    return sum + item.env_amount;
+  }, 0);
+
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -114,11 +243,21 @@ const Environment = () => {
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
                   These are all the Environmental Projects that have been
-                  Registered under this Pillar.
+                  Registered under this Pillar.<br></br>
+                  <button
+                    onClick={downloadTemplate}
+                    className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start"
+                  >
+                    Please click below to
+                    <div className="underline">Download Excel Sheet</div>
+                  </button>
                 </p>
               </div>
               <div className="flex items-center mt-4 gap-x-3">
-                <button className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
+                <button
+                  className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
+                  onClick={() => setIsModal2Open(true)}
+                >
                   <svg
                     width={20}
                     height={20}
@@ -143,6 +282,47 @@ const Environment = () => {
                   </svg>
                   <span>Import Projects</span>
                 </button>
+                <Modal
+                  isOpen={isModal2Open}
+                  onRequestClose={closedModal}
+                  className="modal-box container mx-auto"
+                >
+                  {" "}
+                  <button
+                    onClick={closedModal}
+                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                  >
+                    ✕
+                  </button>
+                  {/* Add your form fields or other content here */}
+                  <figure className="px-10 pt-10">
+                    <img
+                      src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
+                      alt="Upload"
+                      className="rounded-xl"
+                    />
+                  </figure>
+                  <div className="card-body">
+                    <form onSubmit={onFormSubmit}>
+                      <label className="label font-bold3">
+                        Kindly Upload the Excel Sheet
+                      </label>
+                      <input
+                        type="file"
+                        accept=".xlsx"
+                        onChange={onFileChange}
+                        className="file-input file-input-bordered file-input-primary w-full"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="btn btn-primary w-full mt-2"
+                      >
+                        {loading ? "Uploading..." : "Upload"}
+                      </button>
+                    </form>{" "}
+                  </div>
+                </Modal>
                 <button
                   className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-primary rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600"
                   onClick={() => setIsModalOpen(true)}
@@ -202,6 +382,7 @@ const Environment = () => {
                         onChange={(e) => setEnvAmount(e.target.value)}
                         spellCheck
                         required
+                        type="number"
                       />
                       <label className="label font-bold text-xs">
                         Comment on the Project
@@ -223,6 +404,34 @@ const Environment = () => {
                     </form>{" "}
                   </div>
                 </Modal>
+              </div>
+            </div>
+            <div className="mt-6 md:flex md:items-center md:justify-between">
+              <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700"></div>
+              <div className="relative flex items-center mt-4 md:mt-0">
+                <span className="absolute">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  placeholder="Search Environment Event by name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
             {/*BOXES */}
@@ -264,7 +473,7 @@ const Environment = () => {
                       <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      1.3K
+                    {env.length}
                     </h2>
                     <p className="leading-relaxed">Outreached</p>
                   </div>
@@ -284,7 +493,7 @@ const Environment = () => {
                       <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      74
+                    {events.length}
                     </h2>
                     <p className="leading-relaxed">Events</p>
                   </div>
@@ -303,7 +512,7 @@ const Environment = () => {
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      46
+                    {totalAmount.toLocaleString()}
                     </h2>
                     <p className="leading-relaxed">Total Money used</p>
                   </div>
@@ -366,7 +575,7 @@ const Environment = () => {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                          {env.map((env, index) => (
+                          {filteredEnvironment.map((env, index) => (
                             <tr key={index}>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
                                 <div className="flex flex-col justify-center items-start">

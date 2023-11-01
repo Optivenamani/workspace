@@ -200,6 +200,7 @@ const ViewEvents = () => {
                     onChange={(e) => setEventAmount(e.target.value)}
                     spellCheck
                     required
+                    type="number"
                   />
                   <label className="label font-bold text-xs">
                     Pillar Supported by the event

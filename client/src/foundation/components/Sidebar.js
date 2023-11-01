@@ -129,6 +129,54 @@ const Sidebar = ({ children }) => {
                 </div>
               </div>
             )}
+
+            {/* Reports */}
+            {(isCustomerExp ||
+              isVisitorsManagementHR ||
+              department === "ICT (S)") && (
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box my-1">
+                <input type="checkbox" className="peer" />
+                <div className="collapse-title font-bold">Reports</div>
+                <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-donors"
+                  >
+                    Reports on Poverty Alleviation
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-donors"
+                  >
+                    Reports on Environment
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-donors"
+                  >
+                    Reports on Education
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-donors"
+                  >
+                    Reports on Health
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-donors"
+                  >
+                    Reports on Events
+                  </Link>
+                  <Link
+                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
+                    to="/view-donors"
+                  >
+                    Reports on Donors
+                  </Link>
+                </div>
+              </div>
+            )}
           </ul>
         </div>
       </div>
