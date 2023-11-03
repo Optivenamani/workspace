@@ -137,7 +137,7 @@ const PovertyAlleviation = () => {
   const downloadTemplate = () => {
     // Make a GET request to the server endpoint to download the template
     axios({
-      url: "http://localhost:8080/api/health/download-template", // Replace with your server endpoint
+      url: "http://localhost:8080/api/poverty/download-template", // Replace with your server endpoint
       method: "GET",
       responseType: "blob", // Important: responseType must be 'blob' for binary data
     })
@@ -210,7 +210,7 @@ const PovertyAlleviation = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/events/pillar-count?pillar=Poverty",
+          "http://localhost:8080/api/events/pillar-count?pillar=Poverty Alleviation",
           {
             headers: {
               Authorization: `Bearer ${token}`,

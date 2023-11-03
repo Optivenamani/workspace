@@ -32,6 +32,7 @@ import {
   EditVehicle,
   EditVisitor,
   Education,
+  EducationReport,
   Environment,
   FoundationHome,
   Health,
@@ -46,6 +47,7 @@ import {
   Notifications,
   PastRequests,
   PovertyAlleviation,
+  PovertyReport,
   Profile,
   RegisterVisitor,
   ReserveParking,
@@ -321,6 +323,8 @@ const App = () => {
             <Route path="/sales" element={<Sales />} />
             <Route path="/store" element={<Store />} />
             <Route path="/view-events" element={<ViewEvents />} />
+            <Route path="/poverty-report" element={<PovertyReport />} />
+            <Route path="/education-report" element={<EducationReport />} />
 
           </Route>
         </Routes>

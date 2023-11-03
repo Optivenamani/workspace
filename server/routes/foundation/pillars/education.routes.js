@@ -84,7 +84,7 @@ module.exports = (pool, io) => {
       });
     }
   });
-
+// Route to upload excel sheet
   router.post("/upload", upload.single("file"), async (req, res) => {
     try {
       const workbook = new ExcelJS.Workbook();
@@ -140,7 +140,7 @@ module.exports = (pool, io) => {
         .send("Error processing Excel file and saving to the database");
     }
   });
-
+// Route to download Excel sheet
   router.get("/download-template", (req, res) => {
     // Create a new workbook
     const workbook = new ExcelJS.Workbook();
@@ -168,8 +168,7 @@ module.exports = (pool, io) => {
       res.end();
     });
   });
-
-  // Download the approved site visits info in a pdf
+  // Download the Student data info in a pdf
   router.get("/download-pdf", async (req, res) => {
     try {
       const startDate = req.query.startDate;

@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Sidebar from "../../../foundation/components/Sidebar";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const ViewEvents = () => {
   const [eventName, setEventName] = useState("");
@@ -14,11 +15,16 @@ const ViewEvents = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   const token = useSelector((state) => state.user.token);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -69,6 +75,52 @@ const ViewEvents = () => {
     }
   };
 
+  const downloadTemplate = () => {
+    // Make a GET request to the server endpoint to download the template
+    axios({
+      url: "http://localhost:8080/api/events/download-template", // Replace with your server endpoint
+      method: "GET",
+      responseType: "blob", // Important: responseType must be 'blob' for binary data
+    })
+      .then((response) => {
+        // Create a blob from the binary data and create a download link
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template.xlsx"; // Specify the default download file name
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url); // Clean up the URL object after the download
+      })
+      .catch((error) => {
+        toast.error("Error downloading Excel Sheet", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
+
+  const filteredEvents = useMemo(() => {
+    return events.filter((item) => {
+      if (searchQuery === "") {
+        return true; // Include all items when the search query is empty
+      } else if (
+        item.event_name &&
+        item.event_name.toLowerCase().includes(searchQuery.toLowerCase())
+      ) {
+        return true; // Include the item if it matches the search query
+      } else {
+        return false; // Exclude the item if it doesn't match the search query
+      }
+    });
+  }, [searchQuery, events]);
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -80,15 +132,54 @@ const ViewEvents = () => {
 
         const data = await response.json();
 
-        setEvents(data);
+        console.log("fetched data", data);
+
+        const sortedData = data.sort((a, b) => {
+          return b.id - a.id;
+        });
+
+        const filtered = sortedData.filter((item) => {
+          if (selectedStatus === "all") {
+            return true;
+          } else if (selectedStatus === "health") {
+            return item.pillar === "Health";
+          } else if (selectedStatus === "environment") {
+            return item.pillar === "Environment";
+          } else if (selectedStatus === "poverty") {
+            return item.pillar === "Poverty Alleviation";
+          } else if (selectedStatus === "education") {
+            return item.pillar === "Education";
+          } else {
+            return item.pillar === selectedStatus;
+          }
+        });
+
+        setEvents(filtered);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchEvents();
-  }, []);
+  }, [token, selectedStatus]);
 
+  let statusText = "";
+  switch (selectedStatus) {
+    case "all":
+      break;
+    case "health":
+      break;
+    case "environment":
+      break;
+    case "approved":
+      break;
+    case "poverty":
+      break;
+    case "education":
+      break;
+    default:
+      break;
+  }
   return (
     <Sidebar>
       <section className="container px-4 mx-auto">
@@ -104,6 +195,14 @@ const ViewEvents = () => {
             </div>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
               These are all the Events have been planned.
+              <br></br>
+              <button
+                onClick={downloadTemplate}
+                className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start"
+              >
+                Please click below to
+                <div className="underline">Download Excel Sheet</div>
+              </button>
             </p>
           </div>
           <div className="flex items-center mt-4 gap-x-3">
@@ -233,17 +332,40 @@ const ViewEvents = () => {
           </div>
         </div>
         <div className="mt-6 md:flex md:items-center md:justify-between">
-          <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700">
-            <button className="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 bg-gray-100 sm:text-sm dark:bg-gray-800 dark:text-gray-300">
+          <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700">
+            <button
+              className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-200 dark:text-gray-300 hover:bg-gray-100
+        ${selectedStatus === "all" ? "btn-active" : ""}`}
+              onClick={() => setSelectedStatus("all")}
+            >
+              All
+            </button>
+            <div
+              className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-200 dark:text-gray-300 hover:bg-gray-100
+        ${selectedStatus === "Education" ? "btn-active" : ""}`}
+              onClick={() => setSelectedStatus("education")}
+            >
               Education
-            </button>
-            <button className="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
+            </div>
+            <div
+              className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-200 dark:text-gray-300 hover:bg-gray-100
+        ${selectedStatus === "Health" ? "btn-active" : ""}`}
+              onClick={() => setSelectedStatus("health")}
+            >
               Health
-            </button>
-            <button className="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
+            </div>
+            <button
+              className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-200 dark:text-gray-300 hover:bg-gray-100
+        ${selectedStatus === "Environment" ? "btn-active" : ""}`}
+              onClick={() => setSelectedStatus("environment")}
+            >
               Environment
             </button>
-            <button className="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
+            <button
+              className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-200 dark:text-gray-300 hover:bg-gray-100
+        ${selectedStatus === "Poverty" ? "btn-active" : ""}`}
+              onClick={() => setSelectedStatus("poverty")}
+            >
               Poverty Alleviation
             </button>
           </div>
@@ -268,6 +390,8 @@ const ViewEvents = () => {
               type="text"
               placeholder="Search"
               className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
@@ -335,7 +459,7 @@ const ViewEvents = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                    {events.map((event, index) => (
+                    {filteredEvents.map((event, index) => (
                       <tr key={index}>
                         <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
                           {event.event_name}

@@ -140,7 +140,7 @@ const Sidebar = ({ children }) => {
                 <div className="collapse-content -mt-5 flex flex-col menu bg-base-100">
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-donors"
+                    to="/poverty-report"
                   >
                     Reports on Poverty Alleviation
                   </Link>
@@ -152,7 +152,7 @@ const Sidebar = ({ children }) => {
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-donors"
+                    to="/education-report"
                   >
                     Reports on Education
                   </Link>
