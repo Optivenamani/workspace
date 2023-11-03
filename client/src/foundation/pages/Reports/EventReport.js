@@ -4,7 +4,7 @@ import Sidebar from "../../components/Sidebar";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const HealthReport = () => {
+const EventReport = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   // Get the token from local storage
@@ -35,7 +35,7 @@ const HealthReport = () => {
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/health/download-pdf",
+        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/approved-site-visits",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const HealthReport = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "health_report.pdf";
+      link.download = "approved_site_visits.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -88,15 +88,16 @@ const HealthReport = () => {
         <div className="hero min-h-screen bg-white">
           <div className="hero-content flex-col lg:flex-row-reverse">
             <div className="text-center lg:text-left">
-              <h1 className="text-5xl font-bold">Health</h1>
+              <h1 className="text-5xl font-bold">Events</h1>
               <p className="py-6">
-                Download the Specific Health Report you require by choosing the
-                range of dates specified.
+               Download the Specific Events Report you require by choosing the range of dates specified.
               </p>
             </div>
             <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
               <div className="form-control card-body">
-                <h1 className="font-bold text-lg">Health Reports</h1>
+                <h1 className="font-bold text-lg">
+                  Events Reports
+                </h1>
                 <label className="label">
                   <span className="label-text font-bold">Start Date</span>
                 </label>
@@ -116,10 +117,8 @@ const HealthReport = () => {
                   onChange={(e) => setEndDate(e.target.value)}
                 />
                 <div className="form-control mt-6">
-                  <button className="btn btn-primary" onClick={handleDownload}>
-                    Download PDF
-                  </button>
-                </div>
+                <button className="btn btn-primary">Download PDF</button>
+              </div>
               </div>
             </div>
           </div>
@@ -129,4 +128,4 @@ const HealthReport = () => {
   );
 };
 
-export default HealthReport;
+export default EventReport;

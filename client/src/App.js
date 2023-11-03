@@ -26,6 +26,7 @@ import {
   CreateVehicle,
   CreateWorkPlan,
   Dashboard,
+  DonorReport,
   EditScheduledInterviews,
   EditSiteVisit,
   EditSpecialAssignment,
@@ -34,8 +35,11 @@ import {
   Education,
   EducationReport,
   Environment,
+  EnvironmentReport,
+  EventReport,
   FoundationHome,
   Health,
+  HealthReport,
   Home,
   InterviewsReports,
   Issuance,
@@ -325,6 +329,10 @@ const App = () => {
             <Route path="/view-events" element={<ViewEvents />} />
             <Route path="/poverty-report" element={<PovertyReport />} />
             <Route path="/education-report" element={<EducationReport />} />
+            <Route path="/health-report" element={<HealthReport />} />
+            <Route path="/environment-report" element={<EnvironmentReport />} />
+            <Route path="/donor-report" element={<DonorReport />} />
+            <Route path="/event-report" element={<EventReport />} />
 
           </Route>
         </Routes>

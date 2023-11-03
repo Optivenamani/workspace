@@ -1,6 +1,41 @@
 const express = require("express");
+const ExcelJS = require("exceljs");
+const multer = require("multer");
+const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
+
+// Define your fonts
+var fonts = {
+  Roboto: {
+    normal: "node_modules/roboto-font/fonts/Roboto/roboto-regular-webfont.ttf",
+    bold: "node_modules/roboto-font/fonts/Roboto/roboto-bold-webfont.ttf",
+    italic: "node_modules/roboto-font/fonts/Roboto/roboto-italic-webfont.ttf",
+    bolditalics:
+      "node_modules/roboto-font/fonts/Roboto/roboto-bolditalic-webfont.ttf",
+  },
+};
+
+// Create a new printer with the fonts
+var printer = new pdfMakePrinter(fonts);
+
+// Define your dataToPdfRows function
+function dataToPdfRows(data) {
+  return data.map((item, index) => {
+    return [
+      { text: index + 1 ?? "", style: "tableCell" },
+      { text: item.educ_name ?? "", style: "tableCell" },
+      { text: item.educ_age ?? "", style: "tableCell" },
+      { text: item.educ_gender ?? "", style: "tableCell" },
+      { text: item.educ_phone ?? "", style: "tableCell" },
+      { text: item.educ_level ?? "", style: "tableCell" },
+      { text: item.educ_amount ?? "", style: "tableCell" },
+    ];
+  });
+}
+
+// Multer configuration for file upload
+const storage = multer.memoryStorage();
 
 module.exports = (pool, io) => {
   // Route for the Add Poverty Alleviation data modal
@@ -87,7 +122,7 @@ module.exports = (pool, io) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
-      const query = `SELECT * FROM education WHERE created_at BETWEEN '2023-10-01' AND '2023-11-01' ORDER BY created_at DESC;`;
+      const query = `SELECT * FROM poverty WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
         const docDefinition = {
@@ -115,7 +150,7 @@ module.exports = (pool, io) => {
                       bold: true,
                     },
                     {
-                      text: "Student",
+                      text: "Name",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
@@ -139,13 +174,13 @@ module.exports = (pool, io) => {
                       bold: true,
                     },
                     {
-                      text: "Level of Education",
+                      text: "Amount",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
                     },
                     {
-                      text: "Amount",
+                      text: "Comment",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,

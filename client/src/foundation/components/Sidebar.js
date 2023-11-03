@@ -146,7 +146,7 @@ const Sidebar = ({ children }) => {
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-donors"
+                    to="/environment-report"
                   >
                     Reports on Environment
                   </Link>
@@ -158,19 +158,19 @@ const Sidebar = ({ children }) => {
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-donors"
+                    to="/health-report"
                   >
                     Reports on Health
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-donors"
+                    to="/event-report"
                   >
                     Reports on Events
                   </Link>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/view-donors"
+                    to="/donor-report"
                   >
                     Reports on Donors
                   </Link>

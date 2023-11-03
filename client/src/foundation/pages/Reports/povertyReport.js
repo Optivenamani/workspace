@@ -35,7 +35,7 @@ const PovertyReport = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/approved-site-visits",
+        "http://localhost:8080/api/poverty/download-pdf",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const PovertyReport = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "approved_site_visits.pdf";
+      link.download = "poverty_report.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -90,7 +90,8 @@ const PovertyReport = () => {
             <div className="text-center lg:text-left">
               <h1 className="text-5xl font-bold">Poverty Alleviation</h1>
               <p className="py-6">
-               Download the Specific Poverty Alleviation Report you require by choosing the range of dates specified.
+                Download the Specific Poverty Alleviation Report you require by
+                choosing the range of dates specified.
               </p>
             </div>
             <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
@@ -116,11 +117,10 @@ const PovertyReport = () => {
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
-                <button className="btn btn-outline" onClick={handleDownload}>
-                  Download PDF
-                </button>
                 <div className="form-control mt-6">
-                  <button className="btn btn-primary">Login</button>
+                  <button className="btn btn-primary" onClick={handleDownload}>
+                    Download PDF
+                  </button>
                 </div>
               </div>
             </div>

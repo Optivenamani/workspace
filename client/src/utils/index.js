@@ -16,6 +16,7 @@ export { default as CreateActivity } from "../workplan/pages/activities/CreateAc
 export { default as CreateVehicle } from "../logistics/pages/vehicles/CreateVehicle";
 export { default as CreateWorkPlan } from "../workplan/pages/workplans/CreateWorkPlan";
 export { default as Dashboard } from "../logistics/pages/Dashboard";
+export { default as DonorReport } from "../foundation/pages/Reports/DonorReport";
 export { default as DriverItinerary } from "../logistics/pages/reports/DriverItinerary";
 export { default as EditScheduledInterviews } from "../visitors-management/pages/interviews/EditScheduledInterviews";
 export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests/EditSiteVisit";
@@ -25,10 +26,13 @@ export { default as EditVisitor } from "../visitors-management/pages/visitors/Ed
 export { default as Education } from "../foundation/pages/pillars/Education";
 export { default as EducationReport } from "../foundation/pages/Reports/EducationReport";
 export { default as Environment } from "../foundation/pages/pillars/Environment";
+export { default as EnvironmentReport } from "../foundation/pages/Reports/EnvironmentReport";
+export { default as EventReport } from "../foundation/pages/Reports/EventReport";
 export { default as Feedback } from "../common/pages/Feedback";
 export { default as FillRemarks } from "../workplan/pages/FillRemarks";
 export { default as FoundationHome } from "../foundation/pages/FoundationHome";
 export { default as Health } from "../foundation/pages/pillars/Health";
+export { default as HealthReport } from "../foundation/pages/Reports/HealthReport";
 export { default as Home } from "../logistics/pages/Home";
 export { default as InterviewsReports } from "../visitors-management/pages/reports/InterviewsReports";
 export { default as IndividualReports } from "../workplan/pages/reports/IndividualReports";
@@ -40,11 +44,11 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
+export { default as PovertyAlleviation } from "../foundation/pages/pillars/PovertyAlleviation";
 export { default as PovertyReport} from "../foundation/pages/Reports/povertyReport";
 export { default as ProductivityReports } from "../workplan/pages/reports/ProductivityReports";
 export { default as Profile } from "../common/pages/Profile";
 export { default as PendingWorkplanDetails } from "../workplan/pages/workplans/PendingWorkplanDetails";
-export { default as PovertyAlleviation } from "../foundation/pages/pillars/PovertyAlleviation";
 export { default as ReserveParking } from "../visitors-management/pages/parking/ReserveParking";
 export { default as RegionReports } from "../workplan/pages/reports/RegionReports";
 export { default as RegisterVisitor } from "../visitors-management/pages/visitors/RegisterVisitor";

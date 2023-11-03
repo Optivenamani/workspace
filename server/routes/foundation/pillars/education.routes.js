@@ -173,7 +173,7 @@ module.exports = (pool, io) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
-      const query = `SELECT * FROM education WHERE created_at BETWEEN '2023-10-01' AND '2023-11-01' ORDER BY created_at DESC;`;
+      const query = `SELECT * FROM education WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
         const docDefinition = {
