@@ -35,8 +35,8 @@ const EventReport = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/approved-site-visits",
-        {
+        "http://localhost:8080/api/events/download-pdf",       
+         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -57,7 +57,7 @@ const EventReport = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "approved_site_visits.pdf";
+      link.download = "Events Report.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {
@@ -117,7 +117,7 @@ const EventReport = () => {
                   onChange={(e) => setEndDate(e.target.value)}
                 />
                 <div className="form-control mt-6">
-                <button className="btn btn-primary">Download PDF</button>
+                <button className="btn btn-primary" onClick={handleDownload}>Download PDF</button>
               </div>
               </div>
             </div>

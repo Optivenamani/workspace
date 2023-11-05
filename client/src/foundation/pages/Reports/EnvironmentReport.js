@@ -35,7 +35,7 @@ const EnvironmentReport = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/approved-site-visits",
+        "http://localhost:8080/api/environment/download-pdf",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const EnvironmentReport = () => {
       const fileURL = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "approved_site_visits.pdf";
+      link.download = "Environment Report.pdf";
       link.click();
 
       toast.success("PDF downloaded successfully.", {

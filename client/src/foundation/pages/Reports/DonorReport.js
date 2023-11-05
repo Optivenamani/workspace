@@ -35,7 +35,7 @@ const DonorReport = () => {
 
     try {
       const response = await axios.get(
-        "https://workspace.optiven.co.ke/api/site-visit-requests/download-pdf/approved-site-visits",
+        "http://localhost:8080/api/donors/download-pdf",       
         {
           headers: {
             Authorization: `Bearer ${token}`,
