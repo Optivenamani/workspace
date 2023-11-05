@@ -50,7 +50,7 @@ module.exports = (pool, io) => {
     } = req.body;
     try {
       pool.query(
-        "INSERT INTO `poverty`(`pov_name`, `pov_age`, `pov_gender`, `pov_contact`, `pov_amount`, `pov_comment`) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO `poverty`(`pov_name`, `pov_age`, `pov_gender`, `pov_contact`, `pov_amount`, `pov_comment`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
         [pov_name, pov_age, pov_gender, pov_contact, pov_amount, pov_comment],
         (err, result) => {
           if (err) {

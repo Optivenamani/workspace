@@ -52,7 +52,7 @@ module.exports = (pool, io) => {
     } = req.body;
     try {
       pool.query(
-        "INSERT INTO  `health`(`health_name`, `health_age`, `health_complication`, `health_amount`, `health_gender`, `health_contact`)   VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO  `health`(`health_name`, `health_age`, `health_complication`, `health_amount`, `health_gender`, `health_contact`, `created_at`)   VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
         [
           health_name,
           health_age,
