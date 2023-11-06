@@ -297,6 +297,7 @@ const ViewEvents = () => {
                     name="eventAmount"
                     value={eventAmount}
                     onChange={(e) => setEventAmount(e.target.value)}
+                    typeof="number"
                     spellCheck
                     required
                     type="number"

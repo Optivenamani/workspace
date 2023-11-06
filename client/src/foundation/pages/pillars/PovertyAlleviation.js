@@ -232,7 +232,7 @@ const PovertyAlleviation = () => {
   // Calculate the total sum of educ_amount values
   const totalAmount = poverty.reduce((sum, item) => {
     // Parse the educ_amount string to a number and add it to the sum
-    return sum + item.poverty_amount;
+    return sum + item.pov_amount;
   }, 0);
 
   return (

@@ -234,6 +234,9 @@ const Health = () => {
     // Parse the educ_amount string to a number and add it to the sum
     return sum + item.health_amount;
   }, 0);
+  const formattedTotalAmount = totalAmount.toLocaleString();
+
+console.log(formattedTotalAmount); //
 
   return (
     <Sidebar>

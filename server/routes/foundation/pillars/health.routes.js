@@ -24,12 +24,12 @@ function dataToPdfRows(data) {
   return data.map((item, index) => {
     return [
       { text: index + 1 ?? "", style: "tableCell" },
-      { text: item.educ_name ?? "", style: "tableCell" },
-      { text: item.educ_age ?? "", style: "tableCell" },
-      { text: item.educ_gender ?? "", style: "tableCell" },
-      { text: item.educ_phone ?? "", style: "tableCell" },
-      { text: item.educ_level ?? "", style: "tableCell" },
-      { text: item.educ_amount ?? "", style: "tableCell" },
+      { text: item.health_name ?? "", style: "tableCell" },
+      { text: item.health_age ?? "", style: "tableCell" },
+      { text: item.health_complication ?? "", style: "tableCell" },
+      { text: item.health_amount ?? "", style: "tableCell" },
+      { text: item.health_gender ?? "", style: "tableCell" },
+      { text: item.health_contact ?? "", style: "tableCell" },
     ];
   });
 }

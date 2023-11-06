@@ -17,6 +17,7 @@ const Education = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [isModal3Open, setIsModal3Open] = useState(false);
+  const [allocatedAmount, setAllocatedAmount] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -174,25 +175,26 @@ const Education = () => {
     }
   };
 
-  const onUpdate = async (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
-
+  const onUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const amount = {
+      educ_amount: educAmount,
+    };
     try {
-      setLoading(true);
-      const response = await axios.post(
-        "http://localhost:8080/api/education/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:8080/api/amounts", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(amount),
+      });
+
+      setAllocatedAmount("");
 
       console.log("Upload Response:", response.data);
-      toast.success("File uploaded successfully!", {
+      toast.success("Amount Updated successfully!", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
@@ -201,7 +203,7 @@ const Education = () => {
       });
     } catch (error) {
       console.error("Upload Error:", error);
-      toast.error("Error uploading file", {
+      toast.error("Error Updating Amount", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
@@ -258,7 +260,25 @@ const Education = () => {
     };
     fetchEvents();
   }, []);
-  
+
+  useEffect(() => {
+    const fetchAmounts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/amounts", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+
+        setAllocatedAmount(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAmounts();
+  }, []);
+
   const filteredEducated = useMemo(() => {
     return educ.filter((item) => {
       if (searchQuery === "") {
@@ -274,15 +294,13 @@ const Education = () => {
     });
   }, [searchQuery, educ]);
 
-
   // Calculate the total sum of educ_amount values
   const totalAmount = educ.reduce((sum, item) => {
     // Parse the educ_amount string to a number and add it to the sum
     return sum + item.educ_amount;
   }, 0);
-
-  console.log("Total Sum of educ_amount:", totalAmount);
-
+  const latestValue = allocatedAmount[0]?.latest_value;
+  console.log("Latest Value:", latestValue);
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -555,14 +573,13 @@ const Education = () => {
                       <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      <input type="text" className="w-1/2 border-gray-900" />{" "}
+                      {latestValue}
                     </h2>
-                    <p className="leading-relaxed">Total Revenue</p>
                     <button
                       className="btn btn-sm btn-outline btn-success"
                       onClick={() => setIsModal3Open(true)}
                     >
-                      Update
+                      Update Amount Allocated
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"
@@ -604,12 +621,13 @@ const Education = () => {
                             Kindly Update the Amount
                           </label>
                           <input
-                            type="text"
-                            onChange={onFileChange}
-                            className="file-input file-input-bordered file-input-primary w-full"
-                            name="allocated_amount"
+                            type="number"
+                            value={allocatedAmount}
+                            onChange={(e) => setAllocatedAmount(e.target.value)}
+                            className="input input-bordered w-full"
                             required
                           />
+
                           <button
                             type="submit"
                             className="btn btn-primary w-full mt-2"

@@ -84,7 +84,7 @@ module.exports = (pool, io) => {
       });
     }
   });
-// Route to upload excel sheet
+  // Route to upload excel sheet
   router.post("/upload", upload.single("file"), async (req, res) => {
     try {
       const workbook = new ExcelJS.Workbook();
@@ -140,7 +140,7 @@ module.exports = (pool, io) => {
         .send("Error processing Excel file and saving to the database");
     }
   });
-// Route to download Excel sheet
+  // Route to download Excel sheet
   router.get("/download-template", (req, res) => {
     // Create a new workbook
     const workbook = new ExcelJS.Workbook();
@@ -275,5 +275,23 @@ module.exports = (pool, io) => {
     }
   });
 
+  //   Route to get Event Data
+  router.patch("/", async (req, res) => {
+    const { educ_amount } = req.body;
+    try {
+      pool.query(
+        "UPDATE allocated_amounts SET education = educ_amount WHERE amount_id = 1;",
+        (err, results) => {
+          if (err) throw err;
+
+          res.json(results);
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching Student information.",
+      });
+    }
+  });
   return router;
 };

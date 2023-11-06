@@ -202,6 +202,7 @@ const poverty = require("./routes/foundation/pillars/poverty.routes");
 const books = require("./routes/foundation/books/books.routes");
 const issuance = require("./routes/foundation/books/issuance.routes");
 const sales = require("./routes/foundation/books/sales.routes");
+const amounts = require("./routes/foundation/pillars/amounts.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -249,6 +250,7 @@ app.use("/api/poverty", poverty(foundationPool));
 app.use("/api/books", books(foundationPool));
 app.use("/api/issuance", issuance(foundationPool));
 app.use("/api/sales", sales(foundationPool));
+app.use("/api/amounts", amounts(foundationPool));
 
 
 app.use("/api/plots", plots(logisticsPool));

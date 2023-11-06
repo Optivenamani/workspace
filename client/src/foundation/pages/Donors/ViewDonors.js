@@ -305,6 +305,7 @@ const ViewDonors = () => {
                     name="donorAmount"
                     value={donorAmount}
                     onChange={(e) => setDonorAmount(e.target.value)}
+                    type="number"
                     spellCheck
                     required
                   />
