@@ -116,7 +116,7 @@ const DonorReport = () => {
                   onChange={(e) => setEndDate(e.target.value)}
                 />
                 <div className="form-control mt-6">
-                  <button className="btn btn-primary">Download PDF</button>
+                  <button className="btn btn-primary" onClick={handleDownload} >Download PDF</button>
                 </div>
               </div>
             </div>

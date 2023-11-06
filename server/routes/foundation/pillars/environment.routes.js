@@ -121,9 +121,6 @@ module.exports = (pool, io) => {
                   "auto",
                   "auto",
                   "auto",
-                  "auto",
-                  "auto",
-                  "auto",
                 ],
                 body: [
                   [
