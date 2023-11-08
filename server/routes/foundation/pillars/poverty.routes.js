@@ -1,6 +1,8 @@
 const express = require("express");
 const ExcelJS = require("exceljs");
 const multer = require("multer");
+const upload = multer();
+
 const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
 const router = express.Router();
@@ -24,12 +26,12 @@ function dataToPdfRows(data) {
   return data.map((item, index) => {
     return [
       { text: index + 1 ?? "", style: "tableCell" },
-      { text: item.educ_name ?? "", style: "tableCell" },
-      { text: item.educ_age ?? "", style: "tableCell" },
-      { text: item.educ_gender ?? "", style: "tableCell" },
-      { text: item.educ_phone ?? "", style: "tableCell" },
-      { text: item.educ_level ?? "", style: "tableCell" },
-      { text: item.educ_amount ?? "", style: "tableCell" },
+      { text: item.pov_name ?? "", style: "tableCell" },
+      { text: item.pov_age ?? "", style: "tableCell" },
+      { text: item.pov_gender ?? "", style: "tableCell" },
+      { text: item.pov_contact ?? "", style: "tableCell" },
+      { text: item.pov_amount ?? "", style: "tableCell" },
+      { text: item.pov_comment ?? "", style: "tableCell" },
     ];
   });
 }
@@ -60,11 +62,9 @@ module.exports = (pool, io) => {
                 "An error occurred while adding the Poverty Alleviation Project.",
             });
           }
-          res
-            .status(201)
-            .json({
-              message: "Poverty Alleviation Project added successfully!",
-            });
+          res.status(201).json({
+            message: "Poverty Alleviation Project added successfully!",
+          });
         }
       );
     } catch (error) {
@@ -223,5 +223,81 @@ module.exports = (pool, io) => {
       res.status(500).json({ error: error.message });
     }
   });
+
+  // Route to upload excel sheet
+  router.post("/upload", upload.single("file"), async (req, res) => {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(req.file.buffer);
+      const worksheet = workbook.getWorksheet(1); // Assuming data is in the first worksheet
+
+      const dataFromExcel = [];
+
+      // Iterate through rows and columns to extract data
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber !== 1) {
+          // Skip header row
+          const rowData = {
+            pov_name: row.getCell(1).value, // Assuming data in column A
+            pov_age: row.getCell(2).value, // Assuming data in column F
+            pov_gender: row.getCell(3).value, // Assuming data in column E
+            pov_contact: row.getCell(3).value, // Assuming data in column E
+            pov_amount: row.getCell(3).value, // Assuming data in column E
+            pov_comment: row.getCell(3).value, // Assuming data in column E
+
+          };
+          dataFromExcel.push(rowData);
+        }
+      });
+
+      // Insert data into the database
+      const insertQuery = `
+        INSERT INTO poverty (pov_name, pov_age, pov_gender, pov_contact, pov_amount, pov_comment)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+
+      // Prepare data for insertion
+      const values = dataFromExcel.map((row) => [
+        row.pov_name,
+        row.pov_age,
+        row.pov_gender,
+        row.pov_contact,
+        row.pov_amount,
+        row.pov_comment,
+      ]);
+
+      // Execute the insert query with multiple values
+      pool.getConnection((err, connection) => {
+        if (err) {
+          console.error("Error establishing database connection:", err);
+          res
+            .status(500)
+            .send("Error processing Excel file and saving to the database");
+          return;
+        }
+
+        connection.query(insertQuery, values.flat(), (error, results) => {
+          connection.release(); // Release the connection back to the pool
+
+          if (error) {
+            console.error("Error inserting data into the database:", error);
+            res
+              .status(500)
+              .send("Error processing Excel file and saving to the database");
+          } else {
+            res
+              .status(200)
+              .send(
+                "Data from Excel sheet processed and saved to the database successfully."
+              );
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error processing Excel file:", error);
+      res.status(500).send("Error processing Excel file.");
+    }
+  });
+
   return router;
 };

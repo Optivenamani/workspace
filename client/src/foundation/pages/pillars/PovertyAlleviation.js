@@ -17,6 +17,9 @@ const PovertyAlleviation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModal3Open, setIsModal3Open] = useState(false);
+  const [allocatedAmount, setAllocatedAmount] = useState(0);
+  const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [poverty, setPov] = useState([]);
@@ -28,6 +31,10 @@ const PovertyAlleviation = () => {
 
   const closedModal = useCallback(() => {
     setIsModal2Open(false);
+  }, []);
+
+  const closedModal3 = useCallback(() => {
+    setIsModal3Open(false);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -103,7 +110,7 @@ const PovertyAlleviation = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8080/api/education/upload",
+        "http://localhost:8080/api/poverty/upload",
         formData,
         {
           headers: {
@@ -123,6 +130,46 @@ const PovertyAlleviation = () => {
     } catch (error) {
       console.error("Upload Error:", error);
       toast.error("Error uploading file", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onUpdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/amounts/3", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount: modifiedAllocatedAmount }),
+      });
+
+      setAllocatedAmount(0);
+
+      console.log("Upload Response:", response.data);
+      toast.success("Amount Updated successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setIsModal3Open(false);
+      setAllocatedAmount(modifiedAllocatedAmount);
+    } catch (error) {
+      console.error("Upload Error:", error);
+      toast.error("Error Updating Amount", {
         position: "top-center",
         closeOnClick: true,
         pauseOnHover: true,
@@ -228,7 +275,24 @@ const PovertyAlleviation = () => {
     fetchEvents();
   }, []);
 
-  
+  useEffect(() => {
+    const fetchAmounts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/amounts", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        const finalAmount = data.filter((item) => item.id === 3)[0].amount;
+
+        setAllocatedAmount(finalAmount);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAmounts();
+  }, []);
   // Calculate the total sum of educ_amount values
   const totalAmount = poverty.reduce((sum, item) => {
     // Parse the educ_amount string to a number and add it to the sum
@@ -497,9 +561,72 @@ const PovertyAlleviation = () => {
                       <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      2.7K
+                      {allocatedAmount}
                     </h2>
-                    <p className="leading-relaxed">Total Revenue</p>
+                    <button
+                      className="btn btn-sm btn-outline btn-success"
+                      onClick={() => setIsModal3Open(true)}
+                    >
+                      Update Amount Allocated
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </button>
+                    <Modal
+                      isOpen={isModal3Open}
+                      onRequestClose={closedModal3}
+                      className="modal-box container mx-auto"
+                    >
+                      {" "}
+                      <button
+                        onClick={closedModal3}
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                      >
+                        ✕
+                      </button>
+                      {/* Add your form fields or other content here */}
+                      <figure className="px-10 pt-10">
+                        <img
+                          src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
+                          alt="Upload"
+                          className="rounded-xl"
+                        />
+                      </figure>
+                      <div className="card-body">
+                        <form onSubmit={onUpdate}>
+                          <label className="label font-bold3 text-center">
+                            Kindly Update the Amount
+                          </label>
+                          <input
+                            type="number"
+                            value={modifiedAllocatedAmount}
+                            onChange={(e) =>
+                              setModifiedAllocatedAmount(e.target.value)
+                            }
+                            className="input input-bordered w-full"
+                            required
+                          />
+
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-full mt-2"
+                          >
+                            {loading ? "Uploading..." : "Upload"}
+                          </button>
+                        </form>{" "}
+                      </div>
+                    </Modal>{" "}
                   </div>
                 </div>
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
@@ -518,7 +645,7 @@ const PovertyAlleviation = () => {
                       <path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                    {poverty.length}
+                      {poverty.length}
                     </h2>
                     <p className="leading-relaxed">Outreached</p>
                   </div>
@@ -538,7 +665,7 @@ const PovertyAlleviation = () => {
                       <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                    {events.length}
+                      {events.length}
                     </h2>
                     <p className="leading-relaxed">Events</p>
                   </div>
@@ -557,7 +684,7 @@ const PovertyAlleviation = () => {
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                    {totalAmount.toLocaleString()}
+                      {totalAmount.toLocaleString()}
                     </h2>
                     <p className="leading-relaxed">Total Money used</p>
                   </div>

@@ -33,7 +33,7 @@ module.exports = (pool, io) => {
   router.get("/", async (req, res) => {
     try {
       pool.query(
-        "SELECT MAX(education) AS latest_value FROM allocated_amounts",
+        "SELECT * FROM allocated_amounts",
         (err, results) => {
           if (err) throw err;
 
@@ -47,15 +47,15 @@ module.exports = (pool, io) => {
     }
   });
 
-  // Update an amount
-  router.patch("/", async (req, res) => {
-    const { education, health, environment, poverty } = req.body;
-    const { amount_id } = req.params;
+  // Update an allocation amount
+  router.patch("/:id", async (req, res) => {
+    const { amount } = req.body;
+    const { id } = req.params;
 
     try {
       pool.query(
-        "UPDATE allocated_amounts SET education = ?, health = ?, environment = ?, poverty = ? WHERE amount_id = 1",
-        [education, health, environment, poverty, amount_id],
+        "UPDATE allocated_amounts SET amount = ? WHERE id = ?",
+        [amount, id],
         (err, result) => {
           if (err) throw err;
 

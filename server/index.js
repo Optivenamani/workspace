@@ -251,6 +251,7 @@ app.use("/api/books", books(foundationPool));
 app.use("/api/issuance", issuance(foundationPool));
 app.use("/api/sales", sales(foundationPool));
 app.use("/api/amounts", amounts(foundationPool));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 app.use("/api/plots", plots(logisticsPool));

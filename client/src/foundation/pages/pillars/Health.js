@@ -14,11 +14,16 @@ const Health = () => {
   const [healthComplication, setHealthComplication] = useState("");
   const [healthAmount, setHealthAmount] = useState("");
   const [events, setEvents] = useState([]);
-
-  const [isModal2Open, setIsModal2Open] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
+  const [isModal3Open, setIsModal3Open] = useState(false);
+  const [allocatedAmount, setAllocatedAmount] = useState(0);
+  const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [educationAssisted, setEducationAssisted] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [health, setHealth] = useState([]);
   const token = useSelector((state) => state.user.token);
@@ -30,6 +35,41 @@ const Health = () => {
   const closedModal = useCallback(() => {
     setIsModal2Open(false);
   }, []);
+
+  const closedModal3 = useCallback(() => {
+    setIsModal3Open(false);
+  }, []);
+
+  const downloadTemplate = () => {
+    // Make a GET request to the server endpoint to download the template
+    axios({
+      url: "http://localhost:8080/api/health/download-template", // Replace with your server endpoint
+      method: "GET",
+      responseType: "blob", // Important: responseType must be 'blob' for binary data
+    })
+      .then((response) => {
+        // Create a blob from the binary data and create a download link
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template.xlsx"; // Specify the default download file name
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url); // Clean up the URL object after the download
+      })
+      .catch((error) => {
+        toast.error("Error downloading Excel Sheet", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,6 +136,12 @@ const Health = () => {
     }
   };
 
+  const [file, setFile] = useState(null);
+
+  const onFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
   const onFormSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -135,57 +181,45 @@ const Health = () => {
     }
   };
 
-  const downloadTemplate = () => {
-    // Make a GET request to the server endpoint to download the template
-    axios({
-      url: "http://localhost:8080/api/health/download-template", // Replace with your server endpoint
-      method: "GET",
-      responseType: "blob", // Important: responseType must be 'blob' for binary data
-    })
-      .then((response) => {
-        // Create a blob from the binary data and create a download link
-        const blob = new Blob([response.data], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "template.xlsx"; // Specify the default download file name
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url); // Clean up the URL object after the download
-      })
-      .catch((error) => {
-        toast.error("Error downloading Excel Sheet", {
-          position: "top-center",
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+  const onUpdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/amounts/4", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount: modifiedAllocatedAmount }),
       });
+
+      setAllocatedAmount(0);
+
+      console.log("Upload Response:", response.data);
+      toast.success("Amount Updated successfully!", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setIsModal3Open(false);
+      setAllocatedAmount(modifiedAllocatedAmount);
+    } catch (error) {
+      console.error("Upload Error:", error);
+      toast.error("Error Updating Amount", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const [file, setFile] = useState(null);
-
-  const onFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const filteredHealth = useMemo(() => {
-    return health.filter((item) => {
-      if (searchQuery === "") {
-        return true; // Include all items when the search query is empty
-      } else if (
-        item.health_name &&
-        item.health_name.toLowerCase().includes(searchQuery.toLowerCase())
-      ) {
-        return true; // Include the item if it matches the search query
-      } else {
-        return false; // Exclude the item if it doesn't match the search query
-      }
-    });
-  }, [searchQuery, health]);
 
   useEffect(() => {
     const fetchHealth = async () => {
@@ -229,14 +263,46 @@ const Health = () => {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    const fetchAmounts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/amounts/4", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        const finalAmount = data.filter((item) => item.id === 4)[0].amount;
+
+        setAllocatedAmount(finalAmount);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAmounts();
+  }, []);
+
+  const filteredHealth = useMemo(() => {
+    return health.filter((item) => {
+      if (searchQuery === "") {
+        return true; // Include all items when the search query is empty
+      } else if (
+        item.health_name &&
+        item.health_name.toLowerCase().includes(searchQuery.toLowerCase())
+      ) {
+        return true; // Include the item if it matches the search query
+      } else {
+        return false; // Exclude the item if it doesn't match the search query
+      }
+    });
+  }, [searchQuery, health]);
+
   // Calculate the total sum of educ_amount values
   const totalAmount = health.reduce((sum, item) => {
     // Parse the educ_amount string to a number and add it to the sum
     return sum + item.health_amount;
   }, 0);
   const formattedTotalAmount = totalAmount.toLocaleString();
-
-console.log(formattedTotalAmount); //
 
   return (
     <Sidebar>
@@ -315,12 +381,14 @@ console.log(formattedTotalAmount); //
                     />
                   </figure>
                   <div className="card-body">
-                    <form onSubmit={onFormSubmit}>
+                    <form onSubmit={onFormSubmit} 
+                    encType="multipart/form-data">
                       <label className="label font-bold3">
                         Kindly Upload the Excel Sheet
                       </label>
                       <input
                         type="file"
+                        name="file"
                         accept=".xlsx"
                         onChange={onFileChange}
                         className="file-input file-input-bordered file-input-primary w-full"
@@ -500,9 +568,72 @@ console.log(formattedTotalAmount); //
                       <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      2.7K
+                      {allocatedAmount}
                     </h2>
-                    <p className="leading-relaxed">Total Revenue</p>
+                    <button
+                      className="btn btn-sm btn-outline btn-success"
+                      onClick={() => setIsModal3Open(true)}
+                    >
+                      Update Amount Allocated
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </button>
+                    <Modal
+                      isOpen={isModal3Open}
+                      onRequestClose={closedModal3}
+                      className="modal-box container mx-auto"
+                    >
+                      {" "}
+                      <button
+                        onClick={closedModal3}
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                      >
+                        ✕
+                      </button>
+                      {/* Add your form fields or other content here */}
+                      <figure className="px-10 pt-10">
+                        <img
+                          src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
+                          alt="Upload"
+                          className="rounded-xl"
+                        />
+                      </figure>
+                      <div className="card-body">
+                        <form onSubmit={onUpdate}>
+                          <label className="label font-bold3 text-center">
+                            Kindly Update the Amount
+                          </label>
+                          <input
+                            type="number"
+                            value={modifiedAllocatedAmount}
+                            onChange={(e) =>
+                              setModifiedAllocatedAmount(e.target.value)
+                            }
+                            className="input input-bordered w-full"
+                            required
+                          />
+
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-full mt-2"
+                          >
+                            {loading ? "Uploading..." : "Upload"}
+                          </button>
+                        </form>{" "}
+                      </div>
+                    </Modal>{" "}
                   </div>
                 </div>
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">

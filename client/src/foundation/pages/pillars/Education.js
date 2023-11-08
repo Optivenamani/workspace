@@ -17,10 +17,12 @@ const Education = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [isModal3Open, setIsModal3Open] = useState(false);
-  const [allocatedAmount, setAllocatedAmount] = useState([]);
+  const [allocatedAmount, setAllocatedAmount] = useState(0);
+  const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
+  const [data, setData] = useState([]);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [educationAssisted, setEducationAssisted] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -177,21 +179,19 @@ const Education = () => {
 
   const onUpdate = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const amount = {
-      educ_amount: educAmount,
-    };
+
     try {
-      const response = await fetch("http://localhost:8080/api/amounts", {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/amounts/1", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(amount),
+        body: JSON.stringify({ amount: modifiedAllocatedAmount }),
       });
 
-      setAllocatedAmount("");
+      setAllocatedAmount(0);
 
       console.log("Upload Response:", response.data);
       toast.success("Amount Updated successfully!", {
@@ -201,6 +201,8 @@ const Education = () => {
         draggable: true,
         progress: undefined,
       });
+      setIsModal3Open(false);
+      setAllocatedAmount(modifiedAllocatedAmount);
     } catch (error) {
       console.error("Upload Error:", error);
       toast.error("Error Updating Amount", {
@@ -229,6 +231,8 @@ const Education = () => {
         const sortedData = data.sort((a, b) => {
           return b.id - a.id;
         });
+
+        console.log("educ data", sortedData)
 
         setEduc(sortedData);
       } catch (error) {
@@ -270,8 +274,9 @@ const Education = () => {
           },
         });
         const data = await response.json();
+        const finalAmount = data.filter((item) => item.id === 1)[0].amount;
 
-        setAllocatedAmount(data);
+        setAllocatedAmount(finalAmount);
       } catch (error) {
         console.error(error);
       }
@@ -378,12 +383,13 @@ const Education = () => {
                     />
                   </figure>
                   <div className="card-body">
-                    <form onSubmit={onFormSubmit}>
+                    <form onSubmit={onFormSubmit} encType="multipart/form-data">
                       <label className="label font-bold3">
                         Kindly Upload the Excel Sheet
                       </label>
                       <input
                         type="file"
+                        name="file"
                         accept=".xlsx"
                         onChange={onFileChange}
                         className="file-input file-input-bordered file-input-primary w-full"
@@ -573,7 +579,7 @@ const Education = () => {
                       <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29" />
                     </svg>
                     <h2 className="title-font font-medium text-3xl text-gray-900">
-                      {latestValue}
+                      {allocatedAmount}
                     </h2>
                     <button
                       className="btn btn-sm btn-outline btn-success"
@@ -622,8 +628,10 @@ const Education = () => {
                           </label>
                           <input
                             type="number"
-                            value={allocatedAmount}
-                            onChange={(e) => setAllocatedAmount(e.target.value)}
+                            value={modifiedAllocatedAmount}
+                            onChange={(e) =>
+                              setModifiedAllocatedAmount(e.target.value)
+                            }
                             className="input input-bordered w-full"
                             required
                           />
@@ -776,6 +784,13 @@ const Education = () => {
                                   <div>{educ.educ_name}</div>
                                   <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
                                     {educ.educ_age} years old
+                                  </div>
+                                  <div className="mask mask-squircle w-12 h-12">
+                                    <img
+                                      src={educ.educ_image}
+                                      alt={educ.educ_name}
+                                      style={{ maxWidth: "100px", maxHeight: "100px" }}
+                                    />
                                   </div>
                                 </div>
                               </td>

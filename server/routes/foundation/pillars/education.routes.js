@@ -38,9 +38,12 @@ function dataToPdfRows(data) {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// multer config for image upload
+const imageUpload = multer({ dest: "uploads/" });
+
 module.exports = (pool, io) => {
-  // Route for the Add event modal
-  router.post("/", authenticateJWT, async (req, res) => {
+  // Route for adding education details
+  router.post("/", imageUpload.single("educ_image"), async (req, res) => {
     const {
       educ_name,
       educ_age,
@@ -49,10 +52,21 @@ module.exports = (pool, io) => {
       educ_level,
       educ_amount,
     } = req.body;
+
+    const educ_image = req.file.path.replace(/^uploads[\\\/]/, ""); // Remove 'uploads/' from the beginning of the path
+
     try {
       pool.query(
-        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `educ_amount`, `created_at`)  VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
-        [educ_name, educ_age, educ_gender, educ_phone, educ_level, educ_amount],
+        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `educ_amount`, `educ_image`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
+        [
+          educ_name,
+          educ_age,
+          educ_gender,
+          educ_phone,
+          educ_level,
+          educ_amount,
+          educ_image,
+        ],
         (err, result) => {
           if (err) {
             console.error("Database Error:", err);
@@ -69,14 +83,27 @@ module.exports = (pool, io) => {
       });
     }
   });
-
-  //   Route to get Event Data
+  
+  // Route to get Education Data
   router.get("/", async (req, res) => {
     try {
       pool.query("SELECT * FROM education", (err, results) => {
         if (err) throw err;
 
-        res.json(results);
+        const educationDataWithImageUrls = results.map((education) => {
+          return {
+            educ_id: education.educ_id,
+            educ_name: education.educ_name,
+            educ_age: education.educ_age,
+            educ_gender: education.educ_gender,
+            educ_phone: education.educ_phone,
+            educ_level: education.educ_level,
+            educ_amount: education.educ_amount,
+            educ_image: `http://localhost:8080/uploads/${education.educ_image}`, // Replace with your actual server address
+          };
+        });
+
+        res.json(educationDataWithImageUrls);
       });
     } catch (error) {
       res.status(500).json({
@@ -84,6 +111,7 @@ module.exports = (pool, io) => {
       });
     }
   });
+
   // Route to upload excel sheet
   router.post("/upload", upload.single("file"), async (req, res) => {
     try {
@@ -98,13 +126,12 @@ module.exports = (pool, io) => {
         if (rowNumber !== 1) {
           // Skip header row
           const rowData = {
-            column1: row.getCell(1).value, // Assuming data in column A
-            column2: row.getCell(2).value, // Assuming data in column B
-            column3: row.getCell(3).value, // Assuming data in column C
-            column4: row.getCell(4).value, // Assuming data in column D
-            column5: row.getCell(5).value, // Assuming data in column E
-            column6: row.getCell(6).value, // Assuming data in column F
-            // Add more columns as needed
+            educ_name: row.getCell(1).value, // Assuming data in column A
+            educ_age: row.getCell(2).value, // Assuming data in column B
+            educ_gender: row.getCell(3).value, // Assuming data in column C
+            educ_phone: row.getCell(4).value, // Assuming data in column D
+            educ_level: row.getCell(5).value, // Assuming data in column E
+            educ_amount: row.getCell(6).value, // Assuming data in column F
           };
           dataFromExcel.push(rowData);
         }
@@ -112,34 +139,53 @@ module.exports = (pool, io) => {
 
       // Insert data into the database
       const insertQuery = `
-        INSERT INTO education (educ_name, educ_age, educ_gender, educ_phone, educ_level, educ_amount)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `;
+      INSERT INTO education (educ_name, educ_age, educ_gender, educ_phone, educ_level, educ_amount)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
       // Prepare data for insertion
       const values = dataFromExcel.map((row) => [
-        row.column1,
-        row.column2,
-        row.column3,
-        row.column4,
-        row.column5,
-        row.column6,
+        row.educ_name,
+        row.educ_age,
+        row.educ_gender,
+        row.educ_phone,
+        row.educ_level,
+        row.educ_amount,
       ]);
 
       // Execute the insert query with multiple values
-      await pool.query(insertQuery, values);
+      pool.getConnection((err, connection) => {
+        if (err) {
+          console.error("Error establishing database connection:", err);
+          res
+            .status(500)
+            .send("Error processing Excel file and saving to the database");
+          return;
+        }
 
-      res.status(200).send("Data saved to the database");
+        connection.query(insertQuery, values.flat(), (error, results) => {
+          connection.release(); // Release the connection back to the pool
+
+          if (error) {
+            console.error("Error inserting data into the database:", error);
+            res
+              .status(500)
+              .send("Error processing Excel file and saving to the database");
+          } else {
+            res
+              .status(200)
+              .send(
+                "Data from Excel sheet processed and saved to the database successfully."
+              );
+          }
+        });
+      });
     } catch (error) {
-      console.error(
-        "Error processing Excel file and saving to the database:",
-        error
-      );
-      res
-        .status(500)
-        .send("Error processing Excel file and saving to the database");
+      console.error("Error processing Excel file:", error);
+      res.status(500).send("Error processing Excel file.");
     }
   });
+
   // Route to download Excel sheet
   router.get("/download-template", (req, res) => {
     // Create a new workbook
@@ -168,6 +214,7 @@ module.exports = (pool, io) => {
       res.end();
     });
   });
+
   // Download the Student data info in a pdf
   router.get("/download-pdf", async (req, res) => {
     try {
@@ -293,5 +340,56 @@ module.exports = (pool, io) => {
       });
     }
   });
+
+  //Route to turn data to EXCEL SHEET
+  // router.get("/download-excel", async (req, res) => {
+  //   try {
+  //     // Fetch data from the database
+  //     const dataFromDB = await fetchDataFromDB(); // Modify this based on your database retrieval logic
+
+  //     // Create a new Excel workbook and worksheet
+  //     const workbook = new ExcelJS.Workbook();
+  //     const worksheet = workbook.addWorksheet("Data"); // You can change the sheet name if desired
+
+  //     // Add headers to the worksheet
+  //     worksheet.addRow([
+  //       "Name of The student",
+  //       "Age of The student",
+  //       "Gender of The student",
+  //       "Phone Contact",
+  //       "Level of Education",
+  //       "Amount Disbursed",
+  //     ]); // Modify these headers based on your data structure
+
+  //     // Iterate through dataFromDB and add rows to the worksheet
+  //     dataFromDB.forEach((row) => {
+  //       const rowData = [row.educ_name, row.educ_age, row.educ_gender, row.educ_phone, row.educ_level, row.educ_amount]; // Modify this based on your data structure
+  //       worksheet.addRow(rowData);
+  //     });
+
+  //     // Save the workbook to a buffer and send it as a response
+  //     workbook.xlsx
+  //       .writeBuffer()
+  //       .then((buffer) => {
+  //         res.setHeader(
+  //           "Content-Type",
+  //           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  //         );
+  //         res.setHeader(
+  //           "Content-Disposition",
+  //           "attachment; filename=data.xlsx"
+  //         );
+  //         res.send(buffer);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error creating Excel sheet:", error);
+  //         res.status(500).send("Error creating Excel sheet");
+  //       });
+  //   } catch (error) {
+  //     console.error("Error fetching data from the database:", error);
+  //     res.status(500).send("Error fetching data from the database");
+  //   }
+  // });
+
   return router;
 };
