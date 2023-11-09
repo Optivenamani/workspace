@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../../foundation/components/Sidebar";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import logo from "../../../assets/optiven-logo-full.png";
 
 const Education = () => {
   const [educName, setEducName] = useState("");
@@ -232,7 +233,7 @@ const Education = () => {
           return b.id - a.id;
         });
 
-        console.log("educ data", sortedData)
+        console.log("educ data", sortedData);
 
         setEduc(sortedData);
       } catch (error) {
@@ -333,6 +334,7 @@ const Education = () => {
                   </button>
                 </p>
               </div>
+              {/*ACTION BUTTONS CODE*/}
               <div className="flex items-center mt-4 gap-x-3">
                 <button
                   className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
@@ -504,11 +506,45 @@ const Education = () => {
                         <option value="None Selected">
                           Please select Educational Level of the Student
                         </option>
-                        <option value="Primary">Primary</option>
-                        <option value="Secondary">Secondary</option>
-                        <option value="University">University (GSS)</option>
-                        <option value="University">University (TVET)</option>
-                        <option value="University">University (SELF)</option>
+                        <option value="PP1">PP1</option>
+                        <option value="PP2">PP2</option>
+                        <option value="Lower Primary Grade 1">
+                          Lower Primary Grade 1
+                        </option>
+                        <option value="Lower Primary Grade 2">
+                          Lower Primary Grade 2
+                        </option>
+                        <option value="Lower Primary Grade 3">
+                          Lower Primary Grade 3
+                        </option>
+                        <option value="Lower Primary Grade 4">
+                          Lower Primary Grade 4
+                        </option>
+                        <option value="Lower Primary Grade 5">
+                          Lower Primary Grade 5
+                        </option>
+                        <option value="Lower Primary Grade 6">
+                          Lower Primary Grade 6
+                        </option>
+                        <option value="Junior Secondary Grade 7">
+                          Junior Secondary Grade 7
+                        </option>
+                        <option value="Junior Secondary Grade 8">
+                          Junior Secondary Grade 8
+                        </option>
+                        <option value="Junior Secondary Grade 9">
+                          Junior Secondary Grade 9
+                        </option>
+                        <option value="Senior Secondary Grade 10">
+                          Senior Secondary Grade 10
+                        </option>
+                        <option value="Senior Secondary Grade 11">
+                          Senior Secondary Grade 11
+                        </option>
+                        <option value="Senior Secondary Grade 12">
+                          Senior Secondary Grade 12
+                        </option>
+                        <option value="University">University</option>
                       </select>
                       <label className="label font-bold text-xs">
                         Amount Disbursed for the student
@@ -522,6 +558,30 @@ const Education = () => {
                         required
                         type="number"
                       />
+                      <label className="label font-bold text-xs">
+                        Confirmation of pay
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="educAmount"
+                        value={educAmount}
+                        onChange={(e) => setEducAmount(e.target.value)}
+                        spellCheck
+                        required
+                        type="number"
+                      />
+                      <label className="label font-bold text-xs">
+                      Case History
+                    </label>
+                    <input
+                      className="input input-bordered w-full"
+                      name="educAmount"
+                      value={educAmount}
+                      onChange={(e) => setEducAmount(e.target.value)}
+                      spellCheck
+                      required
+                      type="textarea"
+                    />
                       <button
                         type="submit"
                         className="btn btn-outline my-4 w-full bg-green"
@@ -561,7 +621,7 @@ const Education = () => {
                 />
               </div>
             </div>
-            {/*BOXES */}
+            {/*BOXES*/}
             <div className="container px-0 py-4 mx-auto">
               <div className="flex flex-wrap m-4 text-center">
                 <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
@@ -708,6 +768,10 @@ const Education = () => {
                   </div>
                 </div>
               </div>
+              <div className="text-center text-dark">
+                ~ REGISTERED STUDENTS ~
+              </div>
+              {/*FIRST TABLE*/}
               <div className="flex flex-col mt-6">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -780,17 +844,26 @@ const Education = () => {
                           {filteredEducated.map((educ, index) => (
                             <tr key={index}>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-start">
-                                <div className="flex flex-col justify-center items-start">
-                                  <div>{educ.educ_name}</div>
-                                  <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
-                                    {educ.educ_age} years old
-                                  </div>
-                                  <div className="mask mask-squircle w-12 h-12">
+                                <div className="flex  items-center">
+                                  <div className="mask mask-circle w-12 h-12">
                                     <img
-                                      src={educ.educ_image}
+                                      src={
+                                        educ.educ_image === ""
+                                          ? educ.educ_image
+                                          : require("../../../assets/avatar.jpg")
+                                      }
                                       alt={educ.educ_name}
-                                      style={{ maxWidth: "100px", maxHeight: "100px" }}
+                                      style={{
+                                        maxWidth: "50px",
+                                        maxHeight: "60px",
+                                      }}
                                     />
+                                  </div>
+                                  <div className="ml-4">
+                                    <div>{educ.educ_name}</div>
+                                    <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
+                                      {educ.educ_age} years old
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -816,6 +889,7 @@ const Education = () => {
                   </div>
                 </div>
               </div>
+              {/*SECOND TABLE*/}
             </div>
           </section>
         </div>
