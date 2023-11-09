@@ -15,6 +15,9 @@ const Education = () => {
   const [educPhone, setEducPhone] = useState("");
   const [educLevel, setEducLevel] = useState("");
   const [educAmount, setEducAmount] = useState("");
+  const [educPay, setEducPay] = useState("");
+  const [educHistory, setEducHistory] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [isModal3Open, setIsModal3Open] = useState(false);
@@ -82,6 +85,7 @@ const Education = () => {
       educ_phone: educPhone,
       educ_level: educLevel,
       educ_amount: educAmount,
+      
     };
     try {
       const response = await fetch("http://localhost:8080/api/education", {
