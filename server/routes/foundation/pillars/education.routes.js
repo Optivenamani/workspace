@@ -112,6 +112,42 @@ module.exports = (pool, io) => {
     }
   });
 
+  //Route to insert Payment data
+  router.post("/payment", imageUpload.single("educ_image"), async (req, res) => {
+    const {
+      student_name,
+      student_level,
+      pay_amount,
+      pay_confirmation,
+    } = req.body;
+
+    try {
+      pool.query(
+        "INSERT INTO `payments`(`student_name`, `student_level`, `pay_amount`, `pay_confirmation`) VALUES (?, ?, ?, ?)",
+        [
+          student_name,
+          student_level,
+          pay_amount,
+          pay_confirmation,
+        ],
+        (err, result) => {
+          if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).json({
+              message: "An error occurred while adding the Payment.",
+            });
+          }
+          res.status(201).json({ message: "Payment added successfully!" });
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while adding the Payment.",
+      });
+    }
+  });
+  
+
   // Route to upload excel sheet
   router.post("/upload", upload.single("file"), async (req, res) => {
     try {

@@ -10,20 +10,24 @@ module.exports = (pool, io) => {
       book_code,
       book_price,
       book_copies,
+      person_responsible,
       book_amount_expected,
       book_amount_given,
+      book_status,
       authenticateJWT,
     } = req.body;
     try {
       pool.query(
-        "INSERT INTO `book_sales`(`book_name`, `book_code`, `book_price`, `book_copies`, `book_amount_expected`, `book_amount_given`) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO `book_sales`(`book_name`, `book_code`, `book_price`, `book_copies`, `person_responsible`, `book_amount_expected`, `book_amount_given`, `book_status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         [
           book_name,
           book_code,
           book_price,
           book_copies,
+          person_responsible,
           book_amount_expected,
           book_amount_given,
+          book_status,
         ],
         (err, result) => {
           if (err) {

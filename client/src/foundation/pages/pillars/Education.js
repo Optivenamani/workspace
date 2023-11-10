@@ -15,12 +15,17 @@ const Education = () => {
   const [educPhone, setEducPhone] = useState("");
   const [educLevel, setEducLevel] = useState("");
   const [educAmount, setEducAmount] = useState("");
-  const [educPay, setEducPay] = useState("");
   const [educHistory, setEducHistory] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [paidAmount, setPaidAmount] = useState("");
+  const [payConfirmation, setPayConfirmation] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [isModal3Open, setIsModal3Open] = useState(false);
+  const [isModal4Open, setIsModal4Open] = useState(false);
+
   const [allocatedAmount, setAllocatedAmount] = useState(0);
   const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
   const [data, setData] = useState([]);
@@ -42,6 +47,9 @@ const Education = () => {
   }, []);
   const closedModal3 = useCallback(() => {
     setIsModal3Open(false);
+  }, []);
+  const closedModal4 = useCallback(() => {
+    setIsModal4Open(false);
   }, []);
 
   const downloadTemplate = () => {
@@ -85,7 +93,7 @@ const Education = () => {
       educ_phone: educPhone,
       educ_level: educLevel,
       educ_amount: educAmount,
-      
+      case_history: educHistory,
     };
     try {
       const response = await fetch("http://localhost:8080/api/education", {
@@ -124,6 +132,7 @@ const Education = () => {
       setEducPhone("");
       setEducLevel("");
       setEducAmount("");
+      setEducHistory("");
     } catch (error) {
       // Display error notification
       toast.error(error, {
@@ -136,7 +145,65 @@ const Education = () => {
       setLoading(false);
     }
   };
+  const handleSubmission = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const educ = {
+      student_name: selectedStudent,
+      student_level: selectedLevel,
+      pay_amount: paidAmount,
+      pay_confirmation: payConfirmation,
+    };
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/education/payment",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(educ),
+        }
+      );
+      if (!response.ok) {
+        toast.error("Error adding Payment", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      // Display success notification
+      else {
+        toast.success("Payment added successfully!", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      setLoading(false);
+      closeModal();
 
+      setSelectedStudent("");
+      setSelectedLevel("");
+      setPaidAmount("");
+      setPayConfirmation("");
+    } catch (error) {
+      // Display error notification
+      toast.error(error, {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setLoading(false);
+    }
+  };
   const [file, setFile] = useState(null);
 
   const onFileChange = (event) => {
@@ -310,7 +377,7 @@ const Education = () => {
     return sum + item.educ_amount;
   }, 0);
   const latestValue = allocatedAmount[0]?.latest_value;
-  console.log("Latest Value:", latestValue);
+  console.log("Latest Value:", educ);
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -428,7 +495,7 @@ const Education = () => {
                       d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span>Add one Student</span>
+                  <span>Register Student</span>
                 </button>
                 <Modal
                   isOpen={isModalOpen}
@@ -508,7 +575,7 @@ const Education = () => {
                         required
                       >
                         <option value="None Selected">
-                          Please select Educational Level of the Student
+                          Please select Initial Educational Level of the Student
                         </option>
                         <option value="PP1">PP1</option>
                         <option value="PP2">PP2</option>
@@ -551,41 +618,17 @@ const Education = () => {
                         <option value="University">University</option>
                       </select>
                       <label className="label font-bold text-xs">
-                        Amount Disbursed for the student
+                        Case History
                       </label>
                       <input
                         className="input input-bordered w-full"
-                        name="educAmount"
-                        value={educAmount}
-                        onChange={(e) => setEducAmount(e.target.value)}
+                        name="educHistory"
+                        value={educHistory}
+                        onChange={(e) => setEducHistory(e.target.value)}
                         spellCheck
                         required
-                        type="number"
+                        type="textarea"
                       />
-                      <label className="label font-bold text-xs">
-                        Confirmation of pay
-                      </label>
-                      <input
-                        className="input input-bordered w-full"
-                        name="educAmount"
-                        value={educAmount}
-                        onChange={(e) => setEducAmount(e.target.value)}
-                        spellCheck
-                        required
-                        type="number"
-                      />
-                      <label className="label font-bold text-xs">
-                      Case History
-                    </label>
-                    <input
-                      className="input input-bordered w-full"
-                      name="educAmount"
-                      value={educAmount}
-                      onChange={(e) => setEducAmount(e.target.value)}
-                      spellCheck
-                      required
-                      type="textarea"
-                    />
                       <button
                         type="submit"
                         className="btn btn-outline my-4 w-full bg-green"
@@ -836,12 +879,6 @@ const Education = () => {
                             >
                               Level of Education
                             </th>
-                            <th
-                              scope="col"
-                              className="px-4 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
-                            >
-                              Amount
-                            </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
@@ -882,9 +919,6 @@ const Education = () => {
                                   {educ.educ_level}
                                 </div>
                               </td>
-                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                {educ.educ_amount}
-                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -894,6 +928,272 @@ const Education = () => {
                 </div>
               </div>
               {/*SECOND TABLE*/}
+              <div className="sm:flex sm:items-center sm:justify-between mx-8 pt-6">
+                <div>
+                  <div className="flex items-center gap-x-3">
+                    <h2 className="text-lg font-medium text-gray-800 dark:text-white">
+                      Payments made
+                    </h2>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
+                    These are all the Payments made for the Students under this
+                    Pillar.<br></br>
+                    <button
+                      onClick={downloadTemplate}
+                      className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start"
+                    >
+                      Please click below to
+                      <div className="underline">Download Excel Sheet</div>
+                    </button>
+                  </p>
+                </div>
+                {/*ACTION BUTTONS CODE*/}
+                <div className="flex items-center mt-4 gap-x-3">
+                  <button
+                    className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
+                    onClick={() => setIsModal2Open(true)}
+                  >
+                    <svg
+                      width={20}
+                      height={20}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g clipPath="url(#clip0_3098_154395)">
+                        <path
+                          d="M13.3333 13.3332L9.99997 9.9999M9.99997 9.9999L6.66663 13.3332M9.99997 9.9999V17.4999M16.9916 15.3249C17.8044 14.8818 18.4465 14.1806 18.8165 13.3321C19.1866 12.4835 19.2635 11.5359 19.0351 10.6388C18.8068 9.7417 18.2862 8.94616 17.5555 8.37778C16.8248 7.80939 15.9257 7.50052 15 7.4999H13.95C13.6977 6.52427 13.2276 5.61852 12.5749 4.85073C11.9222 4.08295 11.104 3.47311 10.1817 3.06708C9.25943 2.66104 8.25709 2.46937 7.25006 2.50647C6.24304 2.54358 5.25752 2.80849 4.36761 3.28129C3.47771 3.7541 2.70656 4.42249 2.11215 5.23622C1.51774 6.04996 1.11554 6.98785 0.935783 7.9794C0.756025 8.97095 0.803388 9.99035 1.07431 10.961C1.34523 11.9316 1.83267 12.8281 2.49997 13.5832"
+                          stroke="currentColor"
+                          strokeWidth="1.67"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_3098_154395">
+                          <rect width={20} height={20} fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                    <span>Import Students</span>
+                  </button>
+                  <Modal
+                    isOpen={isModal2Open}
+                    onRequestClose={closedModal}
+                    className="modal-box container mx-auto"
+                  >
+                    {" "}
+                    <button
+                      onClick={closedModal}
+                      className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                    >
+                      ✕
+                    </button>
+                    {/* Add your form fields or other content here */}
+                    <figure className="px-10 pt-10">
+                      <img
+                        src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
+                        alt="Upload"
+                        className="rounded-xl"
+                      />
+                    </figure>
+                    <div className="card-body">
+                      <form
+                        onSubmit={onFormSubmit}
+                        encType="multipart/form-data"
+                      >
+                        <label className="label font-bold3">
+                          Kindly Upload the Excel Sheet
+                        </label>
+                        <input
+                          type="file"
+                          name="file"
+                          accept=".xlsx"
+                          onChange={onFileChange}
+                          className="file-input file-input-bordered file-input-primary w-full"
+                          required
+                        />
+                        <button
+                          type="submit"
+                          className="btn btn-primary w-full mt-2"
+                        >
+                          {loading ? "Uploading..." : "Upload"}
+                        </button>
+                      </form>{" "}
+                    </div>
+                  </Modal>
+                  <button
+                    className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-primary rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600"
+                    onClick={() => setIsModal4Open(true)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>Register Student</span>
+                  </button>
+                  <Modal
+                    isOpen={isModal4Open}
+                    onRequestClose={closedModal4}
+                    className="modal-box container mx-auto"
+                  >
+                    {" "}
+                    <button
+                      onClick={closedModal4}
+                      className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                    >
+                      ✕
+                    </button>
+                    {/* Add your form fields or other content here */}
+                    <div>
+                      <form onSubmit={handleSubmission}>
+                        <label className="label font-bold text-xs">
+                          Make a Payment
+                        </label>
+                        <label className="label font-bold text-xs">
+                          Select the Student
+                        </label>
+                        <select
+                          className="input input-bordered w-full"
+                          name="educGender"
+                          value={educGender}
+                          onChange={(e) => setEducGender(e.target.value)}
+                          required
+                        >
+                          <option value="">Please select a student</option>
+                          {filteredEducated.map((student) => (
+                            // Use the student's name as the value and label
+                            <option key={educ.educ_name} value={educ.educ_name}>
+                              {educ.educ_name}
+                            </option>
+                          ))}
+                        </select>
+                        <label className="label font-bold text-xs">
+                          Select Level of the Student
+                        </label>
+                        <select
+                          className="input input-bordered w-full"
+                          name="educLevel"
+                          value={educLevel}
+                          onChange={(e) => setEducLevel(e.target.value)}
+                          required
+                        >
+                          <option value="None Selected">
+                            Please select Educational Level of the Student
+                          </option>
+                          <option value="PP1">PP1</option>
+                          <option value="PP2">PP2</option>
+                          <option value="Lower Primary Grade 1">
+                            Lower Primary Grade 1
+                          </option>
+                          <option value="Lower Primary Grade 2">
+                            Lower Primary Grade 2
+                          </option>
+                          <option value="Lower Primary Grade 3">
+                            Lower Primary Grade 3
+                          </option>
+                          <option value="Lower Primary Grade 4">
+                            Lower Primary Grade 4
+                          </option>
+                          <option value="Lower Primary Grade 5">
+                            Lower Primary Grade 5
+                          </option>
+                          <option value="Lower Primary Grade 6">
+                            Lower Primary Grade 6
+                          </option>
+                          <option value="Junior Secondary Grade 7">
+                            Junior Secondary Grade 7
+                          </option>
+                          <option value="Junior Secondary Grade 8">
+                            Junior Secondary Grade 8
+                          </option>
+                          <option value="Junior Secondary Grade 9">
+                            Junior Secondary Grade 9
+                          </option>
+                          <option value="Senior Secondary Grade 10">
+                            Senior Secondary Grade 10
+                          </option>
+                          <option value="Senior Secondary Grade 11">
+                            Senior Secondary Grade 11
+                          </option>
+                          <option value="Senior Secondary Grade 12">
+                            Senior Secondary Grade 12
+                          </option>
+                          <option value="University">University</option>
+                        </select>
+                        <label className="label font-bold text-xs">
+                          Amount Disbursed{" "}
+                        </label>
+                        <input
+                          className="input input-bordered w-full"
+                          name="educPhone"
+                          value={educPhone}
+                          onChange={(e) => setEducPhone(e.target.value)}
+                          spellCheck
+                          required
+                        />
+                        <label className="label font-bold text-xs">
+                          Confirmation of pay{" "}
+                        </label>
+                        <input
+                          className="input input-bordered w-full"
+                          name="educHistory"
+                          value={educHistory}
+                          onChange={(e) => setEducHistory(e.target.value)}
+                          spellCheck
+                          required
+                          type="textarea"
+                        />
+                        <button
+                          type="submit"
+                          className="btn btn-outline my-4 w-full bg-green"
+                        >
+                          {loading ? "Submitting..." : "Submit"}
+                        </button>
+                      </form>{" "}
+                    </div>
+                  </Modal>
+                </div>
+              </div>
+              {/*Search Button*/}
+              <div className="mt-6 md:flex md:items-center md:justify-between">
+                <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700"></div>
+                <div className="relative flex items-center mt-4 md:mt-0">
+                  <span className="absolute">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                      />
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    placeholder="Search student by name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </section>
         </div>
