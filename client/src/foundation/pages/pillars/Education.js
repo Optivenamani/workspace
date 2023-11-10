@@ -6,8 +6,12 @@ import Sidebar from "../../../foundation/components/Sidebar";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import logo from "../../../assets/optiven-logo-full.png";
+import { v4 as uuidv4 } from "uuid";
 
 const Education = () => {
+  // Inside your component:
+  const uniqueId = uuidv4();
+
   const [educName, setEducName] = useState("");
   const [events, setEvents] = useState([]);
   const [educAge, setEducAge] = useState("");
@@ -1040,7 +1044,7 @@ const Education = () => {
                         d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span>Register Student</span>
+                    <span>Register Payment</span>
                   </button>
                   <Modal
                     isOpen={isModal4Open}
@@ -1065,27 +1069,27 @@ const Education = () => {
                         </label>
                         <select
                           className="input input-bordered w-full"
-                          name="educGender"
-                          value={educGender}
-                          onChange={(e) => setEducGender(e.target.value)}
+                          name="selectedStudent"
+                          value={selectedStudent}
+                          onChange={(e) => setSelectedStudent(e.target.value)}
                           required
                         >
                           <option value="">Please select a student</option>
-                          {filteredEducated.map((student) => (
-                            // Use the student's name as the value and label
-                            <option key={educ.educ_name} value={educ.educ_name}>
+                          {filteredEducated.map((educ) => (
+                            <option key={uuidv4()} value={educ.educ_name}>
                               {educ.educ_name}
                             </option>
                           ))}
                         </select>
+
                         <label className="label font-bold text-xs">
                           Select Level of the Student
                         </label>
                         <select
                           className="input input-bordered w-full"
-                          name="educLevel"
-                          value={educLevel}
-                          onChange={(e) => setEducLevel(e.target.value)}
+                          name="selectedLevel"
+                          value={selectedLevel}
+                          onChange={(e) => setSelectedLevel(e.target.value)}
                           required
                         >
                           <option value="None Selected">
@@ -1136,20 +1140,30 @@ const Education = () => {
                         </label>
                         <input
                           className="input input-bordered w-full"
-                          name="educPhone"
-                          value={educPhone}
-                          onChange={(e) => setEducPhone(e.target.value)}
+                          name="paidAmount"
+                          value={paidAmount}
+                          onChange={(e) => setPaidAmount(e.target.value)}
+                          type="number"
                           spellCheck
                           required
                         />
+                        <input
+                        className="input input-bordered w-full"
+                        name="paidAmount"
+                        value={paidAmount}
+                        onChange={(e) => setPaidAmount(e.target.value)}
+                        type="number"
+                        spellCheck
+                        required
+                      />
                         <label className="label font-bold text-xs">
                           Confirmation of pay{" "}
                         </label>
                         <input
                           className="input input-bordered w-full"
-                          name="educHistory"
-                          value={educHistory}
-                          onChange={(e) => setEducHistory(e.target.value)}
+                          name="payConfirmation"
+                          value={payConfirmation}
+                          onChange={(e) => setPayConfirmation(e.target.value)}
                           spellCheck
                           required
                           type="textarea"
