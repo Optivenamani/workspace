@@ -1,25 +1,14 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../components/Sidebar";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import logo from "../../../assets/optiven-logo-full.png";
-import { v4 as uuidv4 } from "uuid";
 import Box from "./components/Box";
 import { Link } from "react-router-dom";
 
 const Education = () => {
-  // Inside your component:
-  const uniqueId = uuidv4();
-
   const [educName, setEducName] = useState("");
   const [events, setEvents] = useState([]);
   const [educAge, setEducAge] = useState("");
@@ -33,7 +22,7 @@ const Education = () => {
   const [paidAmount, setPaidAmount] = useState("");
   const [payConfirmation, setPayConfirmation] = useState("");
   const [educImage, setEducImage] = useState(null);
-
+  // modals
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [isModal3Open, setIsModal3Open] = useState(false);
@@ -42,17 +31,22 @@ const Education = () => {
 
   const [allocatedAmount, setAllocatedAmount] = useState(0);
   const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
-  const [data, setData] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [educationAssisted, setEducationAssisted] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [educ, setEduc] = useState([]);
+  const [editEduc, setEditEduc] = useState({
+    educ_name: "",
+    educ_age: 0,
+    educ_gender: "",
+    educ_phone: "",
+    educ_level: "",
+    educ_history: "",
+    educ_image: "",
+  });
   const [pay, setPay] = useState([]);
   const token = useSelector((state) => state.user.token);
-  const [selectedStatus, setSelectedStatus] = useState("all");
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -69,6 +63,7 @@ const Education = () => {
   const closedModal5 = useCallback(() => {
     setIsModal5Open(false);
   }, []);
+
   const downloadTemplate = () => {
     // Make a GET request to the server endpoint to download the template
     axios({
@@ -100,7 +95,7 @@ const Education = () => {
       });
   };
 
-  const handleSubmit = async (e) => {
+  const addStudent = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -269,12 +264,84 @@ const Education = () => {
     }
   };
 
+  // Define the handleInfoChange function
+  const handleInfoChange = (e) => {
+    const { name, value } = e.target;
+
+    // Update the corresponding property in the editEduc object
+    setEditEduc((prevEduc) => ({
+      ...prevEduc,
+      [name]: value,
+    }));
+  };
+  const handleEditClick = (id) => {
+    const data =
+      Array.isArray(educ) && educ.filter((item) => item.educ_id === id)[0];
+    setEditEduc(data);
+    setIsModal5Open(true);
+  };
+
+  const editStudent = async () => {
+    const studentDetails = {
+      educ_name: "Jemmy",
+      educ_age: "22",
+      educ_gender: "Female",
+      educ_phone: "0712345678",
+      educ_level: "Campus",
+      educ_amount: "300000",
+      educ_image: "http://localhost:8080/uploads/null",
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/education/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(studentDetails),
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Error editing Student", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.success("Student details edited successfully!", {
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      setLoading(false);
+      closeModal();
+    } catch (error) {
+      toast.error("An error occurred", {
+        position: "top-center",
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setLoading(false);
+    }
+  };
+
   const onUpdate = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/amounts/1", {
+      const response = await fetch("http://localhost:8080/api/amounts", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -310,72 +377,7 @@ const Education = () => {
   };
 
   useEffect(() => {
-    const fetchEducation = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/education", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await response.json();
-
-        const sortedData = data.sort((a, b) => {
-          return b.id - a.id;
-        });
-
-        setEduc(sortedData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchEducation();
-  }, [token]);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:8080/api/events/pillar-count?pillar=Education",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-
-        setEvents(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    const fetchAmounts = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/amounts", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        const finalAmount = data.filter((item) => item.id === 1)[0].amount;
-
-        setAllocatedAmount(finalAmount);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchAmounts();
-  }, []);
-
-  useEffect(() => {
-    const fetchEducation = async () => {
+    const fetchPayments = async () => {
       try {
         const response = await fetch(
           "http://localhost:8080/api/events/education/payments",
@@ -397,8 +399,62 @@ const Education = () => {
         console.error(error);
       }
     };
+    const fetchEducation = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/education", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
+        const data = await response.json();
+
+        const sortedData = data.sort((a, b) => {
+          return b.id - a.id;
+        });
+
+        setEduc(sortedData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/events/pillar-count?pillar=Education",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchAmounts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/amounts", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        const finalAmount = data.filter((item) => item.id === 1)[0].amount;
+
+        setAllocatedAmount(finalAmount);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     fetchEducation();
+    fetchPayments();
+    fetchEvents();
+    fetchAmounts();
   }, [token]);
 
   const filteredEducated = useMemo(() => {
@@ -421,8 +477,7 @@ const Education = () => {
     // Parse the educ_amount string to a number and add it to the sum
     return sum + item.educ_amount;
   }, 0);
-  const latestValue = allocatedAmount[0]?.latest_value;
-  console.log("Latest Value:", educ);
+
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -555,7 +610,7 @@ const Education = () => {
                   </button>
                   {/* Add your form fields or other content here */}
                   <div>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={addStudent}>
                       <label className="label font-bold text-xs">
                         Add a Student
                       </label>
@@ -670,7 +725,6 @@ const Education = () => {
                         value={educHistory}
                         onChange={(e) => setEducHistory(e.target.value)}
                         spellCheck
-                        required
                         type="textarea"
                       />
                       <label className="label font-bold text-xs">
@@ -984,7 +1038,12 @@ const Education = () => {
                                 </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                  <button className="btn btn-outline btn-sm" onClick={()=>alert(educ.educ_id)}>Edit</button>
+                                <button
+                                  className="btn btn-outline btn-sm"
+                                  onClick={() => handleEditClick(educ.educ_id)}
+                                >
+                                  Edit
+                                </button>
                               </td>
                             </tr>
                           ))}
@@ -994,6 +1053,157 @@ const Education = () => {
                   </div>
                 </div>
               </div>
+              <Modal
+                isOpen={isModal5Open}
+                onRequestClose={closedModal5}
+                className="modal-box container mx-auto"
+              >
+                {" "}
+                <button
+                  onClick={closedModal5}
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                >
+                  ✕
+                </button>
+                {/* Add your form fields or other content here */}
+                <div>
+                  <form onSubmit={editStudent}>
+                    <label className="label font-bold text-xs">
+                      Edit Student
+                    </label>
+                    <label className="label font-bold text-xs">
+                      Name of the Student
+                    </label>
+                    <input
+                      className="input input-bordered w-full"
+                      name="educName"
+                      value={editEduc.educ_name}
+                      onChange={handleInfoChange}
+                      spellCheck
+                      required
+                    />
+                    <label className="label font-bold text-xs">
+                      Age of the student
+                    </label>
+                    <input
+                      className="input input-bordered w-full"
+                      name="educAge"
+                      value={editEduc.educ_age}
+                      onChange={handleInfoChange}
+                      type="number"
+                      spellCheck
+                      required
+                    />
+                    <label className="label font-bold text-xs">
+                      Gender of the Student
+                    </label>
+                    <select
+                      className="input input-bordered w-full"
+                      name="educGender"
+                      value={editEduc.educ_gender}
+                      onChange={handleInfoChange}
+                      required
+                    >
+                      <option value="None Selected">
+                        Please select Gender
+                      </option>
+                      <option value="Female">Female</option>
+                      <option value="Male">Male</option>
+                    </select>
+                    <label className="label font-bold text-xs">
+                      Phone Contact of the Student
+                    </label>
+                    <input
+                      className="input input-bordered w-full"
+                      name="educPhone"
+                      value={editEduc.educ_phone}
+                      onChange={handleInfoChange}
+                      spellCheck
+                      required
+                    />
+                    <label className="label font-bold text-xs">
+                      Select Level of the Student
+                    </label>
+                    <select
+                      className="input input-bordered w-full"
+                      name="educLevel"
+                      value={editEduc.educ_level}
+                      onChange={handleInfoChange}
+                      required
+                    >
+                      <option value="None Selected">
+                        Please select Initial Educational Level of the Student
+                      </option>
+                      <option value="PP1">PP1</option>
+                      <option value="PP2">PP2</option>
+                      <option value="Lower Primary Grade 1">
+                        Lower Primary Grade 1
+                      </option>
+                      <option value="Lower Primary Grade 2">
+                        Lower Primary Grade 2
+                      </option>
+                      <option value="Lower Primary Grade 3">
+                        Lower Primary Grade 3
+                      </option>
+                      <option value="Lower Primary Grade 4">
+                        Lower Primary Grade 4
+                      </option>
+                      <option value="Lower Primary Grade 5">
+                        Lower Primary Grade 5
+                      </option>
+                      <option value="Lower Primary Grade 6">
+                        Lower Primary Grade 6
+                      </option>
+                      <option value="Junior Secondary Grade 7">
+                        Junior Secondary Grade 7
+                      </option>
+                      <option value="Junior Secondary Grade 8">
+                        Junior Secondary Grade 8
+                      </option>
+                      <option value="Junior Secondary Grade 9">
+                        Junior Secondary Grade 9
+                      </option>
+                      <option value="Senior Secondary Grade 10">
+                        Senior Secondary Grade 10
+                      </option>
+                      <option value="Senior Secondary Grade 11">
+                        Senior Secondary Grade 11
+                      </option>
+                      <option value="Senior Secondary Grade 12">
+                        Senior Secondary Grade 12
+                      </option>
+                      <option value="University">University</option>
+                    </select>
+                    <label className="label font-bold text-xs">
+                      Case History
+                    </label>
+                    <input
+                      className="input input-bordered w-full"
+                      name="educHistory"
+                      value={editEduc.educ_history}
+                      onChange={handleInfoChange}
+                      spellCheck
+                      type="textarea"
+                    />
+                    <label className="label font-bold text-xs">
+                      Upload Student Image
+                    </label>
+                    <input
+                      type="file"
+                      name="educ_image"
+                      accept=".png, .jpg, .jpeg"
+                      onChange={handleInfoChange}
+                      className="file-input file-input-bordered file-input-primary w-full"
+                    />
+                    <button
+                      type="submit"
+                      className="btn btn-outline my-4 w-full bg-green"
+                    >
+                      {loading ? "Submitting..." : "Submit"}
+                    </button>
+                  </form>{" "}
+                </div>
+              </Modal>
               {/*SECOND TABLE*/}
               <div className="sm:flex sm:items-center sm:justify-between mx-8 pt-6">
                 <div>
@@ -1139,7 +1349,7 @@ const Education = () => {
                         >
                           <option value="">Please select a student</option>
                           {filteredEducated.map((educ) => (
-                            <option key={uuidv4()} value={educ.educ_name}>
+                            <option key={educ.educ_id} value={educ.educ_name}>
                               {educ.educ_name}
                             </option>
                           ))}
