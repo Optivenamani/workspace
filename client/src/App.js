@@ -61,6 +61,7 @@ import {
   SiteVisitDetails,
   SiteVisitRequests,
   SiteVisitsSummary,
+  Specific,
   Store,
   Survey,
   Users,
@@ -333,6 +334,7 @@ const App = () => {
             <Route path="/environment-report" element={<EnvironmentReport />} />
             <Route path="/donor-report" element={<DonorReport />} />
             <Route path="/event-report" element={<EventReport />} />
+            <Route path="/specific/:id" element={<Specific />} />
 
           </Route>
         </Routes>

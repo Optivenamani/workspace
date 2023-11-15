@@ -44,43 +44,39 @@ const imageUpload = multer({ dest: "uploads/" });
 module.exports = (pool, io) => {
   // Route for adding education details
   router.post("/", imageUpload.single("educ_image"), async (req, res) => {
-    const {
-      educ_name,
-      educ_age,
-      educ_gender,
-      educ_phone,
-      educ_level,
-      educ_amount,
-    } = req.body;
-
-    const educ_image = req.file.path.replace(/^uploads[\\\/]/, ""); // Remove 'uploads/' from the beginning of the path
-
     try {
-      pool.query(
-        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `educ_amount`, `educ_image`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)",
-        [
-          educ_name,
-          educ_age,
-          educ_gender,
-          educ_phone,
-          educ_level,
-          educ_amount,
-          educ_image,
-        ],
-        (err, result) => {
-          if (err) {
-            console.error("Database Error:", err);
-            return res.status(500).json({
-              message: "An error occurred while adding the Student.",
-            });
-          }
-          res.status(201).json({ message: "Student added successfully!" });
-        }
-      );
+      const {
+        educ_name,
+        educ_age,
+        educ_gender,
+        educ_phone,
+        educ_level,
+        educ_history,
+      } = req.body;
+
+      const educ_image = req.file.path.replace("uploads/", "");
+
+      const query =
+        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `created_at`, `educ_image`, `case_history`) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
+
+      const values = [
+        educ_name,
+        educ_age,
+        educ_gender,
+        educ_phone,
+        educ_level,
+        educ_image,
+        educ_history,
+      ];
+
+      const [result] = await pool.promise().query(query, values);
+
+      res.status(201).json({ message: "Student added successfully!" });
     } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while adding the Student.",
-      });
+      console.error("Database Error:", error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while adding the Student." });
     }
   });
 
@@ -141,6 +137,38 @@ module.exports = (pool, io) => {
       }
     }
   );
+
+  // Route to get Education Data
+  router.get("/payments", async (req, res) => {
+    try {
+      pool.query("SELECT * FROM payments", (err, results) => {
+        if (err) throw err;
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching Student information.",
+      });
+    }
+  });
+
+  router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      pool.query(
+        "SELECT * FROM education join payments on education.educ_name=payments.student_name WHERE educ_id = ?",
+        [id],
+        (err, results) => {
+          if (err) throw err;
+          res.json(results);
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching the student details.",
+      });
+    }
+  });
 
   // Route to upload excel sheet
   router.post("/upload", upload.single("file"), async (req, res) => {

@@ -58,6 +58,7 @@ export { default as ScheduleInterview } from "../visitors-management/pages/inter
 export { default as SiteVisitDetails } from "../logistics/pages/site-visit-requests/SiteVisitDetails";
 export { default as SiteVisitRequests } from "../logistics/pages/site-visit-requests/SiteVisitRequests";
 export { default as SiteVisitsSummary } from "../logistics/pages/reports/SiteVisitsSummaryReports";
+export { default as Specific } from "../foundation/pages/pillars/education/Specific";
 export { default as Store } from "../foundation/pages/Books/Store";
 export { default as Survey } from "../logistics/pages/Survey";
 export { default as Users } from "../logistics/pages/Users";
