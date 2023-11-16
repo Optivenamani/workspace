@@ -35,6 +35,18 @@ function dataToPdfRows(data) {
   });
 }
 
+// function dataToPdfRows(results) {
+//   return results.map((result, index) => [
+//     index + 1, // Index
+//     result.educ_name,
+//     result.educ_age,
+//     result.educ_gender,
+//     result.educ_phone,
+//     result.educ_level,
+//     result.case_history,
+//   ]);
+// }
+
 // Multer configuration for file upload
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -43,44 +55,6 @@ const upload = multer({ storage: storage });
 const imageUpload = multer({ dest: "uploads/" });
 
 module.exports = (pool, io) => {
-  // Route for adding education details
-  router.post("/", imageUpload.single("educ_image"), async (req, res) => {
-    try {
-      const {
-        educ_name,
-        educ_age,
-        educ_gender,
-        educ_phone,
-        educ_level,
-        case_history,
-      } = req.body;
-
-      const educ_image = req.file.path.replace("uploads/", "");
-
-      const query =
-        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `created_at`, `educ_image`, `case_history`) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
-
-      const values = [
-        educ_name,
-        educ_age,
-        educ_gender,
-        educ_phone,
-        educ_level,
-        educ_image,
-        case_history,
-      ];
-
-      const [result] = await pool.promise().query(query, values);
-
-      res.status(201).json({ message: "Student added successfully!" });
-    } catch (error) {
-      console.error("Database Error:", error);
-      res
-        .status(500)
-        .json({ message: "An error occurred while adding the Student." });
-    }
-  });
-
   // Route to get Education Data
   router.get("/", async (req, res) => {
     try {
@@ -96,6 +70,7 @@ module.exports = (pool, io) => {
             educ_phone: education.educ_phone,
             educ_level: education.educ_level,
             educ_amount: education.educ_amount,
+            case_history: education.case_history,
             educ_image: `http://localhost:8080/uploads/${education.educ_image}`, // Replace with your actual server address
           };
         });
@@ -110,138 +85,42 @@ module.exports = (pool, io) => {
   });
 
   //Route to insert Payment data
-  router.post(
-    "/payment",
-    imageUpload.single("educ_image"),
-    async (req, res) => {
-      const { student_name, student_level, pay_amount, pay_confirmation } =
-        req.body;
+  router.post("/payment", async (req, res) => {
+    const { student_level, pay_amount, pay_confirmation, student_id } =
+      req.body;
 
-      try {
-        pool.query(
-          "INSERT INTO `payments`(`student_name`, `student_level`, `pay_amount`, `pay_confirmation`) VALUES (?, ?, ?, ?)",
-          [student_name, student_level, pay_amount, pay_confirmation],
-          (err, result) => {
-            if (err) {
-              console.error("Database Error:", err);
-              return res.status(500).json({
-                message: "An error occurred while adding the Payment.",
-              });
-            }
-            res.status(201).json({ message: "Payment added successfully!" });
+    try {
+      pool.query(
+        "INSERT INTO `payments`(`student_level`, `pay_amount`, `pay_confirmation`, `student_id`) VALUES (?, ?, ?, ?)",
+        [student_level, pay_amount, pay_confirmation, student_id],
+        (err, result) => {
+          if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).json({
+              message: "An error occurred while adding the Payment.",
+            });
           }
-        );
-      } catch (error) {
-        res.status(500).json({
-          message: "An error occurred while adding the Payment.",
-        });
-      }
+          res.status(201).json({ message: "Payment added successfully!" });
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while adding the Payment.",
+      });
     }
-  );
+  });
 
   // Route to get Education Data
-  router.get("/payments", async (req, res) => {3
+  router.get("/payments", async (req, res) => {
     try {
       pool.query("SELECT * FROM payments", (err, results) => {
         if (err) throw err;
+        res.json(results);
       });
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching Payment information.",
       });
-    }
-  });
-
-  router.get("/:id", async (req, res) => {
-    const { id } = req.params;
-
-    try {
-      pool.query(
-        "SELECT * FROM education join payments on education.educ_name=payments.student_name WHERE educ_id = ?",
-        [id],
-        (err, results) => {
-          if (err) throw err;
-          res.json(results);
-        }
-      );
-    } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while fetching the student details.",
-      });
-    }
-  });
-
-  // Route to upload excel sheet
-  router.post("/upload", upload.single("file"), async (req, res) => {
-    try {
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(req.file.buffer);
-      const worksheet = workbook.getWorksheet(1); // Assuming data is in the first worksheet
-
-      const dataFromExcel = [];
-
-      // Iterate through rows and columns to extract data
-      worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber !== 1) {
-          // Skip header row
-          const rowData = {
-            educ_name: row.getCell(1).value, // Assuming data in column A
-            educ_age: row.getCell(2).value, // Assuming data in column B
-            educ_gender: row.getCell(3).value, // Assuming data in column C
-            educ_phone: row.getCell(4).value, // Assuming data in column D
-            educ_level: row.getCell(5).value, // Assuming data in column E
-            educ_amount: row.getCell(6).value, // Assuming data in column F
-          };
-          dataFromExcel.push(rowData);
-        }
-      });
-
-      // Insert data into the database
-      const insertQuery = `
-      INSERT INTO education (educ_name, educ_age, educ_gender, educ_phone, educ_level, educ_amount)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
-
-      // Prepare data for insertion
-      const values = dataFromExcel.map((row) => [
-        row.educ_name,
-        row.educ_age,
-        row.educ_gender,
-        row.educ_phone,
-        row.educ_level,
-        row.educ_amount,
-      ]);
-
-      // Execute the insert query with multiple values
-      pool.getConnection((err, connection) => {
-        if (err) {
-          console.error("Error establishing database connection:", err);
-          res
-            .status(500)
-            .send("Error processing Excel file and saving to the database");
-          return;
-        }
-
-        connection.query(insertQuery, values.flat(), (error, results) => {
-          connection.release(); // Release the connection back to the pool
-
-          if (error) {
-            console.error("Error inserting data into the database:", error);
-            res
-              .status(500)
-              .send("Error processing Excel file and saving to the database");
-          } else {
-            res
-              .status(200)
-              .send(
-                "Data from Excel sheet processed and saved to the database successfully."
-              );
-          }
-        });
-      });
-    } catch (error) {
-      console.error("Error processing Excel file:", error);
-      res.status(500).send("Error processing Excel file.");
     }
   });
 
@@ -274,40 +153,26 @@ module.exports = (pool, io) => {
     });
   });
 
-  // Download the Student data info in a pdf
-  // Assuming dataToPdfRows is a separate function
-  function dataToPdfRows(results) {
-    return results.map((result, index) => [
-      index + 1, // Index
-      result.educ_name,
-      result.educ_age,
-      result.educ_gender,
-      result.educ_phone,
-      result.educ_level,
-      result.case_history,
-    ]);
-  }
-
   // Your existing code
   router.get("/download-pdf", async (req, res) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
       const query = `
-      SELECT 
-        educ_name, 
-        educ_age, 
-        educ_gender, 
-        educ_phone, 
-        educ_level, 
-        case_history 
-      FROM 
-        education 
-      WHERE 
-        created_at BETWEEN ? AND ? 
-      ORDER BY 
-        created_at DESC;
-    `;
+        SELECT 
+          educ_name, 
+          educ_age, 
+          educ_gender, 
+          educ_phone, 
+          educ_level, 
+          case_history 
+        FROM 
+          education 
+        WHERE 
+          created_at BETWEEN ? AND ? 
+        ORDER BY 
+          created_at DESC;
+      `;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
 
@@ -412,7 +277,136 @@ module.exports = (pool, io) => {
     }
   });
 
-  module.exports = router;
+  router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      pool.query(
+        "SELECT * FROM education join payments on education.educ_id=payments.student_id WHERE educ_id = ?",
+        [id],
+        (err, results) => {
+          if (err) throw err;
+          res.json(results);
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching the student details.",
+      });
+    }
+  });
+
+  // Route for adding education details
+  router.post("/", imageUpload.single("educ_image"), async (req, res) => {
+    try {
+      const {
+        educ_name,
+        educ_age,
+        educ_gender,
+        educ_phone,
+        educ_level,
+        case_history,
+      } = req.body;
+
+      const educ_image = req.file.path.replace("uploads/", "");
+
+      const query =
+        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `created_at`, `educ_image`, `case_history`) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
+
+      const values = [
+        educ_name,
+        educ_age,
+        educ_gender,
+        educ_phone,
+        educ_level,
+        educ_image,
+        case_history,
+      ];
+
+      const [result] = await pool.promise().query(query, values);
+
+      res.status(201).json({ message: "Student added successfully!" });
+    } catch (error) {
+      console.error("Database Error:", error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while adding the Student." });
+    }
+  });
+
+  // Route to upload excel sheet
+  router.post("/upload", upload.single("file"), async (req, res) => {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(req.file.buffer);
+      const worksheet = workbook.getWorksheet(1); // Assuming data is in the first worksheet
+
+      const dataFromExcel = [];
+
+      // Iterate through rows and columns to extract data
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber !== 1) {
+          // Skip header row
+          const rowData = {
+            educ_name: row.getCell(1).value, // Assuming data in column A
+            educ_age: row.getCell(2).value, // Assuming data in column B
+            educ_gender: row.getCell(3).value, // Assuming data in column C
+            educ_phone: row.getCell(4).value, // Assuming data in column D
+            educ_level: row.getCell(5).value, // Assuming data in column E
+            educ_amount: row.getCell(6).value, // Assuming data in column F
+          };
+          dataFromExcel.push(rowData);
+        }
+      });
+
+      // Insert data into the database
+      const insertQuery = `
+      INSERT INTO education (educ_name, educ_age, educ_gender, educ_phone, educ_level, educ_amount)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+      // Prepare data for insertion
+      const values = dataFromExcel.map((row) => [
+        row.educ_name,
+        row.educ_age,
+        row.educ_gender,
+        row.educ_phone,
+        row.educ_level,
+        row.educ_amount,
+      ]);
+
+      // Execute the insert query with multiple values
+      pool.getConnection((err, connection) => {
+        if (err) {
+          console.error("Error establishing database connection:", err);
+          res
+            .status(500)
+            .send("Error processing Excel file and saving to the database");
+          return;
+        }
+
+        connection.query(insertQuery, values.flat(), (error, results) => {
+          connection.release(); // Release the connection back to the pool
+
+          if (error) {
+            console.error("Error inserting data into the database:", error);
+            res
+              .status(500)
+              .send("Error processing Excel file and saving to the database");
+          } else {
+            res
+              .status(200)
+              .send(
+                "Data from Excel sheet processed and saved to the database successfully."
+              );
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error processing Excel file:", error);
+      res.status(500).send("Error processing Excel file.");
+    }
+  });
 
   //   Route to get Event Data
   router.patch("/amounts", async (req, res) => {

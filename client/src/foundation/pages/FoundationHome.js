@@ -17,7 +17,7 @@ const FoundationHome = () => {
               </svg>
               <img
                 className="object-cover w-full h-56 rounded shadow-lg lg:rounded-none lg:shadow-none md:h-96 lg:h-full"
-                src="https://www.optivenfoundation.org/wp-content/uploads/2023/09/optiven-foundation-20237-1.jpeg"
+                src={require("../../assets/media/IMG_0343 (1).jpg")}
                 alt=""
               />
             </div>

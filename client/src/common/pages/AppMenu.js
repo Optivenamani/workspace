@@ -123,7 +123,7 @@ const AppMenu = ({ onAppSelect }) => {
                   onClick={() => handleAppSelect("Maps")}
                 >
                   <img
-                    src="https://media.istockphoto.com/id/1169660432/photo/adult-and-children-hands-holding-paper-family-cutout-family-home-foster-care-homeless-charity.jpg?s=612x612&w=0&k=20&c=eYp6K1kaCpbe9bOwyvj590hVHV6vW311MdrmmNuetJg="
+                  src={require("../../assets/media/1I2A7740 (1).jpg")}
                     alt=""
                     className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
                   />
