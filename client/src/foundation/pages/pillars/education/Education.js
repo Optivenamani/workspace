@@ -2,11 +2,12 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../../components/Sidebar";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Box from "./components/Box";
+import Box from "../components/Box";
 import { Link } from "react-router-dom";
+import avatar from "../components/avatar.jpg";
 
 const Education = () => {
   const [educName, setEducName] = useState("");
@@ -1022,7 +1023,7 @@ const Education = () => {
                                       src={
                                         educ.educ_image !== null
                                           ? educ.educ_image
-                                          : require("../../../assets/avatar.jpg")
+                                          : avatar
                                       }
                                       alt={educ.educ_name}
                                       style={{

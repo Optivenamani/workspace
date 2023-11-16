@@ -50,6 +50,7 @@ import {
   MySiteVisits,
   Notifications,
   PastRequests,
+  Payments,
   PovertyAlleviation,
   PovertyReport,
   Profile,
@@ -322,7 +323,10 @@ const App = () => {
             <Route path="/education" element={<Education />} />
             <Route path="/environment" element={<Environment />} />
             <Route path="/health" element={<Health />} />
-            <Route path="/poverty-alleviation" element={<PovertyAlleviation />} />
+            <Route
+              path="/poverty-alleviation"
+              element={<PovertyAlleviation />}
+            />
             <Route path="/view-donors" element={<ViewDonors />} />
             <Route path="/issuance" element={<Issuance />} />
             <Route path="/sales" element={<Sales />} />
@@ -335,7 +339,7 @@ const App = () => {
             <Route path="/donor-report" element={<DonorReport />} />
             <Route path="/event-report" element={<EventReport />} />
             <Route path="/specific/:id" element={<Specific />} />
-
+            <Route path="/payments" element={<Payments />} />
           </Route>
         </Routes>
       </Router>

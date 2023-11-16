@@ -23,7 +23,7 @@ export { default as EditSiteVisit } from "../logistics/pages/site-visit-requests
 export { default as EditSpecialAssignment } from "../logistics/pages/special-assignments/EditSpecialAssignment";
 export { default as EditVehicle } from "../logistics/pages/vehicles/EditVehicle";
 export { default as EditVisitor } from "../visitors-management/pages/visitors/EditVisitor";
-export { default as Education } from "../foundation/pages/pillars/Education";
+export { default as Education } from "../foundation/pages/pillars/education/Education";
 export { default as EducationReport } from "../foundation/pages/Reports/EducationReport";
 export { default as Environment } from "../foundation/pages/pillars/Environment";
 export { default as EnvironmentReport } from "../foundation/pages/Reports/EnvironmentReport";
@@ -43,9 +43,10 @@ export { default as MostBookedSitesReports } from "../logistics/pages/reports/Mo
 export { default as MyClientContacts } from "../logistics/pages/clients/MyClientContacts";
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
+export { default as Payments } from "../foundation/pages/pillars/education/Payments";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
 export { default as PovertyAlleviation } from "../foundation/pages/pillars/PovertyAlleviation";
-export { default as PovertyReport} from "../foundation/pages/Reports/povertyReport";
+export { default as PovertyReport } from "../foundation/pages/Reports/povertyReport";
 export { default as ProductivityReports } from "../workplan/pages/reports/ProductivityReports";
 export { default as Profile } from "../common/pages/Profile";
 export { default as PendingWorkplanDetails } from "../workplan/pages/workplans/PendingWorkplanDetails";
