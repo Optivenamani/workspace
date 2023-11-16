@@ -35,18 +35,6 @@ function dataToPdfRows(data) {
   });
 }
 
-// function dataToPdfRows(results) {
-//   return results.map((result, index) => [
-//     index + 1, // Index
-//     result.educ_name,
-//     result.educ_age,
-//     result.educ_gender,
-//     result.educ_phone,
-//     result.educ_level,
-//     result.case_history,
-//   ]);
-// }
-
 // Multer configuration for file upload
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -270,7 +258,7 @@ module.exports = (pool, io) => {
         case_history,
       } = req.body;
 
-      const educ_image = req.file.path.replace("uploads/", "");
+      const educ_image = req.file.filename;
 
       const query =
         "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `created_at`, `educ_image`, `case_history`) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";

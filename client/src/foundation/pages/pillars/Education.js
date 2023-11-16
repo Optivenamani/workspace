@@ -412,6 +412,8 @@ const Education = () => {
           return b.id - a.id;
         });
 
+        console.log("education data", sortedData);
+
         setEduc(sortedData);
       } catch (error) {
         console.error(error);
@@ -1018,7 +1020,7 @@ const Education = () => {
                                   <div className="mask mask-circle w-12 h-12">
                                     <img
                                       src={
-                                        educ.educ_image === null
+                                        educ.educ_image !== null
                                           ? educ.educ_image
                                           : require("../../../assets/avatar.jpg")
                                       }

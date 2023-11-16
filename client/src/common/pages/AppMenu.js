@@ -115,7 +115,7 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
-            {department === "ICT (S)" && (
+            {(department === "ICT (S)" || accessRole === "foundation") && (
               <li>
                 <Link
                   to="/foundation-home"
@@ -123,7 +123,7 @@ const AppMenu = ({ onAppSelect }) => {
                   onClick={() => handleAppSelect("Maps")}
                 >
                   <img
-                  src={require("../../assets/media/1I2A7740 (1).jpg")}
+                    src={require("../../assets/media/1I2A7740 (1).jpg")}
                     alt=""
                     className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
                   />
