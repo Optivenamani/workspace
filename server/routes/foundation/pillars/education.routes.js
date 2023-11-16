@@ -30,7 +30,7 @@ function dataToPdfRows(data) {
       { text: item.educ_gender ?? "", style: "tableCell" },
       { text: item.educ_phone ?? "", style: "tableCell" },
       { text: item.educ_level ?? "", style: "tableCell" },
-      { text: item.educ_amount ?? "", style: "tableCell" },
+      { text: item.case_history ?? "", style: "tableCell" },
     ];
   });
 }
@@ -84,32 +84,6 @@ module.exports = (pool, io) => {
     }
   });
 
-  //Route to insert Payment data
-  router.post("/payment", async (req, res) => {
-    const { student_level, pay_amount, pay_confirmation, student_id } =
-      req.body;
-
-    try {
-      pool.query(
-        "INSERT INTO `payments`(`student_level`, `pay_amount`, `pay_confirmation`, `student_id`) VALUES (?, ?, ?, ?)",
-        [student_level, pay_amount, pay_confirmation, student_id],
-        (err, result) => {
-          if (err) {
-            console.error("Database Error:", err);
-            return res.status(500).json({
-              message: "An error occurred while adding the Payment.",
-            });
-          }
-          res.status(201).json({ message: "Payment added successfully!" });
-        }
-      );
-    } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while adding the Payment.",
-      });
-    }
-  });
-
   // Route to get Education Data
   router.get("/payments", async (req, res) => {
     try {
@@ -158,23 +132,11 @@ module.exports = (pool, io) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
-      const query = `
-        SELECT 
-          educ_name, 
-          educ_age, 
-          educ_gender, 
-          educ_phone, 
-          educ_level, 
-          case_history 
-        FROM 
-          education 
-        WHERE 
-          created_at BETWEEN ? AND ? 
-        ORDER BY 
-          created_at DESC;
-      `;
+      const query = `SELECT * FROM education WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
+
+        console.log(results);
 
         const docDefinition = {
           pageSize: "A4",
@@ -334,6 +296,44 @@ module.exports = (pool, io) => {
     }
   });
 
+  //Route to insert Payment data
+  router.post("/payment", async (req, res) => {
+    const {
+      student_level,
+      pay_institution,
+      pay_amount,
+      pay_confirmation,
+      pay_comment,
+      student_id,
+    } = req.body;
+
+    try {
+      pool.query(
+        "INSERT INTO `payments`(`student_level`, `pay_institution`, `pay_amount`, `pay_confirmation`, `pay_comment`, `student_id`) VALUES (?, ?, ?, ?, ?, ?)",
+        [
+          student_level,
+          pay_institution,
+          pay_amount,
+          pay_confirmation,
+          pay_comment,
+          student_id,
+        ],
+        (err, result) => {
+          if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).json({
+              message: "An error occurred while adding the Payment.",
+            });
+          }
+          res.status(201).json({ message: "Payment added successfully!" });
+        }
+      );
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while adding the Payment.",
+      });
+    }
+  });
   // Route to upload excel sheet
   router.post("/upload", upload.single("file"), async (req, res) => {
     try {

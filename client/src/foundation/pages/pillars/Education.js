@@ -21,6 +21,9 @@ const Education = () => {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [paidAmount, setPaidAmount] = useState("");
   const [payConfirmation, setPayConfirmation] = useState("");
+  const [payInstitution, setPayInstitution] = useState("");
+  const [payComment, setPayComment] = useState("");
+
   const [educImage, setEducImage] = useState(null);
   // modals
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -175,6 +178,8 @@ const Education = () => {
       student_level: selectedLevel,
       pay_amount: paidAmount,
       pay_confirmation: payConfirmation,
+      pay_institution: payInstitution,
+      pay_comment: payComment,
     };
     try {
       const response = await fetch(
@@ -388,7 +393,6 @@ const Education = () => {
 
         const data = await response.json();
 
-      
         setPay(data);
       } catch (error) {
         console.error(error);
@@ -469,7 +473,7 @@ const Education = () => {
 
   const filteredStudentPaymentDetails = useMemo(() => {
     return pay.filter((item) => {
-      const level = item.student_level && item.student_level.toLowerCase();
+      const level = item.pay_institution && item.pay_institution.toLowerCase();
       const query = searchedQuery.toLowerCase();
 
       if (searchedQuery === "") {
@@ -482,11 +486,13 @@ const Education = () => {
     });
   }, [searchedQuery, pay]);
 
-  console.log("payment table data", filteredStudentPaymentDetails)
+  console.log("payment table data", filteredStudentPaymentDetails);
 
   // Calculate the total sum of educ_amount values
   // Calculate the total sum of pay amounts
-  const totalAmount = pay.map((item) => item.pay_amount).reduce((sum, amount) => sum + amount, 0);
+  const totalAmount = pay
+    .map((item) => item.pay_amount)
+    .reduce((sum, amount) => sum + amount, 0);
 
   return (
     <Sidebar>
@@ -759,34 +765,6 @@ const Education = () => {
                 </Modal>
               </div>
             </div>
-            <div className="mt-6 md:flex md:items-center md:justify-between">
-              <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700"></div>
-              <div className="relative flex items-center mt-4 md:mt-0">
-                <span className="absolute">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                  </svg>
-                </span>
-                <input
-                  type="text"
-                  className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                  placeholder="Search student by name..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
             {/*BOXES*/}
             <div className="container px-0 py-4 mx-auto">
               <div className="flex flex-wrap m-4 text-center">
@@ -931,6 +909,34 @@ const Education = () => {
                   figure={totalAmount}
                   title="Total Money used"
                 />
+              </div>
+              <div className="mt-6 md:flex md:items-center md:justify-between">
+                <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700"></div>
+                <div className="relative flex items-center mt-4 md:mt-0">
+                  <span className="absolute">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-5 h-5 mx-3 text-gray-400 dark:text-gray-600"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                      />
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    placeholder="Search student by name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
               </div>
               <div className="text-center text-dark">
                 ~ REGISTERED STUDENTS ~
@@ -1266,79 +1272,6 @@ const Education = () => {
                 {/*ACTION BUTTONS CODE*/}
                 <div className="flex items-center mt-4 gap-x-3">
                   <button
-                    className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
-                    onClick={() => setIsModal2Open(true)}
-                  >
-                    <svg
-                      width={20}
-                      height={20}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_3098_154395)">
-                        <path
-                          d="M13.3333 13.3332L9.99997 9.9999M9.99997 9.9999L6.66663 13.3332M9.99997 9.9999V17.4999M16.9916 15.3249C17.8044 14.8818 18.4465 14.1806 18.8165 13.3321C19.1866 12.4835 19.2635 11.5359 19.0351 10.6388C18.8068 9.7417 18.2862 8.94616 17.5555 8.37778C16.8248 7.80939 15.9257 7.50052 15 7.4999H13.95C13.6977 6.52427 13.2276 5.61852 12.5749 4.85073C11.9222 4.08295 11.104 3.47311 10.1817 3.06708C9.25943 2.66104 8.25709 2.46937 7.25006 2.50647C6.24304 2.54358 5.25752 2.80849 4.36761 3.28129C3.47771 3.7541 2.70656 4.42249 2.11215 5.23622C1.51774 6.04996 1.11554 6.98785 0.935783 7.9794C0.756025 8.97095 0.803388 9.99035 1.07431 10.961C1.34523 11.9316 1.83267 12.8281 2.49997 13.5832"
-                          stroke="currentColor"
-                          strokeWidth="1.67"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_3098_154395">
-                          <rect width={20} height={20} fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    <span>Import Students</span>
-                  </button>
-                  <Modal
-                    isOpen={isModal2Open}
-                    onRequestClose={closedModal}
-                    className="modal-box container mx-auto"
-                  >
-                    {" "}
-                    <button
-                      onClick={closedModal}
-                      className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                    >
-                      ✕
-                    </button>
-                    {/* Add your form fields or other content here */}
-                    <figure className="px-10 pt-10">
-                      <img
-                        src="https://media.istockphoto.com/id/1503204764/vector/people-with-cell-phones-use-and-watch-streaming-services-with-clappers-streaming-cinema.jpg?s=612x612&w=0&k=20&c=yz4b0kM_ThXIgOd3Rb75wPr5f0cp5wO6YciDvMTpzhc="
-                        alt="Upload"
-                        className="rounded-xl"
-                      />
-                    </figure>
-                    <div className="card-body">
-                      <form
-                        onSubmit={onFormSubmit}
-                        encType="multipart/form-data"
-                      >
-                        <label className="label font-bold3">
-                          Kindly Upload the Excel Sheet
-                        </label>
-                        <input
-                          type="file"
-                          name="file"
-                          accept=".xlsx"
-                          onChange={onFileChange}
-                          className="file-input file-input-bordered file-input-primary w-full"
-                          required
-                        />
-                        <button
-                          type="submit"
-                          className="btn btn-primary w-full mt-2"
-                        >
-                          {loading ? "Uploading..." : "Upload"}
-                        </button>
-                      </form>{" "}
-                    </div>
-                  </Modal>
-                  <button
                     className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-primary rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600"
                     onClick={() => setIsModal4Open(true)}
                   >
@@ -1445,8 +1378,24 @@ const Education = () => {
                           <option value="Senior Secondary Grade 12">
                             Senior Secondary Grade 12
                           </option>
+                          <option value="Form 1">Form 1</option>{" "}
+                          <option value="Form 2">Form 2</option>
+                          <option value="Form 3">Form 3</option>
+                          <option value="Form 4">Form 4</option>
                           <option value="University">University</option>
                         </select>
+                        <label className="label font-bold text-xs">
+                          Institution of the Student{" "}
+                        </label>
+                        <input
+                          className="input input-bordered w-full"
+                          name="payInstitution"
+                          value={payInstitution}
+                          onChange={(e) => setPayInstitution(e.target.value)}
+                          type="text"
+                          spellCheck
+                          required
+                        />
                         <label className="label font-bold text-xs">
                           Amount Disbursed{" "}
                         </label>
@@ -1470,6 +1419,18 @@ const Education = () => {
                           spellCheck
                           required
                           type="textarea"
+                        />
+                        <label className="label font-bold text-xs">
+                          Comment on the Transaction{" "}
+                        </label>
+                        <input
+                          className="input input-bordered w-full"
+                          name="payComment"
+                          value={payComment}
+                          onChange={(e) => setPayComment(e.target.value)}
+                          type="text"
+                          spellCheck
+                          required
                         />
                         <button
                           type="submit"
@@ -1522,6 +1483,12 @@ const Education = () => {
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
+                              Institution{" "}
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
                               Level of the Student
                             </th>
                             <th
@@ -1536,21 +1503,34 @@ const Education = () => {
                             >
                               Confirmation of Payment{" "}
                             </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Comment on the Transaction{" "}
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                           {filteredStudentPaymentDetails.map((pay, index) => (
                             <tr key={index}>
-                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
-                                  {pay.student_level}
-                                </div>
+                              <td className="py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {" "}
+                                {pay.pay_institution}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {pay.student_level}
+                              </td>
+                              <td className="py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {" "}
                                 {pay.pay_amount}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {pay.pay_confirmation}
+                              </td>
+                              <td className="py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {" "}
+                                {pay.pay_comment}
                               </td>
                             </tr>
                           ))}
