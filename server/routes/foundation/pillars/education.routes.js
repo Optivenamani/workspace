@@ -3,6 +3,7 @@ const ExcelJS = require("exceljs");
 const multer = require("multer");
 const pdfMakePrinter = require("pdfmake/src/printer");
 const authenticateJWT = require("../../../middleware/authenticateJWT");
+const { createPdfDocument } = require("pdfmake/src/pdfKitEngine");
 const router = express.Router();
 
 // Define your fonts
@@ -139,14 +140,14 @@ module.exports = (pool, io) => {
   );
 
   // Route to get Education Data
-  router.get("/payments", async (req, res) => {
+  router.get("/payments", async (req, res) => {3
     try {
       pool.query("SELECT * FROM payments", (err, results) => {
         if (err) throw err;
       });
     } catch (error) {
       res.status(500).json({
-        message: "An error occurred while fetching Student information.",
+        message: "An error occurred while fetching Payment information.",
       });
     }
   });
@@ -274,13 +275,42 @@ module.exports = (pool, io) => {
   });
 
   // Download the Student data info in a pdf
+  // Assuming dataToPdfRows is a separate function
+  function dataToPdfRows(results) {
+    return results.map((result, index) => [
+      index + 1, // Index
+      result.educ_name,
+      result.educ_age,
+      result.educ_gender,
+      result.educ_phone,
+      result.educ_level,
+      result.case_history,
+    ]);
+  }
+
+  // Your existing code
   router.get("/download-pdf", async (req, res) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
-      const query = `SELECT * FROM education WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
+      const query = `
+      SELECT 
+        educ_name, 
+        educ_age, 
+        educ_gender, 
+        educ_phone, 
+        educ_level, 
+        case_history 
+      FROM 
+        education 
+      WHERE 
+        created_at BETWEEN ? AND ? 
+      ORDER BY 
+        created_at DESC;
+    `;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
+
         const docDefinition = {
           pageSize: "A4",
           pageOrientation: "landscape",
@@ -336,7 +366,7 @@ module.exports = (pool, io) => {
                       bold: true,
                     },
                     {
-                      text: "Amount",
+                      text: "Case History",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
@@ -367,8 +397,10 @@ module.exports = (pool, io) => {
             },
           },
         };
-        // Populate the body array with your data
+
+        // Populate the body array with your data using dataToPdfRows
         docDefinition.content[0].table.body.push(...dataToPdfRows(results));
+
         // Create the PDF and send it as a response
         const pdfDoc = printer.createPdfKitDocument(docDefinition);
         res.setHeader("Content-Type", "application/pdf");
@@ -379,6 +411,8 @@ module.exports = (pool, io) => {
       res.status(500).json({ error: error.message });
     }
   });
+
+  module.exports = router;
 
   //   Route to get Event Data
   router.patch("/amounts", async (req, res) => {

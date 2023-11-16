@@ -40,6 +40,7 @@ const Sidebar = ({ children }) => {
                   >
                     Education
                   </Link>
+
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/health"

@@ -33,16 +33,19 @@ const Education = () => {
   const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchedQuery, setSearchedQuery] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [educ, setEduc] = useState([]);
   const [editEduc, setEditEduc] = useState({
+    educ_id: "",
     educ_name: "",
     educ_age: 0,
     educ_gender: "",
     educ_phone: "",
     educ_level: "",
-    educ_history: "",
+    case_history: "",
+    educ_amount: "",
     educ_image: "",
   });
   const [pay, setPay] = useState([]);
@@ -264,16 +267,6 @@ const Education = () => {
     }
   };
 
-  // Define the handleInfoChange function
-  const handleInfoChange = (e) => {
-    const { name, value } = e.target;
-
-    // Update the corresponding property in the editEduc object
-    setEditEduc((prevEduc) => ({
-      ...prevEduc,
-      [name]: value,
-    }));
-  };
   const handleEditClick = (id) => {
     const data =
       Array.isArray(educ) && educ.filter((item) => item.educ_id === id)[0];
@@ -283,18 +276,22 @@ const Education = () => {
 
   const editStudent = async () => {
     const studentDetails = {
-      educ_name: "Jemmy",
-      educ_age: "22",
-      educ_gender: "Female",
-      educ_phone: "0712345678",
-      educ_level: "Campus",
-      educ_amount: "300000",
-      educ_image: "http://localhost:8080/uploads/null",
+      educ_id: editEduc.educ_id,
+      educ_name: editEduc.educ_name,
+      educ_age: editEduc.educ_age,
+      educ_gender: editEduc.educ_gender,
+      educ_phone: editEduc.educ_phone,
+      educ_level: editEduc.educ_level,
+      educ_amount: editEduc.educ_amount,
+      educ_image: editEduc.educ_image,
+      case_history: editEduc.case_history,
     };
+
+    console.log(studentDetails);
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/education/${id}`,
+        `http://localhost:8080/api/education/${editEduc.educ_id}`,
         {
           method: "PATCH",
           headers: {
@@ -314,6 +311,8 @@ const Education = () => {
           progress: undefined,
         });
       } else {
+        setLoading(false);
+        closeModal();
         toast.success("Student details edited successfully!", {
           position: "top-center",
           closeOnClick: true,
@@ -322,8 +321,6 @@ const Education = () => {
           progress: undefined,
         });
       }
-      setLoading(false);
-      closeModal();
     } catch (error) {
       toast.error("An error occurred", {
         position: "top-center",
@@ -471,6 +468,21 @@ const Education = () => {
       }
     });
   }, [searchQuery, educ]);
+
+  const filteredPayments = useMemo(() => {
+    return pay.filter((item) => {
+      if (searchedQuery === "") {
+        return true; // Include all items when the search query is empty
+      } else if (
+        item.student_name &&
+        item.student_name.toLowerCase().includes(searchedQuery.toLowerCase())
+      ) {
+        return true; // Include the item if it matches the search query
+      } else {
+        return false; // Exclude the item if it doesn't match the search query
+      }
+    });
+  }, [searchedQuery, pay]);
 
   // Calculate the total sum of educ_amount values
   const totalAmount = educ.reduce((sum, item) => {
@@ -1016,7 +1028,7 @@ const Education = () => {
                                   <div className="ml-4">
                                     <Link
                                       to={`/specific/${educ.educ_id}`}
-                                      className="text-sm"
+                                      className="text-sm hover:underline"
                                     >
                                       {educ.educ_name}
                                     </Link>
@@ -1078,7 +1090,12 @@ const Education = () => {
                       className="input input-bordered w-full"
                       name="educName"
                       value={editEduc.educ_name}
-                      onChange={handleInfoChange}
+                      onChange={(e) =>
+                        setEditEduc({
+                          ...editEduc,
+                          educ_name: e.target.value,
+                        })
+                      }
                       spellCheck
                       required
                     />
@@ -1089,7 +1106,12 @@ const Education = () => {
                       className="input input-bordered w-full"
                       name="educAge"
                       value={editEduc.educ_age}
-                      onChange={handleInfoChange}
+                      onChange={(e) =>
+                        setEditEduc({
+                          ...editEduc,
+                          educ_age: e.target.value,
+                        })
+                      }
                       type="number"
                       spellCheck
                       required
@@ -1101,7 +1123,12 @@ const Education = () => {
                       className="input input-bordered w-full"
                       name="educGender"
                       value={editEduc.educ_gender}
-                      onChange={handleInfoChange}
+                      onChange={(e) =>
+                        setEditEduc({
+                          ...editEduc,
+                          educ_gender: e.target.value,
+                        })
+                      }
                       required
                     >
                       <option value="None Selected">
@@ -1117,7 +1144,12 @@ const Education = () => {
                       className="input input-bordered w-full"
                       name="educPhone"
                       value={editEduc.educ_phone}
-                      onChange={handleInfoChange}
+                      onChange={(e) =>
+                        setEditEduc({
+                          ...editEduc,
+                          educ_phone: e.target.value,
+                        })
+                      }
                       spellCheck
                       required
                     />
@@ -1128,7 +1160,12 @@ const Education = () => {
                       className="input input-bordered w-full"
                       name="educLevel"
                       value={editEduc.educ_level}
-                      onChange={handleInfoChange}
+                      onChange={(e) =>
+                        setEditEduc({
+                          ...editEduc,
+                          educ_level: e.target.value,
+                        })
+                      }
                       required
                     >
                       <option value="None Selected">
@@ -1177,13 +1214,17 @@ const Education = () => {
                     <label className="label font-bold text-xs">
                       Case History
                     </label>
-                    <input
-                      className="input input-bordered w-full"
+                    <textarea
+                      className="textarea textarea-bordered w-full h-16"
                       name="educHistory"
-                      value={editEduc.educ_history}
-                      onChange={handleInfoChange}
+                      value={editEduc.case_history}
+                      onChange={(e) =>
+                        setEditEduc({
+                          ...editEduc,
+                          case_history: e.target.value,
+                        })
+                      }
                       spellCheck
-                      type="textarea"
                     />
                     <label className="label font-bold text-xs">
                       Upload Student Image
@@ -1192,7 +1233,7 @@ const Education = () => {
                       type="file"
                       name="educ_image"
                       accept=".png, .jpg, .jpeg"
-                      onChange={handleInfoChange}
+                      onChange={onFileChange}
                       className="file-input file-input-bordered file-input-primary w-full"
                     />
                     <button
@@ -1475,9 +1516,9 @@ const Education = () => {
                   <input
                     type="text"
                     className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                    placeholder="Search student by name..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search Payment by Student name..."
+                    value={searchedQuery}
+                    onChange={(e) => setSearchedQuery(e.target.value)}
                   />
                 </div>
               </div>
@@ -1527,23 +1568,44 @@ const Education = () => {
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
-                              Gender
+                              Level of the Student
                             </th>
                             <th
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
-                              Phone
+                              Amount of money Disbursed
                             </th>
                             <th
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
-                              Level of Education
+                              Confirmation of Payment{" "}
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900"></tbody>
+                        <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                          {filteredPayments.map((pay, index) => (
+                            <tr key={index}>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-start">
+                                {pay.student_name}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
+                                  {pay.student_level}
+                                </div>
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {pay.pay_amount}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                <div className="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                  {pay.pay_confirmation}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
                       </table>
                     </div>
                   </div>

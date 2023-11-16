@@ -184,8 +184,8 @@ const ViewEvents = () => {
     <Sidebar>
       <section className="container px-4 mx-auto">
         <div className="sm:flex sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-x-3">
+          <div className="mx-4">
+            <div className="flex items-center gap-x-3 mt-4">
               <h2 className="text-lg font-medium text-gray-800 dark:text-white">
                 Events
               </h2>

@@ -82,7 +82,7 @@ const ViewDonors = () => {
       setLoading(false);
     }
   };
-  
+
   const downloadTemplate = () => {
     // Make a GET request to the server endpoint to download the template
     axios({
@@ -192,7 +192,7 @@ const ViewDonors = () => {
     <Sidebar>
       <section className="container px-4 mx-auto">
         <div className="sm:flex sm:items-center sm:justify-between">
-          <div>
+          <div className="mx-4 mt-4">
             <div className="flex items-center gap-x-3">
               <h2 className="text-lg font-medium text-gray-800 dark:text-white">
                 Donors
