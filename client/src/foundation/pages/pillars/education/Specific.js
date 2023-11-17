@@ -10,6 +10,8 @@ function Specific() {
   const [gender, setGender] = useState("");
   const [phone, setPhone] = useState("");
   const [level, setLevel] = useState("");
+  const [payInstitution, setPayInstitution] = useState("");
+  const [payComment, setPayComment] = useState("");
 
   const [image, setImage] = useState("");
   const [history, setHistory] = useState("");
@@ -99,18 +101,22 @@ function Specific() {
                   <thead>
                     <tr>
                       <th></th>
+                      <th>Institution</th>
                       <th>Level Paid for</th>
                       <th>Amount Disbursed</th>
                       <th>Confirmation of Pay</th>
+                      <th>Comment</th>
                     </tr>
                   </thead>
                   <tbody>
                     {studentDetails.map((studentDetail, index) => (
                       <tr key={studentDetail.educ_id}>
                         <th>{index + 1}</th>
+                        <td>{studentDetail.pay_institution}</td>
                         <td>{studentDetail.student_level}</td>
                         <td> {studentDetail.pay_amount}</td>
                         <td>{studentDetail.pay_confirmation}</td>
+                        <td>{studentDetail.pay_comment}</td>
                       </tr>
                     ))}
                   </tbody>

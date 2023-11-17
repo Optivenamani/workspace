@@ -19,6 +19,8 @@ const Health = () => {
   const [isModal3Open, setIsModal3Open] = useState(false);
   const [allocatedAmount, setAllocatedAmount] = useState(0);
   const [modifiedAllocatedAmount, setModifiedAllocatedAmount] = useState(0);
+  const [payConfirmation, setPayConfirmation] = useState(0);
+  const [projectCase, setProjectCase] = useState(0);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,11 +33,9 @@ const Health = () => {
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
-
   const closedModal = useCallback(() => {
     setIsModal2Open(false);
   }, []);
-
   const closedModal3 = useCallback(() => {
     setIsModal3Open(false);
   }, []);
@@ -81,6 +81,8 @@ const Health = () => {
       health_contact: healthContact,
       health_complication: healthComplication,
       health_amount: healthAmount,
+      pay_confirmation: payConfirmation,
+      project_case: projectCase,
     };
 
     try {
@@ -122,6 +124,8 @@ const Health = () => {
       setHealthContact("");
       setHealthComplication("");
       setHealthAmount("");
+      setPayConfirmation("");
+      setProjectCase("");
     } catch (error) {
       // Display error notification
       toast.error(error, {
@@ -237,11 +241,21 @@ const Health = () => {
         console.error(error);
       }
     };
+    const fetchAmounts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/amounts/4", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        const finalAmount = data.filter((item) => item.id === 4)[0].amount;
 
-    fetchHealth();
-  }, []);
-
-  useEffect(() => {
+        setAllocatedAmount(finalAmount);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     const fetchEvents = async () => {
       try {
         const response = await fetch(
@@ -260,26 +274,9 @@ const Health = () => {
         console.error(error);
       }
     };
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    const fetchAmounts = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/amounts/4", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        const finalAmount = data.filter((item) => item.id === 4)[0].amount;
-
-        setAllocatedAmount(finalAmount);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    fetchHealth();
     fetchAmounts();
+    fetchEvents();
   }, []);
 
   const filteredHealth = useMemo(() => {
@@ -381,8 +378,7 @@ const Health = () => {
                     />
                   </figure>
                   <div className="card-body">
-                    <form onSubmit={onFormSubmit} 
-                    encType="multipart/form-data">
+                    <form onSubmit={onFormSubmit} encType="multipart/form-data">
                       <label className="label font-bold3">
                         Kindly Upload the Excel Sheet
                       </label>
@@ -480,7 +476,7 @@ const Health = () => {
                         <option value="Male">Male</option>
                       </select>
                       <label className="label font-bold text-xs">
-                        Phone Contact of the assisted
+                        Phone Contact of the assisted or Guardian
                       </label>
                       <input
                         className="input input-bordered w-full"
@@ -501,6 +497,18 @@ const Health = () => {
                         spellCheck
                         required
                       />
+                      <label className="label font-bold text-xs">
+                        Health History of the Patient (else NA)
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="healthComplication"
+                        value={projectCase}
+                        onChange={(e) => setProjectCase(e.target.value)}
+                        spellCheck
+                        required
+                        type="text"
+                      />
                       <label className="label font-bold text-xs">Amount</label>
                       <input
                         className="input input-bordered w-full"
@@ -510,6 +518,18 @@ const Health = () => {
                         spellCheck
                         required
                         type="number"
+                      />{" "}
+                      <label className="label font-bold text-xs">
+                        Confirmation of Pay
+                      </label>
+                      <input
+                        className="input input-bordered w-full"
+                        name="payConfirmation"
+                        value={payConfirmation}
+                        onChange={(e) => setPayConfirmation(e.target.value)}
+                        spellCheck
+                        required
+                        type="text"
                       />
                       <button
                         type="submit"
@@ -544,7 +564,7 @@ const Health = () => {
                 <input
                   type="text"
                   className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                  placeholder="Search Environment Event by name..."
+                  placeholder="Search Health Project by name..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -761,7 +781,19 @@ const Health = () => {
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
+                              Case History
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
                               Amount Disbursed
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Confirmation of Pay
                             </th>
                           </tr>
                         </thead>
@@ -786,7 +818,13 @@ const Health = () => {
                                 {health.health_complication}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {health.project_case}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {health.health_amount}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {health.pay_confirmation}
                               </td>
                             </tr>
                           ))}

@@ -56,13 +56,6 @@ const Sidebar = ({ children }) => {
                   </>
                   <Link
                     className="font-sans mt-1 hover:bg-base-200 rounded p-2"
-                    to="/education"
-                  >
-                    Education
-                  </Link>
-
-                  <Link
-                    className="font-sans mt-1 hover:bg-base-200 rounded p-2"
                     to="/health"
                   >
                     Health

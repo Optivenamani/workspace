@@ -287,7 +287,7 @@ const Store = () => {
                                 </div>
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                                <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
+                                <div className="W-auto mt-2  py-1 text-sm font-normal rounded-full text-blue-500 gap-x-2 bg-blue-200 dark:bg-gray-800">
                                   {store.book_code}
                                 </div>
                               </td>
