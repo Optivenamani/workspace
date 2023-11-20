@@ -9,6 +9,7 @@ export { default as ApproveWorkplans } from "../workplan/pages/workplans/Approve
 export { default as AssignedBookings } from "../logistics/pages/site-visit-requests/AssignedBookings";
 export { default as AssignedSpecialAssignments } from "../logistics/pages/special-assignments/AssignedSpecialAssignments";
 export { default as AssignedVehicleRequests } from "../logistics/pages/vehicles/AssignedVehicleRequests";
+export { default as BookReports } from "../foundation/pages/Reports/BookReports";
 export { default as ClientsFeedback } from "../logistics/pages/clients/ClientsFeedback";
 export { default as CreateBooking } from "../logistics/pages/site-visit-requests/CreateBooking";
 export { default as CreateSpecialAssignment } from "../logistics/pages/special-assignments/CreateSpecialAssignment";
@@ -44,6 +45,7 @@ export { default as MyClientContacts } from "../logistics/pages/clients/MyClient
 export { default as MySiteVisits } from "../logistics/pages/site-visit-requests/MySiteVisits";
 export { default as Notifications } from "../logistics/pages/Notification";
 export { default as Payments } from "../foundation/pages/pillars/education/Payments";
+export { default as PaymentReports } from "../foundation/pages/Reports/PaymentReports";
 export { default as PastRequests } from "../logistics/pages/vehicles/PastRequests";
 export { default as PovertyAlleviation } from "../foundation/pages/pillars/PovertyAlleviation";
 export { default as PovertyReport } from "../foundation/pages/Reports/povertyReport";

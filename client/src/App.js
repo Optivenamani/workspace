@@ -98,6 +98,8 @@ import {
   PendingWorkplanDetails,
   ActivityReports,
   ProductivityReports,
+  PaymentReports,
+  BookReports,
 } from "./utils/index";
 
 const App = () => {
@@ -340,6 +342,9 @@ const App = () => {
             <Route path="/event-report" element={<EventReport />} />
             <Route path="/specific/:id" element={<Specific />} />
             <Route path="/payments" element={<Payments />} />
+            <Route path="/payment-reports" element={<PaymentReports />} />
+            <Route path="/book-report" element={<BookReports />} />
+
           </Route>
         </Routes>
       </Router>

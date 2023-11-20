@@ -140,7 +140,6 @@ const Sales = () => {
       }
     });
   }, [searchQuery, sales]);
-
   const filteredSingle = useMemo(() => {
     return sales.filter((item) => {
       // Check if the item has a book_status property and if it is a string
@@ -167,7 +166,6 @@ const Sales = () => {
     });
   }, [searchQuery2, sales]);
 
-  console.log(filteredSingle);
   return (
     <Sidebar>
       <section className="text-center overflow-x-hidden">
@@ -177,7 +175,7 @@ const Sales = () => {
               <div>
                 <div className="flex items-center gap-x-3">
                   <h2 className="text-lg font-medium text-gray-800 dark:text-white">
-                    Book Sales
+                    Bulk Book Sales
                   </h2>
                   <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
                     Welcome 😊
@@ -406,6 +404,12 @@ const Sales = () => {
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
+                              Person In Charge
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
                               Amount of money Expected
                             </th>{" "}
                             <th
@@ -413,6 +417,12 @@ const Sales = () => {
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
                               Amount of money Got
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Balance
                             </th>
                           </tr>
                         </thead>
@@ -436,10 +446,29 @@ const Sales = () => {
                                 {sales.book_copies}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.person_responsible}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {sales.book_amount_expected}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {sales.book_amount_given}
+                              </td>
+
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.book_amount_expected -
+                                  sales.book_amount_given !==
+                                0 ? (
+                                  <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-red-500 gap-x-2 bg-red-200 dark:bg-gray-800">
+                                    {sales.book_amount_expected -
+                                      sales.book_amount_given}
+                                  </div>
+                                ) : (
+                                  <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-green-500 gap-x-2 bg-green-200 dark:bg-gray-800">
+                                    {sales.book_amount_expected -
+                                      sales.book_amount_given}
+                                  </div>
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -454,7 +483,7 @@ const Sales = () => {
               <div>
                 <div className="flex items-center gap-x-3 ">
                   <h2 className="text-lg font-medium text-gray-800 dark:text-white">
-                    Book Sales
+                    Single Book Sales
                   </h2>
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-start">
@@ -536,6 +565,12 @@ const Sales = () => {
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
+                              Person In Charge
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
                               Amount of money Expected
                             </th>{" "}
                             <th
@@ -543,6 +578,12 @@ const Sales = () => {
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
                             >
                               Amount of money Got
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Balance{" "}
                             </th>
                           </tr>
                         </thead>
@@ -566,10 +607,28 @@ const Sales = () => {
                                 {sales.book_copies}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.person_responsible}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {sales.book_amount_expected}
                               </td>
                               <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {sales.book_amount_given}
+                              </td>
+                              <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {sales.book_amount_expected -
+                                  sales.book_amount_given !==
+                                0 ? (
+                                  <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-red-500 gap-x-2 bg-red-200 dark:bg-gray-800">
+                                    {sales.book_amount_expected -
+                                      sales.book_amount_given}
+                                  </div>
+                                ) : (
+                                  <div className="px-3 mt-2 py-1 text-sm font-normal rounded-full text-green-500 gap-x-2 bg-green-200 dark:bg-gray-800">
+                                    {sales.book_amount_expected -
+                                      sales.book_amount_given}
+                                  </div>
+                                )}
                               </td>
                             </tr>
                           ))}

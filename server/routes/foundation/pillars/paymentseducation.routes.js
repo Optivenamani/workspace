@@ -19,83 +19,29 @@ var printer = new pdfMakePrinter(fonts);
 
 // Define your dataToPdfRows function
 function dataToPdfRows(data) {
-  return data.map((item, index) => [
-    index + 1 || 0,
-    item.book_name || "",
-    item.book_code || "",
-    item.book_price || 0,
-    item.book_copies || 0,
-    item.person_responsible || "",
-    item.book_amount_expected || 0,
-    item.book_amount_given || 0,
-  ]);
+  return data.map((item, index) => {
+    return [
+      { text: index + 1 ?? "", style: "tableCell" },
+      { text: item.student_level ?? "", style: "tableCell" },
+      { text: item.pay_institution ?? "", style: "tableCell" },
+      { text: item.pay_amount ?? "", style: "tableCell" },
+      { text: item.pay_confirmation ?? "", style: "tableCell" },
+      { text: item.pay_comment ?? "", style: "tableCell" },
+    ];
+  });
 }
 
 module.exports = (pool, io) => {
-  // Route for the Add Sale data modal
-  router.post("/", async (req, res) => {
-    const {
-      book_name,
-      book_code,
-      book_price,
-      book_copies,
-      person_responsible,
-      book_amount_expected,
-      book_amount_given,
-      book_status,
-      authenticateJWT,
-    } = req.body;
-    try {
-      pool.query(
-        "INSERT INTO `book_sales`(`book_name`, `book_code`, `book_price`, `book_copies`, `person_responsible`, `book_amount_expected`, `book_amount_given`, `book_status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          book_name,
-          book_code,
-          book_price,
-          book_copies,
-          person_responsible,
-          book_amount_expected,
-          book_amount_given,
-          book_status,
-        ],
-        (err, result) => {
-          if (err) {
-            console.error("Database Error:", err);
-            return res.status(500).json({
-              message: "An error occurred while adding the Book Sale.",
-            });
-          }
-          res.status(201).json({ message: "Book Sale added successfully!" });
-        }
-      );
-    } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while adding the Book Sale.",
-      });
-    }
-  });
-  //   Route to get Sales Data
-  router.get("/", async (req, res) => {
-    try {
-      pool.query("SELECT * FROM book_sales", (err, results) => {
-        if (err) throw err;
-
-        res.json(results);
-      });
-    } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while fetching the Book Sale",
-      });
-    }
-  });
+  // Download into PDF for report
   router.get("/download-pdf", async (req, res) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
-      const query = `SELECT * FROM book_sales WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
-
+      const query = `SELECT * FROM payments WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
+
+        console.log(results);
 
         const docDefinition = {
           pageSize: "A4",
@@ -104,16 +50,7 @@ module.exports = (pool, io) => {
             {
               table: {
                 headerRows: 1,
-                widths: [
-                  "auto",
-                  "auto",
-                  "auto",
-                  "auto",
-                  "auto",
-                  "auto",
-                  "auto",
-                  "auto",
-                ],
+                widths: ["auto", "auto", "auto", "auto", "auto", "auto"],
                 body: [
                   [
                     {
@@ -123,43 +60,31 @@ module.exports = (pool, io) => {
                       bold: true,
                     },
                     {
-                      text: "Name Of the Book",
+                      text: "Student Level",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
                     },
                     {
-                      text: "Code of The Book",
+                      text: "Institution paid for",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
                     },
                     {
-                      text: "Price of the Book",
+                      text: "Amount Paid",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
                     },
                     {
-                      text: "Copies of the Book",
+                      text: "Confirmation Of Pay",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
                     },
                     {
-                      text: "Person In Charge",
-                      fillColor: "#202A44",
-                      style: "tableHeader",
-                      bold: true,
-                    },
-                    {
-                      text: "Amount Expected",
-                      fillColor: "#202A44",
-                      style: "tableHeader",
-                      bold: true,
-                    },
-                    {
-                      text: "Amount Given",
+                      text: "Comment",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
@@ -190,7 +115,8 @@ module.exports = (pool, io) => {
             },
           },
         };
-       // Populate the body array with your dataToPdfRows
+
+        // Populate the body array with your data using dataToPdfRows
         docDefinition.content[0].table.body.push(...dataToPdfRows(results));
 
         // Create the PDF and send it as a response

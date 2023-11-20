@@ -118,10 +118,7 @@ workplanAutomationPool.getConnection((err, connection) => {
 // Check database connection
 foundationPool.getConnection((err, connection) => {
   if (err) {
-    console.error(
-      "Error connecting to the foundation database:",
-      err.message
-    );
+    console.error("Error connecting to the foundation database:", err.message);
   } else {
     console.log("Connected to the foundation database");
     connection.release();
@@ -131,10 +128,7 @@ foundationPool.getConnection((err, connection) => {
 // Check database connection
 feedbackPool.getConnection((err, connection) => {
   if (err) {
-    console.error(
-      "Error connecting to the feedback database:",
-      err.message
-    );
+    console.error("Error connecting to the feedback database:", err.message);
   } else {
     console.log("Connected to the feedback database");
     connection.release();
@@ -203,6 +197,7 @@ const books = require("./routes/foundation/books/books.routes");
 const issuance = require("./routes/foundation/books/issuance.routes");
 const sales = require("./routes/foundation/books/sales.routes");
 const amounts = require("./routes/foundation/pillars/amounts.routes");
+const payments = require("./routes/foundation/pillars/paymentseducation.routes");
 
 // Configure CORS options
 const corsOptions = {
@@ -252,14 +247,15 @@ app.use("/api/issuance", issuance(foundationPool));
 app.use("/api/sales", sales(foundationPool));
 app.use("/api/amounts", amounts(foundationPool));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+app.use("/api/payments", payments(foundationPool));
 
 app.use("/api/plots", plots(logisticsPool));
 
 // Set up Socket.IO connection handling
 io.on("connection", (socket) => {
   console.log("Connected");
-  socket.on("disconnect", () => {`1`
+  socket.on("disconnect", () => {
+    `1`;
     console.log("Disconnected");
   });
 });

@@ -75,10 +75,13 @@ module.exports = (pool, io) => {
   // Route to get Education Data
   router.get("/payments", async (req, res) => {
     try {
-      pool.query("SELECT * FROM payments", (err, results) => {
-        if (err) throw err;
-        res.json(results);
-      });
+      pool.query(
+        "SELECT * FROM education JOIN payments ON education.educ_id = payments.student_id",
+        (err, results) => {
+          if (err) throw err;
+          res.json(results);
+        }
+      );
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching Payment information.",
@@ -115,7 +118,7 @@ module.exports = (pool, io) => {
     });
   });
 
-  // Your existing code
+  // Download into PDF for report
   router.get("/download-pdf", async (req, res) => {
     try {
       const startDate = req.query.startDate;

@@ -32,20 +32,16 @@ module.exports = (pool, io) => {
   //   Route to get latest  Data
   router.get("/", async (req, res) => {
     try {
-      pool.query(
-        "SELECT * FROM allocated_amounts",
-        (err, results) => {
-          if (err) throw err;
+      pool.query("SELECT * FROM allocated_amounts", (err, results) => {
+        if (err) throw err;
 
-          res.json(results);
-        }
-      );
+        res.json(results);
+      });
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while fetching Amounts information.",
       });
     }
   });
-
   return router;
 };
