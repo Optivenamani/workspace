@@ -115,6 +115,26 @@ const AppMenu = ({ onAppSelect }) => {
                 </Link>
               </li>
             )}
+            {(department === "ICT (S)" || accessRole === "foundation") && (
+              <li>
+                <Link
+                  to="/foundation-home"
+                  className="block overflow-hidden group"
+                  onClick={() => handleAppSelect("Maps")}
+                >
+                  <img
+                    src={require("../../assets/media/1I2A7740 (1).jpg")}
+                    alt=""
+                    className="h-[350px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+                  />
+                  <div className="relative pt-3 bg-white">
+                    <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                      Optiven Foundation
+                    </h3>
+                  </div>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </section>
