@@ -52,6 +52,20 @@ const workplanAutomationPool = mysql.createPool({
 });
 
 // Set up the Express app and database connection pool
+const foundationPool = mysql.createPool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.FOUNDATION_DB,
+  ssl: { rejectUnauthorized: false },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 30000,
+});
+
+// Set up the Express app and database connection pool
 const feedbackPool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -102,14 +116,21 @@ workplanAutomationPool.getConnection((err, connection) => {
 });
 
 // Check database connection
+foundationPool.getConnection((err, connection) => {
+  if (err) {
+    console.error("Error connecting to the foundation database:", err.message);
+  } else {
+    console.log("Connected to the foundation database");
+    connection.release();
+  }
+});
+
+// Check database connection
 feedbackPool.getConnection((err, connection) => {
   if (err) {
-    console.error(
-      "Error connecting to the feedback automation database:",
-      err.message
-    );
+    console.error("Error connecting to the feedback database:", err.message);
   } else {
-    console.log("Connected to the feedback automation database");
+    console.log("Connected to the feedback database");
     connection.release();
   }
 });
@@ -165,6 +186,19 @@ const feedback = require("./routes/feedback/feedback.routes");
 // Import Map routes
 const plots = require("./routes/maps/plots.routes");
 
+// Import Foundation routes
+const events = require("./routes/foundation/events/events.routes");
+const donors = require("./routes/foundation/donors/donors.routes");
+const education = require("./routes/foundation/pillars/education.routes");
+const environment = require("./routes/foundation/pillars/environment.routes");
+const health = require("./routes/foundation/pillars/health.routes");
+const poverty = require("./routes/foundation/pillars/poverty.routes");
+const books = require("./routes/foundation/books/books.routes");
+const issuance = require("./routes/foundation/books/issuance.routes");
+const sales = require("./routes/foundation/books/sales.routes");
+const amounts = require("./routes/foundation/pillars/amounts.routes");
+const payments = require("./routes/foundation/pillars/paymentseducation.routes");
+
 // Configure CORS options
 const corsOptions = {
   origin: [
@@ -202,6 +236,18 @@ app.use("/api/workplan-reports", workplanReports(workplanAutomationPool));
 app.use("/api/reserve-parking", parking(visitorManagementPool));
 app.use("/api/reserved-parking", parking(visitorManagementPool));
 app.use("/api/feedback", feedback(feedbackPool));
+app.use("/api/events", events(foundationPool));
+app.use("/api/donors", donors(foundationPool));
+app.use("/api/education", education(foundationPool));
+app.use("/api/environment", environment(foundationPool));
+app.use("/api/health", health(foundationPool));
+app.use("/api/poverty", poverty(foundationPool));
+app.use("/api/books", books(foundationPool));
+app.use("/api/issuance", issuance(foundationPool));
+app.use("/api/sales", sales(foundationPool));
+app.use("/api/amounts", amounts(foundationPool));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/payments", payments(foundationPool));
 
 app.use("/api/plots", plots(logisticsPool));
 
@@ -209,6 +255,7 @@ app.use("/api/plots", plots(logisticsPool));
 io.on("connection", (socket) => {
   console.log("Connected");
   socket.on("disconnect", () => {
+    `1`;
     console.log("Disconnected");
   });
 });

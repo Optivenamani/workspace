@@ -26,13 +26,23 @@ import {
   CreateVehicle,
   CreateWorkPlan,
   Dashboard,
+  DonorReport,
   EditScheduledInterviews,
   EditSiteVisit,
   EditSpecialAssignment,
   EditVehicle,
   EditVisitor,
+  Education,
+  EducationReport,
+  Environment,
+  EnvironmentReport,
+  EventReport,
+  FoundationHome,
+  Health,
+  HealthReport,
   Home,
   InterviewsReports,
+  Issuance,
   Login,
   MarketersFeedback,
   MostBookedSitesReports,
@@ -40,19 +50,27 @@ import {
   MySiteVisits,
   Notifications,
   PastRequests,
+  Payments,
+  PovertyAlleviation,
+  PovertyReport,
   Profile,
   RegisterVisitor,
   ReserveParking,
   RequestVehicle,
+  Sales,
   ScheduleInterview,
   SiteVisitDetails,
   SiteVisitRequests,
   SiteVisitsSummary,
+  Specific,
+  Store,
   Survey,
   Users,
   VehicleRequestDetails,
   VehicleRequests,
+  ViewDonors,
   ViewDrivers,
+  ViewEvents,
   ViewReservedParking,
   ViewScheduleInterviews,
   ViewSites,
@@ -80,6 +98,8 @@ import {
   PendingWorkplanDetails,
   ActivityReports,
   ProductivityReports,
+  PaymentReports,
+  BookReports,
 } from "./utils/index";
 
 const App = () => {
@@ -300,6 +320,31 @@ const App = () => {
             <Route path="/joy-lovers" element={<JoyLovers />} />
             <Route path="/map-home" element={<MapHome />} />
             <Route path="/oasis-gardens" element={<OasisGardens />} />
+            {/* Optiven Foundation */}
+            <Route path="/foundation-home" element={<FoundationHome />} />
+            <Route path="/education" element={<Education />} />
+            <Route path="/environment" element={<Environment />} />
+            <Route path="/health" element={<Health />} />
+            <Route
+              path="/poverty-alleviation"
+              element={<PovertyAlleviation />}
+            />
+            <Route path="/view-donors" element={<ViewDonors />} />
+            <Route path="/issuance" element={<Issuance />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/view-events" element={<ViewEvents />} />
+            <Route path="/poverty-report" element={<PovertyReport />} />
+            <Route path="/education-report" element={<EducationReport />} />
+            <Route path="/health-report" element={<HealthReport />} />
+            <Route path="/environment-report" element={<EnvironmentReport />} />
+            <Route path="/donor-report" element={<DonorReport />} />
+            <Route path="/event-report" element={<EventReport />} />
+            <Route path="/specific/:id" element={<Specific />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/payment-reports" element={<PaymentReports />} />
+            <Route path="/book-report" element={<BookReports />} />
+
           </Route>
         </Routes>
       </Router>
