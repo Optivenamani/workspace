@@ -380,7 +380,7 @@ const Payments = () => {
                   <input
                     type="text"
                     className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                    placeholder="Search Payment by Student name..."
+                    placeholder="Search Payment by Institution name..."
                     value={searchedQuery}
                     onChange={(e) => setSearchedQuery(e.target.value)}
                   />
@@ -394,6 +394,12 @@ const Payments = () => {
                         <thead className="bg-gray-50 dark:bg-gray-800">
                           <tr>
                             <th></th>
+                            <th
+                              scope="col"
+                              className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
+                            >
+                              Name of the Student{" "}
+                            </th>
                             <th
                               scope="col"
                               className="px-12 py-3.5 text-sm font-normal text-center text-gray-500 dark:text-gray-400"
@@ -430,7 +436,10 @@ const Payments = () => {
                           {filteredStudentPaymentDetails.map((pay, index) => (
                             <tr key={index}>
                               <th>{index + 1}</th>
-
+                              <td className="py-4 text-sm font-medium whitespace-nowrap text-center">
+                                {" "}
+                                {pay.educ_name}
+                              </td>
                               <td className="py-4 text-sm font-medium whitespace-nowrap text-center">
                                 {" "}
                                 {pay.pay_institution}

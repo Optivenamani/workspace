@@ -28,6 +28,7 @@ function dataToPdfRows(data) {
       { text: item.educ_name ?? "", style: "tableCell" },
       { text: item.educ_age ?? "", style: "tableCell" },
       { text: item.educ_gender ?? "", style: "tableCell" },
+      { text: item.county ?? "", style: "tableCell" },
       { text: item.educ_phone ?? "", style: "tableCell" },
       { text: item.educ_level ?? "", style: "tableCell" },
       { text: item.case_history ?? "", style: "tableCell" },
@@ -55,6 +56,7 @@ module.exports = (pool, io) => {
             educ_name: education.educ_name,
             educ_age: education.educ_age,
             educ_gender: education.educ_gender,
+            county: education.county,
             educ_phone: education.educ_phone,
             educ_level: education.educ_level,
             educ_amount: education.educ_amount,
@@ -144,6 +146,7 @@ module.exports = (pool, io) => {
                   "auto",
                   "auto",
                   "auto",
+                  "auto",
                 ],
                 body: [
                   [
@@ -167,6 +170,12 @@ module.exports = (pool, io) => {
                     },
                     {
                       text: "Gender",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                      bold: true,
+                    },
+                    {
+                      text: "County of Origin",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
@@ -256,6 +265,7 @@ module.exports = (pool, io) => {
         educ_name,
         educ_age,
         educ_gender,
+        county,
         educ_phone,
         educ_level,
         case_history,
@@ -264,12 +274,13 @@ module.exports = (pool, io) => {
       const educ_image = req.file.filename;
 
       const query =
-        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `educ_phone`, `educ_level`, `created_at`, `educ_image`, `case_history`) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
+        "INSERT INTO `education`(`educ_name`, `educ_age`, `educ_gender`, `county`, `educ_phone`, `educ_level`, `created_at`, `educ_image`, `case_history`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
 
       const values = [
         educ_name,
         educ_age,
         educ_gender,
+        county,
         educ_phone,
         educ_level,
         educ_image,
@@ -429,13 +440,12 @@ module.exports = (pool, io) => {
       educ_phone,
       educ_level,
       educ_amount,
-      educ_image,
       case_history,
     } = req.body;
 
     try {
       pool.query(
-        "UPDATE education SET educ_name = ?, educ_age = ?, educ_gender = ?, educ_phone = ?, educ_level = ?, educ_amount = ?, educ_image = ?, case_history = ? WHERE educ_id = ?;",
+        "UPDATE education SET educ_name = ?, educ_age = ?, educ_gender = ?, educ_phone = ?, educ_level = ?, educ_amount = ?, case_history = ? WHERE educ_id = ?;",
         [
           educ_name,
           educ_age,
@@ -443,7 +453,6 @@ module.exports = (pool, io) => {
           educ_phone,
           educ_level,
           educ_amount,
-          educ_image,
           case_history,
           id,
         ],

@@ -24,7 +24,7 @@ const Education = () => {
   const [payConfirmation, setPayConfirmation] = useState("");
   const [payInstitution, setPayInstitution] = useState("");
   const [payComment, setPayComment] = useState("");
-
+  const [countyOrigin, setCountyOrigin] = useState("");
   const [educImage, setEducImage] = useState(null);
   // modals
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +46,7 @@ const Education = () => {
     educ_name: "",
     educ_age: 0,
     educ_gender: "",
+    county: "",
     educ_phone: "",
     educ_level: "",
     case_history: "",
@@ -110,6 +111,7 @@ const Education = () => {
     formData.append("educ_name", educName);
     formData.append("educ_age", educAge);
     formData.append("educ_gender", educGender);
+    formData.append("county", countyOrigin);
     formData.append("educ_phone", educPhone);
     formData.append("educ_level", educLevel);
     formData.append("educ_amount", educAmount);
@@ -287,6 +289,7 @@ const Education = () => {
       educ_name: editEduc.educ_name,
       educ_age: editEduc.educ_age,
       educ_gender: editEduc.educ_gender,
+      county: editEduc.county,
       educ_phone: editEduc.educ_phone,
       educ_level: editEduc.educ_level,
       educ_amount: editEduc.educ_amount,
@@ -671,6 +674,69 @@ const Education = () => {
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
                       </select>
+                      <label className="label font-bold text-xs">
+                        County of Origin of the Student
+                      </label>
+                      <select
+                        className="input input-bordered w-full"
+                        name="countyOrigin"
+                        value={countyOrigin}
+                        onChange={(e) => setCountyOrigin(e.target.value)}
+                        spellCheck
+                        required
+                      >
+                        <option value="None selected">
+                          Please Pick County
+                        </option>
+                        <option value="BARINGO">Baringo</option>
+                        <option value="BOMET">Bomet</option>
+                        <option value="BUNGOMA">Bungoma</option>
+                        <option value="BUSIA">Busia</option>
+                        <option value="ELGEYO MARAKWET">Elgeyo Marakwet</option>
+                        <option value="EMBU">Embu</option>
+                        <option value="GARISSA">Garissa</option>
+                        <option value="HOMA BAY">Homa Bay</option>
+                        <option value="ISIOLO">Isiolo</option>
+                        <option value="KAJIADO">Kajiado</option>
+                        <option value="KAKAMEGA">Kakamega</option>
+                        <option value="KERICHO">Kericho</option>
+                        <option value="KIAMBU">Kiambu</option>
+                        <option value="KILIFI">Kilifi</option>
+                        <option value="KIRINYAGA">Kirinyaga</option>
+                        <option value="KISII">Kisii</option>
+                        <option value="KISUMU">Kisumu</option>
+                        <option value="KITUI">Kitui</option>
+                        <option value="KWALE">Kwale</option>
+                        <option value="LAIKIPIA">Laikipia</option>
+                        <option value="LAMU">Lamu</option>
+                        <option value="MACHAKOS">Machakos</option>
+                        <option value="MAKUENI">Makueni</option>
+                        <option value="MANDERA">Mandera</option>
+                        <option value="MERU">Meru</option>
+                        <option value="MIGORI">Migori</option>
+                        <option value="MARSABIT">Marsabit</option>
+                        <option value="MOMBASA">Mombasa</option>
+                        <option value="MURANGA">Muranga</option>
+                        <option value="NAIROBI">Nairobi</option>
+                        <option value="NAKURU">Nakuru</option>
+                        <option value="NANDI">Nandi</option>
+                        <option value="NAROK">Narok</option>
+                        <option value="NYAMIRA">Nyamira</option>
+                        <option value="NYANDARUA">Nyandarua</option>
+                        <option value="NYERI">Nyeri</option>
+                        <option value="SAMBURU">Samburu</option>
+                        <option value="SIAYA">Siaya</option>
+                        <option value="TAITA TAVETA">Taita Taveta</option>
+                        <option value="TANA RIVER">Tana River</option>
+                        <option value="THARAKA NITHI">Tharaka Nithi</option>
+                        <option value="TRANS NZOIA">Trans Nzoia</option>
+                        <option value="TURKANA">Turkana</option>
+                        <option value="UASIN GISHU">Uasin Gishu</option>
+                        <option value="VIHIGA">Vihiga</option>
+                        <option value="WAJIR">Wajir</option>
+                        <option value="WEST POKOT">West Pokot</option>
+                      </select>
+
                       <label className="label font-bold text-xs">
                         Phone Contact of the Student
                       </label>

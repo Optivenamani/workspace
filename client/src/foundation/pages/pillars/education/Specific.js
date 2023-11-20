@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../../components/Sidebar";
+import formatDate from "../../../../utils/formatDate";
 
 function Specific() {
   const [studentDetails, setStudentDetails] = useState([]);
@@ -10,6 +11,7 @@ function Specific() {
   const [gender, setGender] = useState("");
   const [phone, setPhone] = useState("");
   const [level, setLevel] = useState("");
+  const [date, setDate] = useState("");
   const [payInstitution, setPayInstitution] = useState("");
   const [payComment, setPayComment] = useState("");
 
@@ -41,6 +43,7 @@ function Specific() {
         setLevel(data[0].educ_level);
         setImage(data[0].educ_image);
         setHistory(data[0].case_history);
+        setDate(data[0].created_at);
       } catch (error) {
         console.error(error);
       }
@@ -67,13 +70,17 @@ function Specific() {
           <div className="w-full">
             <img
               className="w-20 h-20 rounded-full mb-2 mx-auto"
-              src={image === "" ? image : require("../components/avatar.jpg")}
+              src={require("../components/avatar.jpg")}
               alt={name}
             />
 
             {/* User Information */}
             <h2 className="text-lg font-semibold mb-1 text-center">{name}</h2>
             <p className="text-gray-500 mb-4 text-center">{level} Student</p>
+            <p className="font-bold text-center my-2">
+              Created on {formatDate(date)}
+            </p>
+
             <div className="flex gap-4 flex-wrap">
               {/* Left Column */}
               <div className="w-full bg-green-200  rounded-lg shadow-lg mx-4 lg:w-1/4">
@@ -121,14 +128,6 @@ function Specific() {
                     ))}
                   </tbody>
                 </table>
-                <div className="flex justify-center pt-4">
-                  <button className="bg-green-500 text-white px-4 py-2 rounded mr-2">
-                    Edit
-                  </button>
-                  <button className="bg-red-500 text-white px-4 py-2 rounded">
-                    Delete
-                  </button>
-                </div>
               </div>
             </div>
 

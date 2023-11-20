@@ -22,6 +22,7 @@ function dataToPdfRows(data) {
   return data.map((item, index) => {
     return [
       { text: index + 1 ?? "", style: "tableCell" },
+      { text: item.educ_name ?? "", style: "tableCell" },
       { text: item.student_level ?? "", style: "tableCell" },
       { text: item.pay_institution ?? "", style: "tableCell" },
       { text: item.pay_amount ?? "", style: "tableCell" },
@@ -37,7 +38,12 @@ module.exports = (pool, io) => {
     try {
       const startDate = req.query.startDate;
       const endDate = req.query.endDate;
-      const query = `SELECT * FROM payments WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC;`;
+      const query = `SELECT *
+      FROM education
+      JOIN payments ON education.educ_id = payments.student_id
+      WHERE payments.created_at BETWEEN ? AND ?
+      ORDER BY payments.created_at DESC;
+      `;
       pool.query(query, [startDate, endDate], (err, results) => {
         if (err) throw err;
 
@@ -50,11 +56,25 @@ module.exports = (pool, io) => {
             {
               table: {
                 headerRows: 1,
-                widths: ["auto", "auto", "auto", "auto", "auto", "auto"],
+                widths: [
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                  "auto",
+                ],
                 body: [
                   [
                     {
                       text: "Index",
+                      fillColor: "#202A44",
+                      style: "tableHeader",
+                      bold: true,
+                    },
+                    {
+                      text: "Name of the Student",
                       fillColor: "#202A44",
                       style: "tableHeader",
                       bold: true,
