@@ -74,7 +74,7 @@ function Specific() {
               alt={name}
             />
 
-            {/* User Information */}
+            {/* User Information code */}
             <h2 className="text-lg font-semibold mb-1 text-center">{name}</h2>
             <p className="text-gray-500 mb-4 text-center">{level} Student</p>
             <p className="font-bold text-center my-2">
